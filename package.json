@@ -2,7 +2,7 @@
   "name": "react-answers",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lisafast.github.io/ai-answers/",
+  "homepage": "https://lisafast.github.io/react-answers/",
   "dependencies": {
     "@cdssnc/gcds-components": "^0.26.1",
     "@cdssnc/gcds-components-react": "^0.26.1",
