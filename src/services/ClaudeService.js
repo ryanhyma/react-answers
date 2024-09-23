@@ -7,6 +7,14 @@ const ClaudeService = {
   sendMessage: async (message) => {
     console.log('API Key (last 4 chars):', process.env.REACT_APP_ANTHROPIC_API_KEY?.slice(-4) || 'Not found');
     
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.REACT_APP_ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01'
+    };
+
+    console.log('Headers being sent:', JSON.stringify(headers, null, 2));
+
     try {
       console.log('Sending request to Claude API...');
       const response = await axios.post(
@@ -19,13 +27,7 @@ const ClaudeService = {
           ],
           max_tokens: 1024
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': process.env.REACT_APP_ANTHROPIC_API_KEY,
-            'anthropic-version': '2023-06-01'
-          }
-        }
+        { headers }
       );
       console.log('Received response from Claude API');
       return response.data.content[0].text;
