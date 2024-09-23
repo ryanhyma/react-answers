@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unused-modules */
 import React from 'react';
 import { GcdsContainer} from '@cdssnc/gcds-components-react';
 import { GcdsHeader} from '@cdssnc/gcds-components-react';
-import { GcdsButton} from '@cdssnc/gcds-components-react';
 import '@cdssnc/gcds-components-react/gcds.css';
+import chatAppContainer from './components/chat/chatAppContainer';
 
 function App() {
+  const chatApp = <chatAppContainer />;
   return (
     <div className="App">
       <header>
@@ -24,7 +27,7 @@ function App() {
   <h2>Get answers to your Canada.ca questions. </h2>
 			<p class="small">To protect your privacy, names, numbers and addresses aren't accepted and will display as
 				an <strong>X</strong>. Learn more
-				at <a href="">About AI Answers</a>
+				at <a href="https://test.canada.ca/wayfinding-orientation-2023/ai/answers.html">About AI Answers</a>
 			</p>
 			<details>
 				<summary>Terms of use</summary>
@@ -45,6 +48,7 @@ function App() {
 						href="https://www.canada.ca/en/transparency/terms.html">Canada.ca Terms and conditions.</a> </p>
 			</details>
         </GcdsContainer>
+        <chatApp/>
       </main>
     </div>
   );
