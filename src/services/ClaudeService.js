@@ -25,6 +25,7 @@ const ClaudeService = {
           }
         }
       );
+      console.log('API Key (last 4 chars):', process.env.REACT_APP_ANTHROPIC_API_KEY.slice(-4));
       console.log('Received response from Claude API');
       return response.data.content[0].text;
     } catch (error) {
