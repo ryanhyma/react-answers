@@ -2,6 +2,7 @@
   "name": "react-answers",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://api.anthropic.com",
   "homepage": "https://lisafast.github.io/react-answers/",
   "dependencies": {
     "@cdssnc/gcds-components": "^0.26.1",
