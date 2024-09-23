@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unused-modules */
 import React from 'react';
-import TempChatAppContainer from './components/chat/Temp_ChatAppContainer';
+import TempChatAppContainer from './components/chat/TempChatAppContainer';
 
 function App() {
   const chatApp = <TempChatAppContainer />;
