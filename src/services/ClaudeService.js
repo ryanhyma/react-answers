@@ -9,7 +9,7 @@ const ClaudeService = {
     
     const headers = {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.REACT_APP_ANTHROPIC_API_KEY,
+      'Authorization': `Bearer ${process.env.REACT_APP_ANTHROPIC_API_KEY}`,
       'anthropic-version': '2023-06-01'
     };
 
