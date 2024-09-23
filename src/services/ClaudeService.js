@@ -37,47 +37,48 @@ Important Notes:
 * If uncertain about very specific details, acknowledge the possibility of inaccuracies and encourage users to verify information on Canada.ca.`;
 
 const ClaudeService = {
-  sendMessage: async (message) => {
-    console.log('API Key (last 4 chars):', process.env.REACT_APP_ANTHROPIC_API_KEY?.slice(-4) || 'Not found');
-    
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.REACT_APP_ANTHROPIC_API_KEY}`,
-      'anthropic-version': '2023-06-01'
-    };
-
-    console.log('Headers being sent:', JSON.stringify(headers, null, 2));
-
-    try {
-      console.log('Sending request to Claude API...');
-      const response = await axios.post(
-        ANTHROPIC_API_ENDPOINT,
-        {
-          model: "claude-3-sonnet-20240229",
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: message }
-          ],
-          max_tokens: 1024
-        },
-        { headers }
-      );
-      console.log('Received response from Claude API');
-      return response.data.content[0].text;
-    } catch (error) {
-      console.error('Error calling Claude API:', error);
-      if (error.response) {
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
+    sendMessage: async (message) => {
+      let apiKey;
+      if (process.env.NODE_ENV === 'development') {
+        apiKey = process.env.REACT_APP_ANTHROPIC_API_KEY;
+        console.log('Using development API key');
       } else {
-        console.error('Error setting up request:', error.message);
+        // In production, you would get the API key from a secure source
+        // This is a placeholder and should be replaced with a secure method
+        apiKey = 'PLACEHOLDER_FOR_PRODUCTION_API_KEY';
+        console.log('Using production API key placeholder');
       }
-      throw error;
+  
+      const headers = {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01'
+      };
+  
+      try {
+        console.log('Sending request to Claude API...');
+        const response = await axios.post(
+          ANTHROPIC_API_ENDPOINT,
+          {
+            model: "claude-3-sonnet-20240229",
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              { role: "user", content: message }
+            ],
+            max_tokens: 1024
+          },
+          { headers }
+        );
+        console.log('Received response from Claude API');
+        return response.data.content[0].text;
+      } catch (error) {
+        console.error('Error calling Claude API:', error);
+        if (error.response) {
+          console.error('Response data:', JSON.stringify(error.response.data, null, 2));
+          console.error('Response status:', error.response.status);
+        }
+        throw error;
+      }
     }
-  }
-};
-
-export default ClaudeService;
+  };
+  
+  export default ClaudeService;
