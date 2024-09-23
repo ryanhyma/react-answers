@@ -1,10 +1,12 @@
-import axios from 'axios';
+\import axios from 'axios';
 
 const ANTHROPIC_API_ENDPOINT = '/v1/messages';
 const SYSTEM_PROMPT = `You are an AI assistant for the Government of Canada website. Provide helpful information about Canadian government services and programs. Keep responses concise and factual.`;
 
 const ClaudeService = {
   sendMessage: async (message) => {
+    console.log('API Key (last 4 chars):', process.env.REACT_APP_ANTHROPIC_API_KEY?.slice(-4) || 'Not found');
+    
     try {
       console.log('Sending request to Claude API...');
       const response = await axios.post(
@@ -25,7 +27,6 @@ const ClaudeService = {
           }
         }
       );
-      console.log('API Key (last 4 chars):', process.env.REACT_APP_ANTHROPIC_API_KEY.slice(-4));
       console.log('Received response from Claude API');
       return response.data.content[0].text;
     } catch (error) {
