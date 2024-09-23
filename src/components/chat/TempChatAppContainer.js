@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ChatAppContainer = () => {
+const TempChatAppContainer = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
 
@@ -42,4 +42,4 @@ const ChatAppContainer = () => {
   );
 };
 
-export default ChatAppContainer;
+export default TempChatAppContainer;
