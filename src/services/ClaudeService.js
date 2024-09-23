@@ -1,4 +1,4 @@
-\import axios from 'axios';
+import axios from 'axios';
 
 const ANTHROPIC_API_ENDPOINT = '/v1/messages';
 const SYSTEM_PROMPT = `You are an AI assistant for the Government of Canada website. Provide helpful information about Canadian government services and programs. Keep responses concise and factual.`;
