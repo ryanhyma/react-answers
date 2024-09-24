@@ -13,7 +13,7 @@ function App() {
       <GcdsHeader
        langHref="#"
        skipToHref="#">
-        <div slot="breadcrumb"><a href="https://www.canada.ca/en.html">Canada.ca</a></div>
+        <div slot="breadcrumb"><a href="https://www.canada.ca/en.html">Canada.ca</a><a href="https://www.canada.ca/en.html">AI</a></div>
       </GcdsHeader>
       </header>
       <main>
