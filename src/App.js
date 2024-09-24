@@ -3,6 +3,7 @@
 import React from 'react';
 import TempChatAppContainer from './components/chat/TempChatAppContainer';
 
+
 function App() {
   return (
     <div className="App">
@@ -14,7 +15,7 @@ function App() {
 			<p>To protect your privacy, names, numbers and addresses aren't accepted and will display as
 				an <strong>X</strong>. Learn more
 				at <a href="https://test.canada.ca/wayfinding-orientation-2023/ai/answers.html">About AI Answers</a>
-			</p>
+			</p>    
       <TempChatAppContainer />
       </main>
     </div>
