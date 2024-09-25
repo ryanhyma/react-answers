@@ -17,7 +17,7 @@ function App() {
 
       {/* <main> */}
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-        <h1 className='mb-400'>AI answers</h1>
+        <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
 
         <p className='mb-400'>To protect your privacy, names, numbers and addresses aren't accepted and will display as
