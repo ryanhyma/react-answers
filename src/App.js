@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unused-modules */
 import React from 'react';
 import TempChatAppContainer from './components/chat/TempChatAppContainer';
-import { GcdsHeader, GcdsContainer, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsDetails, GcdsText, GcdsLink, GcdsFooter } from '@cdssnc/gcds-components-react';
+import { GcdsHeader, GcdsContainer, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsDetails, GcdsText, GcdsLink, GcdsFooter, GcdsTextarea } from '@cdssnc/gcds-components-react';
 
 function App() {
   return (
@@ -10,9 +10,8 @@ function App() {
       <GcdsHeader
        langHref="#"
        skipToHref="#">
-        {/* <div slot="breadcrumb"><a href="https://www.canada.ca/en.html">Canada.ca</a><a href="https://www.canada.ca/en.html">AI</a></div> */}
         <GcdsBreadcrumbs slot="breadcrumb">
-          {/* <GcdsBreadcrumbsItem href="https://www.canada.ca/en.html">AI</GcdsBreadcrumbsItem> */}
+           <GcdsBreadcrumbsItem href="https://test.canada.ca/wayfinding-orientation-2023/ai/answered.html">AI</GcdsBreadcrumbsItem> 
         </GcdsBreadcrumbs>
       </GcdsHeader>
 

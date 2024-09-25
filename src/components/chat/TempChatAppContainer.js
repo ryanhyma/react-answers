@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef} from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
+import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
 
 const TempChatAppContainer = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const textareaRef = useRef(null);
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
+  };
+  const clearInput = () => {
+    setInputText('');
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+    }
   };
 
   const handleSendMessage = async () => {
     if (inputText.trim() !== '') {
       setMessages([...messages, { text: inputText, sender: 'user' }]);
-      setInputText('');
+      clearInput();
       setIsLoading(true);
-      
+
       try {
         const response = await ClaudeService.sendMessage(inputText);
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai' }]);
@@ -24,6 +32,7 @@ const TempChatAppContainer = () => {
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
       } finally {
         setIsLoading(false);
+        clearInput(); // Clear input again after response, just in case
       }
     }
   };
@@ -33,20 +42,25 @@ const TempChatAppContainer = () => {
       <div className="message-list">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
-            {message.text}
+            <p>{message.text}</p>
           </div>
         ))}
         {isLoading && <div className="message ai">Thinking...</div>}
       </div>
-      <div className="input-area">
-        <input
-          type="text"
+      <div className="input-area mt-400" >
+        <GcdsTextarea
+          textareaId="textarea-props"
           value={inputText}
-          onChange={handleInputChange}
-          placeholder="Ask a Canada.ca question"
+          label="Ask a Canada.ca question"
+          name="textarea-name"
+          rows="2"
+          hint="Hint: add details about your situation"
+          onInput={handleInputChange}
           disabled={isLoading}
-        />
-        <button onClick={handleSendMessage} disabled={isLoading}>Send</button>
+          ref={textareaRef}
+        >
+        </GcdsTextarea>
+        <GcdsButton onClick={handleSendMessage} disabled={isLoading}>Send</GcdsButton>
       </div>
     </div>
   );

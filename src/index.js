@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css'
+import '@cdssnc/gcds-utility/dist/gcds-utility.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

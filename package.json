@@ -7,6 +7,7 @@
     "@anthropic-ai/sdk": "^0.27.3",
     "@cdssnc/gcds-components": "^0.26.1",
     "@cdssnc/gcds-components-react": "^0.26.1",
+    "@cdssnc/gcds-utility": "^1.4.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
