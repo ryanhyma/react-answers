@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "https://api.anthropic.com",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.3",
     "@cdssnc/gcds-components": "^0.26.1",
     "@cdssnc/gcds-components-react": "^0.26.1",
     "@testing-library/jest-dom": "^5.17.0",

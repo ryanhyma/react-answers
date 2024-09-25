@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import claudeService from '../../services/ClaudeService.js';
+import ClaudeService from '../../services/ClaudeService.js';
 
 const TempChatAppContainer = () => {
   const [messages, setMessages] = useState([]);
@@ -17,9 +17,10 @@ const TempChatAppContainer = () => {
       setIsLoading(true);
       
       try {
-        const response = await claudeService.sendMessage(inputText);
+        const response = await ClaudeService.sendMessage(inputText);
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai' }]);
       } catch (error) {
+        console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
       } finally {
         setIsLoading(false);
