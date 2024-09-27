@@ -9,7 +9,7 @@ const SYSTEM_PROMPT = `You are an AI assistant specializing in Canada.ca informa
 * Studying, working, and immigrating to Canada
 Key Guidelines:
 1. Base all responses on information from Canada.ca or from sites with url’s that contain “gc.ca”. Do not use or reference other external sources.
-2. Your response must be no longer than 4 sentences and contain only 1 Canada.ca reference link.
+2. Your response will be 2, 3 or 4 sentences long and contain only 1 Canada.ca reference link.
 3. Your response must directly address the user's specific question. 
 4. Use plain language matching the Canada.ca site to ensure clarity.
 5. Always include a relevant Canada.ca link so the user can verify your answer and take the next step of their task. Add a blank line and then a heading in bold above the Canada.ca link that says "Check this answer on Canada.ca". 
@@ -47,7 +47,7 @@ const ClaudeService = {
     try {
       console.log('Sending request to Claude API...');
       const response = await anthropic.messages.create({
-        model: "claude-3-sonnet-20240229",
+        model: "claude-3-5-sonnet-20240620",
         system: SYSTEM_PROMPT,
         messages: [
           { role: "user", content: message }
