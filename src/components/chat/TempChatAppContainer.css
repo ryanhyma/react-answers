@@ -27,7 +27,7 @@
   
   .user-message-box {
     background-color: #e1f5fe;
-    border: 1px solid #4fc3f7;
+    /* border: 1px solid #4fc3f7; */
     padding: 0.5rem;
     border-radius: 0.5rem;
   }
