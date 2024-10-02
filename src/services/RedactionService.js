@@ -18,7 +18,7 @@ const redactText = (text) => {
     const matches = text.match(pattern);
     if (matches) {
       matches.forEach(match => {
-        redactedText = redactedText.replace(match, `[REDACTED ${type.toUpperCase()}]`);
+        redactedText = redactedText.replace(match, `[XXX ${type.toUpperCase()}]`);
         redactedItems.push({ type, value: match });
       });
     }
