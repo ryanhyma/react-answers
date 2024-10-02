@@ -83,3 +83,13 @@
       padding: 0.5rem;
     }
   }
+  .redacted-message {
+    color: #888;
+    font-style: italic;
+  }
+  
+  .redacted-preview {
+    margin-top: 10px;
+    font-style: italic;
+    color: #888;
+  }
