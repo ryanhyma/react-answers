@@ -16,7 +16,7 @@ function App() {
       </GcdsHeader>
 
       {/* <main> */}
-      <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
+      <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
 

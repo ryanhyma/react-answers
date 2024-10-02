@@ -1,101 +1,115 @@
 .chat-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Add this new rule to reset any potential inherited margins */
+.chat-container > * {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message {
+  max-width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.message.user {
+  align-self: flex-end;
+}
+
+.message.ai {
+  align-self: flex-start;
+}
+
+.user-message-box {
+  background-color: #e1f5fe;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.user-message-box.redacted-box {
+  background-color: #ffebee; /* Light pink background */
+  border: 2px solid #ef5350; /* Red border */
+}
+
+.redacted-message {
+  color: #d32f2f; /* Darker red text for redacted content */
+  font-style: italic;
+}
+
+.redacted-preview {
+  margin-top: 10px;
+  font-style: italic;
+  color: #888;
+}
+
+.ai-message-content {
+  background-color: #f1f3f4;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.ai-sentence {
+  margin-bottom: 0.5rem;
+}
+
+.citation-link {
+  margin-top: 1rem;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.citation-link a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.citation-link a:hover {
+  text-decoration: underline;
+}
+
+.follow-up-prompt {
+  margin-top: 1rem;
+  font-style: italic;
+  color: #555;
+}
+
+.input-area {
+  margin-top: 1rem;
+  width: 100%; /* Ensure full width */
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .chat-container {
+    padding: 0.5rem;
   }
-  
-  .message-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
+
   .message {
     max-width: 100%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
+    padding: 0.5rem 0;
   }
-  
-  .message.user {
-    align-self: flex-end;
-  }
-  
-  .message.ai {
-    align-self: flex-start;
-  }
-  
-  .user-message-box {
-    background-color: #e1f5fe;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-  }
-  
-  .user-message-box.redacted-box {
-    background-color: #ffebee; /* Light pink background */
-    border: 2px solid #ef5350; /* Red border */
-  }
-  
-  .redacted-message {
-    color: #d32f2f; /* Darker red text for redacted content */
-    font-style: italic;
-  }
-  
-  .redacted-preview {
-    margin-top: 10px;
-    font-style: italic;
-    color: #888;
-  }
-  
+
+  .user-message-box,
   .ai-message-content {
-    background-color: #f1f3f4;
     padding: 0.5rem;
-    border-radius: 0.5rem;
   }
-  
-  .ai-sentence {
-    margin-bottom: 0.5rem;
+}
+
+/* New media query for larger screens */
+@media (min-width: 769px) {
+  .chat-container {
+    padding-left: 0;
+    padding-right: 0;
   }
-  
-  .citation-link {
-    margin-top: 1rem;
-    font-size: 0.9em;
-    word-break: break-all;
-  }
-  
-  .citation-link a {
-    color: #0066cc;
-    text-decoration: none;
-  }
-  
-  .citation-link a:hover {
-    text-decoration: underline;
-  }
-  
-  .follow-up-prompt {
-    margin-top: 1rem;
-    font-style: italic;
-    color: #555;
-  }
-  
-  .input-area {
-    margin-top: 1rem;
-  }
-  
-  /* Media query for mobile devices */
-  @media (max-width: 768px) {
-    .chat-container {
-      padding: 0.5rem;
-    }
-  
-    .message {
-      max-width: 100%;
-      padding: 0.5rem 0;
-    }
-  
-    .user-message-box,
-    .ai-message-content {
-      padding: 0.5rem;
-    }
-  }
- 
+}

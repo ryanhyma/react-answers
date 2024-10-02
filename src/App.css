@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+.chat-app-wrapper {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
