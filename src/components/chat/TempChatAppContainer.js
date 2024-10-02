@@ -61,8 +61,8 @@ const TempChatAppContainer = () => {
 
   // Function to format the AI response by splitting into sentences and handling citations
     const formatAIResponse = (text) => {
-    // Updated regex to match canada.ca (including subdomains) and gc.ca URLs
-    const citationRegex = /(https?:\/\/(?:[a-zA-Z0-9-]+\.)*(?:canada\.ca|gc\.ca)\/[^\s]+)/;
+   // Updated regex to match canada.ca and gc.ca URLs, including subdomains like benefitsfinder.services.gc.ca
+   const citationRegex = /https?:\/\/(?:[a-zA-Z0-9-]+\.)*(?:canada\.ca|(?:[a-zA-Z0-9-]+\.)*gc\.ca)(?:\/[^\s.,;]*)?/g;
    
     const citationMatch = text.match(citationRegex);
 
@@ -112,7 +112,7 @@ const TempChatAppContainer = () => {
                   <>
                     <p className="redacted-message">{message.redactedText}</p>
                     <p className="redacted-preview">
-                      Some personal details were removed to protect your privacy from the AI service.
+                      Personal details were replaced with XXX to protect your privacy from the AI service.
                     </p>
                   </>
                 ) : (
