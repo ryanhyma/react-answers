@@ -101,6 +101,8 @@ const TempChatAppContainer = () => {
     );
   };
 
+  const privacyMessage = "To protect your privacy, personal details were replaced with XXX.";
+
   return (
     <div className="chat-container">
       <div className="message-list">
@@ -108,15 +110,13 @@ const TempChatAppContainer = () => {
           <div key={index} className={`message ${message.sender}`}>
             {message.sender === 'user' ? (
               <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
-                {message.redactedItems && message.redactedItems.length > 0 ? (
-                  <>
-                    <p className="redacted-message">{message.redactedText}</p>
-                    <p className="redacted-preview">
-                      Personal details were replaced with XXX to protect your privacy from the AI service.
-                    </p>
-                  </>
-                ) : (
-                  <p>{message.text}</p>
+                <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
+                  {message.redactedText}
+                </p>
+                {message.redactedItems && message.redactedItems.length > 0 && (
+                  <p className="redacted-preview">
+                    {privacyMessage}
+                  </p>
                 )}
               </div>
             ) : (
@@ -143,5 +143,4 @@ const TempChatAppContainer = () => {
     </div>
   );
 };
-
 export default TempChatAppContainer;

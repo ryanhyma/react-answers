@@ -8,10 +8,10 @@ function App() {
   return (
     <>
       <GcdsHeader
-       langHref="#"
-       skipToHref="#">
+        langHref="#"
+        skipToHref="#">
         <GcdsBreadcrumbs slot="breadcrumb">
-           <GcdsBreadcrumbsItem href="https://test.canada.ca/wayfinding-orientation-2023/ai/answered.html">AI</GcdsBreadcrumbsItem> 
+          <GcdsBreadcrumbsItem href="https://test.canada.ca/wayfinding-orientation-2023/ai/answered.html">AI</GcdsBreadcrumbsItem>
         </GcdsBreadcrumbs>
       </GcdsHeader>
 
@@ -20,16 +20,15 @@ function App() {
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
 
-        <p className='mb-400'>To protect your privacy, names, numbers and addresses aren't accepted and will display as
-          an <strong>X</strong>. AI can make mistakes - always use the link provided in your answer. Learn more
+        <GcdsText className='mb-400'>To protect your privacy, names, numbers and addresses aren't accepted and will display as
+          an <strong>X</strong>. </GcdsText>
+        <GcdsText> AI can make mistakes - always use the link provided in your answer. Learn more
           at <a href="https://test.canada.ca/wayfinding-orientation-2023/ai/answers.html">About AI Answers</a>
-        </p>
-
-
+        </GcdsText>
         <TempChatAppContainer />
       </GcdsContainer>
       <GcdsContainer size="sm" centered className="mb-600">
-               <GcdsDetails detailsTitle='Privacy and AI terms of use' className='mb-400'>
+        <GcdsDetails detailsTitle='Privacy and AI terms of use' className='mb-400'>
           <GcdsText>
             We may store your questions to improve system performance. Any
             personal information you enter will be deleted upon detection and won't be stored.
@@ -46,7 +45,7 @@ function App() {
             and any information generated is also subject to the <GcdsLink
               href="https://www.canada.ca/en/transparency/terms.html">Canada.ca Terms and conditions.</GcdsLink>
           </GcdsText>
-        </GcdsDetails> 
+        </GcdsDetails>
       </GcdsContainer>
       {/* </main> */}
       <GcdsFooter display='full'></GcdsFooter>
