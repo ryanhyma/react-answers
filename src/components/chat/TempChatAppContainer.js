@@ -53,9 +53,10 @@ const TempChatAppContainer = () => {
   }, [isLoading, messages]);
 
   // Function to format the AI response by splitting into sentences and handling citations
-  const formatAIResponse = (text) => {
-    // Regular expression to match the citation link
-    const citationRegex = /(https:\/\/www\.canada\.ca\/[^\s]+)/;
+    const formatAIResponse = (text) => {
+    // Updated regex to match canada.ca (including subdomains) and gc.ca URLs
+    const citationRegex = /(https?:\/\/(?:[a-zA-Z0-9-]+\.)*(?:canada\.ca|gc\.ca)\/[^\s]+)/;
+   
     const citationMatch = text.match(citationRegex);
 
     let mainContent, citationLink, followUpPrompt;
