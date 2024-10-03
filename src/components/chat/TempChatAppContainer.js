@@ -27,13 +27,13 @@ const TempChatAppContainer = () => {
     if (inputText.trim() !== '') {
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
-      
-       // Add user message to the chat
-       setMessages(prevMessages => [...prevMessages, { 
-        text: userMessage, 
+
+      // Add user message to the chat
+      setMessages(prevMessages => [...prevMessages, {
+        text: userMessage,
         redactedText: redactedText,
         redactedItems: redactedItems,
-        sender: 'user' 
+        sender: 'user'
       }]);
       clearInput();
       setIsLoading(true);
@@ -59,44 +59,44 @@ const TempChatAppContainer = () => {
     }
   }, [isLoading, messages]);
 
-  // Function to format the AI response by splitting into sentences and handling citations
-    const formatAIResponse = (text) => {
-   // Updated regex to match canada.ca and gc.ca URLs, including subdomains like benefitsfinder.services.gc.ca
-   const citationRegex = /https?:\/\/(?:[a-zA-Z0-9-]+\.)*(?:canada\.ca|(?:[a-zA-Z0-9-]+\.)*gc\.ca)(?:\/[^\s.,;]*)?/g;
-   
-    const citationMatch = text.match(citationRegex);
-
-    let mainContent, citationLink, followUpPrompt;
-
-    if (citationMatch) {
-      // Split the text into parts: main content, citation link, and follow-up prompt
-      const parts = text.split(citationMatch[0]);
-      mainContent = parts[0].trim();
-      citationLink = citationMatch[0];
-      followUpPrompt = parts[1] ? parts[1].trim() : '';
+  const formatAIResponse = (text) => {
+    // Regular expressions for matching citation head and URL
+    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
+    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
+  
+    // Extract citation head and URL if present
+    const headMatch = text.match(citationHeadRegex);
+    const urlMatch = text.match(citationUrlRegex);
+  
+    let mainContent, citationHead, citationUrl;
+  
+    if (headMatch && urlMatch) {
+      // Remove the citation head and URL from the main content
+      mainContent = text.replace(citationHeadRegex, '').replace(citationUrlRegex, '').trim();
+      citationHead = headMatch[1];
+      citationUrl = urlMatch[1];
     } else {
       mainContent = text;
     }
-
+  
     // Split the main content into sentences
     const sentences = mainContent.split(/(?<=[.!?])\s+/);
-
+  
     return (
       <div className="ai-message-content">
-        {/* Render each sentence as a separate paragraph */}
         {sentences.map((sentence, index) => (
           <p key={index} className="ai-sentence">{sentence}</p>
         ))}
-        {/* Render the citation link if it exists */}
-        {citationLink && (
-          <p className="citation-link">
-            <a href={citationLink} target="_blank" rel="noopener noreferrer">
-              {citationLink}
-            </a>
-          </p>
+        {citationHead && citationUrl && (
+          <>
+            <p className="citation-head">{citationHead}</p>
+            <p className="citation-link">
+              <a href={citationUrl} target="_blank" rel="noopener noreferrer">
+                {citationUrl}
+              </a>
+            </p>
+          </>
         )}
-        {/* Render the follow-up prompt if it exists */}
-        {followUpPrompt && <p className="follow-up-prompt">{followUpPrompt}</p>}
       </div>
     );
   };
