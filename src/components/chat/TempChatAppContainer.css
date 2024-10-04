@@ -38,23 +38,23 @@
 }
 
 .user-message-box.redacted-box {
-  background-color: #ffebee; /* Light pink background */
-  border: 2px solid #ef5350; /* Red border */
+  background-color: #ffff; 
+  border: 2px solid #710402; /* Red border */
 }
 
 .redacted-message {
-  color: #d32f2f; /* Darker red text for redacted content */
-  font-style: italic;
+  color: #3b0202; /* Darker red text for redacted content */
+  /* font-style: italic; */
 }
 
 .redacted-preview {
   margin-top: 10px;
   font-style: italic;
-  color: #888;
+  /* color: #060606; */
 }
 
 .ai-message-content {
-  background-color: #f1f3f4;
+  background-color: #f1f4f4;
   padding: 0.5rem;
   border-radius: 0.5rem;
 }

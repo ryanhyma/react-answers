@@ -2,33 +2,73 @@ import React, { useState, useEffect } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import RedactionService from '../../services/RedactionService.js';
 import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
-import './TempChatAppContainer.css'; // Import the CSS file for styling
+import './TempChatAppContainer.css';
 
 const TempChatAppContainer = () => {
-  // State variables
-  const [messages, setMessages] = useState([]); // Stores all chat messages
-  const [inputText, setInputText] = useState(''); // Stores current input text
-  const [isLoading, setIsLoading] = useState(false); // Indicates if waiting for AI response
-  const [textareaKey, setTextareaKey] = useState(0); // Used to force re-render of textarea
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [textareaKey, setTextareaKey] = useState(0);
 
-  // Handler for input changes in the textarea
   const handleInputChange = (e) => {
     setInputText(e.target.value);
   };
 
-  // Function to clear input and force textarea re-render
   const clearInput = () => {
     setInputText('');
-    setTextareaKey(prevKey => prevKey + 1); // Incrementing key forces re-render
+    setTextareaKey(prevKey => prevKey + 1);
   };
 
-  // Function to handle sending a message
+  const parseAIResponse = (text) => {
+    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
+    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
+    
+    const headMatch = text.match(citationHeadRegex);
+    const urlMatch = text.match(citationUrlRegex);
+    
+    let mainContent, citationHead, citationUrl;
+    
+    if (headMatch && urlMatch) {
+      mainContent = text.replace(citationHeadRegex, '').replace(citationUrlRegex, '').trim();
+      citationHead = headMatch[1];
+      citationUrl = urlMatch[1];
+    } else {
+      mainContent = text;
+    }
+    
+    const sentences = mainContent.split(/(?<=[.!?])\s+/);
+    
+    return { sentences, citationHead, citationUrl };
+  };
+
+  const logInteraction = (originalQuestion, redactedQuestion, aiResponse) => {
+    const { sentences, citationHead, citationUrl } = parseAIResponse(aiResponse);
+    
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      originalQuestion,
+      redactedQuestion,
+      aiResponse: {
+        sentences,
+        citationHead,
+        citationUrl
+      }
+    };
+    
+    // Log to console
+    console.log('Chat Interaction:', logEntry);
+
+    // Store in localStorage
+    const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
+    storedLogs.push(logEntry);
+    localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
+  };
+
   const handleSendMessage = async () => {
     if (inputText.trim() !== '') {
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
-      // Add user message to the chat
       setMessages(prevMessages => [...prevMessages, {
         text: userMessage,
         redactedText: redactedText,
@@ -39,10 +79,11 @@ const TempChatAppContainer = () => {
       setIsLoading(true);
 
       try {
-        // Send redacted message to Claude and get response
         const response = await ClaudeService.sendMessage(redactedText);
-        // Add Claude's response to the chat
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai' }]);
+        
+        // Log the interaction
+        logInteraction(userMessage, redactedText, response);
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
@@ -52,7 +93,6 @@ const TempChatAppContainer = () => {
     }
   };
 
-  // Effect to clear input after Claude responds
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
       clearInput();
@@ -60,27 +100,7 @@ const TempChatAppContainer = () => {
   }, [isLoading, messages]);
 
   const formatAIResponse = (text) => {
-    // Regular expressions for matching citation head and URL
-    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
-    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-  
-    // Extract citation head and URL if present
-    const headMatch = text.match(citationHeadRegex);
-    const urlMatch = text.match(citationUrlRegex);
-  
-    let mainContent, citationHead, citationUrl;
-  
-    if (headMatch && urlMatch) {
-      // Remove the citation head and URL from the main content
-      mainContent = text.replace(citationHeadRegex, '').replace(citationUrlRegex, '').trim();
-      citationHead = headMatch[1];
-      citationUrl = urlMatch[1];
-    } else {
-      mainContent = text;
-    }
-  
-    // Split the main content into sentences
-    const sentences = mainContent.split(/(?<=[.!?])\s+/);
+    const { sentences, citationHead, citationUrl } = parseAIResponse(text);
   
     return (
       <div className="ai-message-content">
@@ -143,4 +163,5 @@ const TempChatAppContainer = () => {
     </div>
   );
 };
+
 export default TempChatAppContainer;
