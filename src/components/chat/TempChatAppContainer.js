@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import RedactionService from '../../services/RedactionService.js';
-import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
+import { GcdsTextarea, GcdsButton} from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 
 const TempChatAppContainer = () => {
@@ -22,12 +22,12 @@ const TempChatAppContainer = () => {
   const parseAIResponse = (text) => {
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-    
+
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
-    
+
     let mainContent, citationHead, citationUrl;
-    
+
     if (headMatch && urlMatch) {
       mainContent = text.replace(citationHeadRegex, '').replace(citationUrlRegex, '').trim();
       citationHead = headMatch[1];
@@ -35,15 +35,15 @@ const TempChatAppContainer = () => {
     } else {
       mainContent = text;
     }
-    
+
     const sentences = mainContent.split(/(?<=[.!?])\s+/);
-    
+
     return { sentences, citationHead, citationUrl };
   };
 
   const logInteraction = (originalQuestion, redactedQuestion, aiResponse) => {
     const { sentences, citationHead, citationUrl } = parseAIResponse(aiResponse);
-    
+
     const logEntry = {
       timestamp: new Date().toISOString(),
       originalQuestion,
@@ -54,7 +54,7 @@ const TempChatAppContainer = () => {
         citationUrl
       }
     };
-    
+
     // Log to console
     console.log('Chat Interaction:', logEntry);
 
@@ -81,7 +81,7 @@ const TempChatAppContainer = () => {
       try {
         const response = await ClaudeService.sendMessage(redactedText);
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai' }]);
-        
+
         // Log the interaction
         logInteraction(userMessage, redactedText, response);
       } catch (error) {
@@ -101,21 +101,21 @@ const TempChatAppContainer = () => {
 
   const formatAIResponse = (text) => {
     const { sentences, citationHead, citationUrl } = parseAIResponse(text);
-  
+
     return (
       <div className="ai-message-content">
         {sentences.map((sentence, index) => (
           <p key={index} className="ai-sentence">{sentence}</p>
         ))}
         {citationHead && citationUrl && (
-          <>
+          <div className="citation-container">
             <p className="citation-head">{citationHead}</p>
             <p className="citation-link">
               <a href={citationUrl} target="_blank" rel="noopener noreferrer">
                 {citationUrl}
               </a>
             </p>
-          </>
+          </div>
         )}
       </div>
     );

@@ -63,21 +63,29 @@
   margin-bottom: 0.5rem;
 }
 
-.citation-link {
-  margin-top: 1rem;
-  font-size: 0.9em;
-  word-break: break-all;
-}
-
-.citation-link a {
-  color: #0066cc;
-  text-decoration: none;
-}
-
-.citation-link a:hover {
-  text-decoration: underline;
-}
-
+citation-container {
+    border: 2px solid #4a3f9f;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 1rem;
+  }
+  
+  .citation-head {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .citation-link {
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+  
+  .citation-link a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+  
+  
 .follow-up-prompt {
   margin-top: 1rem;
   font-style: italic;

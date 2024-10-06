@@ -22,7 +22,7 @@ function App() {
 
         <GcdsText className='mb-400'>To protect your privacy, names, numbers and addresses aren't accepted and will display as
           an <strong>X</strong>. </GcdsText>
-        <GcdsText> AI can make mistakes - always use the link provided in your answer. Learn more
+        <GcdsText> AI can make mistakes - always use the link provided in your answer or try your Canada.ca question again. AI Answers is using Anthropic Claude 3.5, training ended in June 2024.  Learn more
           at <a href="https://test.canada.ca/wayfinding-orientation-2023/ai/answers.html">About AI Answers</a>
         </GcdsText>
         <TempChatAppContainer />
