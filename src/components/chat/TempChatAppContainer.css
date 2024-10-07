@@ -85,6 +85,11 @@ citation-container {
     text-decoration: underline;
   }
   
+  .confidence-rating {
+    font-style: italic;
+    color: #666;
+    margin-top: 0.5rem;
+  }
   
 .follow-up-prompt {
   margin-top: 1rem;

@@ -22,23 +22,33 @@ const TempChatAppContainer = () => {
   const parseAIResponse = (text) => {
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
+    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
 
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
+    const confidenceMatch = text.match(confidenceRatingRegex);
 
-    let mainContent, citationHead, citationUrl;
+    let mainContent, citationHead, citationUrl, confidenceRating;
 
-    if (headMatch && urlMatch) {
-      mainContent = text.replace(citationHeadRegex, '').replace(citationUrlRegex, '').trim();
-      citationHead = headMatch[1];
+    if (urlMatch) {
+      mainContent = text
+        .replace(citationHeadRegex, '')
+        .replace(citationUrlRegex, '')
+        .replace(confidenceRatingRegex, '')
+        .trim();
+      citationHead = headMatch ? headMatch[1] : null;
       citationUrl = urlMatch[1];
+      confidenceRating = confidenceMatch ? confidenceMatch[1] : null;
     } else {
       mainContent = text;
+      citationHead = null;
+      citationUrl = null;
+      confidenceRating = null;
     }
 
     const sentences = mainContent.split(/(?<=[.!?])\s+/);
 
-    return { sentences, citationHead, citationUrl };
+    return { sentences, citationHead, citationUrl, confidenceRating };
   };
 
   const logInteraction = (originalQuestion, redactedQuestion, aiResponse) => {
@@ -100,7 +110,7 @@ const TempChatAppContainer = () => {
   }, [isLoading, messages]);
 
   const formatAIResponse = (text) => {
-    const { sentences, citationHead, citationUrl } = parseAIResponse(text);
+    const { sentences, citationHead, citationUrl, confidenceRating } = parseAIResponse(text);
 
     return (
       <div className="ai-message-content">
@@ -115,6 +125,7 @@ const TempChatAppContainer = () => {
                 {citationUrl}
               </a>
             </p>
+            {confidenceRating && <p className="confidence-rating">Confidence rating: {confidenceRating}</p>}
           </div>
         )}
       </div>
