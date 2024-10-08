@@ -130,20 +130,23 @@ const TempChatAppContainer = () => {
             return <p key={index} className="ai-paragraph">{paragraph}</p>;
           }
         })}
-        {citationHead && citationUrl && (
+        {(citationHead || citationUrl || confidenceRating) && (
           <div className="citation-container">
-            <p className="citation-head">{citationHead}</p>
-            <p className="citation-link">
-              <a href={citationUrl} target="_blank" rel="noopener noreferrer">
-                {citationUrl}
-              </a>
-            </p>
+            {citationHead && <p className="citation-head">{citationHead}</p>}
+            {citationUrl && (
+              <p className="citation-link">
+                <a href={citationUrl} target="_blank" rel="noopener noreferrer">
+                  {citationUrl}
+                </a>
+              </p>
+            )}
             {confidenceRating && <p className="confidence-rating">Confidence rating: {confidenceRating}</p>}
           </div>
         )}
       </div>
     );
   };
+  
 
   const privacyMessage = "To protect your privacy, personal details were replaced with XXX.";
 

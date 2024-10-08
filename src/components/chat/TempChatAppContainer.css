@@ -1,11 +1,9 @@
 .chat-container {
   width: 100%;
   max-width: 800px;
-  /* margin: 0 auto; */
   padding: 1rem;
 }
 
-/* Add this new rule to reset any potential inherited margins */
 .chat-container > * {
   margin-left: 0;
   margin-right: 0;
@@ -39,58 +37,70 @@
 
 .user-message-box.redacted-box {
   background-color: #ffff; 
-  border: 2px solid #710402; /* Red border */
+  border: 2px solid #710402;
 }
 
 .redacted-message {
-  color: #3b0202; /* Darker red text for redacted content */
-  /* font-style: italic; */
+  color: #3b0202;
 }
 
 .redacted-preview {
   margin-top: 10px;
   font-style: italic;
-  /* color: #060606; */
 }
 
 .ai-message-content {
   background-color: #f1f4f4;
   padding: 0.5rem;
   border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
-.ai-sentence {
+.ai-paragraph, .ai-list-item {
+  margin: 0;
+}
+
+.ai-list-item {
+  display: flex;
+  align-items: flex-start;
+}
+
+.list-number {
+  flex-shrink: 0;
+  margin-right: 0.5em;
+  font-weight: bold;
+}
+
+.citation-container {
+  border: 2px solid #4a3f9f;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 1em;
+}
+
+.citation-head {
+  font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-citation-container {
-    border: 2px solid #4a3f9f;
-    border-radius: 4px;
-    padding: 10px;
-    margin-top: 1rem;
-  }
-  
-  .citation-head {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .citation-link {
-    font-size: 0.9em;
-    word-break: break-all;
-  }
-  
-  .citation-link a {
-    color: #0066cc;
-    text-decoration: underline;
-  }
-  
-  .confidence-rating {
-    font-style: italic;
-    color: #666;
-    margin-top: 0.5rem;
-  }
-  
+.citation-link {
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.citation-link a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.confidence-rating {
+  font-style: italic;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
 .follow-up-prompt {
   margin-top: 1rem;
   font-style: italic;
@@ -99,10 +109,9 @@ citation-container {
 
 .input-area {
   margin-top: 1rem;
-  width: 100%; /* Ensure full width */
+  width: 100%;
 }
 
-/* Media query for mobile devices */
 @media (max-width: 768px) {
   .chat-container {
     padding: 0.5rem;
@@ -119,21 +128,9 @@ citation-container {
   }
 }
 
-/* New media query for larger screens */
 @media (min-width: 769px) {
   .chat-container {
     padding-left: 0;
     padding-right: 0;
   }
-}
-.ai-list-item {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.5em;
-}
-
-.list-number {
-  flex-shrink: 0;
-  margin-right: 0.5em;
-  font-weight: bold;
 }
