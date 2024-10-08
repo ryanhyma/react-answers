@@ -20,11 +20,12 @@ function App() {
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
 
-        <GcdsText className='mb-400'>To protect your privacy, numbers and addresses aren't accepted and will display as <strong>XXX</strong>. </GcdsText>
-        <GcdsText> This proof of concept is for research purposes only.
+       
+        <GcdsText className='mb-400'> This proof of concept is for research purposes only.
         </GcdsText>
         <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>
-        <GcdsText>Development is still in progress - contact Lisa Fast for information. </GcdsText>  
+        <GcdsText>Development is still in progress - contact Lisa Fast for information. </GcdsText>
+        <GcdsText >To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service.  The removed text will display as <strong>XXX</strong>. </GcdsText>  
           <GcdsText>AI service: Anthropic Claude Sonnet 3.5</GcdsText>
           <GcdsText>Date data collection ended: June, 2024</GcdsText>     
         </GcdsDetails>

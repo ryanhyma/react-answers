@@ -148,7 +148,7 @@ const TempChatAppContainer = () => {
   };
   
 
-  const privacyMessage = "To protect your privacy, personal details were replaced with XXX.";
+  const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
 
   return (
     <div className="chat-container">
