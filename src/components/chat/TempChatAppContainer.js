@@ -178,7 +178,7 @@ const TempChatAppContainer = () => {
           label="Ask a Canada.ca question"
           name="textarea-name"
           rows="2"
-          hint="Hint: add details about your situation and check your answer."
+          hint="Hint: add details about your situation. Always check your answer."
           onInput={handleInputChange}
           disabled={isLoading}
         />

@@ -21,9 +21,10 @@ function App() {
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
 
         <GcdsText className='mb-400'>To protect your privacy, numbers and addresses aren't accepted and will display as <strong>XXX</strong>. </GcdsText>
-        <GcdsText> AI can make mistakes - always use the link provided in your answer or rephrase your question.
+        <GcdsText> This proof of concept is for research purposes only.
         </GcdsText>
         <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>
+        <GcdsText>Development is still in progress - contact Lisa Fast for information. </GcdsText>  
           <GcdsText>AI service: Anthropic Claude Sonnet 3.5</GcdsText>
           <GcdsText>Date data collection ended: June, 2024</GcdsText>     
         </GcdsDetails>
