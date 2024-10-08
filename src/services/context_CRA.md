@@ -10,8 +10,8 @@
 **Faster identity verification:** A document verification service is now available. When you register for the CRA sign-in services, you can use this option to verify your identity immediately instead of waiting up to 10 business days to get your CRA security code in the mail.
 
 **To sign in:** always use the same sign-in option you registered with. The sign-in options are:
--  CRA user ID and password
-- Interac sign-in partner if you bank online through a partner financial organization
+- CRA user ID and password
+- Interac sign-in partner
 - Provincial digital id for Alberta.ca or BC services caard
 
 **Signing in on behalf of someone else:** If you are signing in on behalf of someone else (including friends and family members) you must use Represent a Client to access their information.
