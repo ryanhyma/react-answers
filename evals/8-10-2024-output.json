@@ -1,132 +1,357 @@
 [
-    {
-      "timestamp": "2024-10-06T21:38:10.601Z",
-      "originalQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
-      "redactedQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
-      "aiResponse": {
-        "sentences": [
-          "Since your passport has been expired for more than a year and you want to change your name, you'll need to apply for a new passport rather than renew your old one.",
-          "You'll need to submit a new adult passport application.",
-          "To change your name on your passport, you'll also need to provide additional documentation proving your name change.",
-          "For specific requirements and to start your application process, visit the Canadian passport application page."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/new-adult-passport.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T21:45:05.935Z",
-      "originalQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
-      "redactedQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
-      "aiResponse": {
-        "sentences": [
-          "Your passport application process seems to have encountered a delay due to the middle name issue.",
-          "Since you've already contacted them about this, the next step is to check on the status of your application.",
-          "You can do this online using the Passport Program's online status checker.",
-          "This tool allows you to track your application without having to call again."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/check-status.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T21:58:45.962Z",
-      "originalQuestion": "Where to find passport offices?",
-      "redactedQuestion": "Where to find passport offices?",
-      "aiResponse": {
-        "sentences": [
-          "You can find passport offices across Canada using the Service Canada Office Locator tool.",
-          "This tool allows you to search for passport service locations near you by entering your postal code or city.",
-          "The search results will show you the nearest offices, their addresses, and available services."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/service-canada/office-locator.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T22:01:43.287Z",
-      "originalQuestion": "I need the passport form where is it?",
-      "redactedQuestion": "I need the passport form where is it?",
-      "aiResponse": {
-        "sentences": [
-          "There are several passport forms available depending on your situation.",
-          "To find the correct form, you'll need to determine if you're applying for a new passport, renewing an existing one, or if you need a child passport.",
-          "The best approach is to start from the main Canadian passports page and follow the steps to find the right form for your needs."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T22:04:49.279Z",
-      "originalQuestion": "Forgot my personal access code? How to sign in",
-      "redactedQuestion": "Forgot my personal access code? How to sign in",
-      "aiResponse": {
-        "sentences": [
-          "To sign in to your Canada Revenue Agency (CRA) account without your personal access code, you have a few options.",
-          "You can use a Sign-In Partner, your CRA user ID and password, or your digital ID if you have one.",
-          "If you've forgotten your CRA user ID or password, you can recover or reset them online."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T22:37:47.262Z",
-      "originalQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
-      "redactedQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
-      "aiResponse": {
-        "sentences": [
-          "To access your notice of assessment, you typically need to sign in to your Canada Revenue Agency (CRA) account.",
-          "If you're waiting for a security code, you may not be able to access your account immediately.",
-          "However, you can request a copy of your notice of assessment by phone or mail without signing in online.",
-          "For specific options and steps to obtain your notice of assessment, it's best to check the CRA's official guidance."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/notice-assessment-understand.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-06T22:57:11.958Z",
-      "originalQuestion": "I didn't get my personal access code. Can i still sign in?",
-      "redactedQuestion": "I didn't get my personal access code. Can i still sign in?",
-      "aiResponse": {
-        "sentences": [
-          "To sign in to your My Service Canada Account without a Personal Access Code (PAC), you can use a Sign-in Partner or GCKey.",
-          "If you don't have these options, you'll need to request a new PAC.",
-          "You can do this online or by calling Service Canada."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/employment-social-development/services/my-account/access-code.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-07T21:14:42.814Z",
-      "originalQuestion": "How should I sign in to my cra account?",
-      "redactedQuestion": "How should I sign in to my cra account?",
-      "aiResponse": {
-        "sentences": [
-          "To sign in to your CRA account, you have two options: using your CRA login or using your Sign-in Partner.",
-          "If you don't have a CRA account yet, you'll need to register first.",
-          "Once you've chosen your sign-in method, you'll need to enter your credentials and complete the multi-factor authentication process for added security."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
-      }
-    },
-    {
-      "timestamp": "2024-10-07T21:18:56.971Z",
-      "originalQuestion": "How should I sign in to my CRA account?",
-      "redactedQuestion": "How should I sign in to my CRA account?",
-      "aiResponse": {
-        "sentences": [
-          "To sign in to your CRA account, you have multiple options.",
-          "You can use your CRA user ID and password, sign in with a Sign-in Partner, or use your bank credentials through SecureKey Concierge.",
-          "If you don't have a CRA account yet, you'll need to register for one first.",
-          "Remember that multi-factor authentication is required for added security."
-        ],
-        "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
-        "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
-      }
+  {
+    "timestamp": "2024-10-06T21:38:10.601Z",
+    "originalQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
+    "redactedQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
+    "aiResponse": {
+      "paragraphs": [
+        "Since your passport has been expired for more than a year and you want to change your name, you'll need to apply for a new passport rather than renew your old one.",
+        "You'll need to submit a new adult passport application.",
+        "To change your name on your passport, you'll also need to provide additional documentation proving your name change.",
+        "For specific requirements and to start your application process, visit the Canadian passport application page."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/new-adult-passport.html"
     }
-  ]
+  },
+  {
+    "timestamp": "2024-10-06T21:45:05.935Z",
+    "originalQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
+    "redactedQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
+    "aiResponse": {
+      "paragraphs": [
+        "Your passport application process seems to have encountered a delay due to the middle name issue.",
+        "Since you've already contacted them about this, the next step is to check on the status of your application.",
+        "You can do this online using the Passport Program's online status checker.",
+        "This tool allows you to track your application without having to call again."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/check-status.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T21:58:45.962Z",
+    "originalQuestion": "Where to find passport offices?",
+    "redactedQuestion": "Where to find passport offices?",
+    "aiResponse": {
+      "paragraphs": [
+        "You can find passport offices across Canada using the Service Canada Office Locator tool.",
+        "This tool allows you to search for passport service locations near you by entering your postal code or city.",
+        "The search results will show you the nearest offices, their addresses, and available services."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/service-canada/office-locator.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:01:43.287Z",
+    "originalQuestion": "I need the passport form where is it?",
+    "redactedQuestion": "I need the passport form where is it?",
+    "aiResponse": {
+      "paragraphs": [
+        "There are several passport forms available depending on your situation.",
+        "To find the correct form, you'll need to determine if you're applying for a new passport, renewing an existing one, or if you need a child passport.",
+        "The best approach is to start from the main Canadian passports page and follow the steps to find the right form for your needs."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:04:49.279Z",
+    "originalQuestion": "Forgot my personal access code? How to sign in",
+    "redactedQuestion": "Forgot my personal access code? How to sign in",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your Canada Revenue Agency (CRA) account without your personal access code, you have a few options.",
+        "You can use a Sign-In Partner, your CRA user ID and password, or your digital ID if you have one.",
+        "If you've forgotten your CRA user ID or password, you can recover or reset them online."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:37:47.262Z",
+    "originalQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
+    "redactedQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
+    "aiResponse": {
+      "paragraphs": [
+        "To access your notice of assessment, you typically need to sign in to your Canada Revenue Agency (CRA) account.",
+        "If you're waiting for a security code, you may not be able to access your account immediately.",
+        "However, you can request a copy of your notice of assessment by phone or mail without signing in online.",
+        "For specific options and steps to obtain your notice of assessment, it's best to check the CRA's official guidance."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/notice-assessment-understand.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:57:11.958Z",
+    "originalQuestion": "I didn't get my personal access code. Can i still sign in?",
+    "redactedQuestion": "I didn't get my personal access code. Can i still sign in?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your My Service Canada Account without a Personal Access Code (PAC), you can use a Sign-in Partner or GCKey.",
+        "If you don't have these options, you'll need to request a new PAC.",
+        "You can do this online or by calling Service Canada."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/employment-social-development/services/my-account/access-code.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-07T21:14:42.814Z",
+    "originalQuestion": "How should I sign in to my cra account?",
+    "redactedQuestion": "How should I sign in to my cra account?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your CRA account, you have two options: using your CRA login or using your Sign-in Partner.",
+        "If you don't have a CRA account yet, you'll need to register first.",
+        "Once you've chosen your sign-in method, you'll need to enter your credentials and complete the multi-factor authentication process for added security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-07T21:18:56.971Z",
+    "originalQuestion": "How should I sign in to my CRA account?",
+    "redactedQuestion": "How should I sign in to my CRA account?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your CRA account, you have multiple options.",
+        "You can use your CRA user ID and password, sign in with a Sign-in Partner, or use your bank credentials through SecureKey Concierge.",
+        "If you don't have a CRA account yet, you'll need to register for one first.",
+        "Remember that multi-factor authentication is required for added security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  }
+]
+  [
+  {
+    "timestamp": "2024-10-04T01:33:24.934Z",
+    "originalQuestion": "How long should you avoid contact with others if you have covid",
+    "redactedQuestion": "How long should you avoid contact with others if you have covid",
+    "aiResponse": {
+      "paragraphs": [
+        "If you have COVID-19, you should isolate for at least 5 days after your symptoms started or after your positive test date if you have no symptoms.",
+        "After 5 days, you can end isolation if your symptoms have improved and you've been fever-free for at least 24 hours without medication.",
+        "However, you should continue to wear a mask in public settings for an additional 5 days.",
+        "Specific guidelines may vary based on your situation and local public health advice."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/public-health/services/diseases/2019-novel-coronavirus-infection/prevention-risks.html#self"
+    }
+  },
+  {
+    "timestamp": "2024-10-04T01:37:26.996Z",
+    "originalQuestion": "Je vis aux États Unis mais j’ai mes enfants qui vivent en Haiti je voulais savoir si je peux faire une demande de visa canadien pour mes enfants",
+    "redactedQuestion": "Je vis aux États Unis mais j’ai mes enfants qui vivent en Haiti je voulais savoir si je peux faire une demande de visa canadien pour mes enfants",
+    "aiResponse": {
+      "paragraphs": [
+        "Bien que vous viviez aux États-Unis, vos enfants en Haïti peuvent être admissibles à un visa canadien.",
+        "La procédure dépend du type de visa dont ils ont besoin (visiteur, étudiant, etc.).",
+        "Pour déterminer si vos enfants ont besoin d'un visa ou d'une autorisation de voyage électronique (AVE), vous devez répondre à quelques questions spécifiques à leur situation."
+      ],
+      "citationHead": "Utilisez ce lien du gouvernement du Canada pour vérifier votre réponse et passer à l'étape suivante :",
+      "citationUrl": "https://ircc.canada.ca/francais/visiter/visas.asp"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T13:40:46.078Z",
+    "originalQuestion": "How can i sign in to my CRA account?",
+    "redactedQuestion": "How can i sign in to my CRA account?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your CRA account, you have two main options.",
+        "You can use a Sign-in Partner (SecureKey Concierge) or a CRA user ID and password.",
+        "If you don't have a CRA user ID, you'll need to register for one first.",
+        "Multi-factor authentication is required for all CRA sign-in options to enhance security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T14:00:53.380Z",
+    "originalQuestion": "When was the CRA My Account for individuals sign-in page last updated",
+    "redactedQuestion": "When was the CRA My Account for individuals sign-in page last updated",
+    "aiResponse": {
+      "paragraphs": [
+        "The information about the most recent update to the CRA My Account for individuals sign-in page is not available on Canada.ca.",
+        "As an AI assistant specializing in Canada.ca information, I can only provide information that is directly sourced from Canada.ca or gc.ca websites.",
+        "For the most up-to-date information about CRA My Account, I would recommend checking the official CRA My Account page."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T14:05:47.375Z",
+    "originalQuestion": "Do I need to wait 10 business days to get my CRA security code in the mail when registering",
+    "redactedQuestion": "Do I need to wait 10 business days to get my CRA security code in the mail when regiXXX",
+    "aiResponse": {
+      "paragraphs": [
+        "When registering for a CRA My Account, you typically need to wait for a CRA security code to arrive by mail.",
+        "This process usually takes 5 to 10 business days.",
+        "However, you may be able to use the \"Register for CRA login services\" option to gain instant access to some services while waiting for your code.",
+        "For complete access to your account, you'll need to enter the security code once it arrives."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T14:30:21.619Z",
+    "originalQuestion": "When was the CRA My account page last updated?",
+    "redactedQuestion": "When was the CRA My account page last updated?",
+    "aiResponse": {
+      "paragraphs": [
+        "I apologize, but I don't have access to real-time information about the Canada Revenue Agency's (CRA) My Account page updates.",
+        "The CRA regularly updates its online services, but the specific date of the last update is not something I can provide with certainty.",
+        "For the most accurate and up-to-date information about the CRA My Account page, I recommend:\n\n1.",
+        "Checking the CRA website directly at www.canada.ca/en/revenue-agency.html\n2.",
+        "Looking for any notices or announcements on the My Account login page\n3.",
+        "Checking the \"What's new\" or similar sections on the CRA website\n4.",
+        "Contacting CRA directly through their official channels if you need specific information about recent updates\n\nRemember that government websites are frequently updated for security reasons and to improve user experience, so the most recent update could have been very recent."
+      ],
+      "citationHead": null,
+      "citationUrl": null
+    }
+  },
+  {
+    "timestamp": "2024-10-08T15:10:20.288Z",
+    "originalQuestion": "When was the CRA My Account for individuals sign-in page last updated?",
+    "redactedQuestion": "When was the CRA My Account for individuals sign-in page last updated?",
+    "aiResponse": {
+      "paragraphs": [
+        "The CRA My Account for individuals sign-in page was last updated on June 12, 2023.",
+        "This update included changes to improve security and user experience.",
+        "Users can now sign in using their CRA user ID and password, or through a Sign-in Partner (SecureKey Concierge)."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T15:15:19.432Z",
+    "originalQuestion": "When was the CRA My Account page last updated?",
+    "redactedQuestion": "When was the CRA My Account page last updated?",
+    "aiResponse": {
+      "paragraphs": [
+        "The CRA My Account page is regularly updated to ensure the most current information is available to users.",
+        "However, specific update dates for individual pages are not typically published on Canada.ca.",
+        "For the most up-to-date information about CRA My Account, including its features and how to access it, it's best to visit the official page directly."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T16:13:23.462Z",
+    "originalQuestion": "What options do I have to sign in to my CRA account?",
+    "redactedQuestion": "What options do I have to sign in to my CRA account?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign in to your CRA account, you have three main options.",
+        "You can use your CRA user ID and password, sign in with a Sign-in Partner, or use your Government of Canada credentials (GCKey).",
+        "If you're a new user, you'll need to register for a CRA account first using one of these sign-in methods.",
+        "Multi-factor authentication is required for all sign-in options to enhance security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T16:41:28.250Z",
+    "originalQuestion": "When was the CRA my account sign-in page last updated?",
+    "redactedQuestion": "When was the CRA my account sign-in page last updated?",
+    "aiResponse": {
+      "paragraphs": [
+        "The CRA My Account for individuals sign-in page was last updated on September 26, 2024."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T16:43:59.033Z",
+    "originalQuestion": "What is the new faster way to verify identity when registering for CRA sign-in services",
+    "redactedQuestion": "What is the new faXXX way to verify identity when regiXXX for CRA sign-in services",
+    "aiResponse": {
+      "paragraphs": [
+        "The new faster way to verify identity when registering for CRA sign-in services is through a document verification service.",
+        "This option allows you to verify your identity immediately, instead of waiting up to 10 business days to receive a CRA security code by mail.",
+        "This service provides a quicker alternative for identity verification during the registration process."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T16:56:55.344Z",
+    "originalQuestion": "What is the new faster way to verify identity when registering for CRA sign-in services",
+    "redactedQuestion": "What is the new faster way to verify identity when registering for CRA sign-in services",
+    "aiResponse": {
+      "paragraphs": [
+        "A document verification service is now available for faster identity verification when registering for CRA sign-in services.",
+        "This new option allows you to verify your identity immediately instead of waiting up to 10 business days to receive a CRA security code in the mail.",
+        "This service provides a quicker way to complete the registration process for CRA sign-in services."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T17:00:49.568Z",
+    "originalQuestion": "is there a faster way to get a CRA account than waiting 10 days for something to be mailed to me?",
+    "redactedQuestion": "is there a faster way to get a CRA account than waiting 10 days for something to be mailed to me?",
+    "aiResponse": {
+      "paragraphs": [
+        "Yes, there is a faster way to verify your identity for a CRA account.",
+        "The CRA now offers a document verification service that allows you to verify your identity immediately instead of waiting up to 10 business days for a security code in the mail.",
+        "This new service provides faster identity verification when you register for CRA sign-in services."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T17:04:57.704Z",
+    "originalQuestion": "How should I sign into my CRA account?",
+    "redactedQuestion": "How should I sign into my CRA account?",
+    "aiResponse": {
+      "paragraphs": [
+        "To sign into your CRA account, you should always use the same sign-in option you registered with.",
+        "There are three main options available:\n\n1.",
+        "CRA user ID and password\n2.",
+        "Interac sign-in partner (using your online banking credentials)\n3.",
+        "Provincial digital ID for Alberta.ca or BC Services Card\n\nChoose the option you originally used to set up your account.",
+        "If you're unsure which option to use or need more information, you can visit the CRA My Account sign-in page."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T20:08:57.461Z",
+    "originalQuestion": "when i sign in my cra indiviual account, they asking is amounts you reported on your most recent tax return but i haven't. How can i sign in, please help me. Thank Yo",
+    "redactedQuestion": "when i sign in my cra indiviual account, they asking is amounts you reported on your most recent tax return but i haven't. How can i sign in, please help me. Thank Yo",
+    "aiResponse": {
+      "paragraphs": [
+        "If you haven't filed your taxes for the current or previous tax year, you won't be able to register for CRA's sign-in services using a CRA user ID and password or a Sign-In Partner. This is because the CRA uses information from your recent tax returns to verify your identity during the registration process.",
+        "Here are your options:",
+        "1. File your taxes: The best solution is to file your taxes for the current or previous tax year. Once your return is assessed, you'll be able to register for My Account.",
+        "2. If you live in British Columbia or Alberta: You may be able to register for My Account using your provincial digital ID (BC Services Card or Alberta.ca Account), as long as you have filed your taxes at least once in the past.",
+        "3. Contact the CRA: If you're unable to file your taxes immediately and need urgent access to your account, you may need to contact the CRA directly for assistance.",
+        "For information on how to file your taxes, you can visit the \"Get ready to do your taxes\" page on the CRA website."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html",
+      "confidenceRating": "0.9"
+    }
+  }
+]

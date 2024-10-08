@@ -126,3 +126,14 @@ citation-container {
     padding-right: 0;
   }
 }
+.ai-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5em;
+}
+
+.list-number {
+  flex-shrink: 0;
+  margin-right: 0.5em;
+  font-weight: bold;
+}

@@ -10,7 +10,7 @@ const anthropic = new Anthropic({
 const ClaudeService = {
   sendMessage: async (message) => {
     try {
-      console.log('Loading system prompt...');
+      // console.log('Loading system prompt...');
       const SYSTEM_PROMPT = await loadSystemPrompt();
       // console.log('System prompt loaded. Length:', SYSTEM_PROMPT.length);
       // console.log('System prompt preview:', SYSTEM_PROMPT.substring(0, 500) + "...");

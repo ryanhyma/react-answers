@@ -73,14 +73,14 @@ Important Notes:
 `;
 async function loadSystemPrompt() {
     try {
-      console.log("Additional CRA Account Info loaded:", craAccountInfo.substring(0, 100) + "...");
+      // console.log("Additional CRA Account Info loaded:", craAccountInfo.substring(0, 100) + "...");
   
       const fullSystemPrompt = `${BASE_SYSTEM_PROMPT}
       Updated information as described in guideline 10: 
       ${craAccountInfo}
       `;
   
-      console.log("Full system prompt preview:", fullSystemPrompt.substring(0, 500) + "...");
+    //   console.log("Full system prompt preview:", fullSystemPrompt.substring(0, 500) + "...");
   
       return fullSystemPrompt;
     } catch (error) {

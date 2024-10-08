@@ -23,13 +23,13 @@ const TempChatAppContainer = () => {
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
     const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
-
+  
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
     const confidenceMatch = text.match(confidenceRatingRegex);
-
+  
     let mainContent, citationHead, citationUrl, confidenceRating;
-
+  
     if (urlMatch) {
       mainContent = text
         .replace(citationHeadRegex, '')
@@ -45,29 +45,32 @@ const TempChatAppContainer = () => {
       citationUrl = null;
       confidenceRating = null;
     }
-
-    const sentences = mainContent.split(/(?<=[.!?])\s+/);
-
-    return { sentences, citationHead, citationUrl, confidenceRating };
+  
+    // Split content into paragraphs
+    const paragraphs = mainContent.split(/\n+/);
+  
+    return { paragraphs, citationHead, citationUrl, confidenceRating };
   };
+  
 
   const logInteraction = (originalQuestion, redactedQuestion, aiResponse) => {
-    const { sentences, citationHead, citationUrl } = parseAIResponse(aiResponse);
-
+    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(aiResponse);
+  
     const logEntry = {
       timestamp: new Date().toISOString(),
       originalQuestion,
       redactedQuestion,
       aiResponse: {
-        sentences,
+        paragraphs,
         citationHead,
-        citationUrl
+        citationUrl,
+        confidenceRating
       }
     };
-
+  
     // Log to console
     console.log('Chat Interaction:', logEntry);
-
+  
     // Store in localStorage
     const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
     storedLogs.push(logEntry);
@@ -110,13 +113,23 @@ const TempChatAppContainer = () => {
   }, [isLoading, messages]);
 
   const formatAIResponse = (text) => {
-    const { sentences, citationHead, citationUrl, confidenceRating } = parseAIResponse(text);
-
+    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(text);
+  
     return (
       <div className="ai-message-content">
-        {sentences.map((sentence, index) => (
-          <p key={index} className="ai-sentence">{sentence}</p>
-        ))}
+        {paragraphs.map((paragraph, index) => {
+          // Check if the paragraph is part of a numbered list
+          const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
+          if (listItemMatch) {
+            return (
+              <p key={index} className="ai-list-item">
+                <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
+              </p>
+            );
+          } else {
+            return <p key={index} className="ai-paragraph">{paragraph}</p>;
+          }
+        })}
         {citationHead && citationUrl && (
           <div className="citation-container">
             <p className="citation-head">{citationHead}</p>
