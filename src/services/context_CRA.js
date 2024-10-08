@@ -1,3 +1,4 @@
+export const craAccountInfo = `
 <cra_account_info>
 ## CRA My Account for individuals - Sign-in page
 - Updated September 26, 2024. 
@@ -60,3 +61,4 @@ Affinity Credit Union, Alberta Treasury Branches, BMO Financial Group, Caisse Al
 - CRA user ID and password registrants: Sign in, revoke credential, register with different option
 - Sign-In Partner registrants: Sign in to current partner and switch to a different one
 </cra_account_info>
+`;
