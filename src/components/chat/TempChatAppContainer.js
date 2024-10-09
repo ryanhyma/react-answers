@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import RedactionService from '../../services/RedactionService.js';
-import { GcdsTextarea, GcdsButton} from '@cdssnc/gcds-components-react';
+import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 
 const TempChatAppContainer = () => {
@@ -27,8 +27,9 @@ const TempChatAppContainer = () => {
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
     const confidenceMatch = text.match(confidenceRatingRegex);
+
   
-    let mainContent, citationHead, citationUrl, confidenceRating;
+    let mainContent, citationHead, citationUrl, confidenceRating, citationDate;
   
     if (urlMatch) {
       mainContent = text
@@ -49,13 +50,14 @@ const TempChatAppContainer = () => {
     // Split content into paragraphs
     const paragraphs = mainContent.split(/\n+/);
   
-    return { paragraphs, citationHead, citationUrl, confidenceRating };
-  };
+    return { paragraphs, citationHead, citationUrl, confidenceRating, citationDate };
+  }; //end of parseAIResponse
   
+
 
   const logInteraction = (originalQuestion, redactedQuestion, aiResponse) => {
     const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(aiResponse);
-  
+
     const logEntry = {
       timestamp: new Date().toISOString(),
       originalQuestion,
@@ -67,10 +69,10 @@ const TempChatAppContainer = () => {
         confidenceRating
       }
     };
-  
+
     // Log to console
     console.log('Chat Interaction:', logEntry);
-  
+
     // Store in localStorage
     const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
     storedLogs.push(logEntry);
@@ -145,8 +147,7 @@ const TempChatAppContainer = () => {
         )}
       </div>
     );
-  };
-  
+  }; //end of formatAIResponse
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
 
