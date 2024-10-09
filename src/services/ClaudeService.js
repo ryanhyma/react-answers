@@ -1,5 +1,4 @@
 import Anthropic from '@anthropic-ai/sdk';
-// import SYSTEM_PROMPT from './systemPrompt.js'; //replaced while try asynch approach 
 import loadSystemPrompt from './systemPrompt.js';
 
 const anthropic = new Anthropic({
