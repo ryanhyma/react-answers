@@ -1,35 +1,37 @@
-import Anthropic from '@anthropic-ai/sdk';
+// src/ClaudeService.js
+
 import loadSystemPrompt from './systemPrompt.js';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true
-});
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api/claude'  // Vercel serverless function
+  : 'http://localhost:3001/api/claude';  // Local Express server
 
 const ClaudeService = {
   sendMessage: async (message) => {
     try {
-      // console.log('Loading system prompt...');
       const SYSTEM_PROMPT = await loadSystemPrompt();
-      // console.log('System prompt loaded. Length:', SYSTEM_PROMPT.length);
-      // console.log('System prompt preview:', SYSTEM_PROMPT.substring(0, 500) + "...");
 
       console.log('Sending request to Claude API...');
-      const response = await anthropic.messages.create({
-        model: "claude-3-5-sonnet-20240620",
-        system: SYSTEM_PROMPT,
-        messages: [
-          { role: "user", content: message }
-        ],
-        max_tokens: 1024
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          systemPrompt: SYSTEM_PROMPT,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       console.log('Received response from Claude API');
-      return response.content[0].text;
+      return data.content;
     } catch (error) {
       console.error('Error calling Claude API:', error);
-      if (error.response) {
-        console.error('Response data:', error.response);
-      }
       throw error;
     }
   }

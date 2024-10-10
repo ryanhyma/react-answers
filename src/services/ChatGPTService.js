@@ -1,43 +1,40 @@
+// src/ChatGPTService.js
+
 import loadSystemPrompt from './systemPrompt.js';
-import { OpenAI } from 'openai';
 
-const openAI = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true
-  });
-
-// const headers = {
-//   'Content-Type': 'application/json',
-//   'Authorization': `Bearer ${apiKey}`,
-// };
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api/chatgpt'  // Vercel serverless function
+  : 'http://localhost:3001/api/chatgpt';  // Local Express server
 
 const ChatGPTService = {
-    sendMessage: async (message) => {
-      try {
-        const SYSTEM_PROMPT = await loadSystemPrompt();
-        console.log('Sending request to ChatGPT API...');
-  
-        const response = await openAI.chat.completions.create({
-          model: "gpt-4o", // Correct model name for the September 2024 release
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: message }
-          ],
-          max_tokens: 1024,
-        });
-  
-        console.log('Received response from ChatGPT API');
-        return response.choices[0].message.content;
-  
-      } catch (error) {
-        console.error('Error calling ChatGPT API:', error);
-        if (error.response) {
-          console.error('Response data:', error.response);
-        }
-        throw error;
+  sendMessage: async (message) => {
+    try {
+      const SYSTEM_PROMPT = await loadSystemPrompt();
+      console.log('Sending request to ChatGPT API...');
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          systemPrompt: SYSTEM_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+      console.log('Received response from ChatGPT API');
+      return data.content;
+    } catch (error) {
+      console.error('Error calling ChatGPT API:', error);
+      throw error;
     }
-  };
-  
-  export default ChatGPTService;
-  
+  }
+};
+
+export default ChatGPTService;
