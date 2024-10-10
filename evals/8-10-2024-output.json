@@ -608,5 +608,317 @@
       "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/refunds.html",
       "confidenceRating": "0.9"
     }
+  },
+  {
+    "timestamp": "2024-10-09T22:58:28.902Z",
+    "originalQuestion": "I am looking for a refund after filing my 2023 tax return on April 30, 2024. I am expecting a significant refund. When can I expect it?",
+    "redactedQuestion": "I am looking for a refund after filing my 2023 tax return on April 30, 2024. I am expecting a significant refund. When can I expect it?",
+    "aiResponse": {
+      "paragraphs": [
+        "The Canada Revenue Agency (CRA) usually processes electronically filed tax returns within two weeks, and paper returns within eight weeks. If you filed on April 30, 2024, and it was electronically, you might expect your refund in May 2024. You can use your CRA My Account to check the status of your refund. To find out more about how long it takes to receive a tax refund, use the CRA My Account."
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html",
+      "confidenceRating": "0.9"
+    }
+  },
+  {
+    "timestamp": "2024-10-10T15:23:08.137Z",
+    "originalQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "redactedQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "aiResponse": {
+      "paragraphs": [
+        "Pour renouveler votre passeport échu depuis le 24 septembre 2024, vous devrez suivre le processus de demande d'un nouveau passeport plutôt que celui d'un renouvellement. Voici ce que vous devez faire :",
+        "1. Vérifiez votre admissibilité pour une nouvelle demande de passeport.",
+        "2. Remplissez le formulaire de demande approprié pour un nouveau passeport.",
+        "3. Rassemblez tous les documents requis, y compris une nouvelle photo, des pièces d'identité et des documents de citoyenneté.",
+        "4. Trouvez un répondant qui peut confirmer votre identité.",
+        "5. Payez les frais associés à une nouvelle demande de passeport.",
+        "Pour connaître les exigences spécifiques et obtenir les formulaires nécessaires, consultez la page suivante :"
+      ],
+      "citationHead": "Vérifiez votre réponse et passez à l'étape suivante :",
+      "citationUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouveler-passeport-adulte/admissibilite.html",
+      "confidenceRating": "0.9"
+    }
+  },
+  {
+    "timestamp": "2024-10-10T15:23:32.481Z",
+    "originalQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "redactedQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "aiResponse": {
+      "paragraphs": [
+        "Pour renouveler un passeport expiré, vous aurez besoin de faire une nouvelle demande de passeport adulte. Vous ne pouvez pas le renouveler dans ce cas, car le passeport est expiré. Assurez-vous d'avoir tous les documents requis et consultez les critères d'éligibilité pour la demande de passeport adulte."
+      ],
+      "citationHead": "Vérifiez votre réponse et passez à l'étape suivante :",
+      "citationUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouveler-passeport-adulte/renouveler-qui.html",
+      "confidenceRating": "1"
+    }
+  },
+  {
+    "timestamp": "2024-10-10T16:53:02.149Z",
+    "originalQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "redactedQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "aiResponse": {
+      "paragraphs": [
+        "Diese Information ist nicht auf der Webseite Canada.ca verfügbar."
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null
+    }
+  },
+  {
+    "timestamp": "2024-10-10T16:53:10.318Z",
+    "originalQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "redactedQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "aiResponse": {
+      "paragraphs": [
+        "This system is designed to provide information based on Canada.ca content only. Unfortunately, I don't have specific information from Canada.ca about which country is most affected by species extinction due to pollution. For accurate global environmental data, you may want to consult reports from international environmental organizations."
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null
+    }
+  },
+  {
+    "timestamp": "2024-10-10T16:57:04.437Z",
+    "originalQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "redactedQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "aiResponse": {
+      "paragraphs": [
+        "Diese Information ist nicht auf Canada.ca verfügbar."
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null
+    }
+  },
+  {
+    "timestamp": "2024-10-10T16:57:44.108Z",
+    "originalQuestion": "I submitted my passport application ages ago. When will it arrive?",
+    "redactedQuestion": "I submitted my passport application ages ago. When will it arrive?",
+    "aiResponse": {
+      "paragraphs": [
+        "Processing times for passport applications can vary. To get the most up-to-date information on passport processing times and to check the status of your application, you should visit the passport processing times page."
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/processing-times.html",
+      "confidenceRating": "0.9"
+    }
+  },
+  {
+    "timestamp": "2024-10-10T17:21:04.216Z",
+    "originalQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "redactedQuestion": "Welches Land ist am stärksten vom Aussterben seltener Tier- und Pflanzenarten aufgrund von Umweltverschmutzung betroffen?",
+    "aiResponse": {
+      "paragraphs": [
+        "Diese Information ist nicht auf Canada.ca verfügbar. Beachten Sie bitte, dass Umwelt- und Naturschutzthemen in Kanada sowohl auf nationaler als auch auf regionaler Ebene behandelt werden können. Für spezifische Informationen könnte es hilfreich sein, sowohl auf nationaler als auch auf provinzieller Ebene Ressourcen zu konsultieren."
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null
+    }
+  },
+  {
+    "timestamp": "2024-10-10T17:21:28.504Z",
+    "originalQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "redactedQuestion": "je voudrais renoulez mon passeport mais il est echu depuis 24 septembre 2024 que dois faire",
+    "aiResponse": {
+      "paragraphs": [
+        "Pour renouveler un passeport expiré depuis le 24 septembre 2024, vous devrez suivre le processus d'une nouvelle demande de passeport plutôt qu'un simple renouvellement. Voici ce que vous devez faire :",
+        "1. Remplir le formulaire de demande de passeport pour adulte.",
+        "2. Fournir tous les documents requis, y compris une nouvelle photo, des pièces d'identité et un répondant.",
+        "3. Payer les frais pour une nouvelle demande de passeport.",
+        "4. Soumettre votre demande en personne à un bureau de Passeport Canada ou par la poste.",
+        "Pour connaître les exigences exactes et obtenir les formulaires nécessaires, consultez la page suivante :"
+      ],
+      "citationHead": "Vérifiez votre réponse et passez à l'étape suivante :",
+      "citationUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouveler-passeport-adulte/renouveler-comment.html",
+      "confidenceRating": "0.9"
+    }
+  },
+  {
+    "timestamp": "2024-10-10T18:34:08.573Z",
+    "originalQuestion": "Would like to renew my passport that is still valid",
+    "redactedQuestion": "Would like to renew my passport that is still valid",
+    "aiResponse": {
+      "paragraphs": [
+        "To renew your passport that is still valid, you need to check if you're eligible for renewal. Not everyone can renew their passport - some people need to apply for a new one instead.",
+        "To find out if you can renew your passport, visit the \"Who can renew a passport\" page. This page will help you determine if you're eligible for renewal based on your specific situation."
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-10T19:13:39.248Z",
+    "originalQuestion": "Need to renew my passport - still valid.",
+    "redactedQuestion": "Need to renew my passport - still valid.",
+    "aiResponse": {
+      "paragraphs": [
+        "To renew your passport, you'll need to determine if you're eligible for renewal. Here are the key points:",
+        "Passport renewal is only available for adult passports. You must meet specific criteria to be eligible for renewal.",
+        "Check the \"Who can renew a passport\" page to see if you qualify for renewal. If you're not eligible, you'll need to apply for a new passport instead.",
+        "Remember that online renewal is not yet available in Canada. You'll need to submit a paper application."
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-10T19:14:47.280Z",
+    "originalQuestion": "Need to renew my passport. Still valid.",
+    "redactedQuestion": "Need to renew my passport. Still valid.",
+    "aiResponse": {
+      "paragraphs": [
+        "Renewing a Canadian passport is possible only if it meets specific eligibility criteria, such as still being valid or expired by no more than one year. You cannot renew a passport online. Check to see if you are eligible to renew your passport under the simplified renewal process on the \"Who can renew a passport\" page."
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "1",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:23:56.439Z",
+    "originalQuestion": "Need to renew my passport. Still valid.",
+    "redactedQuestion": "Need to renew my passport. Still valid.",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Renewing a passport requires determining if eligibility criteria are met.</s-1> <s-2>Notably, the passport must be expired or near expiry, and in good condition with the exact same personal information.</s-2> <s-3>Since online renewals are not available, checking eligibility is essential before starting the renewal process.</s-3> <s-4>Find out more about the eligibility criteria for a passport renewal.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "1",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:26:56.213Z",
+    "originalQuestion": "renew passport. It's still valid.",
+    "redactedQuestion": "renew passport. It's still valid.",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Passport renewal is only available for passports that have expired or will expire within 12 months.</s-1> <s-2>If your passport is still valid and not within 12 months of expiry, you cannot renew it at this time.</s-2> <s-3>Instead, you should continue to use your current passport until it's closer to the expiration date.</s-3> <s-4>When you're ready to renew, you can check your eligibility and get more information on the passport renewal process.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-10T19:32:37.447Z",
+    "originalQuestion": "can i renew my passport if it's expired?",
+    "redactedQuestion": "can i renew my passport if it's expired?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Passport renewal is possible even if your passport is expired, as long as it hasn't been more than a year since it expired.</s-1> <s-2>If it's been more than a year, you must apply for a passport as a new adult passport application rather than a renewal.</s-2> <s-3>It's important to confirm eligibility for renewal or the need for a new application before starting the process.</s-3> <s-4>For more information about eligibility and how to proceed, review the detailed guidelines on the renewal process.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:34:46.012Z",
+    "originalQuestion": "can i renew my passport if it's expired?",
+    "redactedQuestion": "can i renew my passport if it's expired?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Yes, you can renew your passport even if it has expired, as long as it expired within the last 15 years.</s-1> <s-2>For a passport that expired more than 15 years ago, you would need to apply for a new passport rather than a renewal.</s-2> <s-3>You must provide a current passport photo, the application form, and any required fees.</s-3> <s-4>Check your eligibility and the specific renewal requirements on the Government of Canada website.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:44:53.278Z",
+    "originalQuestion": "I need a pasta recipe",
+    "redactedQuestion": "I need a pasta recipe",
+    "aiResponse": {
+      "paragraphs": [
+        "<not-gc>An answer to your question wasn't found on Government of Canada websites. This service helps people with Government of Canada answers.</not-gc>"
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null,
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:45:18.293Z",
+    "originalQuestion": "I need to renew my driver's license.",
+    "redactedQuestion": "I need to renew my driver's license.",
+    "aiResponse": {
+      "paragraphs": [
+        "<pt-muni>This is not a federal matter. Contact the appropriate provincial, territorial, or municipal government for details on renewing your driver's license.</pt-muni>"
+      ],
+      "citationHead": null,
+      "citationUrl": null,
+      "confidenceRating": null,
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:51:54.232Z",
+    "originalQuestion": "I need to renew my passport.",
+    "redactedQuestion": "I need to renew my passport.",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To renew your Canadian passport, you'll need to determine if you're eligible for renewal first.</s-1> <s-2>Not everyone can renew; some people need to apply for a new passport instead.</s-2> <s-3>Factors like how long ago your previous passport expired and whether your personal information has changed can affect your eligibility.</s-3> <s-4>To find out if you can renew and what steps to take, visit the passport renewal eligibility page.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-10T19:52:54.170Z",
+    "originalQuestion": "I need to renew my passport",
+    "redactedQuestion": "I need to renew my passport",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Renewal online is not yet available for Canadian passports.</s-1> <s-2>You need to meet certain eligibility requirements to renew your passport.</s-2> <s-3>Visit the Who can renew a passport page to find out if you are eligible to renew.</s-3> <s-4>You will also find information on how to submit your renewal application by mail or in person.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-10T19:54:22.193Z",
+    "originalQuestion": "How to get my notice of assessment",
+    "redactedQuestion": "How to get my notice of assessment",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To get your notice of assessment, sign in to your CRA My Account for individuals.</s-1> <s-2>Once signed in, navigate to the \"Tax Returns\" section, where you can view and print your notice of assessment.</s-2> <s-3>If you do not have a CRA My Account, you will need to register and verify your identity to gain access.</s-3> <s-4>Using CRA My Account allows you to manage your tax information online conveniently.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html ",
+      "confidenceRating": "1",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
   }
 ]

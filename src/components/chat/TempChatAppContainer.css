@@ -62,6 +62,9 @@
   margin: 0;
 }
 
+.ai-sentence {
+  margin-bottom: 0.2em;
+}
 .ai-list-item {
   display: flex;
   align-items: flex-start;

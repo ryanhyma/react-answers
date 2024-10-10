@@ -125,24 +125,51 @@ const handleSendMessage = useCallback(async () => {
     }
   }, [isLoading, messages, clearInput]);
 
+  //format the response from the AI service
   const formatAIResponse = (text, aiService) => {
-    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(text, aiService);
+    let responseType = 'normal';
+    let content = text;
+  
+    // Check for special response types and remove tags
+    if (content.startsWith('<not-gc>') && content.endsWith('</not-gc>')) {
+      responseType = 'not-gc';
+      content = content.slice(8, -9).trim(); // Remove <not-gc> tags
+    } else if (content.startsWith('<pt-muni>') && content.endsWith('</pt-muni>')) {
+      responseType = 'pt-muni';
+      content = content.slice(9, -10).trim(); // Remove <pt-muni> tags
+    }
+  
+    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(content, aiService);
   
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
-          const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
-          if (listItemMatch) {
-            return (
-              <p key={index} className="ai-list-item">
-                <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
+          // Check if the paragraph contains sentence tags
+          const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\1>/g;
+          const sentences = [...paragraph.matchAll(sentenceRegex)];
+  
+          if (sentences.length > 0) {
+            // If sentences are tagged, render each sentence separately
+            return sentences.map(([, number, sentence], sentenceIndex) => (
+              <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
+                {sentence.trim()}
               </p>
-            );
+            ));
           } else {
-            return <p key={index} className="ai-paragraph">{paragraph}</p>;
+            // If no sentence tags, check for list items or render as a regular paragraph
+            const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
+            if (listItemMatch) {
+              return (
+                <p key={index} className="ai-list-item">
+                  <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
+                </p>
+              );
+            } else {
+              return <p key={index} className="ai-paragraph">{paragraph}</p>;
+            }
           }
         })}
-        {(citationHead || citationUrl || confidenceRating || aiService) && (
+        {(citationHead || citationUrl || responseType !== 'normal' || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
             {citationUrl && (
@@ -153,8 +180,10 @@ const handleSendMessage = useCallback(async () => {
               </p>
             )}
             <p className="confidence-rating">
-              {confidenceRating && `Confidence: ${confidenceRating}`}
-              {confidenceRating && aiService && ' | '}
+              {responseType === 'normal' && confidenceRating && `Confidence: ${confidenceRating}`}
+              {responseType === 'not-gc' && 'Not-GC'}
+              {responseType === 'pt-muni' && 'P-T-Muni'}
+              {((responseType === 'normal' && confidenceRating) || responseType !== 'normal') && aiService && ' | '}
               {aiService && `AI: ${aiService}`}
             </p>
           </div>
@@ -203,7 +232,7 @@ const handleSendMessage = useCallback(async () => {
       <div className="ai-toggle" style={{ marginBottom: '10px' }}>
           <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <legend style={{ marginRight: '10px' }}>Choose AI service:</legend>
+              <legend style={{ marginRight: '10px' }}>AI:</legend>
               <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
                 <input
                   type="radio"
