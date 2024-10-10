@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
+import FeedbackComponent from './FeedbackComponent';
 import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 
@@ -11,6 +12,7 @@ const TempChatAppContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
   const [selectedAI, setSelectedAI] = useState('claude');
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -30,13 +32,13 @@ const TempChatAppContainer = () => {
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
     const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
-  
+
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
     const confidenceMatch = text.match(confidenceRatingRegex);
-  
+
     let mainContent, citationHead, citationUrl, confidenceRating;
-  
+
     if (urlMatch) {
       mainContent = text
         .replace(citationHeadRegex, '')
@@ -52,71 +54,81 @@ const TempChatAppContainer = () => {
       citationUrl = null;
       confidenceRating = null;
     }
-  
+
     // Split content into paragraphs
     const paragraphs = mainContent.split(/\n+/);
-  
+
     return { paragraphs, citationHead, citationUrl, confidenceRating, aiService };
   }, []);
-//end of parseAIResponse
+  //end of parseAIResponse
 
- // wrap log function with useCallback to ensure it's only recreated when necessary
- const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService) => {
-  const parsedResponse = parseAIResponse(aiResponse, aiService);
+  // wrap log function with useCallback to ensure it's only recreated when necessary
+  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService) => {
+    const parsedResponse = parseAIResponse(aiResponse, aiService);
 
-  const logEntry = {
-    timestamp: new Date().toISOString(),
-    originalQuestion,
-    redactedQuestion,
-    aiResponse: parsedResponse,
-    aiService
-  };
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      originalQuestion,
+      redactedQuestion,
+      aiResponse: parsedResponse,
+      aiService
+    };
 
-  // Log to console
-  console.log('Chat Interaction:', logEntry);
+    // Log to console
+    console.log('Chat Interaction:', logEntry);
 
-  // Store in localStorage
-  const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
-  storedLogs.push(logEntry);
-  localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
-}, [parseAIResponse]);
-//end of logInteraction
+    // Store in localStorage
+    const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
+    storedLogs.push(logEntry);
+    localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
+  }, [parseAIResponse]);
+  //end of logInteraction
 
-const handleSendMessage = useCallback(async () => {
-  if (inputText.trim() !== '') {
-    const userMessage = inputText.trim();
-    const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
+  const handleFeedback = useCallback((isPositive) => {
+    // Here you can implement the logic to store or send the feedback
+    console.log(`User feedback: ${isPositive ? 'Positive' : 'Negative'}`);
+    // You might want to send this to your backend or store it in localStorage
+  }, []);
+  // end of handleFeedback
 
-    setMessages(prevMessages => [...prevMessages, {
-      text: userMessage,
-      redactedText: redactedText,
-      redactedItems: redactedItems,
-      sender: 'user'
-    }]);
-    clearInput();
-    setIsLoading(true);
+  // handleSendMessage to the AI 
+  const handleSendMessage = useCallback(async () => {
+    if (inputText.trim() !== '') {
+      setShowFeedback(false);
+      const userMessage = inputText.trim();
+      const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
-    try {
-      let response;
-      console.log('Sending message to:', selectedAI);
-      if (selectedAI === 'claude') {
-        response = await ClaudeService.sendMessage(redactedText);
-      } else {
-        response = await ChatGPTService.sendMessage(redactedText);
+      setMessages(prevMessages => [...prevMessages, {
+        text: userMessage,
+        redactedText: redactedText,
+        redactedItems: redactedItems,
+        sender: 'user'
+      }]);
+      clearInput();
+      setIsLoading(true);
+
+      try {
+        let response;
+        console.log('Sending message to:', selectedAI);
+        if (selectedAI === 'claude') {
+          response = await ClaudeService.sendMessage(redactedText);
+        } else {
+          response = await ChatGPTService.sendMessage(redactedText);
+        }
+        setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
+        setShowFeedback(true);  // Show feedback component after AI response
+
+        // Log the interaction
+        logInteraction(userMessage, redactedText, response, selectedAI);
+      } catch (error) {
+        console.error('Error sending message:', error);
+        setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
+      } finally {
+        setIsLoading(false);
       }
-      setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
-
-      // Log the interaction
-      logInteraction(userMessage, redactedText, response, selectedAI);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
-    } finally {
-      setIsLoading(false);
     }
-  }
-}, [inputText, selectedAI, clearInput, logInteraction]);
-// end of handleSendMessage
+  }, [inputText, selectedAI, clearInput, logInteraction]);
+  // end of handleSendMessage
 
 
   useEffect(() => {
@@ -129,7 +141,7 @@ const handleSendMessage = useCallback(async () => {
   const formatAIResponse = (text, aiService) => {
     let responseType = 'normal';
     let content = text;
-  
+
     // Check for special response types and remove tags
     if (content.startsWith('<not-gc>') && content.endsWith('</not-gc>')) {
       responseType = 'not-gc';
@@ -138,16 +150,16 @@ const handleSendMessage = useCallback(async () => {
       responseType = 'pt-muni';
       content = content.slice(9, -10).trim(); // Remove <pt-muni> tags
     }
-  
+
     const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(content, aiService);
-  
+
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
           // Check if the paragraph contains sentence tags
           const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\1>/g;
           const sentences = [...paragraph.matchAll(sentenceRegex)];
-  
+
           if (sentences.length > 0) {
             // If sentences are tagged, render each sentence separately
             return sentences.map(([, number, sentence], sentenceIndex) => (
@@ -211,7 +223,12 @@ const handleSendMessage = useCallback(async () => {
                 )}
               </div>
             ) : (
-              formatAIResponse(message.text, message.aiService)
+              <>
+                {formatAIResponse(message.text, message.aiService)}
+                {index === messages.length - 1 && showFeedback && (
+                  <FeedbackComponent onFeedback={handleFeedback} />
+                )}
+              </>
             )}
           </div>
         ))}
@@ -229,7 +246,7 @@ const handleSendMessage = useCallback(async () => {
           onInput={handleInputChange}
           disabled={isLoading}
         />
-      <div className="ai-toggle" style={{ marginBottom: '10px' }}>
+        <div className="ai-toggle" style={{ marginBottom: '10px' }}>
           <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <legend style={{ marginRight: '10px' }}>AI:</legend>
@@ -260,7 +277,7 @@ const handleSendMessage = useCallback(async () => {
             </div>
           </fieldset>
         </div>
- 
+
         <GcdsButton onClick={handleSendMessage} disabled={isLoading}>Send</GcdsButton>
       </div>
     </div>

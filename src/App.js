@@ -25,8 +25,6 @@ function App() {
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
-
-
         <GcdsText className='mb-400'> This proof of concept is for research purposes only.
         </GcdsText>
         <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>

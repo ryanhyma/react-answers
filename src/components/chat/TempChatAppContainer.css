@@ -137,3 +137,29 @@
     padding-right: 0;
   }
 }
+/* Existing styles ... */
+
+.feedback-container {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.feedback-container p {
+  margin-bottom: 10px;
+}
+
+.feedback-container button {
+  margin-right: 10px;
+}
+
+.feedback-survey-link {
+  display: inline-block;
+  margin-left: 10px;
+  text-decoration: underline;
+  color: #284162;
+}
+
+.feedback-survey-link:hover {
+  text-decoration: none;
+}
