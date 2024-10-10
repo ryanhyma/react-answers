@@ -26,49 +26,50 @@ const TempChatAppContainer = () => {
     setTextareaKey(prevKey => prevKey + 1);
   }, []);
 
-const parseAIResponse = useCallback((text) => {
-  const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
-  const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-  const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
-
-  const headMatch = text.match(citationHeadRegex);
-  const urlMatch = text.match(citationUrlRegex);
-  const confidenceMatch = text.match(confidenceRatingRegex);
-
-  let mainContent, citationHead, citationUrl, confidenceRating;
-
-  if (urlMatch) {
-    mainContent = text
-      .replace(citationHeadRegex, '')
-      .replace(citationUrlRegex, '')
-      .replace(confidenceRatingRegex, '')
-      .trim();
-    citationHead = headMatch ? headMatch[1] : null;
-    citationUrl = urlMatch[1];
-    confidenceRating = confidenceMatch ? confidenceMatch[1] : null;
-  } else {
-    mainContent = text;
-    citationHead = null;
-    citationUrl = null;
-    confidenceRating = null;
-  }
-
-  // Split content into paragraphs
-  const paragraphs = mainContent.split(/\n+/);
-
-  return { paragraphs, citationHead, citationUrl, confidenceRating };
-}, []);
+  const parseAIResponse = useCallback((text, aiService) => {
+    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
+    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
+    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
+  
+    const headMatch = text.match(citationHeadRegex);
+    const urlMatch = text.match(citationUrlRegex);
+    const confidenceMatch = text.match(confidenceRatingRegex);
+  
+    let mainContent, citationHead, citationUrl, confidenceRating;
+  
+    if (urlMatch) {
+      mainContent = text
+        .replace(citationHeadRegex, '')
+        .replace(citationUrlRegex, '')
+        .replace(confidenceRatingRegex, '')
+        .trim();
+      citationHead = headMatch ? headMatch[1] : null;
+      citationUrl = urlMatch[1];
+      confidenceRating = confidenceMatch ? confidenceMatch[1] : null;
+    } else {
+      mainContent = text;
+      citationHead = null;
+      citationUrl = null;
+      confidenceRating = null;
+    }
+  
+    // Split content into paragraphs
+    const paragraphs = mainContent.split(/\n+/);
+  
+    return { paragraphs, citationHead, citationUrl, confidenceRating, aiService };
+  }, []);
 //end of parseAIResponse
 
  // wrap log function with useCallback to ensure it's only recreated when necessary
- const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse) => {
-  const parsedResponse = parseAIResponse(aiResponse);
+ const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService) => {
+  const parsedResponse = parseAIResponse(aiResponse, aiService);
 
   const logEntry = {
     timestamp: new Date().toISOString(),
     originalQuestion,
     redactedQuestion,
-    aiResponse: parsedResponse
+    aiResponse: parsedResponse,
+    aiService
   };
 
   // Log to console
@@ -97,16 +98,16 @@ const handleSendMessage = useCallback(async () => {
 
     try {
       let response;
-      console.log('Sending message to:', selectedAI); // Modified this line for clarity
+      console.log('Sending message to:', selectedAI);
       if (selectedAI === 'claude') {
         response = await ClaudeService.sendMessage(redactedText);
       } else {
         response = await ChatGPTService.sendMessage(redactedText);
       }
-      setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai' }]);
+      setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
 
       // Log the interaction
-      logInteraction(userMessage, redactedText, response);
+      logInteraction(userMessage, redactedText, response, selectedAI);
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
@@ -115,6 +116,7 @@ const handleSendMessage = useCallback(async () => {
     }
   }
 }, [inputText, selectedAI, clearInput, logInteraction]);
+// end of handleSendMessage
 
 
   useEffect(() => {
@@ -123,13 +125,12 @@ const handleSendMessage = useCallback(async () => {
     }
   }, [isLoading, messages, clearInput]);
 
-  const formatAIResponse = (text) => {
-    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(text);
-
+  const formatAIResponse = (text, aiService) => {
+    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(text, aiService);
+  
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
-          // Check if the paragraph is part of a numbered list
           const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
           if (listItemMatch) {
             return (
@@ -141,7 +142,7 @@ const handleSendMessage = useCallback(async () => {
             return <p key={index} className="ai-paragraph">{paragraph}</p>;
           }
         })}
-        {(citationHead || citationUrl || confidenceRating) && (
+        {(citationHead || citationUrl || confidenceRating || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
             {citationUrl && (
@@ -151,7 +152,11 @@ const handleSendMessage = useCallback(async () => {
                 </a>
               </p>
             )}
-            {confidenceRating && <p className="confidence-rating">Confidence rating: {confidenceRating}</p>}
+            <p className="confidence-rating">
+              {confidenceRating && `Confidence: ${confidenceRating}`}
+              {confidenceRating && aiService && ' | '}
+              {aiService && `AI: ${aiService}`}
+            </p>
           </div>
         )}
       </div>
@@ -177,7 +182,7 @@ const handleSendMessage = useCallback(async () => {
                 )}
               </div>
             ) : (
-              formatAIResponse(message.text)
+              formatAIResponse(message.text, message.aiService)
             )}
           </div>
         ))}
