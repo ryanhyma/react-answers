@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
 import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
+import checkCitationUrl from '../../utils/urlChecker.js';
 
 const TempChatAppContainer = () => {
   const [messages, setMessages] = useState([]);
@@ -13,6 +14,7 @@ const TempChatAppContainer = () => {
   const [textareaKey, setTextareaKey] = useState(0);
   const [selectedAI, setSelectedAI] = useState('claude');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [checkedCitations, setCheckedCitations] = useState({});
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -137,8 +139,28 @@ const TempChatAppContainer = () => {
     }
   }, [isLoading, messages, clearInput]);
 
+  // Add this new function
+  const checkAndUpdateCitation = useCallback(async (messageIndex, citationUrl) => {
+    if (!citationUrl || checkedCitations[messageIndex]) return;
+
+    const result = await checkCitationUrl(citationUrl);
+    setCheckedCitations(prev => ({ ...prev, [messageIndex]: result }));
+  }, [checkedCitations]);
+
+  // Use useEffect at the component level to check citations
+  useEffect(() => {
+    messages.forEach((message, index) => {
+      if (message.sender === 'ai') {
+        const { citationUrl } = parseAIResponse(message.text, message.aiService);
+        if (citationUrl) {
+          checkAndUpdateCitation(index, citationUrl);
+        }
+      }
+    });
+  }, [messages, checkAndUpdateCitation, parseAIResponse]);
+
   //format the response from the AI service
-  const formatAIResponse = (text, aiService) => {
+  const formatAIResponse = useMemo(() => (text, aiService, messageIndex) => {
     let responseType = 'normal';
     let content = text;
 
@@ -152,6 +174,7 @@ const TempChatAppContainer = () => {
     }
 
     const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(content, aiService);
+    const citationResult = checkedCitations[messageIndex];
 
     return (
       <div className="ai-message-content">
@@ -184,11 +207,17 @@ const TempChatAppContainer = () => {
         {(citationHead || citationUrl || responseType !== 'normal' || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
-            {citationUrl && (
+            {citationUrl && citationResult && (
               <p className="citation-link">
-                <a href={citationUrl} target="_blank" rel="noopener noreferrer">
-                  {citationUrl}
-                </a>
+                {citationResult.isValid ? (
+                  <a href={citationResult.url} target="_blank" rel="noopener noreferrer">
+                    {citationResult.url}
+                  </a>
+                ) : (
+                  <a href={citationResult.fallbackUrl} target="_blank" rel="noopener noreferrer">
+                    {citationResult.fallbackText}
+                  </a>
+                )}
               </p>
             )}
             <p className="confidence-rating">
@@ -202,7 +231,8 @@ const TempChatAppContainer = () => {
         )}
       </div>
     );
-  }; //end of formatAIResponse
+  }, [parseAIResponse, checkedCitations]);
+  //end of formatAIResponse
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
 
@@ -224,7 +254,7 @@ const TempChatAppContainer = () => {
               </div>
             ) : (
               <>
-                {formatAIResponse(message.text, message.aiService)}
+                {formatAIResponse(message.text, message.aiService, index)}
                 {index === messages.length - 1 && showFeedback && (
                   <FeedbackComponent onFeedback={handleFeedback} />
                 )}
