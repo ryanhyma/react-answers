@@ -173,8 +173,11 @@ const TempChatAppContainer = () => {
       content = content.slice(9, -10).trim(); // Remove <pt-muni> tags
     }
 
-    const { paragraphs, citationHead, citationUrl, confidenceRating } = parseAIResponse(content, aiService);
+    const { paragraphs, citationHead, citationUrl, confidenceRating: originalConfidenceRating } = parseAIResponse(content, aiService);
     const citationResult = checkedCitations[messageIndex];
+
+    // Use the checked citation's confidence rating if available, otherwise use the original
+    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : originalConfidenceRating;
 
     return (
       <div className="ai-message-content">
@@ -221,10 +224,10 @@ const TempChatAppContainer = () => {
               </p>
             )}
             <p className="confidence-rating">
-              {responseType === 'normal' && confidenceRating && `Confidence: ${confidenceRating}`}
+              {responseType === 'normal' && finalConfidenceRating !== undefined && `Confidence: ${finalConfidenceRating}`}
               {responseType === 'not-gc' && 'Not-GC'}
               {responseType === 'pt-muni' && 'P-T-Muni'}
-              {((responseType === 'normal' && confidenceRating) || responseType !== 'normal') && aiService && ' | '}
+              {((responseType === 'normal' && finalConfidenceRating !== undefined) || responseType !== 'normal') && aiService && ' | '}
               {aiService && `AI: ${aiService}`}
             </p>
           </div>

@@ -11,7 +11,7 @@ const ClaudeService = {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
 
-      console.log('Sending request to Claude API...');
+      // console.log('Sending request to Claude API...');
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -28,7 +28,7 @@ const ClaudeService = {
       }
 
       const data = await response.json();
-      console.log('Received response from Claude API');
+      // console.log('Received response from Claude API');
       return data.content;
     } catch (error) {
       console.error('Error calling Claude API:', error);

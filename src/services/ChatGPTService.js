@@ -10,7 +10,7 @@ const ChatGPTService = {
   sendMessage: async (message) => {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
-      console.log('Sending request to ChatGPT API...');
+      // console.log('Sending request to ChatGPT API...');
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -28,7 +28,7 @@ const ChatGPTService = {
       }
 
       const data = await response.json();
-      console.log('Received response from ChatGPT API');
+      // console.log('Received response from ChatGPT API');
       return data.content;
     } catch (error) {
       console.error('Error calling ChatGPT API:', error);
