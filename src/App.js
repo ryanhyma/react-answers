@@ -1,11 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unused-modules */
-import React from 'react';
+import React, { useState } from 'react';
 import TempChatAppContainer from './components/chat/TempChatAppContainer';
-import { GcdsHeader, GcdsContainer, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsDetails, GcdsText, GcdsLink, GcdsFooter, GcdsTextarea } from '@cdssnc/gcds-components-react';
+import { GcdsHeader, GcdsContainer, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsDetails, GcdsText, GcdsLink, GcdsFooter, GcdsTextarea, GcdsInput } from '@cdssnc/gcds-components-react';
 import './App.css';
 
 function App() {
+  const [referringUrl, setReferringUrl] = useState('');
+
+  const handleReferringUrlChange = (event) => {
+    setReferringUrl(event.target.value);
+  };
+
   return (
     <>
       <section className="alpha-top">
@@ -21,7 +27,6 @@ function App() {
         </GcdsBreadcrumbs>
       </GcdsHeader>
 
-      {/* <main> */}
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
@@ -32,8 +37,12 @@ function App() {
           <GcdsText >To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service.  The removed text will display as <strong>XXX</strong>. </GcdsText>
           <GcdsText>AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024</GcdsText>
           <GcdsText>AI service ChatGPT: OpenAI 4o,  knowledge to May 2024</GcdsText>
+          <GcdsText><GcdsLink href="https://github.com/lisafast/react-answers/blob/main/src/services/systemPrompt.js">Read the System Prompt</GcdsLink> that controls the AI output.  </GcdsText>
         </GcdsDetails>
-        <TempChatAppContainer />
+        <TempChatAppContainer 
+          referringUrl={referringUrl} 
+          onReferringUrlChange={handleReferringUrlChange} 
+        />
       </GcdsContainer>
       <GcdsContainer size="sm" centered className="mb-600">
         <GcdsDetails detailsTitle='Privacy and AI terms of use' className='mb-400'>
@@ -54,7 +63,6 @@ function App() {
           </GcdsText>
         </GcdsDetails>
       </GcdsContainer>
-      {/* </main> */}
       <GcdsFooter display='full'></GcdsFooter>
     </>
   );

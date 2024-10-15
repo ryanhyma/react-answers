@@ -115,6 +115,32 @@
   width: 100%;
 }
 
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main-input-container {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.main-input-container .gcds-textarea {
+  flex-grow: 1;
+}
+
+.send-button {
+  align-self: flex-end;
+}
+
+.optional-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 @media (max-width: 768px) {
   .chat-container {
     padding: 0.5rem;
@@ -128,6 +154,15 @@
   .user-message-box,
   .ai-message-content {
     padding: 0.5rem;
+  }
+
+  .main-input-container {
+    flex-direction: column;
+  }
+
+  .send-button {
+    width: 100%;
+    margin-top: 10px;
   }
 }
 

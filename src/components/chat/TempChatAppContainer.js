@@ -3,7 +3,7 @@ import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
-import { GcdsTextarea, GcdsButton } from '@cdssnc/gcds-components-react';
+import { GcdsTextarea, GcdsButton, GcdsInput } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 import checkCitationUrl from '../../utils/urlChecker.js';
 
@@ -15,6 +15,7 @@ const TempChatAppContainer = () => {
   const [selectedAI, setSelectedAI] = useState('claude');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
+  const [referringUrl, setReferringUrl] = useState('');
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -93,6 +94,10 @@ const TempChatAppContainer = () => {
   }, []);
   // end of handleFeedback
 
+  const handleReferringUrlChange = (e) => {
+    setReferringUrl(e.target.value);
+  };
+
   // handleSendMessage to the AI 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
@@ -100,11 +105,17 @@ const TempChatAppContainer = () => {
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
+      // Add referring URL to the message if provided
+      const messageWithUrl = referringUrl 
+        ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
+        : redactedText;
+
       setMessages(prevMessages => [...prevMessages, {
         text: userMessage,
         redactedText: redactedText,
         redactedItems: redactedItems,
-        sender: 'user'
+        sender: 'user',
+        ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
       }]);
       clearInput();
       setIsLoading(true);
@@ -113,15 +124,15 @@ const TempChatAppContainer = () => {
         let response;
         console.log('Sending message to:', selectedAI);
         if (selectedAI === 'claude') {
-          response = await ClaudeService.sendMessage(redactedText);
+          response = await ClaudeService.sendMessage(messageWithUrl);
         } else {
-          response = await ChatGPTService.sendMessage(redactedText);
+          response = await ChatGPTService.sendMessage(messageWithUrl);
         }
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
         setShowFeedback(true);  // Show feedback component after AI response
 
         // Log the interaction
-        logInteraction(userMessage, redactedText, response, selectedAI);
+        logInteraction(userMessage, messageWithUrl, response, selectedAI);
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
@@ -129,7 +140,7 @@ const TempChatAppContainer = () => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl]);
   // end of handleSendMessage
 
 
@@ -310,7 +321,13 @@ const TempChatAppContainer = () => {
             </div>
           </fieldset>
         </div>
-
+        <GcdsInput
+          label="Referring Canada.ca URL (optional)"
+          type="url"
+          value={referringUrl}
+          onChange={handleReferringUrlChange}
+          style={{ marginBottom: '10px' }}
+        />
         <GcdsButton onClick={handleSendMessage} disabled={isLoading}>Send</GcdsButton>
       </div>
     </div>
