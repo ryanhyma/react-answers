@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 
 const FeedbackComponent = ({ onFeedback }) => {
   const [feedbackGiven, setFeedbackGiven] = useState(false);
@@ -16,8 +18,12 @@ const FeedbackComponent = ({ onFeedback }) => {
   return (
     <div className="feedback-container">
       <p>Was this response helpful?</p>
-      <GcdsButton classname="me-400 hydrated" onClick={() => handleFeedback(true)}>👍 Yes</GcdsButton>
-      <GcdsButton classname="me-400 hydrated" onClick={() => handleFeedback(false)}>👎 No</GcdsButton>
+      <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(true)}>
+        <FontAwesomeIcon icon={faThumbsUp} /> Yes
+      </GcdsButton>
+      <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(false)}>
+        <FontAwesomeIcon icon={faThumbsDown} /> No
+      </GcdsButton>
       <a href="/survey" className="feedback-survey-link">Give feedback</a>
     </div>
   );

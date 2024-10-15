@@ -325,7 +325,7 @@ const TempChatAppContainer = () => {
           label="Referring Canada.ca URL (optional)"
           type="url"
           value={referringUrl}
-          onChange={handleReferringUrlChange}
+          onGcdsChange={handleReferringUrlChange}
           style={{ marginBottom: '10px' }}
         />
         <GcdsButton onClick={handleSendMessage} disabled={isLoading}>Send</GcdsButton>
