@@ -47,9 +47,7 @@ const TempChatAppContainer = () => {
       .replace(confidenceRatingRegex, '')
       .trim();
 
-    // Remove sentence tags
-    mainContent = mainContent.replace(/<s-\d+>|<\/s-\d+>/g, '');
-
+    // Do NOT remove sentence tags here
     // Split content into paragraphs
     const paragraphs = mainContent.split(/\n+/);
 
@@ -65,6 +63,8 @@ const TempChatAppContainer = () => {
   }, []);
 
   const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback) => {
+    const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
+
     const logEntry = {
       timestamp: new Date().toISOString(),
       originalQuestion,
@@ -73,6 +73,7 @@ const TempChatAppContainer = () => {
       aiService,
       ...(referringUrl && { referringUrl }),
       ...(citationUrl && { citationUrl }),
+      ...(originalCitationUrl && { originalCitationUrl }),
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback })
     };
@@ -84,7 +85,7 @@ const TempChatAppContainer = () => {
     const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
     storedLogs.push(logEntry);
     localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
-  }, []);
+  }, [parseAIResponse]);
 
   const handleFeedback = useCallback((isPositive) => {
     const feedback = isPositive ? 'positive' : 'negative';
@@ -215,14 +216,22 @@ const TempChatAppContainer = () => {
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
-          const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
-          if (listItemMatch) {
-            return (
-              <p key={index} className="ai-list-item">
-                <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
-              </p>
-            );
+          // Use regex to match sentence tags
+          const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
+          const sentences = paragraph.match(sentenceRegex);
+
+          if (sentences) {
+            return sentences.map((sentence, sentenceIndex) => {
+              // Remove the sentence tags and trim the content
+              const cleanSentence = sentence.replace(/<\/?s-\d+>/g, '').trim();
+              return (
+                <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
+                  {cleanSentence}
+                </p>
+              );
+            });
           } else {
+            // If no sentence tags, render as a regular paragraph
             return <p key={index} className="ai-paragraph">{paragraph}</p>;
           }
         })}
