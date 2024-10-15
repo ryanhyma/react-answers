@@ -47,8 +47,7 @@ const TempChatAppContainer = () => {
       .replace(confidenceRatingRegex, '')
       .trim();
 
-    // Do NOT remove sentence tags here
-    // Split content into paragraphs
+    // Split content into paragraphs, preserving sentence tags
     const paragraphs = mainContent.split(/\n+/);
 
     const result = {
@@ -213,27 +212,26 @@ const TempChatAppContainer = () => {
     // Use the checked citation's confidence rating if available, otherwise use the original
     const finalConfidenceRating = citationResult ? citationResult.confidenceRating : originalConfidenceRating;
 
+    // Function to extract sentences from a paragraph
+    const extractSentences = (paragraph) => {
+      const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
+      const sentences = [];
+      let match;
+      while ((match = sentenceRegex.exec(paragraph)) !== null) {
+        sentences.push(match[1].trim());
+      }
+      return sentences.length > 0 ? sentences : [paragraph];
+    };
+
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
-          // Use regex to match sentence tags
-          const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
-          const sentences = paragraph.match(sentenceRegex);
-
-          if (sentences) {
-            return sentences.map((sentence, sentenceIndex) => {
-              // Remove the sentence tags and trim the content
-              const cleanSentence = sentence.replace(/<\/?s-\d+>/g, '').trim();
-              return (
-                <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
-                  {cleanSentence}
-                </p>
-              );
-            });
-          } else {
-            // If no sentence tags, render as a regular paragraph
-            return <p key={index} className="ai-paragraph">{paragraph}</p>;
-          }
+          const sentences = extractSentences(paragraph);
+          return sentences.map((sentence, sentenceIndex) => (
+            <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
+              {sentence}
+            </p>
+          ));
         })}
         {(citationHead || citationUrl || responseType !== 'normal' || aiService) && (
           <div className="citation-container">
