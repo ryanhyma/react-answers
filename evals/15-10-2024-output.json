@@ -1,0 +1,374 @@
+[
+  {
+    "timestamp": "2024-10-06T21:38:10.601Z",
+    "originalQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
+    "redactedQuestion": "I have an expired passport it expired 5 years ago but I was able to com back to my own country which is Canada I was residing in US it is in my married name I wish to change name and renew passport for Canada",
+    "aiResponse": {
+      "sentences": [
+        "Since your passport has been expired for more than a year and you want to change your name, you'll need to apply for a new passport rather than renew your old one.",
+        "You'll need to submit a new adult passport application.",
+        "To change your name on your passport, you'll also need to provide additional documentation proving your name change.",
+        "For specific requirements and to start your application process, visit the Canadian passport application page."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/new-adult-passport.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T21:45:05.935Z",
+    "originalQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
+    "redactedQuestion": "I applied for my passport on March 28th in Notre Dame Manitoba and received a letter in April to call about my passport stayed on phone line an hour which was much faster than i thought to be told my middle name needed to be on passport said that was fine and have heard and recieved nothing since",
+    "aiResponse": {
+      "sentences": [
+        "Your passport application process seems to have encountered a delay due to the middle name issue.",
+        "Since you've already contacted them about this, the next step is to check on the status of your application.",
+        "You can do this online using the Passport Program's online status checker.",
+        "This tool allows you to track your application without having to call again."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/check-status.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T21:58:45.962Z",
+    "originalQuestion": "Where to find passport offices?",
+    "redactedQuestion": "Where to find passport offices?",
+    "aiResponse": {
+      "sentences": [
+        "You can find passport offices across Canada using the Service Canada Office Locator tool.",
+        "This tool allows you to search for passport service locations near you by entering your postal code or city.",
+        "The search results will show you the nearest offices, their addresses, and available services."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/service-canada/office-locator.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:01:43.287Z",
+    "originalQuestion": "I need the passport form where is it?",
+    "redactedQuestion": "I need the passport form where is it?",
+    "aiResponse": {
+      "sentences": [
+        "There are several passport forms available depending on your situation.",
+        "To find the correct form, you'll need to determine if you're applying for a new passport, renewing an existing one, or if you need a child passport.",
+        "The best approach is to start from the main Canadian passports page and follow the steps to find the right form for your needs."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:04:49.279Z",
+    "originalQuestion": "Forgot my personal access code? How to sign in",
+    "redactedQuestion": "Forgot my personal access code? How to sign in",
+    "aiResponse": {
+      "sentences": [
+        "To sign in to your Canada Revenue Agency (CRA) account without your personal access code, you have a few options.",
+        "You can use a Sign-In Partner, your CRA user ID and password, or your digital ID if you have one.",
+        "If you've forgotten your CRA user ID or password, you can recover or reset them online."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:37:47.262Z",
+    "originalQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
+    "redactedQuestion": "I'm waiting for a security code to be able to sign in. Can I get my notice of assessment without one?",
+    "aiResponse": {
+      "sentences": [
+        "To access your notice of assessment, you typically need to sign in to your Canada Revenue Agency (CRA) account.",
+        "If you're waiting for a security code, you may not be able to access your account immediately.",
+        "However, you can request a copy of your notice of assessment by phone or mail without signing in online.",
+        "For specific options and steps to obtain your notice of assessment, it's best to check the CRA's official guidance."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/notice-assessment-understand.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-06T22:57:11.958Z",
+    "originalQuestion": "I didn't get my personal access code. Can i still sign in?",
+    "redactedQuestion": "I didn't get my personal access code. Can i still sign in?",
+    "aiResponse": {
+      "sentences": [
+        "To sign in to your My Service Canada Account without a Personal Access Code (PAC), you can use a Sign-in Partner or GCKey.",
+        "If you don't have these options, you'll need to request a new PAC.",
+        "You can do this online or by calling Service Canada."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/employment-social-development/services/my-account/access-code.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-07T21:14:42.814Z",
+    "originalQuestion": "How should I sign in to my cra account?",
+    "redactedQuestion": "How should I sign in to my cra account?",
+    "aiResponse": {
+      "sentences": [
+        "To sign in to your CRA account, you have two options: using your CRA login or using your Sign-in Partner.",
+        "If you don't have a CRA account yet, you'll need to register first.",
+        "Once you've chosen your sign-in method, you'll need to enter your credentials and complete the multi-factor authentication process for added security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-07T21:18:56.971Z",
+    "originalQuestion": "How should I sign in to my CRA account?",
+    "redactedQuestion": "How should I sign in to my CRA account?",
+    "aiResponse": {
+      "sentences": [
+        "To sign in to your CRA account, you have multiple options.",
+        "You can use your CRA user ID and password, sign in with a Sign-in Partner, or use your bank credentials through SecureKey Concierge.",
+        "If you don't have a CRA account yet, you'll need to register for one first.",
+        "Remember that multi-factor authentication is required for added security."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-08T11:53:00.186Z",
+    "originalQuestion": "how can i sign in to my CRA account?",
+    "redactedQuestion": "how can i sign in to my CRA account?",
+    "aiResponse": {
+      "sentences": [
+        "To sign in to your CRA account, you have two main options.",
+        "You can use your CRA user ID and password, or you can use a Sign-in Partner (SecureKey Concierge) if you prefer to use your online banking credentials.",
+        "Multi-factor authentication is required for all CRA sign-in options to enhance security.",
+        "After entering your credentials, you'll need to enter a one-time passcode sent to your preferred method (email, text, or phone call)."
+      ],
+      "citationHead": "Use this Government of Canada link to check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/e-services-individuals/account-individuals.html"
+    }
+  },
+  {
+    "timestamp": "2024-10-11T18:32:32.023Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Generally, most child care services are exempt from GST/HST.</s-1> <s-2>This means that as a daycare business, you typically do not need to charge GST/HST on your services.</s-2> <s-3>However, there are some exceptions and specific rules that may apply depending on your particular situation.</s-3> <s-4>For example, if you provide additional services beyond basic child care, different rules may apply.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-special-situations/child-care-services.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-11T18:34:08.066Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Daycare services provided for periods of less than 24 hours and primarily to children 14 years of age or under are generally exempt from GST/HST. </s-1><s-2>This means daycare businesses offering these services normally do not charge GST/HST on their fees. </s-2><s-3>However, specific situations can vary, so it's important to check the latest guidance or consult a tax professional for details specific to your situation. </s-3><s-4>More information about GST/HST exemptions and compliance can be found on the Government of Canada website. </s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4022/general-information-about-gst-hst-registrants.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-11T21:54:22.707Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Most daycare services are exempt from GST/HST in Canada if they are provided to individuals to ensure the mental or physical well-being of children under 14 years of age for short periods. </s-1><s-2>This means that GST/HST does not apply to revenues earned from qualifying daycare services. </s-2><s-3>However, this exemption may not cover all aspects of a daycare business, such as certain sales or rentals. </s-3><s-4>To confirm specifics for your situation, review the guidance for educational and educational services on the Canada.ca website. </s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4071/guide-gst-hst-elections.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-11T22:02:07.005Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Most daycare services are exempt from the Goods and Services Tax (GST) in Canada.</s-1> <s-2>This means that if your daycare business provides child care services, you generally do not charge GST on your fees.</s-2> <s-3>It is important to confirm this based on your specific services and location, as there might be exceptions.</s-3> <s-4>Consult the Canada.ca page on GST/HST information for childcare service providers for details.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-gst/gst-hst-child-care.html",
+      "confidenceRating": "1",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-12T00:05:25.113Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>As a daycare provider, you may be exempt from charging GST/HST if your service qualifies as an exempt supply under the Excise Tax Act, which typically includes childcare services provided primarily to children 14 years of age or under.</s-1> <s-2>This means that if your daycare services are considered exempt supplies, you do not charge GST/HST to your clients.</s-2> <s-3>If any part of your services doesn't qualify as exempt, you may need to charge GST/HST and register for a GST/HST account if your sales exceed $30,000 in a single calendar quarter or over four consecutive calendar quarters.</s-3> <s-4>To determine the specific application and obligations related to your daycare service, it's essential to refer to official resources for GST/HST and businesses.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/excise-taxes-duties-levies/exempt-supplies.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-12T00:06:11.395Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>Generally, if your daycare service provides care for children under the age of 14, it may be considered an exempt service under the Excise Tax Act, meaning you would not charge GST/HST. </s-1><s-2>Exempt services do not allow you to claim input tax credits for any GST/HST paid on purchases related to your business. </s-2><s-3>If you also offer other services that do not fall under these exemptions, you may need to charge and remit GST/HST on those specific services. </s-3><s-4>It is important to review specific details on daycare services and their tax obligations. </s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/gst-hst-sectors-specific-information/daycare-facilities.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-12T00:06:42.732Z",
+    "originalQuestion": "do i have to pay gst as a daycare business?",
+    "redactedQuestion": "do i have to pay gst as a daycare business?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>As a daycare business in Canada, you generally do not have to charge or collect GST/HST on your childcare services.</s-1> <s-2>Childcare services are typically considered exempt supplies under the GST/HST legislation.</s-2> <s-3>However, there are some exceptions and specific rules that may apply depending on your particular situation.</s-3> <s-4>For example, if you provide additional services beyond basic childcare, those services might be taxable.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-special-situations/child-care-services.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T00:18:15.199Z",
+    "originalQuestion": "how renew pr card",
+    "redactedQuestion": "how renew pr card",
+    "aiResponse": {
+      "paragraphs": [
+        "Here's a brief overview of how to renew your Permanent Resident (PR) card:",
+        "<s-1>To renew your PR card, you need to submit an application before your current card expires.</s-1> <s-2>You can apply online or by paper, but online applications are processed faster.</s-2> <s-3>Make sure you meet the residency requirement of being physically present in Canada for at least 730 days (2 years) in the past 5 years.</s-3> <s-4>Gather required documents, including photos, proof of residency, and any additional documents specific to your situation.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/new-immigrants/pr-card/apply-renew-replace.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T00:25:50.996Z",
+    "originalQuestion": "I applied for pr card. How can i find out when I will get it.",
+    "redactedQuestion": "I applied for pr card. How can i find out when I will get it.",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To check the status of your Permanent Resident (PR) card application, you can use the online tool called \"Check application status\" on the Government of Canada website.</s-1> <s-2>You'll need your application number to use this service.</s-2> <s-3>The tool will show you what stage your application is at in the process.</s-3> <s-4>Processing times for PR cards can vary, so it's a good idea to check the current processing times on the same website.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-status.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T00:39:56.430Z",
+    "originalQuestion": "how find out when I'll get my PR card?",
+    "redactedQuestion": "how find out when I'll get my PR card?",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To find out when you will receive your Permanent Resident (PR) card, check the processing times for PR cards on the Government of Canada website.</s-1> <s-2>Processing times may vary based on whether you're applying for your first PR card, renewing or replacing it.</s-2> <s-3>Use the \"Check application status\" tool provided by the Immigration, Refugees and Citizenship Canada (IRCC) to track your application's current status.</s-3> <s-4>Make sure you have your application number ready for more precise tracking.</s-4>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-status.html",
+      "confidenceRating": "0.9",
+      "aiService": "chatgpt"
+    },
+    "aiService": "chatgpt"
+  },
+  {
+    "timestamp": "2024-10-15T01:10:52.238Z",
+    "originalQuestion": "I can't find where to use my GCKey to sign in.",
+    "redactedQuestion": "I can't find where to use my GCKey to sign in.",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>GCKey cannot be used to sign in to CRA services like My Account.</s-1> <s-2>To access CRA services, you need to use one of these sign-in options: CRA user ID and password, an Interac sign-in partner, or a provincial digital ID for Alberta or BC.</s-2> <s-3>If you haven't registered for CRA online services yet, you'll need to do so using one of these options.</s-3>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html",
+      "confidenceRating": "0.95",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T01:12:53.073Z",
+    "originalQuestion": "I am trying to find out if my ei application has been approved",
+    "redactedQuestion": "I am trying to find out if my ei application has been approved",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To check the status of your Employment Insurance (EI) application, you'll need to sign in to your My Service Canada Account (MSCA).</s-1> <s-2>Once signed in, you can view the status of your EI application, see past payments, and access other EI-related services.</s-2> <s-3>If you don't have an MSCA, you'll need to register for one using your Social Insurance Number (SIN) and access code from your EI application.</s-3>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/services/benefits/ei/ei-internet-reporting.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T17:53:49.607Z",
+    "originalQuestion": "how long does it take to get my first EI payment?",
+    "redactedQuestion": "how long does it take to get my first EI payment?\n<referring-url>https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html</referring-url>",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>After you apply for Employment Insurance (EI), if you're eligible and have submitted all required information, you can expect to receive your first EI payment within 28 days of submitting your application.</s-1> <s-2>This is the standard processing time for most EI claims.</s-2> <s-3>However, it's important to note that you must complete your bi-weekly reports to receive your payments, even if your application is still being processed.</s-3>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/after-applying.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T18:17:16.915Z",
+    "originalQuestion": "I applied 2 weeks ago - how do I find out if I'll get it",
+    "redactedQuestion": "I applied 2 weeks ago - how do I find out if I'll get it\n<referring-url>https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html</referring-url>",
+    "aiResponse": {
+      "paragraphs": [
+        "I apologize, but I need more information to provide a specific answer. Based on the referring URL, it seems you're asking about Employment Insurance (EI). However, without knowing exactly what you applied for, I can't give a precise response. Here's some general guidance:",
+        "<s-1>For most EI applications, you can check the status of your application online through your My Service Canada Account (MSCA).</s-1> <s-2>If you don't have an MSCA, you can create one to view your application status.</s-2> <s-3>Alternatively, you can contact Service Canada directly for an update on your specific application.</s-3>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/services/benefits/ei/ei-internet-reporting.html",
+      "confidenceRating": "0.7",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  },
+  {
+    "timestamp": "2024-10-15T18:18:37.139Z",
+    "originalQuestion": "How can i find out if my application was accepted?",
+    "redactedQuestion": "How can i find out if my application was accepted?\n<referring-url>https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html</referring-url>",
+    "aiResponse": {
+      "paragraphs": [
+        "<s-1>To check the status of your Employment Insurance (EI) application, you can use your My Service Canada Account (MSCA).</s-1> <s-2>Once you sign in to your MSCA, you'll be able to view the current status of your EI application, including whether it has been accepted or if any additional information is required.</s-2> <s-3>If you don't have an MSCA, you can create one to access this information.</s-3>"
+      ],
+      "citationHead": "Check your answer and take the next step:",
+      "citationUrl": "https://www.canada.ca/en/employment-social-development/services/my-account.html",
+      "confidenceRating": "0.9",
+      "aiService": "claude"
+    },
+    "aiService": "claude"
+  }
+]

@@ -66,7 +66,7 @@ const TempChatAppContainer = () => {
   //end of parseAIResponse
 
   // wrap log function with useCallback to ensure it's only recreated when necessary
-  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService) => {
+  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl) => {
     const parsedResponse = parseAIResponse(aiResponse, aiService);
 
     const logEntry = {
@@ -74,7 +74,8 @@ const TempChatAppContainer = () => {
       originalQuestion,
       redactedQuestion,
       aiResponse: parsedResponse,
-      aiService
+      aiService,
+      ...(referringUrl && { referringUrl }) // Only add referringUrl if it exists
     };
 
     // Log to console
@@ -132,7 +133,7 @@ const TempChatAppContainer = () => {
         setShowFeedback(true);  // Show feedback component after AI response
 
         // Log the interaction
-        logInteraction(userMessage, messageWithUrl, response, selectedAI);
+        logInteraction(userMessage, redactedText, response, selectedAI, referringUrl.trim() || undefined);
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
