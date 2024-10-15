@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
@@ -32,6 +32,7 @@ const TempChatAppContainer = () => {
   }, []);
 
   const parseAIResponse = useCallback((text, aiService) => {
+    console.log('Parsing AI response:', text, aiService);
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
     const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
@@ -40,42 +41,40 @@ const TempChatAppContainer = () => {
     const urlMatch = text.match(citationUrlRegex);
     const confidenceMatch = text.match(confidenceRatingRegex);
 
-    let mainContent, citationHead, citationUrl, confidenceRating;
+    let mainContent = text
+      .replace(citationHeadRegex, '')
+      .replace(citationUrlRegex, '')
+      .replace(confidenceRatingRegex, '')
+      .trim();
 
-    if (urlMatch) {
-      mainContent = text
-        .replace(citationHeadRegex, '')
-        .replace(citationUrlRegex, '')
-        .replace(confidenceRatingRegex, '')
-        .trim();
-      citationHead = headMatch ? headMatch[1] : null;
-      citationUrl = urlMatch[1];
-      confidenceRating = confidenceMatch ? confidenceMatch[1] : null;
-    } else {
-      mainContent = text;
-      citationHead = null;
-      citationUrl = null;
-      confidenceRating = null;
-    }
+    // Remove sentence tags
+    mainContent = mainContent.replace(/<s-\d+>|<\/s-\d+>/g, '');
 
     // Split content into paragraphs
     const paragraphs = mainContent.split(/\n+/);
 
-    return { paragraphs, citationHead, citationUrl, confidenceRating, aiService };
+    const result = {
+      paragraphs,
+      citationHead: headMatch ? headMatch[1] : null,
+      citationUrl: urlMatch ? urlMatch[1] : null,
+      confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
+      aiService
+    };
+    console.log('Parsed AI response:', result);
+    return result;
   }, []);
-  //end of parseAIResponse
 
-  // wrap log function with useCallback to ensure it's only recreated when necessary
-  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl) => {
-    const parsedResponse = parseAIResponse(aiResponse, aiService);
-
+  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback) => {
     const logEntry = {
       timestamp: new Date().toISOString(),
       originalQuestion,
       redactedQuestion,
-      aiResponse: parsedResponse,
+      aiResponse,
       aiService,
-      ...(referringUrl && { referringUrl }) // Only add referringUrl if it exists
+      ...(referringUrl && { referringUrl }),
+      ...(citationUrl && { citationUrl }),
+      ...(confidenceRating && { confidenceRating }),
+      ...(feedback !== undefined && { feedback })
     };
 
     // Log to console
@@ -85,21 +84,39 @@ const TempChatAppContainer = () => {
     const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
     storedLogs.push(logEntry);
     localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
-  }, [parseAIResponse]);
-  //end of logInteraction
+  }, []);
 
   const handleFeedback = useCallback((isPositive) => {
-    // Here you can implement the logic to store or send the feedback
-    console.log(`User feedback: ${isPositive ? 'Positive' : 'Negative'}`);
-    // You might want to send this to your backend or store it in localStorage
-  }, []);
-  // end of handleFeedback
+    const feedback = isPositive ? 'positive' : 'negative';
+    console.log(`User feedback: ${feedback}`);
+
+    // Get the last message (which should be the AI response)
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && lastMessage.sender === 'ai') {
+      const { text: aiResponse, aiService } = lastMessage;
+      const { citationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
+
+      // Get the user's message (which should be the second-to-last message)
+      const userMessage = messages[messages.length - 2];
+      if (userMessage && userMessage.sender === 'user') {
+        logInteraction(
+          userMessage.text,
+          userMessage.redactedText,
+          aiResponse,
+          aiService,
+          userMessage.referringUrl,
+          citationUrl,
+          confidenceRating,
+          feedback
+        );
+      }
+    }
+  }, [messages, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
     setReferringUrl(e.target.value);
   };
 
-  // handleSendMessage to the AI 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
       setShowFeedback(false);
@@ -123,17 +140,25 @@ const TempChatAppContainer = () => {
 
       try {
         let response;
-        console.log('Sending message to:', selectedAI);
+        // console.log('Sending message to:', selectedAI);
         if (selectedAI === 'claude') {
           response = await ClaudeService.sendMessage(messageWithUrl);
         } else {
           response = await ChatGPTService.sendMessage(messageWithUrl);
         }
+        
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
         setShowFeedback(true);  // Show feedback component after AI response
 
         // Log the interaction
-        logInteraction(userMessage, redactedText, response, selectedAI, referringUrl.trim() || undefined);
+        logInteraction(
+          userMessage, 
+          redactedText, 
+          response, 
+          selectedAI, 
+          referringUrl.trim() || undefined,
+          // Remove citationUrl and confidenceRating from here
+        );
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
@@ -142,8 +167,6 @@ const TempChatAppContainer = () => {
       }
     }
   }, [inputText, selectedAI, clearInput, logInteraction, referringUrl]);
-  // end of handleSendMessage
-
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -151,7 +174,6 @@ const TempChatAppContainer = () => {
     }
   }, [isLoading, messages, clearInput]);
 
-  // Add this new function
   const checkAndUpdateCitation = useCallback(async (messageIndex, citationUrl) => {
     if (!citationUrl || checkedCitations[messageIndex]) return;
 
@@ -159,7 +181,6 @@ const TempChatAppContainer = () => {
     setCheckedCitations(prev => ({ ...prev, [messageIndex]: result }));
   }, [checkedCitations]);
 
-  // Use useEffect at the component level to check citations
   useEffect(() => {
     messages.forEach((message, index) => {
       if (message.sender === 'ai') {
@@ -171,8 +192,8 @@ const TempChatAppContainer = () => {
     });
   }, [messages, checkAndUpdateCitation, parseAIResponse]);
 
-  //format the response from the AI service
-  const formatAIResponse = useMemo(() => (text, aiService, messageIndex) => {
+  const formatAIResponse = useCallback((text, aiService, messageIndex) => {
+    console.log('Formatting AI response:', text, aiService, messageIndex);
     let responseType = 'normal';
     let content = text;
 
@@ -194,29 +215,15 @@ const TempChatAppContainer = () => {
     return (
       <div className="ai-message-content">
         {paragraphs.map((paragraph, index) => {
-          // Check if the paragraph contains sentence tags
-          const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\1>/g;
-          const sentences = [...paragraph.matchAll(sentenceRegex)];
-
-          if (sentences.length > 0) {
-            // If sentences are tagged, render each sentence separately
-            return sentences.map(([, number, sentence], sentenceIndex) => (
-              <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
-                {sentence.trim()}
+          const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
+          if (listItemMatch) {
+            return (
+              <p key={index} className="ai-list-item">
+                <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
               </p>
-            ));
+            );
           } else {
-            // If no sentence tags, check for list items or render as a regular paragraph
-            const listItemMatch = paragraph.match(/^(\d+\.)\s*(.*)/);
-            if (listItemMatch) {
-              return (
-                <p key={index} className="ai-list-item">
-                  <span className="list-number">{listItemMatch[1]}</span> {listItemMatch[2]}
-                </p>
-              );
-            } else {
-              return <p key={index} className="ai-paragraph">{paragraph}</p>;
-            }
+            return <p key={index} className="ai-paragraph">{paragraph}</p>;
           }
         })}
         {(citationHead || citationUrl || responseType !== 'normal' || aiService) && (
@@ -247,36 +254,39 @@ const TempChatAppContainer = () => {
       </div>
     );
   }, [parseAIResponse, checkedCitations]);
-  //end of formatAIResponse
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
 
   return (
     <div className="chat-container">
       <div className="message-list">
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.sender === 'user' ? (
-              <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
-                <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
-                  {message.redactedText}
-                </p>
-                {message.redactedItems && message.redactedItems.length > 0 && (
-                  <p className="redacted-preview">
-                    {privacyMessage}
+        {messages.map((message, index) => {
+          console.log('Rendering message:', message);
+          return (
+            <div key={index} className={`message ${message.sender}`}>
+              {message.sender === 'user' ? (
+                <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
+                  <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
+                    {message.redactedText}
                   </p>
-                )}
-              </div>
-            ) : (
-              <>
-                {formatAIResponse(message.text, message.aiService, index)}
-                {index === messages.length - 1 && showFeedback && (
-                  <FeedbackComponent onFeedback={handleFeedback} />
-                )}
-              </>
-            )}
-          </div>
-        ))}
+                  {message.redactedItems && message.redactedItems.length > 0 && (
+                    <p className="redacted-preview">
+                      {privacyMessage}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {console.log('Calling formatAIResponse with:', message.text, message.aiService, index)}
+                  {formatAIResponse(message.text, message.aiService, index)}
+                  {index === messages.length - 1 && showFeedback && (
+                    <FeedbackComponent onFeedback={handleFeedback} />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
         {isLoading && <div className="message ai">Thinking...</div>}
       </div>
       <div className="input-area mt-400">
