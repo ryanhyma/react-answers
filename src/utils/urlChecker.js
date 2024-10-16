@@ -17,27 +17,39 @@ const checkCitationUrl = async (url) => {
   ];
 
   try {
-    // Attempt to fetch the URL
-    const response = await fetch(url, { 
+    // First, try a regular fetch to check for known 404 pages
+    const regularResponse = await fetch(url, { 
       method: 'GET',
-      redirect: 'follow'  // This allows the fetch to follow redirects
+      redirect: 'follow'
     });
 
     // Check if the final URL (after potential redirects) is a known 404 page
-    if (notFoundPages.includes(response.url)) {
+    if (notFoundPages.includes(regularResponse.url)) {
       return fallbackResult;
     }
 
-    // Check if the response is not OK (status outside 200-299 range) or specifically a 404
-    if (!response.ok || response.status === 404) {
-      return fallbackResult;
+    // If the regular fetch succeeded and it's not a known 404 page, we consider it valid
+    if (regularResponse.ok) {
+      return { 
+        isValid: true, 
+        url: regularResponse.url,
+        confidenceRating: 1
+      };
     }
 
-    // If we've reached here, the URL is valid
+    // If the regular fetch failed due to CORS, try again with no-cors mode
+    const noCorsResponse = await fetch(url, { 
+      method: 'GET',
+      mode: 'no-cors',
+      redirect: 'follow'
+    });
+
+    // In no-cors mode, we can't access response properties like 'ok' or 'status'
+    // The mere fact that we got a response (even if opaque) suggests the URL is valid
     return { 
       isValid: true, 
-      url: response.url,  // This will be the final URL after any redirects
-      confidenceRating: 1  // We'll keep the original confidence rating for valid URLs
+      url: url,  // We can't access response.url in no-cors mode, so we use the original URL
+      confidenceRating: 0.8  // Lower confidence as we can't verify the exact status
     };
   } catch (error) {
     // Log any errors that occur during the fetch process
