@@ -25,13 +25,11 @@ const checkCitationUrl = async (url) => {
 
     // Check if the final URL (after potential redirects) is a known 404 page
     if (notFoundPages.includes(response.url)) {
-      console.log('URL redirected to a known 404 page:', response.url);
       return fallbackResult;
     }
 
     // Check if the response is not OK (status outside 200-299 range) or specifically a 404
     if (!response.ok || response.status === 404) {
-      console.log('URL returned an error status:', response.status);
       return fallbackResult;
     }
 

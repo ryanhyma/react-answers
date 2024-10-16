@@ -88,7 +88,7 @@ const TempChatAppContainer = () => {
 
   const handleFeedback = useCallback((isPositive) => {
     const feedback = isPositive ? 'positive' : 'negative';
-    console.log(`User feedback: ${feedback}`);
+    // console.log(`User feedback: ${feedback}`);
 
     // Get the last message (which should be the AI response)
     const lastMessage = messages[messages.length - 1];
@@ -193,7 +193,7 @@ const TempChatAppContainer = () => {
   }, [messages, checkAndUpdateCitation, parseAIResponse]);
 
   const formatAIResponse = useCallback((text, aiService, messageIndex) => {
-    console.log('Formatting AI response:', text, aiService, messageIndex);
+    // console.log('Formatting AI response:', text, aiService, messageIndex);
     let responseType = 'normal';
     let content = text;
 
@@ -268,7 +268,7 @@ const TempChatAppContainer = () => {
     <div className="chat-container">
       <div className="message-list">
         {messages.map((message, index) => {
-          console.log('Rendering message:', message);
+          // console.log('Rendering message:', message);
           return (
             <div key={index} className={`message ${message.sender}`}>
               {message.sender === 'user' ? (
@@ -284,7 +284,7 @@ const TempChatAppContainer = () => {
                 </div>
               ) : (
                 <>
-                  {console.log('Calling formatAIResponse with:', message.text, message.aiService, index)}
+                  {/* {console.log('Calling formatAIResponse with:', message.text, message.aiService, index)} */}
                   {formatAIResponse(message.text, message.aiService, index)}
                   {index === messages.length - 1 && showFeedback && (
                     <FeedbackComponent onFeedback={handleFeedback} />
