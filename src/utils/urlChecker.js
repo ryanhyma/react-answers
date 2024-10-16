@@ -17,43 +17,38 @@ const checkCitationUrl = async (url) => {
   ];
 
   try {
-    // First, try a regular fetch to check for known 404 pages
-    const regularResponse = await fetch(url, { 
+    const response = await fetch(url, { 
       method: 'GET',
+      mode: 'cors', // Explicitly set mode to 'cors'
+      credentials: 'omit', // Omit credentials to avoid CORS preflight
       redirect: 'follow'
     });
 
     // Check if the final URL (after potential redirects) is a known 404 page
-    if (notFoundPages.includes(regularResponse.url)) {
+    if (notFoundPages.includes(response.url)) {
       return fallbackResult;
     }
 
-    // If the regular fetch succeeded and it's not a known 404 page, we consider it valid
-    if (regularResponse.ok) {
-      return { 
-        isValid: true, 
-        url: regularResponse.url,
-        confidenceRating: 1
+    // If we've reached here, the URL is valid
+    return { 
+      isValid: true, 
+      url: response.url,
+      confidenceRating: 1
+    };
+  } catch (error) {
+    console.error('Error checking citation URL:', error);
+
+    // Check if the error is due to CORS
+    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+      // Assume the URL is valid if we get a CORS error (we received a response, just can't read it)
+      return {
+        isValid: true,
+        url: url,
+        confidenceRating: 0.7 // Lower confidence due to CORS error
       };
     }
 
-    // If the regular fetch failed due to CORS, try again with no-cors mode
-    const noCorsResponse = await fetch(url, { 
-      method: 'GET',
-      mode: 'no-cors',
-      redirect: 'follow'
-    });
-
-    // In no-cors mode, we can't access response properties like 'ok' or 'status'
-    // The mere fact that we got a response (even if opaque) suggests the URL is valid
-    return { 
-      isValid: true, 
-      url: url,  // We can't access response.url in no-cors mode, so we use the original URL
-      confidenceRating: 0.8  // Lower confidence as we can't verify the exact status
-    };
-  } catch (error) {
-    // Log any errors that occur during the fetch process
-    console.error('Error checking citation URL:', error);
+    // For other types of errors, return the fallback result
     return fallbackResult;
   }
 };

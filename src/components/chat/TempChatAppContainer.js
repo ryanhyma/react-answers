@@ -32,7 +32,7 @@ const TempChatAppContainer = () => {
   }, []);
 
   const parseAIResponse = useCallback((text, aiService) => {
-    console.log('Parsing AI response:', text, aiService);
+    // console.log('Parsing AI response:', text, aiService);
     const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
     const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
     const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
@@ -57,7 +57,7 @@ const TempChatAppContainer = () => {
       confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
       aiService
     };
-    console.log('Parsed AI response:', result);
+    // console.log('Parsed AI response:', result);
     return result;
   }, []);
 
