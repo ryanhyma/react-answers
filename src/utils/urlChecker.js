@@ -19,13 +19,18 @@ const checkCitationUrl = async (url) => {
   try {
     const response = await fetch(url, { 
       method: 'GET',
-      mode: 'cors', // Explicitly set mode to 'cors'
-      credentials: 'omit', // Omit credentials to avoid CORS preflight
+      mode: 'cors',
+      credentials: 'omit',
       redirect: 'follow'
     });
 
     // Check if the final URL (after potential redirects) is a known 404 page
     if (notFoundPages.includes(response.url)) {
+      return fallbackResult;
+    }
+
+    // Check for 404 status
+    if (response.status === 404) {
       return fallbackResult;
     }
 
@@ -40,12 +45,25 @@ const checkCitationUrl = async (url) => {
 
     // Check if the error is due to CORS
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      // Assume the URL is valid if we get a CORS error (we received a response, just can't read it)
-      return {
-        isValid: true,
-        url: url,
-        confidenceRating: 0.7 // Lower confidence due to CORS error
-      };
+      // For CORS errors, we'll make a second attempt with no-cors mode
+      try {
+        const noCorsResponse = await fetch(url, { 
+          method: 'GET',
+          mode: 'no-cors',
+          redirect: 'follow'
+        });
+        
+        // If we get here, the URL exists but we can't check its exact status
+        return {
+          isValid: true,
+          url: url,
+          confidenceRating: 0.7 // Lower confidence due to CORS restrictions
+        };
+      } catch (noCorsError) {
+        // If even no-cors fails, we'll assume the URL is invalid
+        console.error('Error in no-cors fetch:', noCorsError);
+        return fallbackResult;
+      }
     }
 
     // For other types of errors, return the fallback result
