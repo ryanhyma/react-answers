@@ -61,7 +61,7 @@ const TempChatAppContainer = () => {
     return result;
   }, []);
 
-  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback) => {
+  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertRating) => {
     const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
 
     const logEntry = {
@@ -74,7 +74,11 @@ const TempChatAppContainer = () => {
       ...(citationUrl && { citationUrl }),
       ...(originalCitationUrl && { originalCitationUrl }),
       ...(confidenceRating && { confidenceRating }),
-      ...(feedback !== undefined && { feedback })
+      ...(feedback !== undefined && { feedback }),
+      ...(expertRating && {
+        expertRating: expertRating.rating,
+        ...(expertRating.expertCitationURL && { expertCitationURL: expertRating.expertCitationURL })
+      })
     };
 
     // Log to console
@@ -86,7 +90,7 @@ const TempChatAppContainer = () => {
     localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
   }, [parseAIResponse]);
 
-  const handleFeedback = useCallback((isPositive) => {
+  const handleFeedback = useCallback((isPositive, expertRating = null) => {
     const feedback = isPositive ? 'positive' : 'negative';
     // console.log(`User feedback: ${feedback}`);
 
@@ -107,7 +111,8 @@ const TempChatAppContainer = () => {
           userMessage.referringUrl,
           citationUrl,
           confidenceRating,
-          feedback
+          feedback,
+          expertRating //pass the entire object which can include expertURL
         );
       }
     }
@@ -124,7 +129,7 @@ const TempChatAppContainer = () => {
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
       // Add referring URL to the message if provided
-      const messageWithUrl = referringUrl 
+      const messageWithUrl = referringUrl
         ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
         : redactedText;
 
@@ -140,28 +145,29 @@ const TempChatAppContainer = () => {
 
       try {
         let response;
-        // console.log('Sending message to:', selectedAI);
         if (selectedAI === 'claude') {
           response = await ClaudeService.sendMessage(messageWithUrl);
         } else {
           response = await ChatGPTService.sendMessage(messageWithUrl);
         }
-        
+
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
         setShowFeedback(true);  // Show feedback component after AI response
 
         // Log the interaction
         logInteraction(
-          userMessage, 
-          redactedText, 
-          response, 
-          selectedAI, 
-          referringUrl.trim() || undefined,
-          // Remove citationUrl and confidenceRating from here
+          userMessage,
+          redactedText,
+          response,
+          selectedAI,
+          referringUrl.trim() || undefined
         );
       } catch (error) {
         console.error('Error sending message:', error);
-        setMessages(prevMessages => [...prevMessages, { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai' }]);
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai', error: true }
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -267,33 +273,33 @@ const TempChatAppContainer = () => {
   return (
     <div className="chat-container">
       <div className="message-list">
-        {messages.map((message, index) => {
-          // console.log('Rendering message:', message);
-          return (
-            <div key={index} className={`message ${message.sender}`}>
-              {message.sender === 'user' ? (
-                <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
-                  <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
-                    {message.redactedText}
+        {messages.map((message, index) => (
+          <div key={index} className={`message ${message.sender}`}>
+            {message.sender === 'user' ? (
+              <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
+                <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
+                  {message.redactedText}
+                </p>
+                {message.redactedItems && message.redactedItems.length > 0 && (
+                  <p className="redacted-preview">
+                    {privacyMessage}
                   </p>
-                  {message.redactedItems && message.redactedItems.length > 0 && (
-                    <p className="redacted-preview">
-                      {privacyMessage}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <>
-                  {/* {console.log('Calling formatAIResponse with:', message.text, message.aiService, index)} */}
-                  {formatAIResponse(message.text, message.aiService, index)}
-                  {index === messages.length - 1 && showFeedback && (
-                    <FeedbackComponent onFeedback={handleFeedback} />
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+                )}
+              </div>
+            ) : (
+              <>
+                {message.error ? (
+                  <div className="error-message">{message.text}</div>
+                ) : (
+                  formatAIResponse(message.text, message.aiService, index)
+                )}
+                {index === messages.length - 1 && showFeedback && !message.error && (
+                  <FeedbackComponent onFeedback={handleFeedback} />
+                )}
+              </>
+            )}
+          </div>
+        ))}
         {isLoading && <div className="message ai">Thinking...</div>}
       </div>
       <div className="input-area mt-400">
