@@ -1,23 +1,16 @@
-import mongoose from 'mongoose';
-
-const connectDB = async () => {
-  try {
-    // This will work both locally and on Vercel
-    const uri = process.env.REACT_APP_MONGODB_URI || process.env.MONGODB_URI;
-    
-    if (!uri) {
-      throw new Error('MongoDB URI is not defined in environment variables');
+const checkDatabaseConnection = async () => {
+    try {
+      const response = await fetch('/api/check-db');
+      if (!response.ok) {
+        throw new Error('Database connection failed');
+      }
+      const data = await response.json();
+      console.log('Database connection status:', data.message);
+      return true;
+    } catch (error) {
+      console.error('Error checking database connection:', error);
+      return false;
     }
-
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected successfully');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    throw error;
-  }
-};
-
-export default connectDB;
+  };
+  
+  export default checkDatabaseConnection;

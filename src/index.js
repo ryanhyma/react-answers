@@ -5,13 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@cdssnc/gcds-components-react/gcds.css'
 import '@cdssnc/gcds-utility/dist/gcds-utility.min.css';
-import connectDB from './services/database';
+import checkDatabaseConnection from './services/database';
 
-// Connect to MongoDB
-connectDB()
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // Render the React app only after successfully connecting to the database
+checkDatabaseConnection()
+  .then((isConnected) => {
+    if (isConnected) {
+      console.log('Database is connected');
+    } else {
+      console.warn('Database is not connected. Some features may not work.');
+    }
+    // Render the React app regardless of database connection status
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(
       <React.StrictMode>
@@ -20,8 +23,8 @@ connectDB()
     );
   })
   .catch((error) => {
-    console.error('Failed to connect to MongoDB', error);
-    // Render the app even if database connection fails
+    console.error('Error checking database connection:', error);
+    // Render the app even if there's an error checking the database connection
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(
       <React.StrictMode>
