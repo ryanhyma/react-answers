@@ -80,9 +80,12 @@ const TempChatAppContainer = () => {
         ...(expertRating.expertCitationURL && { expertCitationURL: expertRating.expertCitationURL })
       })
     };
-    // Log to console
+    // Log to console in all environments
     console.log('Chat Interaction:', logEntry);
-    LoggingService.logInteraction(logEntry);
+    // Only log to database in production environment
+    if (process.env.REACT_APP_ENV === 'production') {
+      LoggingService.logInteraction(logEntry);
+    }
   }, [parseAIResponse]);
 
 
