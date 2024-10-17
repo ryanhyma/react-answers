@@ -7,7 +7,6 @@ const ExpertRatingComponent = ({ onSubmit }) => {
     incomplete: false,
     citationVeryIncorrect: false,
     citationSomewhatIncorrect: false,
-    citationShouldReplace: false,
     expertCitationUrl: '',
   });
 
@@ -83,17 +82,6 @@ const ExpertRatingComponent = ({ onSubmit }) => {
             onChange={handleCheckboxChange}
           />
           Citation URL is somewhat incorrect
-        </label>
-      </div>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            name="citationShouldReplace"
-            checked={expertFeedback.citationShouldReplace}
-            onChange={handleCheckboxChange}
-          />
-          Citation URL should be replaced
         </label>
       </div>
       <div>
