@@ -3,6 +3,7 @@ import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
+import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsInput } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 import checkCitationUrl from '../../utils/urlChecker.js';
@@ -65,7 +66,6 @@ const TempChatAppContainer = () => {
     const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
 
     const logEntry = {
-      timestamp: new Date().toISOString(),
       originalQuestion,
       redactedQuestion,
       aiResponse,
@@ -80,15 +80,11 @@ const TempChatAppContainer = () => {
         ...(expertRating.expertCitationURL && { expertCitationURL: expertRating.expertCitationURL })
       })
     };
-
     // Log to console
     console.log('Chat Interaction:', logEntry);
-
-    // Store in localStorage
-    const storedLogs = JSON.parse(localStorage.getItem('chatLogs') || '[]');
-    storedLogs.push(logEntry);
-    localStorage.setItem('chatLogs', JSON.stringify(storedLogs));
+    LoggingService.logInteraction(logEntry);
   }, [parseAIResponse]);
+
 
   const handleFeedback = useCallback((isPositive, expertRating = null) => {
     const feedback = isPositive ? 'positive' : 'negative';
