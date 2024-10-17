@@ -1,7 +1,7 @@
 const LoggingService = {
     logInteraction: async (interactionData) => {
-      try {
-        if (process.env.REACT_APP_ENV === 'production') {
+      if (process.env.REACT_APP_ENV === 'production') {
+        try {
           const response = await fetch('/api/log-interaction', {
             method: 'POST',
             headers: {
@@ -15,11 +15,11 @@ const LoggingService = {
           }
           
           console.log('Interaction logged successfully to database');
-        } else {
-          console.log('Interaction logging skipped (not in production environment)');
+        } catch (error) {
+          console.error('Error logging interaction to database:', error);
         }
-      } catch (error) {
-        console.error('Error logging interaction:', error);
+      } else {
+        console.log('Development mode: Interaction logged to console', interactionData);
       }
     }
   };

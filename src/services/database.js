@@ -1,4 +1,9 @@
 const checkDatabaseConnection = async () => {
+    if (process.env.REACT_APP_ENV !== 'production') {
+      console.log('Skipping database connection check in development environment');
+      return true;
+    }
+  
     try {
       const response = await fetch('/api/check-db');
       if (!response.ok) {
