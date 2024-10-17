@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { GcdsCheckbox, GcdsInput, GcdsButton } from '@cdssnc/gcds-components-react';
 
 const ExpertRatingComponent = ({ onSubmit }) => {
   const [expertFeedback, setExpertFeedback] = useState({
@@ -22,57 +21,94 @@ const ExpertRatingComponent = ({ onSubmit }) => {
     setExpertFeedback(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Submitting expert feedback:', expertFeedback);
     onSubmit(expertFeedback);
   };
 
   return (
-    <div className="expert-rating-container">
+    <form onSubmit={handleSubmit} className="expert-rating-container">
       <h3>Expert Rating</h3>
-      <GcdsCheckbox
-        name="veryIncorrect"
-        checked={expertFeedback.veryIncorrect}
-        onGcdsChange={handleCheckboxChange}
-        label="Answer is very incorrect"
-      />
-      <GcdsCheckbox
-        name="somewhatIncorrect"
-        checked={expertFeedback.somewhatIncorrect}
-        onGcdsChange={handleCheckboxChange}
-        label="Answer is somewhat incorrect"
-      />
-      <GcdsCheckbox
-        name="incomplete"
-        checked={expertFeedback.incomplete}
-        onGcdsChange={handleCheckboxChange}
-        label="Answer is incomplete"
-      />
-      <GcdsCheckbox
-        name="citationVeryIncorrect"
-        checked={expertFeedback.citationVeryIncorrect}
-        onGcdsChange={handleCheckboxChange}
-        label="Citation URL is very incorrect"
-      />
-      <GcdsCheckbox
-        name="citationSomewhatIncorrect"
-        checked={expertFeedback.citationSomewhatIncorrect}
-        onGcdsChange={handleCheckboxChange}
-        label="Citation URL is somewhat incorrect"
-      />
-      <GcdsCheckbox
-        name="citationShouldReplace"
-        checked={expertFeedback.citationShouldReplace}
-        onGcdsChange={handleCheckboxChange}
-        label="Citation URL should be replaced"
-      />
-      <GcdsInput
-        name="expertCitationUrl"
-        value={expertFeedback.expertCitationUrl}
-        onGcdsChange={handleInputChange}
-        label="Correct citation URL (optional):"
-      />
-      <GcdsButton onClick={handleSubmit}>Submit Expert Feedback</GcdsButton>
-    </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="veryIncorrect"
+            checked={expertFeedback.veryIncorrect}
+            onChange={handleCheckboxChange}
+          />
+          Answer is very incorrect
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="somewhatIncorrect"
+            checked={expertFeedback.somewhatIncorrect}
+            onChange={handleCheckboxChange}
+          />
+          Answer is somewhat incorrect
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="incomplete"
+            checked={expertFeedback.incomplete}
+            onChange={handleCheckboxChange}
+          />
+          Answer is incomplete
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="citationVeryIncorrect"
+            checked={expertFeedback.citationVeryIncorrect}
+            onChange={handleCheckboxChange}
+          />
+          Citation URL is very incorrect
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="citationSomewhatIncorrect"
+            checked={expertFeedback.citationSomewhatIncorrect}
+            onChange={handleCheckboxChange}
+          />
+          Citation URL is somewhat incorrect
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            name="citationShouldReplace"
+            checked={expertFeedback.citationShouldReplace}
+            onChange={handleCheckboxChange}
+          />
+          Citation URL should be replaced
+        </label>
+      </div>
+      <div>
+        <label>
+          Better citation URL (optional):
+          <input
+            type="text"
+            name="expertCitationUrl"
+            value={expertFeedback.expertCitationUrl}
+            onChange={handleInputChange}
+          />
+        </label>
+      </div>
+      <button type="submit">Submit Expert Feedback</button>
+    </form>
   );
 };
 

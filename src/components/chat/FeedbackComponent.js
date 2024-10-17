@@ -18,6 +18,7 @@ const FeedbackComponent = ({ onFeedback }) => {
   };
 
   const handleExpertFeedback = (expertFeedback) => {
+    console.log('Expert feedback received:', expertFeedback);
     onFeedback(false, expertFeedback);
     setFeedbackGiven(true);
     setShowExpertRating(false);
@@ -38,7 +39,7 @@ const FeedbackComponent = ({ onFeedback }) => {
       <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(false)}>
         <FontAwesomeIcon icon={faThumbsDown} /> No
       </GcdsButton>
-      <a href="/survey" className="feedback-survey-link">Give feedback</a>
+      <a href="/survey" className="feedback-survey-link">Give feedback - not implemented yet</a>
     </div>
   );
 };

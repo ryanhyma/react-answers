@@ -62,7 +62,7 @@ const TempChatAppContainer = () => {
     return result;
   }, []);
 
-  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertRating) => {
+  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertFeedback) => {
     const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
 
     const logEntry = {
@@ -75,10 +75,7 @@ const TempChatAppContainer = () => {
       ...(originalCitationUrl && { originalCitationUrl }),
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback }),
-      ...(expertRating && {
-        expertRating: expertRating.rating,
-        ...(expertRating.expertCitationURL && { expertCitationURL: expertRating.expertCitationURL })
-      })
+      ...(expertFeedback && { expertFeedback })
     };
     // Log to console in all environments
     console.log('Chat Interaction:', logEntry);
@@ -88,10 +85,9 @@ const TempChatAppContainer = () => {
     }
   }, [parseAIResponse]);
 
-
-  const handleFeedback = useCallback((isPositive, expertRating = null) => {
+  const handleFeedback = useCallback((isPositive, expertFeedback = null) => {
     const feedback = isPositive ? 'positive' : 'negative';
-    // console.log(`User feedback: ${feedback}`);
+    console.log(`User feedback: ${feedback}`, expertFeedback);
 
     // Get the last message (which should be the AI response)
     const lastMessage = messages[messages.length - 1];
@@ -111,7 +107,7 @@ const TempChatAppContainer = () => {
           citationUrl,
           confidenceRating,
           feedback,
-          expertRating //pass the entire object which can include expertURL
+          expertFeedback
         );
       }
     }
