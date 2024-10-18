@@ -16,8 +16,7 @@ function App() {
     <>
       <section className="alpha-top">
         <div className="container">
-          <small><span className="alpha-label">Beta</span>&nbsp;&nbsp; Experimental page
-            testing.</small>
+          <small><span className="alpha-label">Alpha</span>&nbsp;&nbsp; Experimental page - not public.</small>
         </div>
       </section>
       <GcdsHeader

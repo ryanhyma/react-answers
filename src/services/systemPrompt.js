@@ -1,6 +1,8 @@
 // System prompt and additional update files for all AI services
-// This context file contains a markdown version of the content in the CRA My Account pages added since June 2024
+// This context file contains a markdown version of the content in the CRA My Account pages added since June 2024 - this is a temporary solution to the problem of updated content not being included in the training data of the model. A production version of this application would need some kind of scraping process to capture and provide updated content as context as it b
 import { craAccountInfo } from './context_CRA.js';
+// menu structure to help reduce the number of incorrect citations - this was created by converting the live html ajax html on October 8,2024 into this js object structure. Guidance on using the menu structure is at the bottom of this file where the file is used
+import { canadaMenuStructure } from './canadaMenuStructure.js';
 
 // Use an async function to fetch the content from the files with updated content
 const BASE_SYSTEM_PROMPT = 
@@ -65,26 +67,29 @@ ${craAccountInfo}
 Important Notes:
 * Avoid providing direct links to application forms; instead, link to informational pages that establish eligibility to use the forms or ask the clarifying questions to determine the correct form and their eligibility. Once the user's eligibility is clear, a direct link to the correct application form for their situation can be provided.
 * Do not answer questions unrelated to Canada.ca content.
-* If uncertain about very specific details, acknowledge the possibility of inaccuracies and provide a link to a relevant general navigation page within the site navigation - such as a theme page (for example https://www.canada.ca/en/services/immigration-citizenship.html ) or a narrower topic page within a theme (for example https://www.canada.ca/en/immigration-refugees-citizenship/services/application.html ).
 
 `;
+
 async function loadSystemPrompt() {
-    try {
-      // console.log("Additional CRA Account Info loaded:", craAccountInfo.substring(0, 100) + "...");
-  
-      const fullSystemPrompt = `${BASE_SYSTEM_PROMPT}
-      Updated information as described in guideline 10: 
-      ${craAccountInfo}
-      `;
-  
-    //   console.log("Full system prompt preview:", fullSystemPrompt.substring(0, 500) + "...");
-  
-      return fullSystemPrompt;
-    } catch (error) {
-      console.error("Error loading CRA Account Info:", error);
-      console.log("Falling back to base prompt");
-      return BASE_SYSTEM_PROMPT; // Fall back to base prompt if loading fails
-    }
+  try {
+    const fullSystemPrompt = `${BASE_SYSTEM_PROMPT}
+Updated information as described in guideline 10: 
+${craAccountInfo}
+
+Canada.ca Menu Structure:
+${JSON.stringify(canadaMenuStructure, null, 2)}
+
+* When providing citation URLs, prioritize using the URLs from this menu structure. If a specific URL is not found in the menu structure, you may use other Canada.ca or gc.ca URLs, but be more cautious and express lower confidence in those cases.
+* If uncertain about a specific citation URL, acknowledge the possibility of inaccuracies and provide a link to a relevant navigation page higher up within the site menu structure - such as a top level theme (for example Citizenship and immigration athttps://www.canada.ca/en/services/immigration-citizenship.html ) or preferably a narrower submenu (for example https://www.canada.ca/en/immigration-refugees-citizenship/services/application.html ).
+* The mostRequested items within the menu structure reflect the most popular pages on Canada.ca and the most frequently asked questions. If you are unable to answer a detailed question on one of the most requested topics, a good option is to provide a link to the most requested page.
+`;
+
+    return fullSystemPrompt;
+  } catch (error) {
+    console.error("Error loading additional information:", error);
+    console.log("Falling back to base prompt");
+    return BASE_SYSTEM_PROMPT; // Fall back to base prompt if loading fails
   }
-  
-  export default loadSystemPrompt;
+}
+
+export default loadSystemPrompt;
