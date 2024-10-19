@@ -39,7 +39,6 @@ const FeedbackComponent = ({ onFeedback }) => {
       <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(false)}>
         <FontAwesomeIcon icon={faThumbsDown} /> No
       </GcdsButton>
-      <a href="/survey" className="feedback-survey-link">Give feedback - not implemented yet</a>
     </div>
   );
 };

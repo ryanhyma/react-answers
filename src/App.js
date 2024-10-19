@@ -29,14 +29,14 @@ function App() {
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
-        <GcdsText className='mb-400'> This proof of concept is for research purposes only.
+        <GcdsText className='mb-400'> This proof of concept is for research purposes only. Work is ongoing.
         </GcdsText>
         <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>
-          <GcdsText>Development is still in progress - contact Lisa Fast for information. </GcdsText>
           <GcdsText >To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service.  The removed text will display as <strong>XXX</strong>. </GcdsText>
           <GcdsText>AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024</GcdsText>
           <GcdsText>AI service ChatGPT: OpenAI 4o,  knowledge to May 2024</GcdsText>
           <GcdsText><GcdsLink href="https://github.com/lisafast/react-answers/blob/main/src/services/systemPrompt.js">Read the System Prompt</GcdsLink> that controls the AI output.  </GcdsText>
+          <GcdsText>Development is still in progress - contact lisa.fast@cds-snc.ca for information. </GcdsText>
         </GcdsDetails>
         <TempChatAppContainer 
           referringUrl={referringUrl} 
@@ -44,6 +44,7 @@ function App() {
         />
       </GcdsContainer>
       <GcdsContainer size="sm" centered className="mb-600">
+     <GcdsText>Help improve this service:<a href="https://cdssnc.qualtrics.com/jfe/form/SV_4N2YTcAHkcBEGfs" className="feedback-survey-link" target="_blank" rel="noopener noreferrer">take the user survey </a></GcdsText> 
         <GcdsDetails detailsTitle='Privacy and AI terms of use' className='mb-400'>
           <GcdsText>
             We may store your questions and answers to improve system performance. Personal information will be deleted and replaced with XXX. Personal information won't be stored.
