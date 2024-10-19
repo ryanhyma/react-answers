@@ -4,9 +4,10 @@ import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
 import LoggingService from '../../services/LoggingService.js';
-import { GcdsTextarea, GcdsButton, GcdsInput } from '@cdssnc/gcds-components-react';
+import { GcdsTextarea, GcdsButton, GcdsInput, GcdsDetails } from '@cdssnc/gcds-components-react';
 import './TempChatAppContainer.css';
 import checkCitationUrl from '../../utils/urlChecker.js';
+
 
 const TempChatAppContainer = () => {
   const [messages, setMessages] = useState([]);
@@ -298,17 +299,23 @@ const TempChatAppContainer = () => {
         {isLoading && <div className="message ai">Thinking...</div>}
       </div>
       <div className="input-area mt-400">
-        <GcdsTextarea
-          key={textareaKey}
-          textareaId="textarea-props"
-          value={inputText}
-          label="Ask a Canada.ca question"
-          name="textarea-name"
-          rows="2"
-          hint="Hint: add details about your situation. Always check your answer."
-          onInput={handleInputChange}
-          disabled={isLoading}
-        />
+        <div className="input-button-wrapper">
+          <GcdsTextarea
+            key={textareaKey}
+            textareaId="textarea-props"
+            value={inputText}
+            label="Ask a Canada.ca question"
+            name="textarea-name"
+            rows="2"
+            hint="Hint: add details about your situation. Always check your answer."
+            onInput={handleInputChange}
+            disabled={isLoading}
+          />
+           <GcdsButton onClick={handleSendMessage} disabled={isLoading} className="send-button">
+            Send
+          </GcdsButton>
+        </div>
+        <GcdsDetails detailsTitle='Options'>
         <div className="ai-toggle" style={{ marginBottom: '10px' }}>
           <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -323,7 +330,7 @@ const TempChatAppContainer = () => {
                   onChange={handleAIToggle}
                   style={{ marginRight: '5px' }}
                 />
-                <label htmlFor="claude" style={{ marginRight: '15px' }}>Claude</label>
+                <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input
@@ -335,7 +342,7 @@ const TempChatAppContainer = () => {
                   onChange={handleAIToggle}
                   style={{ marginRight: '5px' }}
                 />
-                <label htmlFor="chatgpt">ChatGPT</label>
+                <label htmlFor="chatgpt">OpenAI ChatGPT 4o</label>
               </div>
             </div>
           </fieldset>
@@ -347,7 +354,8 @@ const TempChatAppContainer = () => {
           onGcdsChange={handleReferringUrlChange}
           style={{ marginBottom: '10px' }}
         />
-        <GcdsButton onClick={handleSendMessage} disabled={isLoading}>Send</GcdsButton>
+        </GcdsDetails>
+
       </div>
     </div>
   );
