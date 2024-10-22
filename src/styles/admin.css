@@ -20,3 +20,16 @@
     margin: 0 auto;
     padding: 2rem;
   }
+  /* Add to src/styles/Admin.css */
+.file-upload-section {
+    margin-bottom: 2rem;
+}
+
+.upload-button-container {
+    margin-top: 1rem;
+    display: block;
+}
+
+.mt-400 {
+    margin-top: 1rem;
+}
