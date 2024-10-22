@@ -1,5 +1,5 @@
 const LoggingService = {
-    logInteraction: async (interactionData) => {
+    logInteraction: async (interactionData, isEvaluation = false) => {
       if (process.env.REACT_APP_ENV === 'production') {
         try {
           const response = await fetch('/api/log-interaction', {
@@ -7,7 +7,10 @@ const LoggingService = {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(interactionData),
+            body: JSON.stringify({
+                ...interactionData,
+                isEvaluation,
+                timestamp: new Date().toISOString() }),
           });
           
           if (!response.ok) {
@@ -19,7 +22,10 @@ const LoggingService = {
           console.error('Error logging interaction to database:', error);
         }
       } else {
-        console.log('Development mode: Interaction logged to console', interactionData);
+        console.log('Development mode: Interaction logged to console', {
+            ...interactionData,
+            isEvaluation
+          });
       }
     }
   };

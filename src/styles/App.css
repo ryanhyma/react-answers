@@ -44,3 +44,20 @@
 		margin: 20px auto;
 		padding: 0 20px;
 	}
+
+
+.admin-navigation {
+	margin-left: auto;
+	padding: 0.5rem 1rem;
+  }
+  
+  .admin-link {
+	color: white;
+	text-decoration: none;
+	padding: 0.5rem;
+	font-size: 0.875rem;
+  }
+  
+  .admin-link:hover {
+	text-decoration: underline;
+  }

@@ -82,7 +82,7 @@ const TempChatAppContainer = () => {
     console.log('Chat Interaction:', logEntry);
     // Only log to database in production environment
     if (process.env.REACT_APP_ENV === 'production') {
-      LoggingService.logInteraction(logEntry);
+      LoggingService.logInteraction(logEntry, false); // false indicates this is not an evaluation
     }
   }, [parseAIResponse]);
 
