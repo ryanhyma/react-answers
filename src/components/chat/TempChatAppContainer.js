@@ -5,7 +5,7 @@ import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
 import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsInput, GcdsDetails } from '@cdssnc/gcds-components-react';
-import './TempChatAppContainer.css';
+import '../../styles/TempChatAppContainer.css';
 import checkCitationUrl from '../../utils/urlChecker.js';
 
 

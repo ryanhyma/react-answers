@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GcdsFieldset } from '@cdssnc/gcds-components-react'
-import './ExpertRatingPlain.css';
+import '../../styles/ExpertRatingPlain.css';
 
 const ExpertRatingComponent = ({ onSubmit }) => {
   const [expertFeedback, setExpertFeedback] = useState({

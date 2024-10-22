@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import TempChatAppContainer from './components/chat/TempChatAppContainer';
 import { GcdsHeader, GcdsContainer, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsDetails, GcdsText, GcdsLink, GcdsFooter, GcdsTextarea, GcdsInput } from '@cdssnc/gcds-components-react';
-import './App.css';
+import './styles/App.css';
 
 function App() {
   const [referringUrl, setReferringUrl] = useState('');
