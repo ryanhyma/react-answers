@@ -335,4 +335,51 @@ export const frenchMenuStructure = {
                     "Aurores boréales en direct": "http://asc-csa.gc.ca/fra/astronomie/auroramax/hd-480.asp",
                   }
         },
+        "À propos du gouvernement": {
+          url: "https://www.canada.ca/fr/gouvernement/systeme.html",
+          submenus: {
+            "Comment le gouvernement fonctionne": "https://www.canada.ca/fr/gouvernement/systeme/comment-gouvernement-fonctionne.html",
+            "Priorités du gouvernement": "https://www.canada.ca/fr/gouvernement/systeme/priorites.html",
+            "Traités, lois et règlements": "https://www.canada.ca/fr/gouvernement/systeme/lois.html",
+            "Travailler au gouvernement du Canada": "https://www.canada.ca/fr/gouvernement/fonctionpublique.html",
+            "Rapports pangouvernementaux sur les dépenses et les activités": "https://www.canada.ca/fr/gouvernement/systeme/rapports-pangouvernementaux-depenses-activites.html",
+            "Gouvernement ouvert": "https://open.canada.ca/fr",
+            "Faire affaire avec le gouvernement": "https://www.canada.ca/fr/services/entreprises/faire-affaire.html",
+            "Politiques, normes, directives et lignes directrices": "https://www.tbs-sct.gc.ca/pol/index-fra.aspx",
+            "Biens immobiliers fédéraux": "https://www.canada.ca/fr/gouvernement/systeme/biens.html",
+            "Exigences en matière de communications gouvernementales": "https://www.canada.ca/fr/secretariat-conseil-tresor/sujets/communications-gouvernementales.html",
+            "Communiquer avec le gouvernement": "https://www.canada.ca/fr/gouvernement/systeme/consultations.html",
+            "Gouvernement à l’ère numérique": "https://www.canada.ca/fr/gouvernement/systeme/gouvernement-numerique.html"
+          },
+          mostRequested: {
+            "Nouvelles": "https://www.canada.ca/fr/nouvelles.html",
+            "Ministères et organismes": "https://www.canada.ca/fr/gouvernement/min.html",
+            "Premier ministre": "https://pm.gc.ca/fr",
+            "Ministres": "https://www.canada.ca/fr/gouvernement/ministres.html",
+            "Divulgation proactive": "https://ouvert.canada.ca/fr/divulgation-proactive",
+            "Accès à l’information": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/acces-information-protection-reseignements-personnels.html",
+            "Projets de loi présentés au Parlement": "https://www.parl.ca/legisinfo/fr/legislation-en-bref"
+          }
+        },
+        "Travailler au gouvernement": {
+          url: "https://www.canada.ca/fr/gouvernement/fonctionpublique.html",
+          submenus: {
+            "mesures de précaution": "https://www.canada.ca/fr/gouvernement/systeme/gouvernement-numerique/securite-confidentialite-ligne/atteinte-vie-privee-systemes-bgrs-sirva-canada-touchant-personnel-actuel-ancien-gouvernement-federal.html",
+            "Emplois au gouvernement du Canada": "https://www.canada.ca/fr/services/emplois/opportunites/gouvernement.html",
+            "Rémunération, pension et avantages sociaux": "https://www.canada.ca/fr/gouvernement/fonctionpublique/remuneration.html",
+            "Services et avantages sociaux du personnel militaire": "https://www.canada.ca/fr/gouvernement/fonctionpublique/avantagesmilitaires.html",
+            "Services et avantages sociaux pour les membres de la GRC": "https://www.canada.ca/fr/gouvernement/fonctionpublique/avantagesgrc.html",
+            "Dotation dans la fonction publique": "https://www.canada.ca/fr/gouvernement/fonctionpublique/dotation.html",
+            "Apprentissage et perfectionnement": "https://www.canada.ca/fr/gouvernement/fonctionpublique/apprentissage.html",
+            "Mieux-être, inclusion et diversité": "https://www.canada.ca/fr/gouvernement/fonctionpublique/mieux-etre-inclusion-diversite-fonction-publique.html",
+            "Valeurs et éthique de la fonction publique": "https://www.canada.ca/fr/gouvernement/fonctionpublique/valeurs.html",
+            "Innovation dans la fonction publique": "https://www.canada.ca/fr/gouvernement/fonctionpublique/modernisation.html",
+            "Prix et reconnaissance": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/innovation/prix-reconnaissance-evenements-speciaux.html"
+          },
+          mostRequested: {
+            "Taux de rémunération": "https://www.canada.ca/fr/secretariat-conseil-tresor/sujets/remuneration.html#taux",
+            "Travail hybride": "https://www.canada.ca/fr/gouvernement/fonctionpublique/modernisation/travail-hybride.html",
+            "Négociations collectives": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/conventions-collectives/negociations-collectives.html"
+          }
+        }
   };

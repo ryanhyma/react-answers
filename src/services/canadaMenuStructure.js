@@ -333,5 +333,52 @@ export const canadaMenuStructure = {
                 "Federal Science Libraries Network": "https://science-libraries.canada.ca/eng/home/",
                 "Live view of northern lights cam": "http://asc-csa.gc.ca/eng/astronomy/auroramax/hd-480.asp"
               }
-            }
+            },
+            "About government": {
+                url: "https://www.canada.ca/en/government/system.html",
+                submenus: {
+                  "How government works": "https://www.canada.ca/en/government/system/how-government-works.html",
+                  "Government priorities": "https://www.canada.ca/en/government/system/priorities.html",
+                  "Treaties, laws and regulations": "https://www.canada.ca/en/government/system/laws.html",
+                  "Working for the Government of Canada": "https://www.canada.ca/en/government/publicservice.html",
+                  "Government-wide reporting on spending and operations": "https://www.canada.ca/en/government/system/government-wide-reporting-spending-operations.html",
+                  "Open Government": "https://open.canada.ca/en",
+                  "Doing business with government": "https://www.canada.ca/en/services/business/doing-business.html",
+                  "Policies, standards, directives and guidelines": "https://www.tbs-sct.gc.ca/pol/index-eng.aspx",
+                  "Federal properties and buildings": "https://www.canada.ca/en/government/system/assets.html",
+                  "Government communications requirements": "https://www.canada.ca/en/treasury-board-secretariat/topics/government-communications.html",
+                  "Connect with government": "https://www.canada.ca/en/government/system/consultations.html",
+                  "Government in a digital age": "https://www.canada.ca/en/government/system/digital-government.html"
+                },
+                mostRequested: {
+                  "News": "https://www.canada.ca/en/news.html",
+                  "Departments and agencies": "https://www.canada.ca/en/government/dept.html",
+                  "Prime Minister": "http://pm.gc.ca/en",
+                  "Ministers": "https://www.canada.ca/en/government/ministers.html",
+                  "Proactive disclosure": "https://open.canada.ca/en/proactive-disclosure",
+                  "Access to information": "https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy.html",
+                  "Legislation before Parliament": "https://www.parl.ca/legisinfo/en/legislation-at-a-glance"
+                }
+              },
+              Working for the government: {
+                url: "https://www.canada.ca/en/government/publicservice.html",
+                submenus: {
+                  "precautionary measures": "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/bgrs-sirva-canada-systems-privacy-breach-affecting-current-former-federal-employees.html",
+                  "Government of Canada jobs": "https://www.canada.ca/en/services/jobs/opportunities/government.html",
+                  "Pay, pension and benefits": "https://www.canada.ca/en/government/publicservice/pay.html",
+                  "Services and benefits for the military": "https://www.canada.ca/en/government/publicservice/benefitsmilitary.html",
+                  "Services and benefits for the RCMP": "https://www.canada.ca/en/government/publicservice/benefitsrcmp.html",
+                  "Public service staffing": "https://www.canada.ca/en/government/publicservice/staffing.html",
+                  "Learning and development": "https://www.canada.ca/en/government/publicservice/learning.html",
+                  "Wellness, inclusion and diversity": "https://www.canada.ca/en/government/publicservice/wellness-inclusion-diversity-public-service.html",
+                  "Values and ethics of the public service": "https://www.canada.ca/en/government/publicservice/values.html",
+                  "Innovation in the public service": "https://www.canada.ca/en/government/publicservice/modernizing.html",
+                  "Awards and recognition": "https://www.canada.ca/en/treasury-board-secretariat/services/innovation/awards-recognition-special-events.html"
+                },
+                mostRequested: {
+                  "Rates of pay": "https://www.canada.ca/en/treasury-board-secretariat/topics/pay.html#rates",
+                  "Hybrid work": "https://www.canada.ca/en/government/publicservice/modernizing/hybrid-work.html",
+                  "Collective bargaining": "https://www.canada.ca/en/treasury-board-secretariat/services/collective-agreements/collective-bargaining.html"
+                }
+              }
           }
