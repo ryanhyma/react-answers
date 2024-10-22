@@ -360,7 +360,7 @@ export const canadaMenuStructure = {
                   "Legislation before Parliament": "https://www.parl.ca/legisinfo/en/legislation-at-a-glance"
                 }
               },
-              Working for the government: {
+              "Working for the government": {
                 url: "https://www.canada.ca/en/government/publicservice.html",
                 submenus: {
                   "precautionary measures": "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/bgrs-sirva-canada-systems-privacy-breach-affecting-current-former-federal-employees.html",
@@ -381,4 +381,4 @@ export const canadaMenuStructure = {
                   "Collective bargaining": "https://www.canada.ca/en/treasury-board-secretariat/services/collective-agreements/collective-bargaining.html"
                 }
               }
-          }
+            }
