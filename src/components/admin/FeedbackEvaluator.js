@@ -202,8 +202,9 @@ const FeedbackEvaluator = () => {
         hint="Only CSV files are accepted"
         accept=".csv"
         required={true}
-        onGcdsInput={handleFileChange}  // Using onGcdsInput instead of onInput
-        value={fileValue}
+        {...(fileValue ? { value: fileValue } : {})}
+        onChange={handleFileChange} 
+        // value={fileValue}
     />
     
     {file && !fileUploaded && (
