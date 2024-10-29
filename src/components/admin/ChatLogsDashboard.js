@@ -9,8 +9,8 @@ const ChatLogsDashboard = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      // Using an absolute path since we're proxying through Create React App
-      const response = await fetch(`/api/chat-logs?days=${timeRange}`);
+      // see what logs are available
+      const response = await fetch('/api/chat-logs?days=' + timeRange);
       if (!response.ok) {
         throw new Error('Failed to fetch logs');
       }
@@ -34,7 +34,7 @@ const ChatLogsDashboard = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chat-logs-${new Date().toISOString()}.json`;
+    a.download = 'chat-logs-' + new Date().toISOString() + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
