@@ -1,14 +1,13 @@
 // src/components/admin/FeedbackEvaluator.js
 import React, { useState } from 'react';
 import {
-    GcdsButton,
-    GcdsText,
-    GcdsFileUploader,
     GcdsContainer,
-    GcdsHeading
+    GcdsHeading,
+    GcdsText
 } from '@cdssnc/gcds-components-react';
 import LoggingService from '../../services/LoggingService';
 import ClaudeService from '../../services/ClaudeService';
+import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 
 const FeedbackEvaluator = () => {
@@ -18,58 +17,43 @@ const FeedbackEvaluator = () => {
     const [error, setError] = useState(null);
     const [processedCount, setProcessedCount] = useState(0);
     const [totalEntries, setTotalEntries] = useState(0);
-    const [fileValue, setFileValue] = useState('');
+    const [selectedAI, setSelectedAI] = useState('claude');
     const [fileUploaded, setFileUploaded] = useState(false);
 
     const handleFileChange = (event) => {
-        console.log('File change event:', event); // Debug log
-        
-        // Clear any previous error state
         setError(null);
+        const uploadedFile = event.target.files[0];
         
-        // GcdsFileUploader passes the file in event.target.value
-        if (!event || !event.target) {
-            console.error('Invalid event object');
-            return;
-        }
-    
-        // Get the FileList from the input element
-        const fileInput = event.target.shadowRoot.querySelector('input');
-        console.log('File input:', fileInput); // Debug log
-    
-        // Check if we have a file selected
-        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-            console.log('No file selected in input element');
+        if (!uploadedFile) {
             setFile(null);
-            setFileValue('');
             return;
         }
-    
-        const uploadedFile = fileInput.files[0];
-        console.log('Uploaded file:', uploadedFile); // Debug log
     
         if (!uploadedFile.name.endsWith('.csv')) {
             setError('Please upload a CSV file that you downloaded from the Feedback Viewer');
             setFile(null);
-            setFileValue('');
             return;
         }
     
         setFile(uploadedFile);
-        setFileValue(uploadedFile.name);
         setResults(null);
         setProcessedCount(0);
         setFileUploaded(false);
     };
 
-    const handleUpload = async () => {
+    const handleAIToggle = (e) => {
+        setSelectedAI(e.target.value);
+    };
+
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        
         if (!file) {
             setError('Please select a file first');
             return;
         }
 
         try {
-            // Verify the file can be read
             await file.text();
             setFileUploaded(true);
             setError(null);
@@ -79,44 +63,70 @@ const FeedbackEvaluator = () => {
         }
     };
 
+    const isValidLine = (line) => {
+        // Remove all commas and whitespace
+        const cleanLine = line.replace(/,/g, '').trim();
+        return cleanLine.length > 0;
+    };
+
+    const parseCSVLine = (line) => {
+        const values = [];
+        let currentValue = '';
+        let withinQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+                withinQuotes = !withinQuotes;
+                continue;
+            }
+            
+            if (char === ',' && !withinQuotes) {
+                values.push(currentValue.trim());
+                currentValue = '';
+                continue;
+            }
+            
+            currentValue += char;
+        }
+        
+        values.push(currentValue.trim());
+        return values;
+    };
+
     const processCSV = (csvText) => {
         try {
-            const lines = csvText.split('\n');
-            const headers = lines[0].split(',');
-
-            console.log('CSV Headers:', headers); // For debugging
-
-            // Find indexes for the specific columns we need
-            const problemDetailsIndex = headers.findIndex(h => h === 'Problem Details');
-            const urlIndex = headers.findIndex(h => h === 'URL');
+            const lines = csvText
+                .split(/\r?\n/)
+                .filter(line => isValidLine(line));
+            
+            const headers = parseCSVLine(lines[0]);
+            const problemDetailsIndex = headers.findIndex(h => h.trim() === 'Problem Details');
+            const urlIndex = headers.findIndex(h => h.trim() === 'URL');
 
             if (problemDetailsIndex === -1 || urlIndex === -1) {
                 throw new Error('Required columns "Problem Details" and "URL" not found in CSV file. Please ensure you are using a file downloaded from the Feedback Viewer.');
             }
 
-            console.log('Found columns - Problem Details:', problemDetailsIndex, 'URL:', urlIndex); // For debugging
-
-            // Process each line into structured data
             const entries = lines.slice(1)
-                .filter(line => line.trim()) // Remove empty lines
-                .map((line) => {
-                    // Split the line, handling possible commas within quoted values
-                    const columns = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                .map(line => {
+                    const values = parseCSVLine(line);
+                    const question = values[problemDetailsIndex]?.trim();
+                    const url = values[urlIndex]?.trim();
 
-                    // Remove quotes and trim values
-                    const cleanColumns = columns.map(col => col.replace(/^"|"$/g, '').trim());
+                    if (question && url) {
+                        console.log('Processing valid entry:', { question, url });
+                    }
 
-                    const entry = {
-                        question: cleanColumns[problemDetailsIndex] || '',
-                        referringUrl: cleanColumns[urlIndex] || ''
+                    return {
+                        question: question || '',
+                        referringUrl: url || ''
                     };
-
-                    console.log('Processed entry:', entry); // For debugging
-                    return entry;
                 })
-                .filter(item => item.question && item.referringUrl); // Remove items with missing data
+                .filter(entry => entry.question && entry.referringUrl);
 
-            console.log('Total valid entries found:', entries.length); // For debugging
+            console.log(`Found ${entries.length} valid entries to process`);
             return entries;
         } catch (error) {
             console.error('Error processing CSV:', error);
@@ -126,27 +136,22 @@ const FeedbackEvaluator = () => {
 
     const processEntry = async (entry) => {
         try {
-            // Redact the question
             const { redactedText } = RedactionService.redactText(entry.question);
-
-            // Add referring URL to the message
             const messageWithUrl = `${redactedText}\n<referring-url>${entry.referringUrl}</referring-url>`;
 
-            // Get AI response
-            const aiResponse = await ClaudeService.sendMessage(messageWithUrl);
+            const aiResponse = selectedAI === 'claude' 
+                ? await ClaudeService.sendMessage(messageWithUrl)
+                : await ChatGPTService.sendMessage(messageWithUrl);
 
-            // Create log entry
             const logEntry = {
                 originalQuestion: entry.question,
                 redactedQuestion: redactedText,
                 aiResponse,
-                aiService: 'claude',
+                aiService: selectedAI,
                 referringUrl: entry.referringUrl
             };
 
-            // Log the interaction
-            await LoggingService.logInteraction(logEntry, true); // true indicates this is an evaluation
-
+            await LoggingService.logInteraction(logEntry, true);
             setProcessedCount(prev => prev + 1);
         } catch (error) {
             console.error('Error processing entry:', error);
@@ -170,7 +175,6 @@ const FeedbackEvaluator = () => {
                 throw new Error('No valid entries found in the CSV file');
             }
 
-            // Process entries sequentially
             for (const entry of entries) {
                 await processEntry(entry);
             }
@@ -195,52 +199,100 @@ const FeedbackEvaluator = () => {
 
             <div className="steps-container">
                 <div className="step">
-                    <GcdsHeading tag="h3">Step 1: Select and Upload File</GcdsHeading>
-                    <GcdsText>Select a CSV file that you've downloaded from the Feedback viewer.</GcdsText>
+                    <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
+                    <GcdsText>Select the AI service and CSV file that you've downloaded from the Feedback viewer.</GcdsText>
 
-                    <div className="file-upload-section">
-    <GcdsFileUploader
-        uploaderId="feedbackUploader"
-        label="Select feedback CSV file"
-        hint="Only CSV files are accepted"
-        accept=".csv"
-        required={true}
-        value={fileValue}
-        onChange={handleFileChange}
-        error={error ? true : undefined}
-        errorMessage={error}
-    />
-    
-    {file && !fileUploaded && (
-        <div className="upload-button-container mt-400">
-            <GcdsButton
-                type="button"
-                buttonRole="primary"
-                onClick={handleUpload}
-                disabled={!file || error}
-            >
-                Upload the file
-            </GcdsButton>
-        </div>
-    )}
-</div>
+                    <form onSubmit={handleUpload} className="mt-400">
+                        <div className="ai-toggle" style={{ marginBottom: '20px' }}>
+                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <legend style={{ marginRight: '10px' }}>AI Service:</legend>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                        <input
+                                            type="radio"
+                                            id="claude"
+                                            name="ai-selection"
+                                            value="claude"
+                                            checked={selectedAI === 'claude'}
+                                            onChange={handleAIToggle}
+                                            style={{ marginRight: '5px' }}
+                                        />
+                                        <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <input
+                                            type="radio"
+                                            id="chatgpt"
+                                            name="ai-selection"
+                                            value="chatgpt"
+                                            checked={selectedAI === 'chatgpt'}
+                                            onChange={handleAIToggle}
+                                            style={{ marginRight: '5px' }}
+                                        />
+                                        <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div className="file-input-container" style={{ marginBottom: '20px' }}>
+                            <label htmlFor="csvFile" style={{ display: 'block', marginBottom: '10px' }}>
+                                Select feedback CSV file:
+                            </label>
+                            <input
+                                type="file"
+                                id="csvFile"
+                                accept=".csv"
+                                onChange={handleFileChange}
+                                style={{ marginBottom: '10px' }}
+                            />
+                            {file && (
+                                <div>Selected file: {file.name}</div>
+                            )}
+                        </div>
+
+                        {error && (
+                            <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+                                {error}
+                            </div>
+                        )}
+
+                        {file && !fileUploaded && (
+                            <button 
+                                type="submit"
+                                className="primary-button"
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#26374a',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Upload File
+                            </button>
+                        )}
+                    </form>
 
                     {fileUploaded && (
-                        <div className="step">
+                        <div className="step mt-400">
                             <GcdsHeading tag="h3">Step 2: Process File</GcdsHeading>
-                            <GcdsText>Ready to process: {file.name}</GcdsText>
-                            <GcdsButton
+                            <button
                                 onClick={handleProcessFile}
                                 disabled={processing}
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#26374a',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: processing ? 'not-allowed' : 'pointer',
+                                    opacity: processing ? 0.7 : 1
+                                }}
                             >
                                 {processing ? 'Processing...' : 'Start Processing'}
-                            </GcdsButton>
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="error-message mt-400">
-                            <GcdsText>{error}</GcdsText>
+                            </button>
                         </div>
                     )}
 
