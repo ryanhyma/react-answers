@@ -4,7 +4,7 @@ import loadSystemPrompt from './systemPrompt.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/claude'  // Vercel serverless function
-  : 'http://localhost:3001/api/claude';  // Local Express server
+  : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
   sendMessage: async (message) => {

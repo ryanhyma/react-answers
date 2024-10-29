@@ -4,7 +4,7 @@ import loadSystemPrompt from './systemPrompt.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/chatgpt'  // Vercel serverless function
-  : 'http://localhost:3001/api/chatgpt';  // Local Express server
+  : 'http://localhost:3001/api/chatgpt';  // Local development server endpoint
 
 const ChatGPTService = {
   sendMessage: async (message) => {
