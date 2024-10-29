@@ -24,6 +24,9 @@ const FeedbackEvaluator = () => {
     const handleFileChange = (event) => {
         console.log('File change event:', event); // Debug log
         
+        // Clear any previous error state
+        setError(null);
+        
         // GcdsFileUploader passes the file in event.target.value
         if (!event || !event.target) {
             console.error('Invalid event object');
@@ -31,15 +34,14 @@ const FeedbackEvaluator = () => {
         }
     
         // Get the FileList from the input element
-        const fileInput = event.target;
+        const fileInput = event.target.shadowRoot.querySelector('input');
         console.log('File input:', fileInput); // Debug log
     
         // Check if we have a file selected
-        if (!fileInput.files || fileInput.files.length === 0) {
-            console.log('No file selected');
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            console.log('No file selected in input element');
             setFile(null);
             setFileValue('');
-            setError('No file selected');
             return;
         }
     
@@ -48,12 +50,13 @@ const FeedbackEvaluator = () => {
     
         if (!uploadedFile.name.endsWith('.csv')) {
             setError('Please upload a CSV file that you downloaded from the Feedback Viewer');
+            setFile(null);
+            setFileValue('');
             return;
         }
     
         setFile(uploadedFile);
         setFileValue(uploadedFile.name);
-        setError(null);
         setResults(null);
         setProcessedCount(0);
         setFileUploaded(false);
@@ -202,17 +205,19 @@ const FeedbackEvaluator = () => {
         hint="Only CSV files are accepted"
         accept=".csv"
         required={true}
-        {...(fileValue ? { value: fileValue } : {})}
-        onChange={handleFileChange} 
-        // value={fileValue}
+        value={fileValue}
+        onChange={handleFileChange}
+        error={error ? true : undefined}
+        errorMessage={error}
     />
     
     {file && !fileUploaded && (
         <div className="upload-button-container mt-400">
             <GcdsButton
                 type="button"
-                buttonRole="primary"  // Using buttonRole instead of button-role
+                buttonRole="primary"
                 onClick={handleUpload}
+                disabled={!file || error}
             >
                 Upload the file
             </GcdsButton>
@@ -220,45 +225,39 @@ const FeedbackEvaluator = () => {
     )}
 </div>
 
-                    {file && !fileUploaded && (
-                        <GcdsButton type="submit" onClick={handleUpload}>
-                            Upload the file
-                        </GcdsButton>
+                    {fileUploaded && (
+                        <div className="step">
+                            <GcdsHeading tag="h3">Step 2: Process File</GcdsHeading>
+                            <GcdsText>Ready to process: {file.name}</GcdsText>
+                            <GcdsButton
+                                onClick={handleProcessFile}
+                                disabled={processing}
+                            >
+                                {processing ? 'Processing...' : 'Start Processing'}
+                            </GcdsButton>
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="error-message mt-400">
+                            <GcdsText>{error}</GcdsText>
+                        </div>
+                    )}
+
+                    {processing && (
+                        <div className="processing-status mt-400">
+                            <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
+                        </div>
+                    )}
+
+                    {results && (
+                        <div className="results-section mt-400">
+                            <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
+                            <GcdsText>File: {results.fileName}</GcdsText>
+                            <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
+                        </div>
                     )}
                 </div>
-
-                {fileUploaded && (
-                    <div className="step">
-                        <GcdsHeading tag="h3">Step 2: Process File</GcdsHeading>
-                        <GcdsText>Ready to process: {file.name}</GcdsText>
-                        <GcdsButton
-                            onClick={handleProcessFile}
-                            disabled={processing}
-                        >
-                            {processing ? 'Processing...' : 'Start Processing'}
-                        </GcdsButton>
-                    </div>
-                )}
-
-                {error && (
-                    <div className="error-message mt-400">
-                        <GcdsText>{error}</GcdsText>
-                    </div>
-                )}
-
-                {processing && (
-                    <div className="processing-status mt-400">
-                        <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
-                    </div>
-                )}
-
-                {results && (
-                    <div className="results-section mt-400">
-                        <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
-                        <GcdsText>File: {results.fileName}</GcdsText>
-                        <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
-                    </div>
-                )}
             </div>
         </GcdsContainer>
     );
