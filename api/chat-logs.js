@@ -1,5 +1,5 @@
 // api/chat-logs.js to retrieve logs from the database for evaluation purposes
-import dbConnect from '../db-connect';
+import dbConnect from '/db-connect';
 import ChatLog from '../models/ChatLog';
 
 export default async function handler(req, res) {
