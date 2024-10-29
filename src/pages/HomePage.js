@@ -17,8 +17,6 @@ const HomePage = () => {
           <GcdsText>AI service ChatGPT: OpenAI 4o,  knowledge to May 2024</GcdsText>
           <GcdsText><GcdsLink href="https://github.com/lisafast/react-answers/blob/main/src/services/systemPrompt.js">Read the System Prompt</GcdsLink> that controls the AI output.  </GcdsText>
           <GcdsText>Development is still in progress - contact lisa.fast@cds-snc.ca for information. </GcdsText>
-          <GcdsLink href="/admin">Admin options
-          </GcdsLink>
         </GcdsDetails>
         <TempChatAppContainer />
       </GcdsContainer>
@@ -40,6 +38,8 @@ const HomePage = () => {
             and any information generated is also subject to the <GcdsLink
               href="https://www.canada.ca/en/transparency/terms.html">Canada.ca Terms and conditions.</GcdsLink>
           </GcdsText>
+          <GcdsLink href="/admin">Manage
+          </GcdsLink>
         </GcdsDetails>
       </GcdsContainer>
     </>
