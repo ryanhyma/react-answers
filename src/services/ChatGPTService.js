@@ -3,7 +3,7 @@
 import loadSystemPrompt from './systemPrompt.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? '../../server/api/chatgpt'  // Vercel serverless function
+  ? '/api/chatgpt'  // Vercel serverless function
   : 'http://localhost:3001/api/chatgpt';  // Local development server endpoint
 
 const ChatGPTService = {

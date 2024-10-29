@@ -3,7 +3,7 @@
 import loadSystemPrompt from './systemPrompt.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? '../../server/api/claude'  // Vercel serverless function
+  ? '/api/claude'  // Vercel serverless function
   : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
