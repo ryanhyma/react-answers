@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Download } from 'lucide-react';
+import { GcdsButton } from '@cdssnc/gcds-components-react';
 
 const ChatLogsDashboard = () => {
-  const [timeRange, setTimeRange] = useState('7');
+  const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -63,24 +63,21 @@ const ChatLogsDashboard = () => {
           </select>
         </div>
 
-        <button 
-          type="button"
+        <GcdsButton 
           onClick={fetchLogs}
           disabled={loading}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+          className="me-400 hydrated"
         >
-          {loading ? 'Loading...' : 'Load Logs'}
-        </button>
+          {loading ? 'Loading...' : 'Get logs'}
+        </GcdsButton>
         
-        <button 
-          type="button"
+        <GcdsButton 
           onClick={downloadLogs}
           disabled={loading || logs.length === 0}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+          className="me-400 hydrated"
         >
-          <Download className="mr-2 h-4 w-4" />
-          Download Logs
-        </button>
+          Download logs
+        </GcdsButton>
       </div>
 
       <div className="bg-white shadow rounded-lg">
@@ -126,7 +123,7 @@ const ChatLogsDashboard = () => {
           </div>
         ) : (
           <div className="p-4">
-            <p className="text-gray-500">Select a time range and click 'Load Logs' to view chat history</p>
+            <p className="text-gray-500">Select a time range and click 'Get logs' to view chat history</p>
           </div>
         )}
       </div>
