@@ -195,12 +195,11 @@ const FeedbackEvaluator = () => {
 
     return (
         <GcdsContainer className="mb-600">
-            <GcdsHeading tag="h2">Process Feedback CSV File</GcdsHeading>
 
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
-                    <GcdsText>Select the AI service and CSV file that you've downloaded from the Feedback viewer.</GcdsText>
+                    <GcdsText>Select the AI service and CSV file that you've downloaded and cleaned from the Feedback viewer. You can use any CSV file as long as there are columns labelled 'Problem Details' and 'URL' with the question and referral URL.</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
                         <div className="ai-toggle" style={{ marginBottom: '20px' }}>

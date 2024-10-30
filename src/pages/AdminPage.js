@@ -12,24 +12,29 @@ const AdminPage = () => {
         <ul>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#chat-logs">Chat Interaction Logs</GcdsLink>
+              <GcdsLink href="#chat-logs">Download chat logs</GcdsLink>
             </GcdsText>
           </li>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#evaluator">Feedback Evaluator</GcdsLink>
+              <GcdsLink href="#evaluator">Load and run evaluation</GcdsLink>
+            </GcdsText>
+          </li>
+        <li className="mb-400">
+            <GcdsText>
+              <GcdsLink href="/">Use the app</GcdsLink>
             </GcdsText>
           </li>
         </ul>
       </nav>
 
       <section id="chat-logs" className="mb-600">
-        <h2 className='mt-400 mb-400'>Chat Interaction Logs</h2>
+        <h2 className='mt-400 mb-400'>Chat interaction logs</h2>
         <ChatLogsDashboard />
       </section>
 
       <section id="evaluator" className="mb-600">
-        <h2 className='mt-400 mb-400'>Feedback Evaluator</h2>
+        <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
         <FeedbackEvaluator />
       </section>
     </GcdsContainer>
