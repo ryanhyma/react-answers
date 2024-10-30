@@ -12,6 +12,13 @@ export default async function handler(req, res) {
     await dbConnect();
     console.log('DB Connected in chat-logs endpoint');
 
+    // Debug collection info
+    console.log('Collection info:', {
+      modelName: ChatLog.modelName,
+      collectionName: ChatLog.collection.name,
+      databaseName: mongoose.connection.db.databaseName
+    });
+
     // First get a count
     const totalCount = await ChatLog.countDocuments();
     console.log('Total documents in collection:', totalCount);
