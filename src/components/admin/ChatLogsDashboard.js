@@ -85,7 +85,7 @@ const ChatLogsDashboard = () => {
           </div>
         ) : logs.length > 0 ? (
           <div className="p-4">
-            <p className="mb-4 text-gray-600">Found {logs.length} chat interactions</p>
+            <p className="mb-4 text-gray-600">Found {logs.length} chat interactions. Download the logs to see the full set and details.</p>
             <div className="max-h-96 overflow-y-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -108,10 +108,10 @@ const ChatLogsDashboard = () => {
                         {new Date(log.timestamp).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-900">
-                        {log.query.substring(0, 50)}...
+                        {(log.originalQuestion || log.redactedQuestion || '').substring(0, 50)}...
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {log.response.length} chars
+                        {(log.aiResponse || '').length} chars
                       </td>
                     </tr>
                   ))}
