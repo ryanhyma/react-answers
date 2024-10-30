@@ -47,7 +47,7 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadCSV = () => {
-    // Define all possible columns
+    // Update columns to include expertFeedback fields instead of expertRating
     const columns = [
       'timestamp',
       'redactedQuestion',
@@ -58,8 +58,12 @@ const ChatLogsDashboard = () => {
       'originalCitationUrl',
       'confidenceRating',
       'feedback',
-      'expertRating.rating',
-      'expertRating.expertCitationURL'
+      'expertFeedback.veryIncorrect',
+      'expertFeedback.somewhatIncorrect',
+      'expertFeedback.incomplete',
+      'expertFeedback.citationVeryIncorrect',
+      'expertFeedback.citationSomewhatIncorrect',
+      'expertFeedback.expertCitationUrl'
     ];
 
     // Create CSV header
@@ -73,7 +77,7 @@ const ChatLogsDashboard = () => {
       return columns.map(column => {
         let value = '';
         if (column.includes('.')) {
-          // Handle nested expertRating fields
+          // Handle nested expertFeedback fields
           const [parent, child] = column.split('.');
           value = log[parent]?.[child] || '';
         } else {
