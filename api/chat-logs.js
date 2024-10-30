@@ -10,41 +10,32 @@ export default async function handler(req, res) {
 
   try {
     await dbConnect();
-    
-    // Debug: Log the model name and collection
-    console.log('Model info:', {
-      modelName: ChatLog.modelName,
-      collection: ChatLog.collection.name,
-      // Check if model is registered
-      isRegistered: mongoose.models.ChatLog ? 'yes' : 'no'
-    });
+    console.log('DB Connected in chat-logs endpoint');
 
-    // Try the simplest possible query first
-    const count = await ChatLog.countDocuments();
-    console.log('Document count:', count);
+    // First get a count
+    const totalCount = await ChatLog.countDocuments();
+    console.log('Total documents in collection:', totalCount);
 
-    // If we get here, basic queries work
-    const days = parseInt(req.query.days) || 7;
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const logs = await ChatLog.find()  // Remove filter initially
+    // Get some sample data without any filtering
+    const sampleLogs = await ChatLog.find()
       .limit(5)
       .lean();
 
+    console.log('Sample log structure:', 
+      sampleLogs.length > 0 ? 
+      Object.keys(sampleLogs[0]) : 
+      'No logs found'
+    );
+
     return res.status(200).json({
       success: true,
-      count,
-      logs
+      totalCount,
+      logs: sampleLogs,
+      message: 'Query completed successfully'
     });
 
   } catch (error) {
-    console.error('API Error:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack
-    });
-    
+    console.error('API Error:', error);
     return res.status(500).json({
       error: 'Failed to fetch logs',
       details: error.message

@@ -9,16 +9,19 @@ const ChatLogsDashboard = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      // see what logs are available
       const response = await fetch('/api/chat-logs?days=' + timeRange);
-      if (!response.ok) {
-        throw new Error('Failed to fetch logs');
-      }
       const data = await response.json();
-      setLogs(data);
+      console.log('API Response:', data);
+      
+      if (data.success) {
+        setLogs(data.logs || []);
+      } else {
+        console.error('API returned error:', data.error);
+        alert(data.error || 'Failed to fetch logs');
+      }
     } catch (error) {
       console.error('Error fetching logs:', error);
-      // You might want to add some error state handling here
+      alert(`Failed to fetch logs: ${error.message}`);
     }
     setLoading(false);
   };
