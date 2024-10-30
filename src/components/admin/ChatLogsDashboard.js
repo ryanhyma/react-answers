@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 
 const ChatLogsDashboard = () => {
@@ -25,10 +25,6 @@ const ChatLogsDashboard = () => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchLogs();
-  }, [timeRange]);
 
   const downloadLogs = () => {
     const blob = new Blob([JSON.stringify(logs, null, 2)], { 
@@ -61,11 +57,20 @@ const ChatLogsDashboard = () => {
             onChange={(e) => setTimeRange(e.target.value)}
             className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
+            <option value="1">Last 1 day</option>
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
-            <option value="90">Last 90 days</option>
           </select>
         </div>
+
+        <button 
+          type="button"
+          onClick={fetchLogs}
+          disabled={loading}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+        >
+          {loading ? 'Loading...' : 'Load Logs'}
+        </button>
         
         <button 
           type="button"
@@ -121,7 +126,7 @@ const ChatLogsDashboard = () => {
           </div>
         ) : (
           <div className="p-4">
-            <p className="text-gray-500">No logs found for the selected time range</p>
+            <p className="text-gray-500">Select a time range and click 'Load Logs' to view chat history</p>
           </div>
         )}
       </div>
