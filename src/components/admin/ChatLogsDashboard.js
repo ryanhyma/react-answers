@@ -26,14 +26,52 @@ const ChatLogsDashboard = () => {
     setLoading(false);
   };
 
-  const downloadLogs = () => {
+  const downloadJSON = () => {
     const blob = new Blob([JSON.stringify(logs, null, 2)], { 
       type: 'application/json' 
     });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'chat-logs-' + new Date().toISOString() + '.json';
+    a.download = `chat-logs-${new Date().toISOString()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const downloadCSV = () => {
+    // Define all possible columns
+    const columns = [
+      'timestamp',
+      'originalQuestion',
+      'redactedQuestion',
+      'aiResponse',
+      'aiService'
+    ];
+
+    // Create CSV header
+    const header = columns.join(',');
+
+    // Create CSV rows
+    const rows = logs.map(log => {
+      return columns.map(column => {
+        const value = log[column] || ''; // Use empty string if field doesn't exist
+        // Escape quotes and wrap in quotes if contains comma or newline
+        const escapedValue = value.toString().replace(/"/g, '""');
+        return `"${escapedValue}"`;
+      }).join(',');
+    });
+
+    // Combine header and rows
+    const csv = [header, ...rows].join('\n');
+
+    // Create and download file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-logs-${new Date().toISOString()}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -72,11 +110,19 @@ const ChatLogsDashboard = () => {
         </GcdsButton>
         
         <GcdsButton 
-          onClick={downloadLogs}
+          onClick={downloadJSON}
           disabled={loading || logs.length === 0}
           className="me-400 hydrated"
         >
-          Download logs
+          Download JSON
+        </GcdsButton>
+
+        <GcdsButton 
+          onClick={downloadCSV}
+          disabled={loading || logs.length === 0}
+          className="me-400 hydrated"
+        >
+          Download CSV
         </GcdsButton>
       </div>
 
