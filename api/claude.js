@@ -25,6 +25,12 @@ export default async function handler(req, res) {
         messages: [{ role: "user", content: message }],
         max_tokens: 1024
       });
+      console.log('Cache metrics:', {
+        cacheCreation: response.cache_creation_input_tokens,
+        cacheRead: response.cache_read_input_tokens,
+        usage: response.usage
+      });
+      console.log('Full response:', response);
       console.log('Claude API response received');
       res.status(200).json({ content: response.content[0].text });
     } catch (error) {
