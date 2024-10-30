@@ -27,7 +27,13 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadJSON = () => {
-    const blob = new Blob([JSON.stringify(logs, null, 2)], { 
+    // Create a sanitized version of logs without originalQuestion
+    const sanitizedLogs = logs.map(log => {
+      const { originalQuestion, ...rest } = log; // Destructure to remove originalQuestion
+      return rest;
+    });
+
+    const blob = new Blob([JSON.stringify(sanitizedLogs, null, 2)], { 
       type: 'application/json' 
     });
     const url = window.URL.createObjectURL(blob);
@@ -44,19 +50,35 @@ const ChatLogsDashboard = () => {
     // Define all possible columns
     const columns = [
       'timestamp',
-      'originalQuestion',
       'redactedQuestion',
       'aiResponse',
-      'aiService'
+      'aiService',
+      'referringUrl',
+      'citationUrl',
+      'originalCitationUrl',
+      'confidenceRating',
+      'feedback',
+      'expertRating.rating',
+      'expertRating.expertCitationURL'
     ];
 
     // Create CSV header
-    const header = columns.join(',');
+    const header = columns.map(column => {
+      // Make the header more readable by removing the nested notation
+      return column.includes('.') ? column.split('.')[1] : column;
+    }).join(',');
 
     // Create CSV rows
     const rows = logs.map(log => {
       return columns.map(column => {
-        const value = log[column] || ''; // Use empty string if field doesn't exist
+        let value = '';
+        if (column.includes('.')) {
+          // Handle nested expertRating fields
+          const [parent, child] = column.split('.');
+          value = log[parent]?.[child] || '';
+        } else {
+          value = log[column] || '';
+        }
         // Escape quotes and wrap in quotes if contains comma or newline
         const escapedValue = value.toString().replace(/"/g, '""');
         return `"${escapedValue}"`;
