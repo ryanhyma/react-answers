@@ -3,9 +3,6 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
-  headers: {
-    'anthropic-beta': 'prompt-caching-2024-07-31'
-  }
 });
 
 export default async function handler(req, res) {
@@ -20,7 +17,7 @@ export default async function handler(req, res) {
       }
 
       const response = await anthropic.messages.create({
-        model="claude-3-5-sonnet-20241022",
+        model: "claude-3-5-sonnet-20241022",
         max_tokens: 1024,
         system: {
           content: systemPrompt,
@@ -29,12 +26,12 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "user",
-            content: {
-              type: "text",
-              text: message,
-            }
+            content: message
           }
-        ]
+        ],
+        headers: {
+          'anthropic-beta': 'prompt-caching-2024-07-31'
+        }
       });
 
       console.log('Claude API response received');
