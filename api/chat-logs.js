@@ -15,7 +15,15 @@ try {
     redactedQuestion: String,
     aiResponse: String,
     aiService: String,
-    // ... other fields if needed
+    referringUrl: String,
+    citationUrl: String,
+    originalCitationUrl: String,
+    confidenceRating: String,
+    feedback: String,
+    expertRating: {
+      rating: String,
+      expertCitationURL: String
+    }
   });
   ChatInteraction = mongoose.model('ChatInteraction', ChatInteractionSchema);
 }
@@ -32,7 +40,7 @@ export default async function handler(req, res) {
     const totalCount = await ChatInteraction.countDocuments();
     console.log('Total documents in collection:', totalCount);
 
-    const days = parseInt(req.query.days) || 7;
+    const days = parseInt(req.query.days) || 1;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
@@ -45,8 +53,19 @@ export default async function handler(req, res) {
     // Transform the data to match what the frontend expects
     const transformedLogs = logs.map(log => ({
       timestamp: log.timestamp,
-      query: log.originalQuestion || log.redactedQuestion,
-      response: log.aiResponse
+      originalQuestion: log.originalQuestion,
+      redactedQuestion: log.redactedQuestion,
+      aiResponse: log.aiResponse,
+      aiService: log.aiService,
+      referringUrl: log.referringUrl,
+      citationUrl: log.citationUrl,
+      originalCitationUrl: log.originalCitationUrl,
+      confidenceRating: log.confidenceRating,
+      feedback: log.feedback,
+      expertRating: {
+        rating: log.expertRating?.rating,
+        expertCitationURL: log.expertRating?.expertCitationURL
+      }
     }));
 
     return res.status(200).json({
