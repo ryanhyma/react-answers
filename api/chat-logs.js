@@ -20,9 +20,13 @@ try {
     originalCitationUrl: String,
     confidenceRating: String,
     feedback: String,
-    expertRating: {
-      rating: String,
-      expertCitationURL: String
+    expertFeedback: {
+      veryIncorrect: Boolean,
+      somewhatIncorrect: Boolean,
+      incomplete: Boolean,
+      citationVeryIncorrect: Boolean,
+      citationSomewhatIncorrect: Boolean,
+      expertCitationUrl: String
     }
   });
   ChatInteraction = mongoose.model('ChatInteraction', ChatInteractionSchema);
@@ -62,9 +66,13 @@ export default async function handler(req, res) {
       originalCitationUrl: log.originalCitationUrl,
       confidenceRating: log.confidenceRating,
       feedback: log.feedback,
-      expertRating: {
-        rating: log.expertRating?.rating,
-        expertCitationURL: log.expertRating?.expertCitationURL
+      expertFeedback: log.expertFeedback || {
+        veryIncorrect: false,
+        somewhatIncorrect: false,
+        incomplete: false,
+        citationVeryIncorrect: false,
+        citationSomewhatIncorrect: false,
+        expertCitationUrl: ''
       }
     }));
 
