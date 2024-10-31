@@ -285,7 +285,9 @@ const TempChatAppContainer = () => {
                 <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
                   {message.redactedText}
                 </p>
-                {message.redactedItems && message.redactedItems.length > 0 && (
+                {message.redactedItems && 
+                 message.redactedItems.length > 0 && 
+                 message.redactedItems.some(item => !item.type || item.type !== 'profanity') && (
                   <p className="redacted-preview">
                     {privacyMessage}
                   </p>

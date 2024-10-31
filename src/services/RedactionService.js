@@ -13,6 +13,10 @@ const redactionPatterns = [
   // { pattern: /(user( ?name)?|login): \S+/gi }, //username - leave this in as there are many questions that mention these words
   { pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g }, //url
   { pattern: /(?<!\$)\b\d{5,}\b/g }, // Sequences of 5 or more digits not preceded by $
+  { 
+    pattern: /(fuck|shit|ass|damn|bitch|piss|dick|bastard|cunt|merde|putain|connard|salope|foutre|bordel|couille|chier)/gi,
+    type: 'profanity'
+  },
 ];
 
 const redactText = (text) => {
@@ -21,12 +25,12 @@ const redactText = (text) => {
 
   console.log("Original text:", text);
 
-  redactionPatterns.forEach(({ pattern }, index) => {
+  redactionPatterns.forEach(({ pattern, type }, index) => {
     const tempText = redactedText;
     redactedText = redactedText.replace(pattern, (match) => {
       console.log(`Pattern ${index} matched: "${match}"`);
       redactedItems.push({ value: match });
-      return 'XXX';
+      return type === 'profanity' ? '#'.repeat(match.length) : 'XXX';
     });
 
     if (tempText !== redactedText) {
