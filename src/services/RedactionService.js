@@ -1,5 +1,54 @@
 // RedactionService.js
 
+import profanityListEn from '/redactions/badwords_en.txt';
+import profanityListFr from '/redactions/badwords_fr.txt';
+
+async function loadProfanityLists() {
+  try {
+    const [responseEn, responseFr] = await Promise.all([
+      fetch(profanityListEn),
+      fetch(profanityListFr)
+    ]);
+    
+    const textEn = await responseEn.text();
+    const textFr = await responseFr.text();
+    
+    // Clean up the French text
+    const cleanFrenchText = textFr
+      .split('\n')
+      .map(word => word
+        .replace(/[!@,]/g, '') // Remove !, @, and commas
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+        .trim()
+      )
+      .filter(word => word.length > 0); // Remove empty entries
+    
+    // Clean English list similarly for consistency
+    const cleanEnglishText = textEn
+      .split('\n')
+      .map(word => word.trim())
+      .filter(word => word.length > 0);
+    
+    // Combine both lists
+    const words = [...cleanEnglishText, ...cleanFrenchText];
+    
+    console.log('Loaded profanity words:', words); // For debugging
+    
+    return words;
+  } catch (error) {
+    console.error('Error loading profanity lists:', error);
+    return [];
+  }
+}
+
+// Create the pattern once both lists are loaded
+let profanityPattern = null;
+loadProfanityLists().then(words => {
+  const pattern = words.join('|');
+  profanityPattern = new RegExp(`(${pattern})`, 'gi');
+});
+
 const redactionPatterns = [
   { pattern: /\b(?!(?:1[89]|20)\d{2}\b)(?:\d{3,4}[-.\s]?){2,}\d{3,4}\b/g }, // Numbers (including phone, SIN, account numbers with separators), but not 4-digit years
   { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g }, // Email addresses
@@ -14,9 +63,17 @@ const redactionPatterns = [
   { pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g }, //url
   { pattern: /(?<!\$)\b\d{5,}\b/g }, // Sequences of 5 or more digits not preceded by $
   { 
-    pattern: /(fuck|shit|ass|damn|bitch|piss|dick|bastard|cunt|merde|putain|connard|salope|foutre|bordel|couille|chier)/gi,
+    get pattern() { return profanityPattern; },
     type: 'profanity'
   },
+  { 
+    pattern: /(bomb|gun|knife|sword|kill|murder|suicide|maim|die|anthrax|attack|assassinate|bomb|bombs|bombing|bombed|execution|explosive|explosives|shoot|shoots|shooting|shot|hostage|murder|suicide|kill|killed|killing)/gi,
+    type: 'threat'
+  },
+  {
+    pattern: /(anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie)/gi,
+    type: 'threat'
+  }
 ];
 
 const redactText = (text) => {
@@ -29,8 +86,8 @@ const redactText = (text) => {
     const tempText = redactedText;
     redactedText = redactedText.replace(pattern, (match) => {
       console.log(`Pattern ${index} matched: "${match}"`);
-      redactedItems.push({ value: match });
-      return type === 'profanity' ? '#'.repeat(match.length) : 'XXX';
+      redactedItems.push({ value: match, type });
+      return (type === 'profanity' || type === 'threat') ? '#'.repeat(match.length) : 'XXX';
     });
 
     if (tempText !== redactedText) {

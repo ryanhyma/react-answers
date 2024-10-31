@@ -274,7 +274,8 @@ const TempChatAppContainer = () => {
   }, [parseAIResponse, checkedCitations]);
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
-
+  const threatMessage = "Some words are not accepted or sent to the AI service.";
+  const profanityMessage = "Some words are not accepted or sent to the AI service.";
   return (
     <div className="chat-container">
       <div className="message-list">
@@ -285,12 +286,15 @@ const TempChatAppContainer = () => {
                 <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
                   {message.redactedText}
                 </p>
-                {message.redactedItems && 
-                 message.redactedItems.length > 0 && 
-                 message.redactedItems.some(item => !item.type || item.type !== 'profanity') && (
-                  <p className="redacted-preview">
-                    {privacyMessage}
-                  </p>
+                {message.redactedItems && message.redactedItems.length > 0 && (
+                  <>
+                    {message.redactedItems.some(item => !item.type || item.type !== 'profanity' && item.type !== 'threat') && (
+                      <p className="redacted-preview">{privacyMessage}</p>
+                    )}
+                    {message.redactedItems.some(item => item.type === 'threat') && (
+                      <p className="redacted-preview">{threatMessage}</p>
+                    )}
+                  </>
                 )}
               </div>
             ) : (
