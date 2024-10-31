@@ -1,7 +1,7 @@
 // RedactionService.js
 
-import profanityListEn from '/redactions/badwords_en.txt';
-import profanityListFr from '/redactions/badwords_fr.txt';
+import profanityListEn from './redactions/badwords_en.txt';
+import profanityListFr from './redactions/badwords_fr.txt';
 
 async function loadProfanityLists() {
   try {
