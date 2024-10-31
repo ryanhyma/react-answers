@@ -124,17 +124,12 @@ const TempChatAppContainer = () => {
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
-      // Add referring URL to the message if provided
-      const messageWithUrl = referringUrl
-        ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
-        : redactedText;
+      // Check if message contains profanity or threats
+      const hasProfanityOrThreats = redactedItems.some(item => 
+        item.type === 'profanity' || item.type === 'threat'
+      );
 
-      // Create conversation history
-      const conversationHistory = messages.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.sender === 'user' ? msg.redactedText : msg.text
-      }));
-
+      // Add message to chat history
       setMessages(prevMessages => [...prevMessages, {
         text: userMessage,
         redactedText: redactedText,
@@ -142,10 +137,36 @@ const TempChatAppContainer = () => {
         sender: 'user',
         ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
       }]);
-      clearInput();
-      setIsLoading(true);
 
+      clearInput();
+
+      // If message contains profanity or threats, add rejection message and return
+      if (hasProfanityOrThreats) {
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { 
+            text: "Your question used words that aren't accepted. Please try asking it differently.",
+            sender: 'ai',
+            error: true
+          }
+        ]);
+        return;
+      }
+
+      // Continue with normal AI processing if no profanity/threats
+      setIsLoading(true);
       try {
+        // Add referring URL to the message if provided
+        const messageWithUrl = referringUrl
+          ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
+          : redactedText;
+
+        // Create conversation history
+        const conversationHistory = messages.map(msg => ({
+          role: msg.sender === 'user' ? 'user' : 'assistant',
+          content: msg.sender === 'user' ? msg.redactedText : msg.text
+        }));
+
         let response;
         if (selectedAI === 'claude') {
           response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory);

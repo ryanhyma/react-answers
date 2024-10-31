@@ -15,7 +15,7 @@ async function loadProfanityLists() {
     
     // Clean up the French text
     const cleanFrenchText = textFr
-      .split('\n')
+      .split(',')
       .map(word => word
         .replace(/[!@,]/g, '') // Remove !, @, and commas
         .normalize('NFD')
@@ -24,16 +24,16 @@ async function loadProfanityLists() {
       )
       .filter(word => word.length > 0); // Remove empty entries
     
-    // Clean English list similarly for consistency
+    // Clean English list - split on commas and clean each word
     const cleanEnglishText = textEn
-      .split('\n')
+      .split(',')
       .map(word => word.trim())
       .filter(word => word.length > 0);
     
     // Combine both lists
     const words = [...cleanEnglishText, ...cleanFrenchText];
     
-    console.log('Loaded profanity words:', words); // For debugging
+    console.log('Loaded profanity words:', words.length, 'words'); // Log count instead of full list
     
     return words;
   } catch (error) {
@@ -50,7 +50,10 @@ loadProfanityLists().then(words => {
 });
 
 const redactionPatterns = [
-  { pattern: /\b(?!(?:1[89]|20)\d{2}\b)(?:\d{3,4}[-.\s]?){2,}\d{3,4}\b/g }, // Numbers (including phone, SIN, account numbers with separators), but not 4-digit years
+  { 
+    pattern: /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
+    type: 'private'
+  },
   { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g }, // Email addresses
   { pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi }, // Addresses
   { pattern: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d\b/gi }, // Canadian postal codes
@@ -80,23 +83,27 @@ const redactText = (text) => {
   let redactedText = text;
   let redactedItems = [];
 
-  console.log("Original text:", text);
+  console.log("Starting text:", text);
 
   redactionPatterns.forEach(({ pattern, type }, index) => {
     const tempText = redactedText;
+    
+    // Skip processing if this is a profanity/threat pattern and we find 'XXX' in the text
+    if ((type === 'profanity' || type === 'threat') && redactedText.includes('XXX')) {
+      return;
+    }
+    
     redactedText = redactedText.replace(pattern, (match) => {
       console.log(`Pattern ${index} matched: "${match}"`);
       redactedItems.push({ value: match, type });
-      return (type === 'profanity' || type === 'threat') ? '#'.repeat(match.length) : 'XXX';
+      const replacement = type === 'private' ? 'XXX' : '#'.repeat(match.length);
+      return replacement;
     });
 
     if (tempText !== redactedText) {
       console.log(`Text after applying pattern ${index}:`, redactedText);
     }
   });
-
-  console.log("Final redacted text:", redactedText);
-  console.log("Redacted items:", redactedItems);
 
   return { redactedText, redactedItems };
 };
