@@ -129,6 +129,12 @@ const TempChatAppContainer = () => {
         ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
         : redactedText;
 
+      // Create conversation history
+      const conversationHistory = messages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.sender === 'user' ? msg.redactedText : msg.text
+      }));
+
       setMessages(prevMessages => [...prevMessages, {
         text: userMessage,
         redactedText: redactedText,
@@ -142,13 +148,13 @@ const TempChatAppContainer = () => {
       try {
         let response;
         if (selectedAI === 'claude') {
-          response = await ClaudeService.sendMessage(messageWithUrl);
+          response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory);
         } else {
-          response = await ChatGPTService.sendMessage(messageWithUrl);
+          response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory);
         }
 
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
-        setShowFeedback(true);  // Show feedback component after AI response
+        setShowFeedback(true);
 
         // Log the interaction
         logInteraction(
@@ -168,7 +174,7 @@ const TempChatAppContainer = () => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -199,16 +205,18 @@ const TempChatAppContainer = () => {
     let responseType = 'normal';
     let content = text;
 
-    // Check for special response types and remove tags
-    if (content.startsWith('<not-gc>') && content.endsWith('</not-gc>')) {
+    // Check for special response types and remove tags anywhere in the content
+    if (content.includes('<not-gc>') && content.includes('</not-gc>')) {
       responseType = 'not-gc';
-      content = content.slice(8, -9).trim(); // Remove <not-gc> tags
-    } else if (content.startsWith('<pt-muni>') && content.endsWith('</pt-muni>')) {
+      content = content.replace(/<not-gc>/g, '').replace(/<\/not-gc>/g, '').trim();
+    } 
+    if (content.includes('<pt-muni>') && content.includes('</pt-muni>')) {
       responseType = 'pt-muni';
-      content = content.slice(9, -10).trim(); // Remove <pt-muni> tags
-    } else if (content.startsWith('<clarifying-question>') && content.endsWith('</clarifying-question>')) {
+      content = content.replace(/<pt-muni>/g, '').replace(/<\/pt-muni>/g, '').trim();
+    }
+    if (content.includes('<clarifying-question>') && content.includes('</clarifying-question>')) {
       responseType = 'question';
-      content = content.slice(21, -22).trim(); // Remove <clarifying-question> tags
+      content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
     }
 
     const { paragraphs, citationHead, citationUrl, confidenceRating: originalConfidenceRating } = parseAIResponse(content, aiService);
@@ -290,7 +298,10 @@ const TempChatAppContainer = () => {
                 ) : (
                   formatAIResponse(message.text, message.aiService, index)
                 )}
-                {index === messages.length - 1 && showFeedback && !message.error && (
+                {index === messages.length - 1 && 
+                 showFeedback && 
+                 !message.error && 
+                 !message.text.includes('<clarifying-question>') && (
                   <FeedbackComponent onFeedback={handleFeedback} />
                 )}
               </>

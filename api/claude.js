@@ -12,26 +12,42 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
-      const { message, systemPrompt } = req.body;
-      console.log('Request body:', { message, systemPrompt });
+      const { message, systemPrompt, conversationHistory } = req.body;
+      
+      // More detailed logging
+      console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
+      console.log('Current Message:', message);
+      console.log('System Prompt Length:', systemPrompt?.length);
 
       if (!process.env.ANTHROPIC_API_KEY) {
         throw new Error('ANTHROPIC_API_KEY is not set');
       }
 
+      // Convert conversation history to Claude's format and add current message
+      const messages = [
+        ...conversationHistory.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        })),
+        { role: "user", content: message }
+      ];
+
+      // Log the final messages array being sent to Claude
+      console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
+
       const response = await anthropic.messages.create({
         model: "claude-3-5-sonnet-20241022",
         system: systemPrompt,
-        messages: [{ role: "user", content: message }],
+        messages: messages,
         max_tokens: 1024
       });
-      console.log('Cache metrics:', {
-        cacheCreation: response.cache_creation_input_tokens,
-        cacheRead: response.cache_read_input_tokens,
+
+      console.log('Claude Response:', {
+        content: response.content[0].text.substring(0, 100) + '...',
+        role: response.role,
         usage: response.usage
       });
-      console.log('Full response:', response);
-      console.log('Claude API response received');
+      
       res.status(200).json({ content: response.content[0].text });
     } catch (error) {
       console.error('Error calling Claude API:', error.message);

@@ -7,11 +7,16 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
-  sendMessage: async (message) => {
+  sendMessage: async (message, conversationHistory = []) => {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
 
-      // console.log('Sending request to Claude API...');
+      console.log('Sending to Claude API:', {
+        message,
+        conversationHistory,
+        systemPromptLength: SYSTEM_PROMPT.length
+      });
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -19,16 +24,23 @@ const ClaudeService = {
         },
         body: JSON.stringify({
           message,
+          conversationHistory,
           systemPrompt: SYSTEM_PROMPT,
         }),
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Claude API error response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      // console.log('Received response from Claude API');
+      console.log('Received from Claude API:', {
+        responseLength: data.content.length,
+        firstFewChars: data.content.substring(0, 100)
+      });
+      
       return data.content;
     } catch (error) {
       console.error('Error calling Claude API:', error);
