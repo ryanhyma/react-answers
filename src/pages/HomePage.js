@@ -38,7 +38,7 @@ const HomePage = () => {
             and any information generated is also subject to the <GcdsLink
               href="https://www.canada.ca/en/transparency/terms.html">Canada.ca Terms and conditions.</GcdsLink>
           </GcdsText>
-          <GcdsLink href="/admin">Manage
+          <GcdsLink href="/admin">Ad
           </GcdsLink>
         </GcdsDetails>
       </GcdsContainer>
