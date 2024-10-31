@@ -206,6 +206,9 @@ const TempChatAppContainer = () => {
     } else if (content.startsWith('<pt-muni>') && content.endsWith('</pt-muni>')) {
       responseType = 'pt-muni';
       content = content.slice(9, -10).trim(); // Remove <pt-muni> tags
+    } else if (content.startsWith('<clarifying-question>') && content.endsWith('</clarifying-question>')) {
+      responseType = 'question';
+      content = content.slice(21, -22).trim(); // Remove <clarifying-question> tags
     }
 
     const { paragraphs, citationHead, citationUrl, confidenceRating: originalConfidenceRating } = parseAIResponse(content, aiService);
@@ -235,7 +238,7 @@ const TempChatAppContainer = () => {
             </p>
           ));
         })}
-        {(citationHead || citationUrl || responseType !== 'normal' || aiService) && (
+        {responseType === 'normal' && (citationHead || citationUrl || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
             {citationUrl && citationResult && (
@@ -252,10 +255,8 @@ const TempChatAppContainer = () => {
               </p>
             )}
             <p className="confidence-rating">
-              {responseType === 'normal' && finalConfidenceRating !== undefined && `Confidence: ${finalConfidenceRating}`}
-              {responseType === 'not-gc' && 'Not-GC'}
-              {responseType === 'pt-muni' && 'P-T-Muni'}
-              {((responseType === 'normal' && finalConfidenceRating !== undefined) || responseType !== 'normal') && aiService && ' | '}
+              {finalConfidenceRating !== undefined && `Confidence: ${finalConfidenceRating}`}
+              {finalConfidenceRating !== undefined && aiService && ' | '}
               {aiService && `AI: ${aiService}`}
             </p>
           </div>
