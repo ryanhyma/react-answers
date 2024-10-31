@@ -2,20 +2,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Status - runs locally only
-- Next on to-do list: add back-end to protect personal API keys
-- Move to a GC repo eventually so can be hosted 
-
-## To do list
-- Add back-end to protect personal API keys
-- Currently only uses Anthropic Claude API service - add a version to use OpenAI 4o
-- Will same system prompt work with both? 
-- System prompt needs more tuning in console as responses are too verbose despite prompt requiring max of 4 sentences
-- Need to style AI responses (currently a block of text) and user questions 
-
-## Current AI service
-- the /services/ClaudeService.js file contains the system prompt 
+## Status - deployed on Vercel - contact me for link - this is a proof of concept prototype for research purposes only
+- Back-end database to store user questions and answers and expert feedback
+- Evaluation input of csv files generated from user feedback questions to score AI responses
+- Can choose either Claude or OpenAI 4o API AI service
+- System prompt includes menu structure, updated CRA account context, and specific instructions for top task examples 
 
 ## Uses GC Design system 
-- install and import components into the app.js main page, and the chat container  (import utilities into index.html) https://design-system.alpha.canada.ca/
+-  https://design-system.alpha.canada.ca/
 
