@@ -11,12 +11,15 @@ const chatInteractionSchema = new mongoose.Schema({
   originalCitationUrl: String,
   confidenceRating: String,
   feedback: String,
-  expertRating: {
-    rating: String,
-    expertCitationURL: String
+  expertFeedback: {
+    veryIncorrect: Boolean,
+    somewhatIncorrect: Boolean,
+    incomplete: Boolean,
+    citationVeryIncorrect: Boolean,
+    citationSomewhatIncorrect: Boolean,
+    expertCitationUrl: String
   }
 }, { timestamps: true });
-
 const ChatInteraction = mongoose.model('ChatInteraction', chatInteractionSchema);
 
 export default ChatInteraction;
