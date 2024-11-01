@@ -45,7 +45,8 @@ async function loadProfanityLists() {
 // Create the pattern once both lists are loaded
 let profanityPattern = null;
 loadProfanityLists().then(words => {
-  const pattern = words.join('|');
+  // Add word boundaries to ensure we only match whole words
+  const pattern = words.map(word => `\\b${word}\\b`).join('|');
   profanityPattern = new RegExp(`(${pattern})`, 'gi');
 });
 
