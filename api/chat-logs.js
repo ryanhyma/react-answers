@@ -7,12 +7,12 @@ let ChatInteraction;
 try {
   ChatInteraction = mongoose.model('ChatInteraction');
 } catch {
-  // This shouldn't be needed since the model is already defined, 
-  // but including for safety
   const ChatInteractionSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now },
-    originalQuestion: String,
-    redactedQuestion: String,
+    redactedQuestion: {
+      type: String,
+      required: true
+    },
     aiResponse: String,
     aiService: String,
     referringUrl: String,
@@ -57,7 +57,6 @@ export default async function handler(req, res) {
     // Transform the data to match what the frontend expects
     const transformedLogs = logs.map(log => ({
       timestamp: log.timestamp,
-      originalQuestion: log.originalQuestion,
       redactedQuestion: log.redactedQuestion,
       aiResponse: log.aiResponse,
       aiService: log.aiService,

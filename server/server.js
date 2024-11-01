@@ -30,24 +30,6 @@ mongoose.connect(getMongoURI())
     console.error('MongoDB connection error:', err);
   });
 
-// Chat Log Model
-const chatLogSchema = new mongoose.Schema({
-  timestamp: {
-    type: Date,
-    default: Date.now
-  },
-  query: {
-    type: String,
-    required: true
-  },
-  response: {
-    type: String,
-    required: true
-  }
-});
-
-const ChatLog = mongoose.models.ChatLog || mongoose.model('ChatLog', chatLogSchema);
-
 // Logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
@@ -63,31 +45,6 @@ if (process.env.REACT_APP_ENV === 'development') {
 } else {
   console.log('Running in production mode');
 }
-
-// Rest of your endpoints...
-// New Chat Logs endpoint
-app.get('/api/chat-logs', async (req, res) => {
-  console.log('Received request to /api/chat-logs');
-  try {
-    const days = parseInt(req.query.days) || 7;
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const logs = await ChatLog.find({
-      timestamp: { $gte: startDate }
-    })
-    .sort({ timestamp: -1 })
-    .select('timestamp query response')
-    .lean()
-    .exec();
-
-    console.log(`Found ${logs.length} logs from the past ${days} days`);
-    res.json(logs);
-  } catch (error) {
-    console.error('Error fetching chat logs:', error);
-    res.status(500).json({ error: 'Error fetching chat logs' });
-  }
-});
 
 console.log('Environment variables:');
 console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
@@ -140,7 +97,6 @@ app.post('/api/chatgpt', async (req, res) => {
     res.status(500).json({ error: 'Error processing your request' });
   }
 });
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
