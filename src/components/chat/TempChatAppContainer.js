@@ -295,7 +295,7 @@ const TempChatAppContainer = () => {
   }, [parseAIResponse, checkedCitations]);
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
-  const threatMessage = "Some words are not accepted or sent to the AI service.";
+  const threatMessage = "Your question was not sent to the AI service.";
   return (
     <div className="chat-container">
       <div className="message-list">
