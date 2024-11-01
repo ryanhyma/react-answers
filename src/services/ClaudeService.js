@@ -36,10 +36,10 @@ const ClaudeService = {
       }
 
       const data = await response.json();
-      console.log('Received from Claude API:', {
-        responseLength: data.content.length,
-        firstFewChars: data.content.substring(0, 100)
-      });
+      // console.log('Received from Claude API:', {
+      //   responseLength: data.content.length,
+      //   firstFewChars: data.content.substring(0, 100)
+      // });
       
       return data.content;
     } catch (error) {
