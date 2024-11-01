@@ -182,7 +182,7 @@ const ChatLogsDashboard = () => {
                         {new Date(log.timestamp).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-900">
-                        {(log.originalQuestion || log.redactedQuestion || '').substring(0, 50)}...
+                        {(log.redactedQuestion || '').substring(0, 50)}...
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                         {(log.aiResponse || '').length} chars
