@@ -3,8 +3,10 @@ import mongoose from 'mongoose';
 
 const ChatInteractionSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
-  originalQuestion: String,
-  redactedQuestion: String,
+  redactedQuestion: {
+    type: String,
+    required: true
+  },
   aiResponse: String,
   aiService: String,
   referringUrl: String,

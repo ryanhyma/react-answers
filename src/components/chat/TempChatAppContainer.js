@@ -63,11 +63,10 @@ const TempChatAppContainer = () => {
     return result;
   }, []);
 
-  const logInteraction = useCallback((originalQuestion, redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertFeedback) => {
+  const logInteraction = useCallback((redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertFeedback) => {
     const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
 
     const logEntry = {
-      originalQuestion,
       redactedQuestion,
       aiResponse,
       aiService,
@@ -100,7 +99,6 @@ const TempChatAppContainer = () => {
       const userMessage = messages[messages.length - 2];
       if (userMessage && userMessage.sender === 'user') {
         logInteraction(
-          userMessage.text,
           userMessage.redactedText,
           aiResponse,
           aiService,
@@ -179,7 +177,6 @@ const TempChatAppContainer = () => {
 
         // Log the interaction
         logInteraction(
-          userMessage,
           redactedText,
           response,
           selectedAI,
