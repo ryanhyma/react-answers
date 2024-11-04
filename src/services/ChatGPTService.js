@@ -7,10 +7,11 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api/chatgpt';  // Local development server endpoint
 
 const ChatGPTService = {
-  sendMessage: async (message) => {
+  sendMessage: async (message, conversationHistory = []) => {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
-      // console.log('Sending request to ChatGPT API...');
+      const isEvaluation = message.includes('<evaluation>');
+      const messageHistory = isEvaluation ? [] : conversationHistory;
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -20,6 +21,7 @@ const ChatGPTService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
+          conversationHistory: messageHistory,
         }),
       });
 
@@ -28,7 +30,6 @@ const ChatGPTService = {
       }
 
       const data = await response.json();
-      // console.log('Received response from ChatGPT API');
       return data.content;
     } catch (error) {
       console.error('Error calling ChatGPT API:', error);

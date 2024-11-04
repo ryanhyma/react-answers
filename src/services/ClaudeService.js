@@ -11,9 +11,12 @@ const ClaudeService = {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
 
+      const isEvaluation = message.includes('<evaluation>');
+      const messageHistory = isEvaluation ? [] : conversationHistory;
+
       console.log('Sending to Claude API:', {
         message,
-        conversationHistory,
+        messageHistory,
         systemPromptLength: SYSTEM_PROMPT.length
       });
 
@@ -24,7 +27,7 @@ const ClaudeService = {
         },
         body: JSON.stringify({
           message,
-          conversationHistory,
+          messageHistory,
           systemPrompt: SYSTEM_PROMPT,
         }),
       });

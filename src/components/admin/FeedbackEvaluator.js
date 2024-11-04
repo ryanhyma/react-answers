@@ -137,14 +137,13 @@ const FeedbackEvaluator = () => {
     const processEntry = async (entry) => {
         try {
             const { redactedText } = RedactionService.redactText(entry.question);
-            const messageWithUrl = `${redactedText}\n<referring-url>${entry.referringUrl}</referring-url>`;
+            const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
 
             const aiResponse = selectedAI === 'claude' 
                 ? await ClaudeService.sendMessage(messageWithUrl)
                 : await ChatGPTService.sendMessage(messageWithUrl);
 
             const logEntry = {
-                originalQuestion: entry.question,
                 redactedQuestion: redactedText,
                 aiResponse,
                 aiService: selectedAI,
