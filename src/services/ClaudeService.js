@@ -10,18 +10,13 @@ const ClaudeService = {
   sendMessage: async (message, conversationHistory = []) => {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
-
-      const isEvaluation = message.includes('<evaluation>');
       
-      // Make sure we have a properly formatted message history
-      const messageHistory = isEvaluation ? [] : conversationHistory.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
+      // Only change: check for evaluation and use empty array if true
+      const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
 
       console.log('Sending to Claude API:', {
         message,
-        messageHistory,
+        conversationHistory: finalHistory,
         systemPromptLength: SYSTEM_PROMPT.length
       });
 
@@ -32,7 +27,7 @@ const ClaudeService = {
         },
         body: JSON.stringify({
           message,
-          messageHistory,
+          conversationHistory: finalHistory,  // Use the conditional history
           systemPrompt: SYSTEM_PROMPT,
         }),
       });
@@ -44,10 +39,6 @@ const ClaudeService = {
       }
 
       const data = await response.json();
-      // console.log('Received from Claude API:', {
-      //   responseLength: data.content.length,
-      //   firstFewChars: data.content.substring(0, 100)
-      // });
       
       return data.content;
     } catch (error) {
