@@ -10,13 +10,9 @@ const ChatGPTService = {
   sendMessage: async (message, conversationHistory = []) => {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
-      const isEvaluation = message.includes('<evaluation>');
       
-      // Make sure we have a properly formatted message history
-      const messageHistory = isEvaluation ? [] : conversationHistory.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
+      // Only change: check for evaluation and use empty array if true
+      const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -26,7 +22,7 @@ const ChatGPTService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
-          conversationHistory: messageHistory,  // Now properly formatted
+          conversationHistory: finalHistory,  // Use the conditional history
         }),
       });
 
