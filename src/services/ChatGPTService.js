@@ -11,7 +11,12 @@ const ChatGPTService = {
     try {
       const SYSTEM_PROMPT = await loadSystemPrompt();
       const isEvaluation = message.includes('<evaluation>');
-      const messageHistory = isEvaluation ? [] : conversationHistory;
+      
+      // Make sure we have a properly formatted message history
+      const messageHistory = isEvaluation ? [] : conversationHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -21,7 +26,7 @@ const ChatGPTService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
-          conversationHistory: messageHistory,
+          conversationHistory: messageHistory,  // Now properly formatted
         }),
       });
 

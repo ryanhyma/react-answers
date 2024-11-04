@@ -12,7 +12,12 @@ const ClaudeService = {
       const SYSTEM_PROMPT = await loadSystemPrompt();
 
       const isEvaluation = message.includes('<evaluation>');
-      const messageHistory = isEvaluation ? [] : conversationHistory;
+      
+      // Make sure we have a properly formatted message history
+      const messageHistory = isEvaluation ? [] : conversationHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
 
       console.log('Sending to Claude API:', {
         message,
