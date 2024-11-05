@@ -107,7 +107,7 @@ const FeedbackEvaluator = () => {
             const urlIndex = headers.findIndex(h => h.trim() === 'URL');
 
             if (problemDetailsIndex === -1 || urlIndex === -1) {
-                throw new Error('Required columns "Problem Details" and "URL" not found in CSV file. Please ensure you are using a file downloaded from the Feedback Viewer.');
+                throw new Error('Required columns "Problem Details" and "URL" not found in CSV file. Please ensure you are using a file with those columns ordownloaded from the Feedback Viewer.');
             }
 
             const entries = lines.slice(1)
