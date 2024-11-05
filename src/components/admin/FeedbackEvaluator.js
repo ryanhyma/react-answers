@@ -9,6 +9,7 @@ import LoggingService from '../../services/LoggingService';
 import ClaudeService from '../../services/ClaudeService';
 import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
+import { parseEvaluationResponse } from '../../utils/evaluationParser';
 
 const FeedbackEvaluator = () => {
     const [file, setFile] = useState(null);
@@ -143,11 +144,16 @@ const FeedbackEvaluator = () => {
                 ? await ClaudeService.sendMessage(messageWithUrl)
                 : await ChatGPTService.sendMessage(messageWithUrl);
 
+            // Parse just what we need for logging
+            const { citationUrl, confidenceRating } = parseEvaluationResponse(aiResponse, selectedAI);
+
             const logEntry = {
                 redactedQuestion: redactedText,
                 aiResponse,
                 aiService: selectedAI,
-                referringUrl: entry.referringUrl
+                referringUrl: entry.referringUrl,
+                citationUrl,
+                confidenceRating
             };
 
             await LoggingService.logInteraction(logEntry, true);
