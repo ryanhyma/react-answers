@@ -3,9 +3,44 @@ import React from 'react';
 import TempChatAppContainer from '../components/chat/TempChatAppContainer';
 import { GcdsContainer, GcdsDetails, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 
+// Add Error Boundary component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <GcdsContainer size="xl" mainContainer centered>
+          <h2>AI Answers has timed out.</h2>
+          <GcdsText>Reload the page to try again.</GcdsText>
+          <button 
+            onClick={() => window.location.reload()}
+            className="gcds-button gcds-button--primary"
+          >
+            Reload 
+          </button>
+        </GcdsContainer>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const HomePage = () => {
   return (
-    <>
+    <ErrorBoundary>
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
         <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
@@ -42,7 +77,7 @@ const HomePage = () => {
           </GcdsLink>
         </GcdsDetails>
       </GcdsContainer>
-    </>
+    </ErrorBoundary>
   );
 };
 
