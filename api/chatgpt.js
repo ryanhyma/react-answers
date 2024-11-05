@@ -8,13 +8,20 @@ const openai = new OpenAI({
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { message, systemPrompt } = req.body;
+      const { message, systemPrompt, conversationHistory } = req.body;
+
+      const messages = [
+        { role: "system", content: systemPrompt },
+        ...conversationHistory.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        })),
+        { role: "user", content: message }
+      ];
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: message }
-        ],
+        messages: messages,
         max_tokens: 1024,
       });
       res.status(200).json({ content: response.choices[0].message.content });
