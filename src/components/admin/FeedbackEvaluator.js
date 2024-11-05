@@ -180,8 +180,13 @@ const FeedbackEvaluator = () => {
                 throw new Error('No valid entries found in the CSV file');
             }
 
+            const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
             for (const entry of entries) {
                 await processEntry(entry);
+                if (selectedAI === 'chatgpt') {
+                    await delay(2000);
+                }
             }
 
             setResults({
