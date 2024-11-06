@@ -44,3 +44,39 @@
   .expert-rating-container button:hover {
     background-color: #003d82;
   }
+  
+  .feedback-container {
+    font-size: 0.875rem; /* 14px */
+  }
+  
+  .feedback-text {
+    color: #666;
+  }
+  
+  .feedback-link {
+    text-decoration: none;
+    color: #2077D4;
+  }
+  
+  .feedback-link:hover {
+    text-decoration: underline;
+  }
+  
+  .feedback-separator {
+    color: #666;
+    margin: 0 0.5rem;
+  }
+  
+  .button-as-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+  }
+  
+  .button-as-link:focus {
+    outline: 2px solid #2b4382;
+    outline-offset: 2px;
+  }

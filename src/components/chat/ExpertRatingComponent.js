@@ -31,7 +31,7 @@ const ExpertRatingComponent = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
       <GcdsFieldset
-          legend="Why wasn't this answer helpful?"
+          legend="Why wasn't this answer useful?"
           hint="Select all that apply"
           fieldsetId="ratings"
           className="mt-400"

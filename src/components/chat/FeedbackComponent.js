@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { GcdsButton } from '@cdssnc/gcds-components-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import ExpertRatingComponent from './ExpertRatingComponent';
+import '../../styles/ExpertRatingPlain.css';
 
 const FeedbackComponent = ({ onFeedback }) => {
   const [feedbackGiven, setFeedbackGiven] = useState(false);
@@ -32,13 +30,22 @@ const FeedbackComponent = ({ onFeedback }) => {
   }
   return (
     <div className="feedback-container">
-      <p>Was this response helpful?</p>
-      <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(true)}>
-        <FontAwesomeIcon icon={faThumbsUp} /> Yes
-      </GcdsButton>
-      <GcdsButton className="me-400 hydrated" onClick={() => handleFeedback(false)}>
-        <FontAwesomeIcon icon={faThumbsDown} /> No
-      </GcdsButton>
+      <span className="feedback-text">How was this answer? </span>
+      <button 
+        className="feedback-link button-as-link"
+        onClick={() => handleFeedback(true)}
+      >
+        Useful
+      </button>
+      <span className="feedback-separator"> · </span>
+      <span className="feedback-text">or</span>
+      <span className="feedback-separator"> · </span>
+      <button 
+        className="feedback-link button-as-link"
+        onClick={() => handleFeedback(false)}
+      >
+        not useful
+      </button>
     </div>
   );
 };
