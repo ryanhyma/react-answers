@@ -18,6 +18,8 @@ const TempChatAppContainer = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState('');
+  const MAX_CONVERSATION_TURNS = 3;
+  const [turnCount, setTurnCount] = useState(0);
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -116,8 +118,16 @@ const TempChatAppContainer = () => {
     setReferringUrl(e.target.value);
   };
 
+  const handleReload = () => {
+    window.location.reload();
+  };
+
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
+      if (turnCount >= MAX_CONVERSATION_TURNS) {
+        return;
+      }
+
       setShowFeedback(false);
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
@@ -191,8 +201,10 @@ const TempChatAppContainer = () => {
       } finally {
         setIsLoading(false);
       }
+
+      setTurnCount(prevCount => prevCount + 1);
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -334,66 +346,79 @@ const TempChatAppContainer = () => {
           </div>
         ))}
         {isLoading && <div className="message ai">Thinking...</div>}
-      </div>
-      <div className="input-area mt-400">
-        <div className="input-button-wrapper">
-          <GcdsTextarea
-            key={textareaKey}
-            textareaId="textarea-props"
-            value={inputText}
-            label="Ask a Canada.ca question"
-            name="textarea-name"
-            rows="2"
-            hint="Hint: add details about your situation. Always check your answer."
-            onInput={handleInputChange}
-            disabled={isLoading}
-          />
-           <GcdsButton onClick={handleSendMessage} disabled={isLoading} className="send-button">
-            Send
-          </GcdsButton>
-        </div>
-        <GcdsDetails detailsTitle='Options'>
-        <div className="ai-toggle" style={{ marginBottom: '10px' }}>
-          <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <legend style={{ marginRight: '10px' }}>AI:</legend>
-              <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                <input
-                  type="radio"
-                  id="claude"
-                  name="ai-selection"
-                  value="claude"
-                  checked={selectedAI === 'claude'}
-                  onChange={handleAIToggle}
-                  style={{ marginRight: '5px' }}
-                />
-                <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <input
-                  type="radio"
-                  id="chatgpt"
-                  name="ai-selection"
-                  value="chatgpt"
-                  checked={selectedAI === 'chatgpt'}
-                  onChange={handleAIToggle}
-                  style={{ marginRight: '5px' }}
-                />
-                <label htmlFor="chatgpt">OpenAI ChatGPT 4o</label>
-              </div>
+        {turnCount >= MAX_CONVERSATION_TURNS && (
+          <div className="message ai">
+            <div className="limit-reached-message">
+              Your limit of {MAX_CONVERSATION_TURNS} questions per conversation has been reached. 
+              Please reload to start a new conversation.
+              <GcdsButton onClick={handleReload} className="reload-button">
+                Reload Page
+              </GcdsButton>
             </div>
-          </fieldset>
-        </div>
-        <GcdsInput
-          label="Referring Canada.ca URL (optional)"
-          type="url"
-          value={referringUrl}
-          onGcdsChange={handleReferringUrlChange}
-          style={{ marginBottom: '10px' }}
-        />
-        </GcdsDetails>
-
+          </div>
+        )}
       </div>
+      {turnCount < MAX_CONVERSATION_TURNS && (
+        <div className="input-area mt-400">
+          <div className="input-button-wrapper">
+            <GcdsTextarea
+              key={textareaKey}
+              textareaId="textarea-props"
+              value={inputText}
+              label="Ask a Canada.ca question"
+              name="textarea-name"
+              rows="2"
+              hint="Hint: add details about your situation. Always check your answer."
+              onInput={handleInputChange}
+              disabled={isLoading}
+            />
+             <GcdsButton onClick={handleSendMessage} disabled={isLoading} className="send-button">
+              Send
+            </GcdsButton>
+          </div>
+          <GcdsDetails detailsTitle='Options'>
+          <div className="ai-toggle" style={{ marginBottom: '10px' }}>
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <legend style={{ marginRight: '10px' }}>AI:</legend>
+                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                  <input
+                    type="radio"
+                    id="claude"
+                    name="ai-selection"
+                    value="claude"
+                    checked={selectedAI === 'claude'}
+                    onChange={handleAIToggle}
+                    style={{ marginRight: '5px' }}
+                  />
+                  <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="radio"
+                    id="chatgpt"
+                    name="ai-selection"
+                    value="chatgpt"
+                    checked={selectedAI === 'chatgpt'}
+                    onChange={handleAIToggle}
+                    style={{ marginRight: '5px' }}
+                  />
+                  <label htmlFor="chatgpt">OpenAI ChatGPT 4o</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <GcdsInput
+            label="Referring Canada.ca URL (optional)"
+            type="url"
+            value={referringUrl}
+            onGcdsChange={handleReferringUrlChange}
+            style={{ marginBottom: '10px' }}
+          />
+          </GcdsDetails>
+
+        </div>
+      )}
     </div>
   );
 };
