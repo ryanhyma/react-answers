@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       ];
 
       // Log the final messages array being sent to Claude
-      console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
+      // console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
 
       const response = await anthropic.beta.promptCaching.messages.create({
         model: "claude-3-5-sonnet-20241022",
