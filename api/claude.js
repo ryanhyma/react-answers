@@ -1,13 +1,13 @@
 // api/claude.js
 import Anthropic from '@anthropic-ai/sdk';
-
+//use prompt caching beta
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
   headers: {
     'anthropic-beta': 'prompt-caching-2024-07-31'
   }
 });
-
+// In api/claude.js, update the handler:
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         throw new Error('ANTHROPIC_API_KEY is not set');
       }
 
-      // Convert conversation history to Claude's format and add current message
+      // Convert conversation history if it exists to Claude's format and add current message
       const messages = [
         ...conversationHistory.map(msg => ({
           role: msg.role,
@@ -35,9 +35,13 @@ export default async function handler(req, res) {
       // Log the final messages array being sent to Claude
       console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
 
-      const response = await anthropic.messages.create({
+      const response = await anthropic.beta.promptCaching.messages.create({
         model: "claude-3-5-sonnet-20241022",
-        system: systemPrompt,
+        system: [{
+          type: "text",
+          text: systemPrompt,
+          cache_control: { type: "ephemeral" }
+        }],
         messages: messages,
         max_tokens: 1024
       });

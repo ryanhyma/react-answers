@@ -62,13 +62,36 @@ app.post('/api/claude', async (req, res) => {
   console.log('Received request to /api/claude');
   console.log('Request body:', req.body);
   try {
-    const { message, systemPrompt } = req.body;
-    const response = await anthropic.messages.create({
+    const { message, systemPrompt, conversationHistory } = req.body;
+    
+    // Log conversation details
+    console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
+    console.log('Current Message:', message);
+    console.log('System Prompt Length:', systemPrompt?.length);
+
+    // Convert conversation history to Claude's format and add current message
+    const messages = [
+      ...conversationHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      { role: "user", content: message }
+    ];
+
+    // Log the final messages array being sent to Claude
+    console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
+
+    const response = await anthropic.beta.promptCaching.messages.create({
       model: "claude-3-5-sonnet-20240620",
-      system: systemPrompt,
-      messages: [{ role: "user", content: message }],
+      system: [{
+        type: "text",
+        text: systemPrompt,
+        cache_control: { type: "ephemeral" }
+      }],
+      messages: messages,
       max_tokens: 1024
     });
+
     console.log('Claude API response received');
     res.json({ content: response.content[0].text });
   } catch (error) {
@@ -76,7 +99,6 @@ app.post('/api/claude', async (req, res) => {
     res.status(500).json({ error: 'Error processing your request' });
   }
 });
-
 app.post('/api/chatgpt', async (req, res) => {
   console.log('Received request to /api/chatgpt');
   console.log('Request body:', req.body);
