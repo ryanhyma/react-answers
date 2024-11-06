@@ -1,5 +1,5 @@
 // src/pages/HomePage.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TempChatAppContainer from '../components/chat/TempChatAppContainer';
 import { GcdsContainer, GcdsDetails, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 
@@ -39,21 +39,48 @@ class ErrorBoundary extends React.Component {
 }
 
 const HomePage = () => {
+  const [serviceStatus, setServiceStatus] = useState(null);
+
+  useEffect(() => {
+    // TODO: Replace with actual API call to get status
+    const status = {
+      isAvailable: false,
+      message: "AI Answers is unavailable until tomorrow due to reaching daily usage limits. Please check back then.",
+    };
+    setServiceStatus(status);
+  }, []);
+
   return (
     <ErrorBoundary>
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600" chat-app-wrapper>
         <h1 className='mb-400'>AI Answers</h1>
-        <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
-        <GcdsText className='mb-400'> This proof of concept is for research purposes only. Work is ongoing.
-        </GcdsText>
-        <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>
-          <GcdsText >To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service.  The removed text will display as <strong>XXX</strong>. </GcdsText>
-          <GcdsText>AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024</GcdsText>
-          <GcdsText>AI service ChatGPT: OpenAI 4o,  knowledge to May 2024</GcdsText>
-          <GcdsText><GcdsLink href="https://github.com/lisafast/react-answers/blob/main/src/services/systemPrompt.js">Read the System Prompt</GcdsLink> that controls the AI output.  </GcdsText>
-          <GcdsText>Development is still in progress - contact lisa.fast@cds-snc.ca for information. </GcdsText>
-        </GcdsDetails>
-        <TempChatAppContainer />
+        {serviceStatus && !serviceStatus.isAvailable ? (
+          // Show status message when service is unavailable
+          <div className="service-status-alert" style={{ 
+            backgroundColor: '#F3E9E8', 
+            border: '1px solid #BC3331', 
+            padding: '1rem', 
+            marginBottom: '1rem',
+            borderRadius: '4px'
+          }}>
+            <strong>Service Status: </strong>{serviceStatus.message}
+          </div>
+        ) : (
+          // Only show chat container when service is available
+          <>
+            <h2 className='mt-400 mb-400'>Get answers to your Canada.ca questions. </h2>
+            <GcdsText className='mb-400'> This proof of concept is for research purposes only. Work is ongoing.
+            </GcdsText>
+            <GcdsDetails detailsTitle='About AI Answers' className='mb-400'>
+              <GcdsText >To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service.  The removed text will display as <strong>XXX</strong>. </GcdsText>
+              <GcdsText>AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024</GcdsText>
+              <GcdsText>AI service ChatGPT: OpenAI 4o,  knowledge to May 2024</GcdsText>
+              <GcdsText><GcdsLink href="https://github.com/lisafast/react-answers/blob/main/src/services/systemPrompt.js">Read the System Prompt</GcdsLink> that controls the AI output.  </GcdsText>
+              <GcdsText>Development is still in progress - contact lisa.fast@cds-snc.ca for information. </GcdsText>
+            </GcdsDetails>
+            <TempChatAppContainer />
+          </>
+        )}
       </GcdsContainer>
       <GcdsContainer size="sm" centered className="mb-600">
         <GcdsText>Help improve this service:<a href="https://cdssnc.qualtrics.com/jfe/form/SV_4N2YTcAHkcBEGfs" className="feedback-survey-link" target="_blank" rel="noopener noreferrer">take the user survey </a></GcdsText> 

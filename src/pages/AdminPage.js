@@ -1,9 +1,26 @@
 import React from 'react';
-import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
+import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackEvaluator from '../components/admin/FeedbackEvaluator';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard';
 
 const AdminPage = () => {
+  const [status, setStatus] = React.useState({
+    isAvailable: true,
+    message: ''
+  });
+
+  const handleStatusToggle = () => {
+    setStatus({ ...status, isAvailable: !status.isAvailable });
+  };
+
+  const handleMessageChange = (e) => {
+    setStatus({ ...status, message: e.target.value });
+  };
+
+  const handleStatusUpdate = () => {
+    // Implement status update logic here
+  };
+
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
       <h1 className='mb-400'>Evaluation</h1>
@@ -37,6 +54,31 @@ const AdminPage = () => {
         <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
         <FeedbackEvaluator />
       </section>
+
+      <GcdsDetails detailsTitle="Service Status Control" className="mb-600">
+        <div className="status-control-section">
+          <div className="status-toggle">
+            <GcdsCheckbox
+              label="Service Available"
+              checked={status.isAvailable}
+              onChange={handleStatusToggle}
+            />
+          </div>
+          
+          <GcdsTextarea
+            label="Status Message"
+            value={status.message}
+            onChange={handleMessageChange}
+            placeholder="Enter status message to display to users..."
+            disabled={status.isAvailable}
+            className="mt-400"
+          />
+          
+          <GcdsButton onClick={handleStatusUpdate} className="mt-400">
+            Update Status
+          </GcdsButton>
+        </div>
+      </GcdsDetails>
     </GcdsContainer>
   );
 };
