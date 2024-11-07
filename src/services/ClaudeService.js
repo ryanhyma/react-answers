@@ -45,6 +45,42 @@ const ClaudeService = {
       console.error('Error calling Claude API:', error);
       throw error;
     }
+  },
+  sendBatchMessages: async (requests) => {
+    const response = await fetch('/api/claude/batch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requests })
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to create batch request');
+    }
+
+    return response.json();
+  },
+  getBatchStatus: async (batchId) => {
+    const response = await fetch(`/api/claude/batch/${batchId}`);
+    
+    if (!response.ok) {
+        throw new Error('Failed to get batch status');
+    }
+
+    return response.json();
+  },
+  getBatchResults: async (resultsUrl) => {
+    const response = await fetch(resultsUrl);
+    
+    if (!response.ok) {
+        throw new Error('Failed to get batch results');
+    }
+
+    const text = await response.text();
+    return text.split('\n')
+        .filter(line => line.trim())
+        .map(line => JSON.parse(line));
   }
 };
 

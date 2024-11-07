@@ -21,6 +21,10 @@ const FeedbackEvaluator = () => {
     const [selectedAI, setSelectedAI] = useState('claude');
     const [fileUploaded, setFileUploaded] = useState(false);
 
+    const [useBatchProcessing, setUseBatchProcessing] = useState(true);
+    const [batchId, setBatchId] = useState(null);
+    const [batchStatus, setBatchStatus] = useState(null);
+
     const handleFileChange = (event) => {
         setError(null);
         const uploadedFile = event.target.files[0];
@@ -144,7 +148,6 @@ const FeedbackEvaluator = () => {
                 ? await ClaudeService.sendMessage(messageWithUrl)
                 : await ChatGPTService.sendMessage(messageWithUrl);
 
-            // Parse just what we need for logging
             const { citationUrl, confidenceRating } = parseEvaluationResponse(aiResponse, selectedAI);
 
             const logEntry = {
@@ -164,6 +167,75 @@ const FeedbackEvaluator = () => {
         }
     };
 
+    const handleBatchToggle = (e) => {
+        setUseBatchProcessing(e.target.checked);
+    };
+
+    const processBatch = async (entries) => {
+        try {
+            const requests = entries.map((entry, index) => {
+                const { redactedText } = RedactionService.redactText(entry.question);
+                const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
+                
+                return {
+                    custom_id: `entry_${index}`,
+                    params: {
+                        model: "claude-3-sonnet-20240229",
+                        messages: [{ role: "user", content: messageWithUrl }],
+                        max_tokens: 1024
+                    }
+                };
+            });
+
+            const response = await ClaudeService.sendBatchMessages(requests);
+            setBatchId(response.id);
+            setBatchStatus(response.processing_status);
+
+            await pollBatchResults(response.id);
+        } catch (error) {
+            console.error('Error processing batch:', error);
+            setError(error.message);
+        }
+    };
+
+    const pollBatchResults = async (batchId) => {
+        const pollInterval = 5000; // 5 seconds
+        
+        while (true) {
+            const status = await ClaudeService.getBatchStatus(batchId);
+            setBatchStatus(status.processing_status);
+
+            if (status.processing_status === 'ended') {
+                const results = await ClaudeService.getBatchResults(status.results_url);
+                await processResults(results);
+                break;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, pollInterval));
+        }
+    };
+
+    const processResults = async (results) => {
+        for (const result of results) {
+            const { citationUrl, confidenceRating } = parseEvaluationResponse(
+                result.message.content,
+                'claude'
+            );
+
+            const logEntry = {
+                redactedQuestion: result.original_request.params.messages[0].content,
+                aiResponse: result.message.content,
+                aiService: 'claude',
+                referringUrl: result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
+                citationUrl,
+                confidenceRating
+            };
+
+            await LoggingService.logInteraction(logEntry, true);
+            setProcessedCount(prev => prev + 1);
+        }
+    };
+
     const handleProcessFile = async () => {
         if (!file) return;
 
@@ -180,12 +252,15 @@ const FeedbackEvaluator = () => {
                 throw new Error('No valid entries found in the CSV file');
             }
 
-            const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-            for (const entry of entries) {
-                await processEntry(entry);
-                if (selectedAI === 'chatgpt') {
-                    await delay(2000);
+            if (useBatchProcessing) {
+                await processBatch(entries);
+            } else {
+                const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+                for (const entry of entries) {
+                    await processEntry(entry);
+                    if (selectedAI === 'chatgpt') {
+                        await delay(2000);
+                    }
                 }
             }
 
@@ -205,7 +280,6 @@ const FeedbackEvaluator = () => {
 
     return (
         <GcdsContainer className="mb-600">
-
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
@@ -242,6 +316,21 @@ const FeedbackEvaluator = () => {
                                     </div>
                                 </div>
                             </fieldset>
+                        </div>
+
+                        <div className="batch-toggle" style={{ marginBottom: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <input
+                                    type="checkbox"
+                                    id="batchProcessing"
+                                    checked={useBatchProcessing}
+                                    onChange={handleBatchToggle}
+                                    style={{ marginRight: '5px' }}
+                                />
+                                <label htmlFor="batchProcessing">
+                                    Use batch processing (recommended for large files)
+                                </label>
+                            </div>
                         </div>
 
                         <div className="file-input-container" style={{ marginBottom: '20px' }}>
@@ -282,13 +371,32 @@ const FeedbackEvaluator = () => {
                                 Upload File
                             </button>
                         )}
-                    </form>
 
-                    {fileUploaded && (
-                        <div className="step mt-400">
-                            <GcdsHeading tag="h3">Step 2: Process File</GcdsHeading>
-                            <button
+                        {processing && (
+                            <div className="processing-status mt-400">
+                                {useBatchProcessing ? (
+                                    <>
+                                        <GcdsText>Batch Status: {batchStatus || 'Preparing'}</GcdsText>
+                                        <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
+                                    </>
+                                ) : (
+                                    <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
+                                )}
+                            </div>
+                        )}
+
+                        {results && (
+                            <div className="results-section mt-400">
+                                <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
+                                <GcdsText>File: {results.fileName}</GcdsText>
+                                <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
+                            </div>
+                        )}
+
+                        {fileUploaded && (
+                            <button 
                                 onClick={handleProcessFile}
+                                className="primary-button"
                                 disabled={processing}
                                 style={{
                                     padding: '8px 16px',
@@ -297,27 +405,13 @@ const FeedbackEvaluator = () => {
                                     border: 'none',
                                     borderRadius: '4px',
                                     cursor: processing ? 'not-allowed' : 'pointer',
-                                    opacity: processing ? 0.7 : 1
+                                    marginTop: '20px'
                                 }}
                             >
                                 {processing ? 'Processing...' : 'Start Processing'}
                             </button>
-                        </div>
-                    )}
-
-                    {processing && (
-                        <div className="processing-status mt-400">
-                            <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
-                        </div>
-                    )}
-
-                    {results && (
-                        <div className="results-section mt-400">
-                            <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
-                            <GcdsText>File: {results.fileName}</GcdsText>
-                            <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
-                        </div>
-                    )}
+                        )}
+                    </form>
                 </div>
             </div>
         </GcdsContainer>
