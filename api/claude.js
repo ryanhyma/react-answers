@@ -47,15 +47,15 @@ export default async function handler(req, res) {
       });
 
       // Add detailed cache performance logging
-      console.log('Cache Performance:', {
-        cacheCreation: response.usage.cache_creation_input_tokens + ' tokens written to cache',
-        cacheHits: response.usage.cache_read_input_tokens + ' tokens read from cache',
-        uncachedInput: response.usage.input_tokens + ' tokens processed without cache',
-        totalInput: response.usage.input_tokens + 
-                   response.usage.cache_creation_input_tokens + 
-                   response.usage.cache_read_input_tokens + ' total input tokens',
-        outputTokens: response.usage.output_tokens + ' output tokens'
-      });
+      // console.log('Cache Performance:', {
+      //   cacheCreation: response.usage.cache_creation_input_tokens + ' tokens written to cache',
+      //   cacheHits: response.usage.cache_read_input_tokens + ' tokens read from cache',
+      //   uncachedInput: response.usage.input_tokens + ' tokens processed without cache',
+      //   totalInput: response.usage.input_tokens + 
+      //              response.usage.cache_creation_input_tokens + 
+      //              response.usage.cache_read_input_tokens + ' total input tokens',
+      //   outputTokens: response.usage.output_tokens + ' output tokens'
+      // });
 
       console.log('Claude Response:', {
         content: response.content[0].text.substring(0, 100) + '...',
