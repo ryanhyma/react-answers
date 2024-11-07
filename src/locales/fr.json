@@ -37,11 +37,11 @@
       },
       "errors": {
         "timeout": {
-          "title": "IA Réponses a expiré.",
+          "title": "Réponses IA a expiré.",
           "message": "Rechargez la page pour réessayer.",
           "button": "Recharger"
         },
-        "serviceUnavailable": "IA Réponses n'est pas disponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
+            "serviceUnavailable": "Réponses IA n'est pas disponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
       },
       "chat": {
         "input": {
@@ -66,7 +66,7 @@
         },
         "messages": {
           "thinking": "En réflexion...",
-          "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Veuillez recharger pour commencer une nouvelle conversation.",
+          "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Rechargez la page pour commencer une nouvelle conversation.",
           "error": "Désolé, je n'ai pas pu traiter votre demande. Veuillez réessayer plus tard.",
           "profanity": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
           "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
