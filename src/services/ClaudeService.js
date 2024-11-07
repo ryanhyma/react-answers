@@ -47,22 +47,36 @@ const ClaudeService = {
     }
   },
   sendBatchMessages: async (requests) => {
-    const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            batch: true,
-            requests: requests
-        })
-    });
+    try {
+        const SYSTEM_PROMPT = await loadSystemPrompt();
+        
+        // Format the requests to match the expected server format
+        const formattedRequests = requests.map(request => ({
+            message: request.params.messages[0].content,
+            conversationHistory: [],  // Empty for evaluation requests
+            systemPrompt: SYSTEM_PROMPT
+        }));
 
-    if (!response.ok) {
-        throw new Error('Failed to create batch request');
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                batch: true,
+                requests: formattedRequests
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create batch request');
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('Error in sendBatchMessages:', error);
+        throw error;
     }
-
-    return response.json();
   },
   getBatchStatus: async (batchId) => {
     const response = await fetch(`${API_URL}/status/${batchId}`);
