@@ -1,6 +1,6 @@
 {
     "homepage": {
-      "title": "IA Réponses",
+      "title": "Réponses IA",
       "subtitle": "Obtenez des réponses à vos questions sur Canada.ca.",
       "alpha": {
         "label": "Alpha",
@@ -10,7 +10,7 @@
         "researchOnly": "Cette preuve de concept est uniquement destinée à la recherche. Le travail est en cours."
       },
       "about": {
-        "title": "À propos d'IA Réponses",
+        "title": "À propos de Réponses IA",
         "privacyNote": "Pour protéger votre vie privée, les numéros et les adresses seront supprimés avant que votre question ne soit envoyée au service d'IA. Le texte supprimé s'affichera sous la forme XXX.",
         "aiServices": {
           "claude": "Service IA Claude : Anthropic Claude Sonnet 3.5, connaissances jusqu'en avril 2024",
