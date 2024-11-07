@@ -47,12 +47,15 @@ const ClaudeService = {
     }
   },
   sendBatchMessages: async (requests) => {
-    const response = await fetch('/api/claude/batch', {
+    const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ requests })
+        body: JSON.stringify({
+            batch: true,
+            requests: requests
+        })
     });
 
     if (!response.ok) {
@@ -62,7 +65,7 @@ const ClaudeService = {
     return response.json();
   },
   getBatchStatus: async (batchId) => {
-    const response = await fetch(`/api/claude/batch/${batchId}`);
+    const response = await fetch(`${API_URL}/status/${batchId}`);
     
     if (!response.ok) {
         throw new Error('Failed to get batch status');
