@@ -95,9 +95,8 @@ const HomePage = ({ lang = 'en' }) => {
         <TempChatAppContainer lang={lang} />
       </GcdsContainer>
 
-      <GcdsContainer size="sm" centered className="mb-600">
+      <GcdsContainer size="xl" mainContainer centered tag="below" className="mb-600">
         <GcdsText>
-          {t('homepage.feedback.title')}:
           <a 
             href="https://cdssnc.qualtrics.com/jfe/form/SV_4N2YTcAHkcBEGfs" 
             className="feedback-survey-link" 

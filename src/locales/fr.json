@@ -20,8 +20,8 @@
         "contact": "Le développement est toujours en cours - contactez lisa.fast@cds-snc.ca pour plus d'informations."
       },
       "feedback": {
-        "title": "Aidez-nous à améliorer ce service",
-        "surveyLink": "répondre au sondage",
+        "title": "",
+        "surveyLink": "Partager votre rétroaction (ouvre dans un nouvel onglet)",
         "question": "Cette réponse était-elle utile?",
         "useful": "Utile",
         "notUseful": "pas utile",
