@@ -192,6 +192,10 @@ const TempChatAppContainer = () => {
           selectedAI,
           referringUrl.trim() || undefined
         );
+
+        // Increment turnCount after AI response
+        setTurnCount(prevCount => prevCount + 1);
+
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [
@@ -201,8 +205,6 @@ const TempChatAppContainer = () => {
       } finally {
         setIsLoading(false);
       }
-
-      setTurnCount(prevCount => prevCount + 1);
     }
   }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount]);
 
@@ -305,6 +307,16 @@ const TempChatAppContainer = () => {
 
   const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
   const threatMessage = "Your question was not sent to the AI service.";
+
+  const getLabelForInput = () => {
+    if (turnCount === 1) {
+      return 'Ask a follow-on question or reply';
+    } else if (turnCount === 2) {
+      return 'Ask a follow-on question or reply';
+    }
+    return 'Ask a Canada.ca question';
+  };
+
   return (
     <div className="chat-container">
       <div className="message-list">
@@ -365,10 +377,10 @@ const TempChatAppContainer = () => {
               key={textareaKey}
               textareaId="textarea-props"
               value={inputText}
-              label="Ask a Canada.ca question"
+              label={getLabelForInput()}
               name="textarea-name"
               rows="2"
-              hint="Hint: add details about your situation. Always check your answer."
+              hint="Hint: Add details. AI can make mistakes, always check your answer."
               onInput={handleInputChange}
               disabled={isLoading}
             />
