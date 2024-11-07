@@ -21,7 +21,12 @@
       },
       "feedback": {
         "title": "Help improve this service",
-        "surveyLink": "take the user survey"
+        "surveyLink": "take the user survey",
+        "question": "How was this answer?",
+        "useful": "Useful",
+        "notUseful": "not useful",
+        "or": "or",
+        "thankYou": "Thank you for your feedback!"
       },
       "privacy": {
         "title": "Privacy and AI terms of use",
@@ -37,6 +42,53 @@
           "button": "Reload"
         },
         "serviceUnavailable": "AI Answers is unavailable until tomorrow due to reaching daily usage limits. Please check back then."
+      },
+      "chat": {
+        "input": {
+          "initial": "Ask a Canada.ca question",
+          "followUp": "Ask a follow-on question or reply",
+          "hint": "Hint: Add details. AI can make mistakes, always check your answer."
+        },
+        "buttons": {
+          "send": "Send",
+          "reload": "Reload Page"
+        },
+        "options": {
+          "title": "Options",
+          "aiSelection": {
+            "label": "AI:",
+            "claude": "Anthropic Claude 3.5 Sonnet",
+            "chatgpt": "OpenAI ChatGPT 4o"
+          },
+          "referringUrl": {
+            "label": "Referring Canada.ca URL (optional)"
+          }
+        },
+        "messages": {
+          "thinking": "Thinking...",
+          "limitReached": "Your limit of {{count}} questions per conversation has been reached. Please reload to start a new conversation.",
+          "error": "Sorry, I couldn't process your request. Please try again later.",
+          "profanity": "Your question used words that aren't accepted. Please try asking it differently.",
+          "privacy": "To protect your privacy, personal details were removed and replaced with XXX.",
+          "threat": "Your question was not sent to the AI service."
+        },
+        "citation": {
+          "confidence": "Confidence:",
+          "ai": "AI:"
+        }
+      },
+      "expertRating": {
+        "title": "Why wasn't this answer useful?",
+        "hint": "Select all that apply",
+        "options": {
+          "veryIncorrect": "Answer is very incorrect",
+          "somewhatIncorrect": "Answer is somewhat incorrect",
+          "incomplete": "Answer is incomplete",
+          "citationVeryIncorrect": "Citation URL is very incorrect",
+          "citationSomewhatIncorrect": "Citation URL is somewhat incorrect",
+          "betterCitation": "Better citation URL (optional):"
+        },
+        "submit": "Submit feedback"
       }
     }
   }

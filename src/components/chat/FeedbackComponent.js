@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ExpertRatingComponent from './ExpertRatingComponent';
 import '../../styles/ExpertRatingPlain.css';
+import { useTranslations } from '../../hooks/useTranslations';
 
-const FeedbackComponent = ({ onFeedback }) => {
+const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
+  const { t } = useTranslations(lang);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showExpertRating, setShowExpertRating] = useState(false);
 
@@ -23,28 +25,28 @@ const FeedbackComponent = ({ onFeedback }) => {
   };
 
   if (feedbackGiven) {
-    return <p>Thank you for your feedback!</p>;
+    return <p>{t('homepage.feedback.thankYou')}</p>;
   }
   if (showExpertRating) {
-    return <ExpertRatingComponent onSubmit={handleExpertFeedback} />;
+    return <ExpertRatingComponent onSubmit={handleExpertFeedback} lang={lang} />;
   }
   return (
     <div className="feedback-container">
-      <span className="feedback-text">How was this answer? </span>
+      <span className="feedback-text">{t('homepage.feedback.question')} </span>
       <button 
         className="feedback-link button-as-link"
         onClick={() => handleFeedback(true)}
       >
-        Useful
+        {t('homepage.feedback.useful')}
       </button>
       <span className="feedback-separator"> · </span>
-      <span className="feedback-text">or</span>
+      <span className="feedback-text">{t('homepage.feedback.or')}</span>
       <span className="feedback-separator"> · </span>
       <button 
         className="feedback-link button-as-link"
         onClick={() => handleFeedback(false)}
       >
-        not useful
+        {t('homepage.feedback.notUseful')}
       </button>
     </div>
   );

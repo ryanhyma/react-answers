@@ -1,4 +1,3 @@
-
 {
     "homepage": {
       "title": "IA Réponses",
@@ -22,7 +21,12 @@
       },
       "feedback": {
         "title": "Aidez-nous à améliorer ce service",
-        "surveyLink": "répondre au sondage"
+        "surveyLink": "répondre au sondage",
+        "question": "Cette réponse était-elle utile?",
+        "useful": "Utile",
+        "notUseful": "pas utile",
+        "or": "ou",
+        "thankYou": "Merci de votre rétroaction!"
       },
       "privacy": {
         "title": "Confidentialité et conditions d'utilisation de l'IA",
@@ -38,6 +42,53 @@
           "button": "Recharger"
         },
         "serviceUnavailable": "IA Réponses n'est pas disponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
+      },
+      "chat": {
+        "input": {
+          "initial": "Posez une question sur Canada.ca",
+          "followUp": "Posez une question de suivi ou répondez",
+          "hint": "Conseil : Ajoutez des détails. L'IA peut faire des erreurs, vérifiez toujours votre réponse."
+        },
+        "buttons": {
+          "send": "Envoyer",
+          "reload": "Recharger la page"
+        },
+        "options": {
+          "title": "Options",
+          "aiSelection": {
+            "label": "IA :",
+            "claude": "Anthropic Claude 3.5 Sonnet",
+            "chatgpt": "OpenAI ChatGPT 4o"
+          },
+          "referringUrl": {
+            "label": "URL de référence Canada.ca (facultatif)"
+          }
+        },
+        "messages": {
+          "thinking": "En réflexion...",
+          "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Veuillez recharger pour commencer une nouvelle conversation.",
+          "error": "Désolé, je n'ai pas pu traiter votre demande. Veuillez réessayer plus tard.",
+          "profanity": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
+          "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
+          "threat": "Votre question n'a pas été envoyée au service d'IA."
+        },
+        "citation": {
+          "confidence": "Confiance :",
+          "ai": "IA :"
+        }
+      },
+      "expertRating": {
+        "title": "Pourquoi cette réponse n'était-elle pas utile?",
+        "hint": "Sélectionnez tout ce qui s'applique",
+        "options": {
+          "veryIncorrect": "La réponse est très incorrecte",
+          "somewhatIncorrect": "La réponse est partiellement incorrecte",
+          "incomplete": "La réponse est incomplète",
+          "citationVeryIncorrect": "L'URL de citation est très incorrecte",
+          "citationSomewhatIncorrect": "L'URL de citation est partiellement incorrecte",
+          "betterCitation": "Meilleure URL de citation (facultatif) :"
+        },
+        "submit": "Soumettre la rétroaction"
       }
     }
   }

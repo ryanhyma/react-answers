@@ -7,9 +7,11 @@ import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsInput, GcdsDetails } from '@cdssnc/gcds-components-react';
 import '../../styles/TempChatAppContainer.css';
 import checkCitationUrl from '../../utils/urlChecker.js';
+import { useTranslations } from '../../hooks/useTranslations';
 
 
-const TempChatAppContainer = () => {
+const TempChatAppContainer = ({ lang = 'en' }) => {
+  const { t } = useTranslations(lang);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -295,26 +297,24 @@ const TempChatAppContainer = () => {
               </p>
             )}
             <p className="confidence-rating">
-              {finalConfidenceRating !== undefined && `Confidence: ${finalConfidenceRating}`}
+              {finalConfidenceRating !== undefined && `${t('homepage.chat.citation.confidence')} ${finalConfidenceRating}`}
               {finalConfidenceRating !== undefined && aiService && ' | '}
-              {aiService && `AI: ${aiService}`}
+              {aiService && `${t('homepage.chat.citation.ai')} ${aiService}`}
             </p>
           </div>
         )}
       </div>
     );
-  }, [parseAIResponse, checkedCitations]);
+  }, [parseAIResponse, checkedCitations, t]);
 
-  const privacyMessage = "To protect your privacy, personal details were removed and replaced with XXX.";
-  const threatMessage = "Your question was not sent to the AI service.";
+  const privacyMessage = t('homepage.chat.messages.privacy');
+  const threatMessage = t('homepage.chat.messages.threat');
 
   const getLabelForInput = () => {
-    if (turnCount === 1) {
-      return 'Ask a follow-on question or reply';
-    } else if (turnCount === 2) {
-      return 'Ask a follow-on question or reply';
+    if (turnCount >= 1) {
+      return t('homepage.chat.input.followUp');
     }
-    return 'Ask a Canada.ca question';
+    return t('homepage.chat.input.initial');
   };
 
   return (
@@ -351,20 +351,19 @@ const TempChatAppContainer = () => {
                  showFeedback && 
                  !message.error && 
                  !message.text.includes('<clarifying-question>') && (
-                  <FeedbackComponent onFeedback={handleFeedback} />
+                  <FeedbackComponent onFeedback={handleFeedback} lang={lang} />
                 )}
               </>
             )}
           </div>
         ))}
-        {isLoading && <div className="message ai">Thinking...</div>}
+        {isLoading && <div className="message ai">{t('homepage.chat.messages.thinking')}</div>}
         {turnCount >= MAX_CONVERSATION_TURNS && (
           <div className="message ai">
             <div className="limit-reached-message">
-              Your limit of {MAX_CONVERSATION_TURNS} questions per conversation has been reached. 
-              Please reload to start a new conversation.
+              {t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}
               <GcdsButton onClick={handleReload} className="reload-button">
-                Reload Page
+                {t('homepage.chat.buttons.reload')}
               </GcdsButton>
             </div>
           </div>
@@ -380,19 +379,19 @@ const TempChatAppContainer = () => {
               label={getLabelForInput()}
               name="textarea-name"
               rows="2"
-              hint="Hint: Add details. AI can make mistakes, always check your answer."
+              hint={t('homepage.chat.input.hint')}
               onInput={handleInputChange}
               disabled={isLoading}
             />
              <GcdsButton onClick={handleSendMessage} disabled={isLoading} className="send-button">
-              Send
+              {t('homepage.chat.buttons.send')}
             </GcdsButton>
           </div>
-          <GcdsDetails detailsTitle='Options'>
+          <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
           <div className="ai-toggle" style={{ marginBottom: '10px' }}>
             <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <legend style={{ marginRight: '10px' }}>AI:</legend>
+                <legend style={{ marginRight: '10px' }}>{t('homepage.chat.options.aiSelection.label')}</legend>
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
                   <input
                     type="radio"
@@ -403,7 +402,7 @@ const TempChatAppContainer = () => {
                     onChange={handleAIToggle}
                     style={{ marginRight: '5px' }}
                   />
-                  <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
+                  <label htmlFor="claude" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.claude')}</label>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <input
@@ -415,13 +414,13 @@ const TempChatAppContainer = () => {
                     onChange={handleAIToggle}
                     style={{ marginRight: '5px' }}
                   />
-                  <label htmlFor="chatgpt">OpenAI ChatGPT 4o</label>
+                  <label htmlFor="chatgpt">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
                 </div>
               </div>
             </fieldset>
           </div>
           <GcdsInput
-            label="Referring Canada.ca URL (optional)"
+            label={t('homepage.chat.options.referringUrl.label')}
             type="url"
             value={referringUrl}
             onGcdsChange={handleReferringUrlChange}
