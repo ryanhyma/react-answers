@@ -44,7 +44,7 @@ const HomePage = () => {
   useEffect(() => {
     // TODO: Replace with actual API call to get status
     const status = {
-      isAvailable: false,
+      isAvailable: true,
       message: "AI Answers is unavailable until tomorrow due to reaching daily usage limits. Please check back then.",
     };
     setServiceStatus(status);
