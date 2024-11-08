@@ -117,7 +117,7 @@ const HomePage = ({ lang = 'en' }) => {
               {t('homepage.privacy.termsLink')}
             </GcdsLink>
           </GcdsText>
-          <GcdsLink href="/admin">Ad</GcdsLink>
+          <GcdsLink href={`/${lang}/admin`}>Ad</GcdsLink>
         </GcdsDetails>
       </GcdsContainer>
     </WrappedErrorBoundary>

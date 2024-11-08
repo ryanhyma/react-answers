@@ -1,9 +1,11 @@
 import React from 'react';
+// import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackEvaluator from '../components/admin/FeedbackEvaluator';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard';
 
-const AdminPage = () => {
+const AdminPage = ({ lang = 'en' }) => {
+  // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page 
   const [status, setStatus] = React.useState({
     isAvailable: true,
     message: ''
@@ -37,9 +39,9 @@ const AdminPage = () => {
               <GcdsLink href="#evaluator">Load and run evaluation</GcdsLink>
             </GcdsText>
           </li>
-        <li className="mb-400">
+          <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="/">Use the app</GcdsLink>
+              <GcdsLink href={`/${lang}`}>Use the app</GcdsLink>
             </GcdsText>
           </li>
         </ul>
