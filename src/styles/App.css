@@ -61,3 +61,7 @@
   .admin-link:hover {
 	text-decoration: underline;
   }
+
+{ 
+	--gcds-header-margin: 0 0 1.75rem !important;
+}
