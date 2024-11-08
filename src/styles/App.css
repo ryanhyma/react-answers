@@ -64,4 +64,5 @@
 
 :root { 
 	--gcds-header-margin: 0 0 1.75rem !important;
+	--gcds-heading-h1-border-background: #af3c43 !important;
 }
