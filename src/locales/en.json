@@ -66,7 +66,7 @@
         },
         "messages": {
           "thinking": "Thinking...",
-          "limitReached": "Your limit of {{count}} questions per conversation has been reached. Please reload to start a new conversation.",
+          "limitReached": "You've reached the limit of {{count}} questions per conversation. Reload to start a new conversation.",
           "error": "Sorry, I couldn't process your request. Please try again later.",
           "profanity": "Your question used words that aren't accepted. Please try asking it differently.",
           "privacy": "To protect your privacy, personal details were removed and replaced with XXX.",
