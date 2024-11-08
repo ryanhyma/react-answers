@@ -70,7 +70,8 @@
           "error": "Sorry, I couldn't process your request. Please try again later.",
           "profanity": "Your question used words that aren't accepted. Please try asking it differently.",
           "privacy": "To protect your privacy, personal details were removed and replaced with XXX.",
-          "threat": "Your question was not sent to the AI service."
+          "threat": "Your question was not sent to the AI service.",
+          "characterLimit": "Your message is too long. Please try again with a shorter message."
         },
         "citation": {
           "confidence": "Confidence:",

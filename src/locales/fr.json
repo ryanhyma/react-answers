@@ -70,7 +70,8 @@
           "error": "Désolé, je n'ai pas pu traiter votre demande. Veuillez réessayer plus tard.",
           "profanity": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
           "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
-          "threat": "Votre question n'a pas été envoyée au service d'IA."
+          "threat": "Votre question n'a pas été envoyée au service d'IA.",
+          "characterLimit": "Votre message est trop long. Veuillez réessayer avec un message plus court."
         },
         "citation": {
           "confidence": "Confiance :",

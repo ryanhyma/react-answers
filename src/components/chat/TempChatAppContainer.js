@@ -126,6 +126,18 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
+      if (inputText.length > 750) {
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { 
+            text: t('homepage.chat.messages.characterLimit'),
+            sender: 'ai',
+            error: true
+          }
+        ]);
+        return;
+      }
+
       if (turnCount >= MAX_CONVERSATION_TURNS) {
         return;
       }
@@ -208,7 +220,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
