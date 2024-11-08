@@ -52,6 +52,10 @@ loadProfanityLists().then(words => {
 
 const redactionPatterns = [
   { 
+    pattern: /(?<=\b(name|nom)(?:\s+is|\s*:)?\s+)([A-Za-z]+(?:\s+[A-Za-z]+)*)\b/gi,  // Name patterns in EN/FR - up to 2 words
+    type: 'private'
+  },
+  { 
     pattern: /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
     type: 'private'
   },
