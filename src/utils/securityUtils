@@ -5,30 +5,38 @@
 //TODO: add a function to the eval system that loads in files of queries for analysis and then runs the analysis 
 
 export const jailbreakPatterns = {
-  // Words often used in manipulation attempts
+  // Words often used in manipulation attempts (English and French)
   suspiciousWords: [
-    'instructions', 
-    'limitations',
-    'ignore',
-    'override',
-    'bypass',
-    'convince',
-    'pretend',
-    'roleplay',
-    'summarize our',
-    'our conversation',
-    'logical flaws',
-    'contradictions'
+    'instructions', 'directives',
+    'limitations', 'limites',
+    'ignore', 'ignorer',
+    'override', 'contourner',
+    'bypass', 'éviter',
+    'convince', 'convaincre',
+    'pretend', 'prétendre',
+    'roleplay', 'jeu de rôle',
+    'summarize our', 'résumer notre',
+    'our conversation', 'notre conversation',
+    'logical flaws', 'failles logiques',
+    'contradictions', 'contradictions'
   ],
   
-  // Patterns that might indicate manipulation
+  // Patterns that might indicate manipulation (English and French)
   manipulationPatterns: [
     /can you try/i,
+    /peux-tu essayer/i,
+    /pourrais-tu essayer/i,
     /have you tried/i,
+    /as-tu essayé/i,
     /why can't you/i,
+    /pourquoi ne peux-tu pas/i,
     /you already did/i,
+    /tu l'as déjà fait/i,
     /but you did before/i,
-    /that doesn't make sense/i
+    /mais tu l'as fait avant/i,
+    /that doesn't make sense/i,
+    /ça n'a pas de sens/i,
+    /cela n'a pas de sens/i
   ]
 };
 
