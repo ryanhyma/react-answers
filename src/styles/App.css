@@ -65,5 +65,5 @@
 :root { 
 	--gcds-header-margin: 0 0 1.75rem !important;
 	--gcds-heading-h1-border-background: #af3c43 !important;
-	--gcds-breadcrumbs-item: 400 1rem / 150% "Noto Sans", sans-serif !important;
+	--gcds-link-font-regular-desktop: 400 1rem / 150% "Noto Sans", sans-serif !important;
 }
