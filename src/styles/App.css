@@ -66,6 +66,7 @@
 	--gcds-header-margin: 0 0 1.75rem !important;
 	--gcds-heading-h1-border-background: #af3c43 !important;
 	--gcds-link-font-regular-desktop: 400 1rem / 150% "Noto Sans", sans-serif !important;
+	--gcds-link-font-small-desktop: 400 1rem / 135% "Noto Sans", sans-serif;
 	--gcds-header-brand-grid-gap: 0rem !important;
 	--gcds-header-brand-padding: 0 0 0.9rem !important;
 	--gcds-header-brand-border-color: #26374a; /* to change to thin grey line which is used w/o if needed */
