@@ -2,6 +2,8 @@
 
 import profanityListEn from './redactions/badwords_en.txt';
 import profanityListFr from './redactions/badwords_fr.txt';
+import manipulationEn from './redactions/manipulation_en.json';
+import manipulationFr from './redactions/manipulation_fr.json';
 
 async function loadProfanityLists() {
   try {
@@ -50,6 +52,27 @@ loadProfanityLists().then(words => {
   profanityPattern = new RegExp(`(${pattern})`, 'gi');
 });
 
+// Add after profanityPattern initialization
+let manipulationPattern = null;
+
+// Combine manipulation words and phrases
+const manipulationWords = [
+  ...manipulationEn.suspiciousWords,
+  ...manipulationEn.manipulationPhrases,
+  ...manipulationFr.suspiciousWords,
+  ...manipulationFr.manipulationPhrases
+];
+
+// Create manipulation pattern - escape special characters and handle multi-word phrases
+const pattern = manipulationWords
+  .map(word => {
+    // Escape special regex characters
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return `\\b${escaped}\\b`;
+  })
+  .join('|');
+manipulationPattern = new RegExp(`(${pattern})`, 'gi');
+
 const redactionPatterns = [
   { 
     pattern: /(?<=\b(name|nom)(?:\s+is|\s*:)?\s+)([A-Za-z]+(?:\s+[A-Za-z]+)*)\b/gi,  // Name patterns in EN/FR - up to 2 words
@@ -81,6 +104,10 @@ const redactionPatterns = [
   {
     pattern: /\b(anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie)\b/gi,
     type: 'threat'
+  },
+  {
+    get pattern() { return manipulationPattern; },
+    type: 'manipulation'
   }
 ];
 
@@ -93,8 +120,8 @@ const redactText = (text) => {
   redactionPatterns.forEach(({ pattern, type }, index) => {
     const tempText = redactedText;
     
-    // Skip processing if this is a profanity/threat pattern and we find 'XXX' in the text
-    if ((type === 'profanity' || type === 'threat') && redactedText.includes('XXX')) {
+    // Skip processing if this is a profanity/threat/manipulation pattern and we find 'XXX' in the text
+    if ((type === 'profanity' || type === 'threat' || type === 'manipulation') && redactedText.includes('XXX')) {
       return;
     }
     

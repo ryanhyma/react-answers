@@ -1,0 +1,27 @@
+{
+  "suspiciousWords": [
+    "directives",
+    "limites",
+    "ignorer",
+    "contourner",
+    "éviter",
+    "convaincre",
+    "prétendre",
+    "jeu de rôle"
+  ],
+  "manipulationPhrases": [
+    "vos instructions",
+    "peux-tu essayer",
+    "pourrais-tu essayer",
+    "as-tu essayé",
+    "pourquoi ne peux-tu pas",
+    "tu l'as déjà fait",
+    "mais tu l'as fait avant",
+    "ça n'a pas de sens",
+    "cela n'a pas de sens",
+    "résumer notre",
+    "notre conversation",
+    "failles logiques",
+    "contradictions"
+  ]
+} 

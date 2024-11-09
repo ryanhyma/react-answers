@@ -1,0 +1,24 @@
+{
+  "suspiciousWords": [
+    "limitations",
+    "ignore",
+    "override",
+    "bypass",
+    "convince",
+    "pretend",
+    "roleplay"
+  ],
+  "manipulationPhrases": [
+    "your instructions",
+    "can you try",
+    "have you tried",
+    "why can't you",
+    "you already did",
+    "but you did before",
+    "that doesn't make sense",
+    "summarize our",
+    "our conversation",
+    "logical flaws",
+    "contradictions"
+  ]
+} 
