@@ -147,8 +147,8 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       const userMessage = inputText.trim();
       const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
-      // Check for any blocked content by looking for the redaction symbol '#'
-      const hasBlockedContent = redactedText.includes('#');
+      // Check for any blocked content by looking for three or more consecutive '#' symbols
+      const hasBlockedContent = redactedText.includes('###');
 
       // Add message to chat history
       setMessages(prevMessages => [...prevMessages, {
@@ -340,12 +340,10 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                 </p>
                 {message.redactedItems && message.redactedItems.length > 0 && (
                   <>
-                    {message.redactedItems.some(item => 
-                      (!item.type || (item.type !== 'profanity' && item.type !== 'threat'))
-                    ) && (
+                    {message.redactedText.includes('XXX') && (
                       <p className="redacted-preview">{privacyMessage}</p>
                     )}
-                    {message.redactedItems.some(item => item.type === 'threat') && (
+                    {message.redactedText.includes('###') && (
                       <p className="redacted-preview">{threatMessage}</p>
                     )}
                   </>

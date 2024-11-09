@@ -1,5 +1,6 @@
 // RedactionService.js
-
+// the symbols XXX and ### are used to indicate different types of redacted content and are directly referenced in TempChatAppContainer
+// TODO - consider moving which symbols are used for which type to a config file in case we want to change them in the future
 import profanityListEn from './redactions/badwords_en.txt';
 import profanityListFr from './redactions/badwords_fr.txt';
 import manipulationEn from './redactions/manipulation_en.json';
