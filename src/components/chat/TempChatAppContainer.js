@@ -22,6 +22,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const [referringUrl, setReferringUrl] = useState('');
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
+  const MAX_CHAR_LIMIT = 400;
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
@@ -126,7 +127,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
-      if (inputText.length > 750) {
+      if (inputText.length > MAX_CHAR_LIMIT) {
         setMessages(prevMessages => [
           ...prevMessages,
           { 
