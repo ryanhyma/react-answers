@@ -210,7 +210,10 @@ const Evaluator = () => {
                 systemPromptLength: systemPrompt.length
             });
 
-            const response = await fetch('/api/claude-batch', {
+            // Select the appropriate endpoint based on the AI service
+            const endpoint = selectedAI === 'claude' ? '/api/claude-batch' : '/api/gpt-batch';
+            
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -224,14 +227,13 @@ const Evaluator = () => {
             }
 
             const data = await response.json();
-            console.log('Batch response:', data);  // Debug log
+            console.log(`${selectedAI} batch response:`, data);
             
             if (data.batchId) {
                 console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
                 setBatchId(data.batchId);
                 setBatchStatus('in_progress');
                 setIsPolling(true);
-                // Don't set processing to false - keep it true while polling
             } else {
                 throw new Error('No batch ID received from API');
             }
@@ -332,34 +334,81 @@ const Evaluator = () => {
         
         try {
             console.log(`Checking status for batch ${batchId}...`);
-            const response = await fetch(`/api/claude-batch-status?batchId=${batchId}`);
+            const endpoint = selectedAI === 'claude' 
+                ? '/api/claude-batch-status' 
+                : '/api/gpt-batch-status';
+            
+            const response = await fetch(`${endpoint}?batchId=${batchId}`);
             
             if (!response.ok) {
                 throw new Error(`Status check failed: ${response.statusText}`);
             }
             
             const data = await response.json();
-            
             console.log('Status response:', data);
-            setBatchStatus(data.status);
-            setLastCheckTime(new Date());
 
-            if (data.processedCount) {
-                setProcessedCount(data.processedCount);
+            // Map GPT status to match our UI expectations
+            let displayStatus = data.status;
+            if (selectedAI === 'chatgpt') {
+                switch(data.status) {
+                    case 'completed':
+                        displayStatus = 'ended';
+                        break;
+                    case 'in_progress':
+                        displayStatus = 'processing';
+                        break;
+                    case 'validating':
+                        displayStatus = 'preparing';
+                        break;
+                    case 'cancelling':
+                        displayStatus = 'cancelling';
+                        break;
+                    case 'cancelled':
+                        displayStatus = 'cancelled';
+                        break;
+                    case 'failed':
+                        displayStatus = 'error';
+                        break;
+                    default:
+                        displayStatus = data.status;
+                        break;
+                }
             }
             
-            if (data.status === 'ended' && data.results) {
-                setIsPolling(false);
-                const results = data.results.split('\n')
-                    .filter(line => line.trim())
-                    .map(line => JSON.parse(line));
-                setBatchResults(results);
+            setBatchStatus(displayStatus);
+            setLastCheckTime(new Date());
+
+            if (selectedAI === 'chatgpt') {
+                setProcessedCount(data.request_counts?.completed || 0);
                 
-                const unprocessedResults = results.slice(processedCount);
-                if (unprocessedResults.length > 0) {
-                    await processResults(unprocessedResults);
+                // Handle completion
+                if (data.status === 'completed' && data.output_file_id) {
+                    setIsPolling(false);
+                    // You'll need to implement a way to fetch results from the output file
+                    const results = await fetchGPTBatchResults(data.output_file_id);
+                    setBatchResults(results);
+                    await processResults(results);
+                    setProcessing(false);
                 }
-                setProcessing(false);
+            } else {
+                // Existing Claude batch handling
+                if (data.processedCount) {
+                    setProcessedCount(data.processedCount);
+                }
+                
+                if (data.status === 'ended' && data.results) {
+                    setIsPolling(false);
+                    const results = data.results.split('\n')
+                        .filter(line => line.trim())
+                        .map(line => JSON.parse(line));
+                    setBatchResults(results);
+                    
+                    const unprocessedResults = results.slice(processedCount);
+                    if (unprocessedResults.length > 0) {
+                        await processResults(unprocessedResults);
+                    }
+                    setProcessing(false);
+                }
             }
         } catch (error) {
             console.error('Error checking batch status:', error);
@@ -369,7 +418,21 @@ const Evaluator = () => {
                 setError('Lost connection to server. The batch is still processing - please refresh the page to reconnect.');
             }
         }
-    }, [batchId, processResults, processedCount, pollingErrors]);
+    }, [batchId, processResults, processedCount, pollingErrors, selectedAI]);
+
+    // Add function to fetch GPT batch results
+    const fetchGPTBatchResults = async (outputFileId) => {
+        try {
+            const response = await fetch(`/api/gpt-batch-results?fileId=${outputFileId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch batch results');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching GPT batch results:', error);
+            throw error;
+        }
+    };
 
     const handleCancel = async () => {
         if (!batchId) return;

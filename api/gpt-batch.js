@@ -12,19 +12,27 @@ export default async function handler(req, res) {
     try {
         const { requests, systemPrompt } = req.body;
         
-        // Format requests for GPT batch API
-        const messages = requests.map(request => ({
+        // First, create a JSONL file with the requests
+        const jsonlContent = requests.map(request => JSON.stringify({
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: request }
             ],
             model: "gpt-4-turbo-preview",
             max_tokens: 4096
-        }));
+        })).join('\n');
 
-        // Create batch job
-        const batch = await openai.beta.batches.create({
-            requests: messages
+        // Upload the JSONL file
+        const file = await openai.files.create({
+            file: Buffer.from(jsonlContent),
+            purpose: 'batch'
+        });
+
+        // Create the batch
+        const batch = await openai.createBatch({
+            input_file_id: file.id,
+            endpoint: "/v1/chat/completions",
+            completion_window: "24h"
         });
 
         return res.status(200).json({ 

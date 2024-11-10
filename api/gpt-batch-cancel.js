@@ -11,9 +11,16 @@ export default async function handler(req, res) {
 
     try {
         const { batchId } = req.body;
-        await openai.beta.batches.cancel(batchId);
+        const batch = await openai.batches.cancel(batchId);
         
-        return res.status(200).json({ status: 'cancelled' });
+        // Return the batch object with updated status
+        return res.status(200).json({
+            id: batch.id,
+            status: batch.status, // Will be 'cancelling'
+            request_counts: batch.request_counts,
+            created_at: batch.created_at,
+            cancelling_at: batch.cancelling_at
+        });
     } catch (error) {
         console.error('GPT Batch cancellation error:', error);
         return res.status(500).json({ error: 'Failed to cancel batch' });
