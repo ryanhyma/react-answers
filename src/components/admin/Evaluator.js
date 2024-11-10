@@ -31,6 +31,7 @@ const Evaluator = () => {
     const [batchResults, setBatchResults] = useState(null);
     const [isPolling, setIsPolling] = useState(false);
     const [pollStartTime, setPollStartTime] = useState(null);
+    const [lastCheckTime, setLastCheckTime] = useState(null);
 
     const handleFileChange = (event) => {
         setError(null);
@@ -325,10 +326,13 @@ const Evaluator = () => {
         if (!batchId) return;
         
         try {
+            console.log(`Checking status for batch ${batchId}...`);
             const response = await fetch(`/api/claude-batch-status?batchId=${batchId}`);
             const data = await response.json();
             
+            console.log('Status response:', data);
             setBatchStatus(data.status);
+            setLastCheckTime(new Date());  // Update the timestamp
             
             if (data.status === 'ended' && data.results) {
                 setIsPolling(false);
@@ -395,6 +399,16 @@ const Evaluator = () => {
         };
     }, [isPolling, batchId, pollStartTime, checkBatchStatus]);
 
+    const formatTimestamp = (date) => {
+        if (!date) return '';
+        return date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: true 
+        });
+    };
+
     const renderBatchStatus = () => {
         if (!processing || !batchId) return null;
         
@@ -415,6 +429,9 @@ const Evaluator = () => {
                                 <GcdsText>
                                     Checking status every 5 minutes... 
                                     Large batches may take several hours to complete.
+                                </GcdsText>
+                                <GcdsText>
+                                    Last checked: {lastCheckTime ? formatTimestamp(lastCheckTime) : 'Not yet checked'}
                                 </GcdsText>
                                 <button 
                                     onClick={handleCancel}

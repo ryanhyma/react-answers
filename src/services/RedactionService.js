@@ -75,7 +75,7 @@ const pattern = manipulationWords
 manipulationPattern = new RegExp(`(${pattern})`, 'gi');
 
 const privatePatterns = [
-  /(?<=\b(name|nom)(?:\s+is|\s*:)?\s+)([A-Za-z]+(?:\s+[A-Za-z]+)*)\b/gi,  // Name patterns in EN/FR
+  /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,  // Name patterns in EN/FR - matches up to 2 words after specific phrases
   /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email addresses
   /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi, // Addresses
