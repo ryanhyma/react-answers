@@ -12,8 +12,8 @@ import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 
-const MAX_POLLING_DURATION = 5 * 60 * 1000; // 5 minutes for testing (in milliseconds)
-const POLLING_INTERVAL = 5000; // 5 seconds (in milliseconds)   
+const MAX_POLLING_DURATION = 12 * 60 * 60 * 1000; // 12 hours (in milliseconds)
+const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes (in milliseconds)   
 
 const Evaluator = () => {
     const [file, setFile] = useState(null);
@@ -400,35 +400,40 @@ const Evaluator = () => {
         
         return (
             <div className="processing-status mt-400">
-                <GcdsText>Batch Status: {batchStatus === 'in_progress' ? 'Processing' : batchStatus}</GcdsText>
-                <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
+                <GcdsText>File: {file.name}</GcdsText>
+                <GcdsText>Total entries to process: {totalEntries}</GcdsText>
                 
-                {batchStatus === 'in_progress' && (
+                {error ? (
+                    <GcdsText style={{ color: 'red' }}>{error}</GcdsText>
+                ) : (
                     <>
-                        <GcdsText>
-                            Polling for results every 5 seconds... 
-                            This may take several minutes for large batches.
-                        </GcdsText>
-                        <button 
-                            onClick={handleCancel}
-                            className="secondary-button"
-                            style={{
-                                marginTop: '10px',
-                                padding: '8px 16px',
-                                backgroundColor: '#dc3545',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Cancel Batch
-                        </button>
+                        <GcdsText>Batch Status: {batchStatus || 'preparing'}</GcdsText>
+                        <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
+                        
+                        {batchStatus === 'in_progress' && (
+                            <>
+                                <GcdsText>
+                                    Checking status every 5 minutes... 
+                                    Large batches may take several hours to complete.
+                                </GcdsText>
+                                <button 
+                                    onClick={handleCancel}
+                                    className="secondary-button"
+                                    style={{
+                                        marginTop: '10px',
+                                        padding: '8px 16px',
+                                        backgroundColor: '#dc3545',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Cancel Batch
+                                </button>
+                            </>
+                        )}
                     </>
-                )}
-                
-                {batchStatus === 'canceling' && (
-                    <GcdsText>Cancellation in progress...</GcdsText>
                 )}
             </div>
         );
@@ -546,8 +551,8 @@ const Evaluator = () => {
                                         {batchStatus === 'processing' && (
                                             <>
                                                 <GcdsText>
-                                                    Polling for results every 5 seconds... 
-                                                    This may take several minutes for large batches.
+                                                    Checking status every 5 minutes... 
+                                                    Large batches may take several hours to complete.
                                                 </GcdsText>
                                                 <button 
                                                     onClick={handleCancel}
@@ -583,7 +588,6 @@ const Evaluator = () => {
 
                         {fileUploaded && (
                             <div className="processing-controls">
-                                {console.log('Rendering with states:', { processing, batchStatus })}
                                 {!processing ? (
                                     <button onClick={handleProcessFile}>
                                         Start Processing
