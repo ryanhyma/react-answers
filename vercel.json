@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/gpt-batch.js": {
+      "maxDuration": 60
+    }
+  }
+} 

@@ -17,32 +17,34 @@ export default async function handler(req, res) {
             systemPromptLength: systemPrompt?.length
         });
 
-        // First, create a JSONL file with the requests
+        // Create smaller JSONL content
         const jsonlContent = requests.map(request => JSON.stringify({
             messages: [
-                { role: "system", content: systemPrompt },
+                // Truncate system prompt if too long
+                { role: "system", content: systemPrompt.slice(0, 32000) },
                 { role: "user", content: request }
             ],
             model: "gpt-4-turbo-preview",
-            max_tokens: 4096
+            max_tokens: 1024  // Reduced from 4096
         })).join('\n');
 
-        console.log('Created JSONL content');
+        // Set response timeout header
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('Keep-Alive', 'timeout=60');
 
-        // Upload the JSONL file
+        // Upload the file with progress logging
+        console.log('Uploading file...');
         const file = await openai.files.create({
             file: Buffer.from(jsonlContent),
             purpose: 'batch'
         });
-
         console.log('File uploaded:', file.id);
 
-        // Create the batch
+        // Create batch immediately after file upload
         const batch = await openai.batches.create({
             input_file_id: file.id,
             endpoint: "/v1/chat/completions"
         });
-
         console.log('Batch created:', batch.id);
 
         return res.status(200).json({ 

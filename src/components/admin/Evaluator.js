@@ -15,7 +15,7 @@ import loadSystemPrompt from '../../services/systemPrompt.js';
 const MAX_POLLING_DURATION = 12 * 60 * 60 * 1000; // 12 hours (in milliseconds)
 const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes (in milliseconds)   
 
-const Evaluator = () => {
+const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
     const [results, setResults] = useState(null);
@@ -189,6 +189,7 @@ const Evaluator = () => {
             setProcessing(true);
             setBatchStatus('preparing');
             setError(null);
+            setProcessedCount(0);
             
             const systemPrompt = await loadSystemPrompt();
             
@@ -205,45 +206,57 @@ const Evaluator = () => {
                 systemPrompt
             };
             
-            console.log('Payload being sent to API:', {
+            console.log('Sending batch request with:', {
                 requestCount: requests.length,
-                systemPromptLength: systemPrompt.length
+                systemPromptLength: systemPrompt?.length
             });
 
-            // Select the appropriate endpoint based on the AI service
+            // Select endpoint based on AI service
             const endpoint = selectedAI === 'claude' ? '/api/claude-batch' : '/api/gpt-batch';
             
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-                timeout: 60000 // 60 seconds
-            });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 55000); // 55 second timeout
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                let errorData;
-                try {
-                    errorData = JSON.parse(errorText);
-                } catch (e) {
-                    errorData = { error: errorText };
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch (e) {
+                        errorData = { error: errorText };
+                    }
+                    throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
                 }
-                throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
-            }
 
-            const data = await response.json();
-            console.log(`${selectedAI} batch response:`, data);
-            
-            if (data.batchId) {
-                console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
-                setBatchId(data.batchId);
-                setBatchStatus('in_progress');
-                setIsPolling(true);
-                setPollStartTime(Date.now());
-            } else {
-                throw new Error('No batch ID received from API');
+                const data = await response.json();
+                console.log(`${selectedAI} batch response:`, data);
+                
+                if (data.batchId) {
+                    console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
+                    setBatchId(data.batchId);
+                    setBatchStatus('in_progress');
+                    setIsPolling(true);
+                    setPollStartTime(Date.now());
+                } else {
+                    throw new Error('No batch ID received from API');
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timed out while creating batch. The operation may still be processing.');
+                }
+                throw error;
             }
         } catch (error) {
             console.error('Error processing batch:', error);
@@ -593,6 +606,20 @@ const Evaluator = () => {
         });
     }, [processing, batchStatus, batchId, isPolling]);
 
+    // Add a loading indicator component
+    const LoadingIndicator = ({ status, processedCount, total }) => {
+        return (
+            <div className="flex flex-col items-center space-y-2">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <div className="text-sm text-gray-600">
+                    {status === 'preparing' && 'Creating batch...'}
+                    {status === 'in_progress' && `Processing ${processedCount} of ${total} entries...`}
+                    {status === 'validating' && 'Validating results...'}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
@@ -688,37 +715,16 @@ const Evaluator = () => {
                         )}
 
                         {processing && (
-                            <div className="processing-status mt-400">
-                                {useBatchProcessing ? (
-                                    <>
-                                        <GcdsText>Batch Status: {batchStatus || 'Preparing'}</GcdsText>
-                                        <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
-                                        {batchStatus === 'processing' && (
-                                            <>
-                                                <GcdsText>
-                                                    Checking status every 5 minutes... 
-                                                    Large batches may take several hours to complete.
-                                                </GcdsText>
-                                                <button 
-                                                    onClick={handleCancel}
-                                                    className="secondary-button"
-                                                    style={{
-                                                        marginTop: '10px',
-                                                        padding: '8px 16px',
-                                                        backgroundColor: '#dc3545',
-                                                        color: 'white',
-                                                        border: 'none',
-                                                        borderRadius: '4px',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                >
-                                                    Cancel Batch
-                                                </button>
-                                            </>
-                                        )}
-                                    </>
-                                ) : (
-                                    <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
+                            <div className="mt-4">
+                                <LoadingIndicator 
+                                    status={batchStatus} 
+                                    processedCount={processedCount}
+                                    total={selectedEntries?.length || 0}
+                                />
+                                {batchStatus === 'preparing' && selectedAI === 'chatgpt' && (
+                                    <div className="text-sm text-gray-500 mt-2">
+                                        This may take up to a minute to start...
+                                    </div>
                                 )}
                             </div>
                         )}
