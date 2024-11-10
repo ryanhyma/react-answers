@@ -380,6 +380,45 @@ const Evaluator = () => {
         };
     }, [isPolling, batchId, pollStartTime, checkBatchStatus]);
 
+    const renderBatchStatus = () => {
+        if (!processing || !batchId) return null;
+        
+        return (
+            <div className="processing-status mt-400">
+                <GcdsText>Batch Status: {batchStatus === 'in_progress' ? 'Processing' : batchStatus}</GcdsText>
+                <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
+                
+                {batchStatus === 'in_progress' && (
+                    <>
+                        <GcdsText>
+                            Polling for results every 5 seconds... 
+                            This may take several minutes for large batches.
+                        </GcdsText>
+                        <button 
+                            onClick={handleCancel}
+                            className="secondary-button"
+                            style={{
+                                marginTop: '10px',
+                                padding: '8px 16px',
+                                backgroundColor: '#dc3545',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Cancel Batch
+                        </button>
+                    </>
+                )}
+                
+                {batchStatus === 'canceling' && (
+                    <GcdsText>Cancellation in progress...</GcdsText>
+                )}
+            </div>
+        );
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
@@ -521,7 +560,6 @@ const Evaluator = () => {
                         {fileUploaded && (
                             <div className="processing-controls">
                                 {!processing ? (
-                                    // Show Start Processing button only when not processing
                                     <button 
                                         onClick={handleProcessFile}
                                         className="primary-button"
@@ -538,34 +576,7 @@ const Evaluator = () => {
                                         Start Processing
                                     </button>
                                 ) : (
-                                    // Show status and controls during processing
-                                    <div className="processing-status mt-400">
-                                        <GcdsText>Current Status: {batchStatus || 'Preparing'}</GcdsText>
-                                        <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
-                                        
-                                        {/* Always show these during processing */}
-                                        <GcdsText>
-                                            Polling for results every 5 seconds... 
-                                            This may take several minutes for large batches.
-                                        </GcdsText>
-                                        
-                                        {/* Show cancel button during processing */}
-                                        <button 
-                                            onClick={handleCancel}
-                                            className="secondary-button"
-                                            style={{
-                                                marginTop: '10px',
-                                                padding: '8px 16px',
-                                                backgroundColor: '#dc3545',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            Cancel Batch
-                                        </button>
-                                    </div>
+                                    renderBatchStatus()
                                 )}
                             </div>
                         )}
