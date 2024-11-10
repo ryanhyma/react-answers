@@ -219,10 +219,17 @@ const Evaluator = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
+                timeout: 60000 // 60 seconds
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch (e) {
+                    errorData = { error: errorText };
+                }
                 throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
             }
 
@@ -234,6 +241,7 @@ const Evaluator = () => {
                 setBatchId(data.batchId);
                 setBatchStatus('in_progress');
                 setIsPolling(true);
+                setPollStartTime(Date.now());
             } else {
                 throw new Error('No batch ID received from API');
             }

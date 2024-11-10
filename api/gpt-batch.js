@@ -12,6 +12,11 @@ export default async function handler(req, res) {
     try {
         const { requests, systemPrompt } = req.body;
         
+        console.log('Starting GPT batch creation with:', {
+            requestCount: requests.length,
+            systemPromptLength: systemPrompt?.length
+        });
+
         // First, create a JSONL file with the requests
         const jsonlContent = requests.map(request => JSON.stringify({
             messages: [
@@ -22,25 +27,38 @@ export default async function handler(req, res) {
             max_tokens: 4096
         })).join('\n');
 
+        console.log('Created JSONL content');
+
         // Upload the JSONL file
         const file = await openai.files.create({
             file: Buffer.from(jsonlContent),
             purpose: 'batch'
         });
 
+        console.log('File uploaded:', file.id);
+
         // Create the batch
-        const batch = await openai.createBatch({
+        const batch = await openai.batches.create({
             input_file_id: file.id,
-            endpoint: "/v1/chat/completions",
-            completion_window: "24h"
+            endpoint: "/v1/chat/completions"
         });
+
+        console.log('Batch created:', batch.id);
 
         return res.status(200).json({ 
             batchId: batch.id,
             status: batch.status
         });
     } catch (error) {
-        console.error('GPT Batch creation error:', error);
-        return res.status(500).json({ error: 'Failed to create batch' });
+        console.error('GPT Batch creation error:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+        
+        return res.status(500).json({ 
+            error: 'Failed to create batch',
+            details: error.message
+        });
     }
 } 
