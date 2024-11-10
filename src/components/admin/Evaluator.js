@@ -33,6 +33,8 @@ const Evaluator = () => {
     const [pollStartTime, setPollStartTime] = useState(null);
     const [lastCheckTime, setLastCheckTime] = useState(null);
 
+    const [pollingErrors, setPollingErrors] = useState(0);
+
     const handleFileChange = (event) => {
         setError(null);
         const uploadedFile = event.target.files[0];
@@ -331,11 +333,20 @@ const Evaluator = () => {
         try {
             console.log(`Checking status for batch ${batchId}...`);
             const response = await fetch(`/api/claude-batch-status?batchId=${batchId}`);
+            
+            if (!response.ok) {
+                throw new Error(`Status check failed: ${response.statusText}`);
+            }
+            
             const data = await response.json();
             
             console.log('Status response:', data);
             setBatchStatus(data.status);
             setLastCheckTime(new Date());
+
+            if (data.processedCount) {
+                setProcessedCount(data.processedCount);
+            }
             
             if (data.status === 'ended' && data.results) {
                 setIsPolling(false);
@@ -344,13 +355,21 @@ const Evaluator = () => {
                     .map(line => JSON.parse(line));
                 setBatchResults(results);
                 
-                await processResults(results);
+                const unprocessedResults = results.slice(processedCount);
+                if (unprocessedResults.length > 0) {
+                    await processResults(unprocessedResults);
+                }
+                setProcessing(false);
             }
         } catch (error) {
             console.error('Error checking batch status:', error);
-            setIsPolling(false);
+            setPollingErrors(prev => prev + 1);
+            if (pollingErrors > 5) {
+                setIsPolling(false);
+                setError('Lost connection to server. The batch is still processing - please refresh the page to reconnect.');
+            }
         }
-    }, [batchId, processResults]);
+    }, [batchId, processResults, processedCount, pollingErrors]);
 
     const handleCancel = async () => {
         if (!batchId) return;
@@ -378,10 +397,14 @@ const Evaluator = () => {
 
     useEffect(() => {
         let pollInterval;
+        let isActive = true;
         
         if (isPolling && batchId) {
-            setPollStartTime(Date.now());
-            pollInterval = setInterval(() => {
+            setPollStartTime(prev => prev || Date.now());
+            
+            const doPoll = async () => {
+                if (!isActive) return;
+
                 const elapsedTime = Date.now() - pollStartTime;
                 
                 if (elapsedTime > MAX_POLLING_DURATION) {
@@ -391,11 +414,21 @@ const Evaluator = () => {
                     return;
                 }
                 
-                checkBatchStatus();
-            }, POLLING_INTERVAL);
+                try {
+                    await checkBatchStatus();
+                } catch (error) {
+                    console.error('Polling error:', error);
+                    // Don't stop polling on error, will retry on next interval
+                }
+            };
+
+            doPoll();
+            
+            pollInterval = setInterval(doPoll, POLLING_INTERVAL);
         }
         
         return () => {
+            isActive = false;
             if (pollInterval) clearInterval(pollInterval);
         };
     }, [isPolling, batchId, pollStartTime, checkBatchStatus]);
@@ -410,6 +443,12 @@ const Evaluator = () => {
         });
     };
 
+    const handleReconnect = () => {
+        setPollingErrors(0);
+        setError(null);
+        setIsPolling(true);
+    };
+
     const renderBatchStatus = () => {
         if (!processing || !batchId) return null;
         
@@ -419,7 +458,24 @@ const Evaluator = () => {
                 <GcdsText>Total entries to process: {totalEntries}</GcdsText>
                 
                 {error ? (
-                    <GcdsText style={{ color: 'red' }}>{error}</GcdsText>
+                    <>
+                        <GcdsText style={{ color: 'red' }}>{error}</GcdsText>
+                        <button 
+                            onClick={handleReconnect}
+                            className="secondary-button"
+                            style={{
+                                marginTop: '10px',
+                                padding: '8px 16px',
+                                backgroundColor: '#26374a',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Reconnect
+                        </button>
+                    </>
                 ) : (
                     <>
                         <GcdsText>Batch Status: {batchStatus || 'preparing'}</GcdsText>
