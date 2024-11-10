@@ -24,10 +24,11 @@ export default async function handler(req, res) {
     }
 
     const batch = await anthropic.beta.messages.batches.create({
+      betas: ["message-batches-2024-09-24"],
       requests: req.body.requests.map((request, index) => ({
         custom_id: `eval-${index}`,
         params: {
-          model: "claude-3-sonnet-20240229",
+          model: "claude-3-5-sonnet-20241022",
           system: req.body.systemPrompt,
           messages: [{ role: "user", content: request }],
           max_tokens: 1024
