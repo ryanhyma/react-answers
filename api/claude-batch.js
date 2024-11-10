@@ -13,9 +13,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('API received request. Body:', {
+    console.log('[PROD] Batch API request received:', {
       requestCount: req.body.requests?.length,
-      systemPrompt: req.body.systemPrompt
+      systemPromptPresent: !!req.body.systemPrompt,
+      firstRequestSample: req.body.requests?.[0]?.substring(0, 100)
     });
 
     // Add validation
@@ -23,21 +24,27 @@ export default async function handler(req, res) {
       throw new Error('Invalid requests array in payload');
     }
 
+    // Add debug logging
+    console.log('Preparing batch request:', {
+      systemPromptLength: req.body.systemPrompt?.length,
+      requestsCount: req.body.requests?.length,
+      sampleRequest: req.body.requests?.[0]
+    });
+
     const batch = await anthropic.beta.messages.batches.create({
-      betas: ["message-batches-2024-09-24"],
       requests: req.body.requests.map((request, index) => ({
         custom_id: `eval-${index}`,
         params: {
           model: "claude-3-5-sonnet-20241022",
-          system: req.body.systemPrompt,
           messages: [{ role: "user", content: request }],
-          max_tokens: 1024
+          max_tokens: 1024,
+          system: req.body.systemPrompt
         }
       }))
     });
 
-    console.log('Batch created:', {
-      id: batch.id,
+    console.log('[PROD] Batch created successfully:', {
+      batchId: batch.id,
       status: batch.processing_status
     });
 
@@ -47,11 +54,14 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Error in claude-batch API:', error);
+    console.error('[PROD] Batch API error:', {
+      message: error.message,
+      type: error.constructor.name,
+      stack: error.stack
+    });
     return res.status(500).json({
       error: 'Failed to create batch',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      details: error.message
     });
   }
 } 
