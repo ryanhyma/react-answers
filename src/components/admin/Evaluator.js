@@ -242,25 +242,28 @@ const Evaluator = () => {
         }
     };
 
-    const processResults = async (results) => {
+    const processResults = useCallback(async (results) => {
         console.log(`Processing ${results.length} results from batch...`);
         for (const [index, result] of results.entries()) {
             try {
+                const response = selectedAI === 'claude' 
+                    ? result.message.content
+                    : result.choices[0].message.content;
+
                 const { citationUrl, confidenceRating } = parseEvaluationResponse(
-                    result.message.content,
-                    'claude'
+                    response,
+                    selectedAI
                 );
 
-                console.log(`Result ${index + 1}/${results.length}:`, {
-                    citationUrl,
-                    confidenceRating
-                });
-
                 const logEntry = {
-                    redactedQuestion: result.original_request.params.messages[0].content,
-                    aiResponse: result.message.content,
-                    aiService: 'claude',
-                    referringUrl: result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
+                    redactedQuestion: selectedAI === 'claude'
+                        ? result.original_request.params.messages[0].content
+                        : result.request.messages[1].content,
+                    aiResponse: response,
+                    aiService: selectedAI,
+                    referringUrl: selectedAI === 'claude'
+                        ? result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1]
+                        : result.request.messages[1].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
                     citationUrl,
                     confidenceRating
                 };
@@ -272,7 +275,7 @@ const Evaluator = () => {
             }
         }
         console.log('Batch processing complete!');
-    };
+    }, [selectedAI]);
 
     const handleProcessFile = async () => {
         if (!file) return;
@@ -332,24 +335,22 @@ const Evaluator = () => {
             
             console.log('Status response:', data);
             setBatchStatus(data.status);
-            setLastCheckTime(new Date());  // Update the timestamp
+            setLastCheckTime(new Date());
             
             if (data.status === 'ended' && data.results) {
                 setIsPolling(false);
-                // Parse JSONL results
                 const results = data.results.split('\n')
                     .filter(line => line.trim())
                     .map(line => JSON.parse(line));
                 setBatchResults(results);
                 
-                // Process the results and log them
                 await processResults(results);
             }
         } catch (error) {
             console.error('Error checking batch status:', error);
             setIsPolling(false);
         }
-    }, [batchId]);
+    }, [batchId, processResults]);
 
     const handleCancel = async () => {
         if (!batchId) return;
