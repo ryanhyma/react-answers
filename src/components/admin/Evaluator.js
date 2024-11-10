@@ -182,7 +182,11 @@ const Evaluator = () => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
             
-            // Load the proper system prompt
+            // Set all relevant states at the start
+            setProcessing(true);
+            setBatchStatus('preparing');
+            setError(null);
+            
             const systemPrompt = await loadSystemPrompt();
             
             // Format entries for batch processing
@@ -217,18 +221,23 @@ const Evaluator = () => {
             }
 
             const data = await response.json();
+            console.log('Batch response:', data);  // Debug log
             
             if (data.batchId) {
                 console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
                 setBatchId(data.batchId);
-                setBatchStatus('processing');
+                setBatchStatus('in_progress');
                 setIsPolling(true);
+                // Don't set processing to false - keep it true while polling
             } else {
                 throw new Error('No batch ID received from API');
             }
         } catch (error) {
             console.error('Error processing batch:', error);
             setError(`Failed to start batch processing: ${error.message}`);
+            setProcessing(false);
+            setBatchStatus(null);
+            setIsPolling(false);
         }
     };
 
