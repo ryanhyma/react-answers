@@ -10,6 +10,10 @@ import ClaudeService from '../../services/ClaudeService';
 import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
+import loadSystemPrompt from '../../services/systemPrompt.js';
+
+const MAX_POLLING_DURATION = 5 * 60 * 1000; // 5 minutes for testing (in milliseconds)
+const POLLING_INTERVAL = 5000; // 5 seconds (in milliseconds)   
 
 const Evaluator = () => {
     const [file, setFile] = useState(null);
@@ -26,6 +30,7 @@ const Evaluator = () => {
     const [batchStatus, setBatchStatus] = useState(null);
     const [batchResults, setBatchResults] = useState(null);
     const [isPolling, setIsPolling] = useState(false);
+    const [pollStartTime, setPollStartTime] = useState(null);
 
     const handleFileChange = (event) => {
         setError(null);
@@ -177,6 +182,9 @@ const Evaluator = () => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
             
+            // Load the proper system prompt
+            const systemPrompt = await loadSystemPrompt();
+            
             // Format entries for batch processing
             const requests = entries.map((entry, index) => {
                 const { redactedText } = RedactionService.redactText(entry.question);
@@ -187,10 +195,13 @@ const Evaluator = () => {
 
             const payload = {
                 requests,
-                systemPrompt: 'You are an AI assistant evaluating user feedback. Analyze the feedback and provide a citation URL and confidence rating.'
+                systemPrompt
             };
             
-            console.log('Payload being sent to API:', JSON.stringify(payload, null, 2));
+            console.log('Payload being sent to API:', {
+                requestCount: requests.length,
+                systemPromptLength: systemPrompt.length
+            });
 
             const response = await fetch('/api/claude-batch', {
                 method: 'POST',
@@ -321,17 +332,53 @@ const Evaluator = () => {
         }
     }, [batchId]);
 
+    const handleCancel = async () => {
+        if (!batchId) return;
+        
+        try {
+            const response = await fetch('/api/claude-batch-cancel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ batchId })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to cancel batch');
+            }
+            
+            setIsPolling(false);
+            setBatchStatus('canceling');
+        } catch (error) {
+            console.error('Error canceling batch:', error);
+            setError('Failed to cancel batch: ' + error.message);
+        }
+    };
+
     useEffect(() => {
         let pollInterval;
         
         if (isPolling && batchId) {
-            pollInterval = setInterval(checkBatchStatus, 5000); // Poll every 5 seconds
+            setPollStartTime(Date.now());
+            pollInterval = setInterval(() => {
+                const elapsedTime = Date.now() - pollStartTime;
+                
+                if (elapsedTime > MAX_POLLING_DURATION) {
+                    console.log('Maximum polling duration reached');
+                    setIsPolling(false);
+                    setError('Polling timeout reached. Please check batch status manually.');
+                    return;
+                }
+                
+                checkBatchStatus();
+            }, POLLING_INTERVAL);
         }
         
         return () => {
             if (pollInterval) clearInterval(pollInterval);
         };
-    }, [isPolling, batchId, checkBatchStatus]);
+    }, [isPolling, batchId, pollStartTime, checkBatchStatus]);
 
     return (
         <GcdsContainer className="mb-600">
@@ -434,10 +481,27 @@ const Evaluator = () => {
                                         <GcdsText>Batch Status: {batchStatus || 'Preparing'}</GcdsText>
                                         <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
                                         {batchStatus === 'processing' && (
-                                            <GcdsText>
-                                                Polling for results every 5 seconds... 
-                                                This may take several minutes for large batches.
-                                            </GcdsText>
+                                            <>
+                                                <GcdsText>
+                                                    Polling for results every 5 seconds... 
+                                                    This may take several minutes for large batches.
+                                                </GcdsText>
+                                                <button 
+                                                    onClick={handleCancel}
+                                                    className="secondary-button"
+                                                    style={{
+                                                        marginTop: '10px',
+                                                        padding: '8px 16px',
+                                                        backgroundColor: '#dc3545',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    Cancel Batch
+                                                </button>
+                                            </>
                                         )}
                                     </>
                                 ) : (
