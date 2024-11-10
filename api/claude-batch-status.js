@@ -16,30 +16,28 @@ export default async function handler(req, res) {
         throw new Error('Batch ID is required');
       }
 
-      const batch = await anthropic.beta.messages.batches.retrieve(batchId);
+      const messageBatch = await anthropic.beta.messages.batches.retrieve(batchId);
+      console.log(`Batch ${messageBatch.id} processing status is ${messageBatch.processing_status}`);
 
-      // If processing has ended, fetch results
-      if (batch.processing_status === 'ended' && batch.results_url) {
-        // You might want to stream these results or handle them differently
-        // depending on your needs
-        const response = await fetch(batch.results_url);
+      // Return the status and results if available
+      if (messageBatch.processing_status === 'ended' && messageBatch.results_url) {
+        const response = await fetch(messageBatch.results_url);
         const results = await response.text(); // Results are in JSONL format
         
-        res.status(200).json({
-          status: batch.processing_status,
-          requestCounts: batch.request_counts,
-          results: results
-        });
-      } else {
-        res.status(200).json({
-          status: batch.processing_status,
-          requestCounts: batch.request_counts
+        return res.status(200).json({
+          status: messageBatch.processing_status,
+          results
         });
       }
 
+      // Otherwise just return the status
+      return res.status(200).json({
+        status: messageBatch.processing_status
+      });
+
     } catch (error) {
-      console.error('Error checking batch status:', error.message);
-      res.status(500).json({ error: 'Error checking batch status', details: error.message });
+      console.error('Error checking batch status:', error);
+      return res.status(500).json({ error: 'Error checking batch status', details: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
