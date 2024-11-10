@@ -276,7 +276,13 @@ const Evaluator = () => {
     const handleProcessFile = async () => {
         if (!file) return;
 
-        setProcessing(true);
+        console.log('Starting process, current states:', {
+            processing,
+            batchStatus,
+            useBatchProcessing
+        });
+
+        setProcessing(true);  // This should hide the Start Processing button
         setError(null);
         setProcessedCount(0);
 
@@ -285,9 +291,10 @@ const Evaluator = () => {
             const entries = processCSV(text);
             setTotalEntries(entries.length);
 
-            if (entries.length === 0) {
-                throw new Error('No valid entries found in the CSV file');
-            }
+            console.log('After setting initial states:', {
+                processing: true,
+                entriesLength: entries.length
+            });
 
             if (useBatchProcessing) {
                 await processBatch(entries);
@@ -307,10 +314,9 @@ const Evaluator = () => {
                 entriesProcessed: entries.length
             });
 
-        } catch (err) {
-            setError(err.message);
-            console.error('Error processing file:', err);
-        } finally {
+        } catch (error) {
+            console.error('Process file error:', error);
+            setError(error.message);
             setProcessing(false);
         }
     };
@@ -427,6 +433,15 @@ const Evaluator = () => {
             </div>
         );
     };
+
+    useEffect(() => {
+        console.log('State changed:', {
+            processing,
+            batchStatus,
+            batchId,
+            isPolling
+        });
+    }, [processing, batchStatus, batchId, isPolling]);
 
     return (
         <GcdsContainer className="mb-600">
@@ -568,20 +583,9 @@ const Evaluator = () => {
 
                         {fileUploaded && (
                             <div className="processing-controls">
+                                {console.log('Rendering with states:', { processing, batchStatus })}
                                 {!processing ? (
-                                    <button 
-                                        onClick={handleProcessFile}
-                                        className="primary-button"
-                                        style={{
-                                            padding: '8px 16px',
-                                            backgroundColor: '#26374a',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            marginTop: '20px'
-                                        }}
-                                    >
+                                    <button onClick={handleProcessFile}>
                                         Start Processing
                                     </button>
                                 ) : (
