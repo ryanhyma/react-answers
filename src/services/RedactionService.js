@@ -74,26 +74,23 @@ const pattern = manipulationWords
   .join('|');
 manipulationPattern = new RegExp(`(${pattern})`, 'gi');
 
+const privatePatterns = [
+  /(?<=\b(name|nom)(?:\s+is|\s*:)?\s+)([A-Za-z]+(?:\s+[A-Za-z]+)*)\b/gi,  // Name patterns in EN/FR
+  /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
+  /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email addresses
+  /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi, // Addresses
+  /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d\b/gi, // Canadian postal codes
+  /\b\d{5}(?:-\d{4})?\b/g, // US ZIP codes
+  /\b(apt|bldg|dept|fl|hngr|lot|pier|rm|ste|slip|trlr|unit|#)\.? *\d+[a-z]?\b/gi, //apartment address
+  /P\.? ?O\.? *Box +\d+/gi, //po box
+  /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi, // ipAddress
+  /\b\d{3}[ -.]\d{2}[ -.]\d{4}\b/g, //usSocialSecurityNumber
+  /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g, //url
+  /(?<!\$)\b\d{5,}\b/g // Sequences of 5 or more digits not preceded by $
+];
+
 const redactionPatterns = [
-  { 
-    pattern: /(?<=\b(name|nom)(?:\s+is|\s*:)?\s+)([A-Za-z]+(?:\s+[A-Za-z]+)*)\b/gi,  // Name patterns in EN/FR - up to 2 words
-    type: 'private'
-  },
-  { 
-    pattern: /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
-    type: 'private'
-  },
-  { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g }, // Email addresses
-  { pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi }, // Addresses
-  { pattern: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d\b/gi }, // Canadian postal codes
-  { pattern: /\b\d{5}(?:-\d{4})?\b/g }, // US ZIP codes
-  { pattern: /\b(apt|bldg|dept|fl|hngr|lot|pier|rm|ste|slip|trlr|unit|#)\.? *\d+[a-z]?\b/gi }, //apartment address
-  { pattern: /P\.? ?O\.? *Box +\d+/gi }, //po box
-  { pattern: /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi }, // ipAddress
-  { pattern: /\b\d{3}[ -.]\d{2}[ -.]\d{4}\b/g }, //usSocialSecurityNumber
-  // { pattern: /(user( ?name)?|login): \S+/gi }, //username - leave this in as there are many questions that mention these words
-  { pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g }, //url
-  { pattern: /(?<!\$)\b\d{5,}\b/g }, // Sequences of 5 or more digits not preceded by $
+  ...privatePatterns.map(pattern => ({ pattern, type: 'private' })),
   { 
     get pattern() { return profanityPattern; },
     type: 'profanity'

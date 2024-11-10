@@ -1,7 +1,7 @@
 import React from 'react';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
-import FeedbackEvaluator from '../components/admin/FeedbackEvaluator';
+import Evaluator from '../components/admin/Evaluator';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard';
 
 const AdminPage = ({ lang = 'en' }) => {
@@ -54,7 +54,7 @@ const AdminPage = ({ lang = 'en' }) => {
 
       <section id="evaluator" className="mb-600">
         <h2 className='mt-400 mb-400'>OUT OF SERVICe doNT USE YET Load and run evaluation</h2>
-        <FeedbackEvaluator />
+        <Evaluator />
       </section>
 
       <GcdsDetails detailsTitle="Service Status Control" className="mb-600">

@@ -1,5 +1,5 @@
-// src/components/admin/FeedbackEvaluator.js
-import React, { useState } from 'react';
+// src/components/admin/Evaluator.js
+import React, { useState, useCallback, useEffect } from 'react';
 import {
     GcdsContainer,
     GcdsHeading,
@@ -11,7 +11,7 @@ import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 
-const FeedbackEvaluator = () => {
+const Evaluator = () => {
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
     const [results, setResults] = useState(null);
@@ -24,6 +24,8 @@ const FeedbackEvaluator = () => {
     const [useBatchProcessing, setUseBatchProcessing] = useState(true);
     const [batchId, setBatchId] = useState(null);
     const [batchStatus, setBatchStatus] = useState(null);
+    const [batchResults, setBatchResults] = useState(null);
+    const [isPolling, setIsPolling] = useState(false);
 
     const handleFileChange = (event) => {
         setError(null);
@@ -173,67 +175,74 @@ const FeedbackEvaluator = () => {
 
     const processBatch = async (entries) => {
         try {
+            console.log(`Starting batch processing for ${entries.length} entries...`);
+            
+            // Format entries for batch processing
             const requests = entries.map((entry, index) => {
                 const { redactedText } = RedactionService.redactText(entry.question);
                 const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
-                
-                return {
-                    custom_id: `entry_${index}`,
-                    params: {
-                        model: "claude-3-sonnet-20240229",
-                        messages: [{ role: "user", content: messageWithUrl }],
-                        max_tokens: 1024
-                    }
-                };
+                console.log(`Prepared entry ${index + 1}/${entries.length} for batch processing`);
+                return messageWithUrl;
             });
 
-            const response = await ClaudeService.sendBatchMessages(requests);
-            setBatchId(response.id);
-            setBatchStatus(response.processing_status);
+            console.log('Sending batch request to Claude API...');
+            const response = await fetch('/api/claude-batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    requests,
+                    systemPrompt: 'You are an AI assistant evaluating user feedback. Analyze the feedback and provide a citation URL and confidence rating.'
+                }),
+            });
 
-            await pollBatchResults(response.id);
+            const data = await response.json();
+            
+            if (data.batchId) {
+                console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
+                setBatchId(data.batchId);
+                setBatchStatus('processing');
+                setIsPolling(true);
+            } else {
+                throw new Error('No batch ID received from API');
+            }
         } catch (error) {
             console.error('Error processing batch:', error);
-            setError(error.message);
-        }
-    };
-
-    const pollBatchResults = async (batchId) => {
-        const pollInterval = 5000; // 5 seconds
-        
-        while (true) {
-            const status = await ClaudeService.getBatchStatus(batchId);
-            setBatchStatus(status.processing_status);
-
-            if (status.processing_status === 'ended') {
-                const results = await ClaudeService.getBatchResults(status.results_url);
-                await processResults(results);
-                break;
-            }
-
-            await new Promise(resolve => setTimeout(resolve, pollInterval));
+            setError(`Failed to start batch processing: ${error.message}`);
         }
     };
 
     const processResults = async (results) => {
-        for (const result of results) {
-            const { citationUrl, confidenceRating } = parseEvaluationResponse(
-                result.message.content,
-                'claude'
-            );
+        console.log(`Processing ${results.length} results from batch...`);
+        for (const [index, result] of results.entries()) {
+            try {
+                const { citationUrl, confidenceRating } = parseEvaluationResponse(
+                    result.message.content,
+                    'claude'
+                );
 
-            const logEntry = {
-                redactedQuestion: result.original_request.params.messages[0].content,
-                aiResponse: result.message.content,
-                aiService: 'claude',
-                referringUrl: result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
-                citationUrl,
-                confidenceRating
-            };
+                console.log(`Result ${index + 1}/${results.length}:`, {
+                    citationUrl,
+                    confidenceRating
+                });
 
-            await LoggingService.logInteraction(logEntry, true);
-            setProcessedCount(prev => prev + 1);
+                const logEntry = {
+                    redactedQuestion: result.original_request.params.messages[0].content,
+                    aiResponse: result.message.content,
+                    aiService: 'claude',
+                    referringUrl: result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
+                    citationUrl,
+                    confidenceRating
+                };
+
+                await LoggingService.logInteraction(logEntry, true);
+                setProcessedCount(prev => prev + 1);
+            } catch (error) {
+                console.error(`Error processing result ${index + 1}:`, error);
+            }
         }
+        console.log('Batch processing complete!');
     };
 
     const handleProcessFile = async () => {
@@ -277,6 +286,44 @@ const FeedbackEvaluator = () => {
             setProcessing(false);
         }
     };
+
+    const checkBatchStatus = useCallback(async () => {
+        if (!batchId) return;
+        
+        try {
+            const response = await fetch(`/api/claude-batch-status?batchId=${batchId}`);
+            const data = await response.json();
+            
+            setBatchStatus(data.status);
+            
+            if (data.status === 'ended' && data.results) {
+                setIsPolling(false);
+                // Parse JSONL results
+                const results = data.results.split('\n')
+                    .filter(line => line.trim())
+                    .map(line => JSON.parse(line));
+                setBatchResults(results);
+                
+                // Process the results and log them
+                await processResults(results);
+            }
+        } catch (error) {
+            console.error('Error checking batch status:', error);
+            setIsPolling(false);
+        }
+    }, [batchId]);
+
+    useEffect(() => {
+        let pollInterval;
+        
+        if (isPolling && batchId) {
+            pollInterval = setInterval(checkBatchStatus, 5000); // Poll every 5 seconds
+        }
+        
+        return () => {
+            if (pollInterval) clearInterval(pollInterval);
+        };
+    }, [isPolling, batchId, checkBatchStatus]);
 
     return (
         <GcdsContainer className="mb-600">
@@ -378,6 +425,12 @@ const FeedbackEvaluator = () => {
                                     <>
                                         <GcdsText>Batch Status: {batchStatus || 'Preparing'}</GcdsText>
                                         <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
+                                        {batchStatus === 'processing' && (
+                                            <GcdsText>
+                                                Polling for results every 5 seconds... 
+                                                This may take several minutes for large batches.
+                                            </GcdsText>
+                                        )}
                                     </>
                                 ) : (
                                     <GcdsText>Processing entries: {processedCount} of {totalEntries}</GcdsText>
@@ -411,6 +464,32 @@ const FeedbackEvaluator = () => {
                                 {processing ? 'Processing...' : 'Start Processing'}
                             </button>
                         )}
+
+                        {batchStatus && (
+                            <div className="mt-4">
+                                <h3>Batch Status: {batchStatus}</h3>
+                                {batchStatus === 'processing' && (
+                                    <div className="text-gray-600">
+                                        Processing your requests... This may take several minutes.
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {batchResults && (
+                            <div className="results-section mt-400">
+                                <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
+                                <GcdsText>Total entries processed: {processedCount}</GcdsText>
+                                <GcdsText>Successfully logged to database</GcdsText>
+                                <details>
+                                    <summary>View Processing Details</summary>
+                                    <pre style={{ whiteSpace: 'pre-wrap' }}>
+                                        {JSON.stringify(batchResults.slice(0, 3), null, 2)}... 
+                                        {batchResults.length > 3 && `\n(${batchResults.length - 3} more results)`}
+                                    </pre>
+                                </details>
+                            </div>
+                        )}
                     </form>
                 </div>
             </div>
@@ -418,4 +497,4 @@ const FeedbackEvaluator = () => {
     );
 };
 
-export default FeedbackEvaluator;
+export default Evaluator;
