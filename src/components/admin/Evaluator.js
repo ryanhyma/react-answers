@@ -181,21 +181,29 @@ const Evaluator = () => {
             const requests = entries.map((entry, index) => {
                 const { redactedText } = RedactionService.redactText(entry.question);
                 const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
-                console.log(`Prepared entry ${index + 1}/${entries.length} for batch processing`);
+                console.log(`Entry ${index + 1} formatted:`, messageWithUrl);
                 return messageWithUrl;
             });
 
-            console.log('Sending batch request to Claude API...');
+            const payload = {
+                requests,
+                systemPrompt: 'You are an AI assistant evaluating user feedback. Analyze the feedback and provide a citation URL and confidence rating.'
+            };
+            
+            console.log('Payload being sent to API:', JSON.stringify(payload, null, 2));
+
             const response = await fetch('/api/claude-batch', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    requests,
-                    systemPrompt: 'You are an AI assistant evaluating user feedback. Analyze the feedback and provide a citation URL and confidence rating.'
-                }),
+                body: JSON.stringify(payload),
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
+            }
 
             const data = await response.json();
             
