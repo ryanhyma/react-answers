@@ -26,6 +26,7 @@ export default async function handler(req, res) {
           { role: "user", content: message }
         ],
         max_tokens: 1024,
+        temperature: 0.5
       });
 
       const response = await Promise.race([

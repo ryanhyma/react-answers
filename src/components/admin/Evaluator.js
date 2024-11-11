@@ -13,8 +13,8 @@ import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 import { loadGPTSystemPrompt } from '../../services/gptSystemPrompt.js';
 
-const MAX_POLLING_DURATION = 12 * 60 * 60 * 1000; // 12 hours (in milliseconds)
-const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes (in milliseconds)   
+const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
+const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
 
 const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [file, setFile] = useState(null);
@@ -274,39 +274,69 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     };
 
     const processResults = useCallback(async (results) => {
-        console.log(`Processing ${results.length} results from batch...`);
+        console.log(`Starting to process ${results.length} results from batch...`);
+        const processingErrors = [];
+        
         for (const [index, result] of results.entries()) {
             try {
-                const response = selectedAI === 'claude' 
-                    ? result.message.content
-                    : result.choices[0].message.content;
+                console.log(`Processing result ${index + 1}:`, result);
+                
+                // Handle Anthropic batch format
+                if (!result.result?.message?.content) {
+                    throw new Error(`No valid response content found in result ${index + 1}`);
+                }
 
-                const { citationUrl, confidenceRating } = parseEvaluationResponse(
-                    response,
-                    selectedAI
-                );
+                // Get the full response content with all tags intact
+                const content = result.result.message.content[0]?.text;
+                if (!content) {
+                    throw new Error('Missing response text content');
+                }
+
+                // Extract citation URL and confidence while preserving the original content
+                const citationMatch = content.match(/<citation-url>(.*?)<\/citation-url>/);
+                const confidenceMatch = content.match(/<confidence>(.*?)<\/confidence>/);
+                
+                const citationUrl = citationMatch ? citationMatch[1] : null;
+                const confidenceRating = confidenceMatch ? parseFloat(confidenceMatch[1]) : null;
+
+                if (!citationUrl || !confidenceRating) {
+                    throw new Error('Missing citation URL or confidence rating');
+                }
+
+                // Get the original question from the input
+                const originalQuestion = result.input?.messages?.[0]?.content || '';
 
                 const logEntry = {
-                    redactedQuestion: selectedAI === 'claude'
-                        ? result.original_request.params.messages[0].content
-                        : result.request.messages[1].content,
-                    aiResponse: response,
-                    aiService: selectedAI,
-                    referringUrl: selectedAI === 'claude'
-                        ? result.original_request.params.messages[0].content.match(/<referring-url>(.*?)<\/referring-url>/)[1]
-                        : result.request.messages[1].content.match(/<referring-url>(.*?)<\/referring-url>/)[1],
+                    redactedQuestion: originalQuestion,
+                    aiResponse: content,  // Keeping full response with all tags
+                    aiService: 'claude',
+                    referringUrl: citationUrl,
                     citationUrl,
                     confidenceRating
                 };
 
+                console.log(`Logging entry ${index + 1}:`, logEntry);
                 await LoggingService.logInteraction(logEntry, true);
                 setProcessedCount(prev => prev + 1);
+                
             } catch (error) {
-                console.error(`Error processing result ${index + 1}:`, error);
+                const errorDetails = {
+                    index,
+                    error: error.message,
+                    result: JSON.stringify(result)
+                };
+                console.error('Error processing result:', errorDetails);
+                processingErrors.push(errorDetails);
             }
         }
+        
+        if (processingErrors.length > 0) {
+            console.error(`Completed with ${processingErrors.length} errors:`, processingErrors);
+            setError(`${processingErrors.length} entries failed to process. Check console for details.`);
+        }
+        
         console.log('Batch processing complete!');
-    }, [selectedAI]);
+    }, []);
 
     const handleProcessFile = async () => {
         if (!file) return;
@@ -574,7 +604,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         {batchStatus === 'in_progress' && (
                             <>
                                 <GcdsText>
-                                    Checking status every 5 minutes... 
+                                    Checking status every 10 minutes... 
                                     Large batches may take several hours to complete.
                                 </GcdsText>
                                 <GcdsText>

@@ -38,7 +38,8 @@ export default async function handler(req, res) {
           model: "claude-3-5-sonnet-20241022",
           messages: [{ role: "user", content: request }],
           max_tokens: 1024,
-          system: req.body.systemPrompt
+          system: req.body.systemPrompt,
+          temperature: 0.5
         }
       }))
     });

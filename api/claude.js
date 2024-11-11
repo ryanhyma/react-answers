@@ -43,7 +43,8 @@ export default async function handler(req, res) {
           cache_control: { type: "ephemeral" }
         }],
         messages: messages,
-        max_tokens: 1024
+        max_tokens: 1024,
+        temperature: 0.5  // Middle ground for balanced responses
       });
 
       // Add detailed cache performance logging

@@ -1,0 +1,35 @@
+{
+  "project_type": "Create React App with AI Services",
+  "rules": [
+    {
+      "description": "Consider leveraging reusable components to save repeated code",
+      "match": "component",
+      "action": "suggest_component_reuse"
+    },
+    {
+      "description": "Apply best practices for functional components and hooks",
+      "match": "useEffect|React.memo|useState",
+      "action": "check_hooks_usage"
+    },
+    {
+      "description": "Optimize performance with lazy loading components",
+      "match": "React.lazy",
+      "action": "suggest_optimization"
+    },
+    {
+      "description": "Enforce modular code structure",
+      "match": "utils|services",
+      "action": "encourage_modular_structure"
+    },
+    {
+      "description": "Leverage serverless functions for scaling",
+      "match": "serverless|Vercel",
+      "action": "promote_scalability"
+    },
+    {
+      "description": "Ensure proper API integration and error handling across multiple AI services and endpoints",
+      "match": "fetch|axios|try-catch",
+      "action": "review_api_integration"
+    }
+  ]
+}
