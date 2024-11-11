@@ -47,16 +47,19 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadCSV = () => {
-    // Update columns to include expertFeedback fields instead of expertRating
+    // Update columns order with referringUrl after sentences
     const columns = [
       'timestamp',
       'redactedQuestion',
-      'aiResponse',
       'aiService',
-      'referringUrl',
+      'confidenceRating',
       'citationUrl',
       'originalCitationUrl',
-      'confidenceRating',
+      'sentence1',
+      'sentence2',
+      'sentence3',
+      'sentence4',
+      'referringUrl',
       'feedback',
       'expertFeedback.veryIncorrect',
       'expertFeedback.somewhatIncorrect',
@@ -68,18 +71,51 @@ const ChatLogsDashboard = () => {
 
     // Create CSV header
     const header = columns.map(column => {
-      // Make the header more readable by removing the nested notation
       return column.includes('.') ? column.split('.')[1] : column;
     }).join(',');
 
+    // Function to extract sentences from aiResponse
+    const extractSentences = (aiResponse) => {
+      const sentences = {
+        sentence1: '',
+        sentence2: '',
+        sentence3: '',
+        sentence4: ''
+      };
+
+      if (!aiResponse) return sentences;
+
+      // Check if response contains s-tags
+      if (aiResponse.includes('<s-')) {
+        // Extract content between s-tags
+        const matches = aiResponse.match(/<s-(\d)>(.*?)<\/s-\1>/g);
+        if (matches) {
+          matches.forEach((match, index) => {
+            if (index < 4) {
+              const content = match.replace(/<\/?s-\d>/g, '').trim();
+              sentences[`sentence${index + 1}`] = content;
+            }
+          });
+        }
+      } else {
+        // If no s-tags, put entire response in sentence1
+        sentences.sentence1 = aiResponse.trim();
+      }
+
+      return sentences;
+    };
+
     // Create CSV rows
     const rows = logs.map(log => {
+      const sentences = extractSentences(log.aiResponse);
+      
       return columns.map(column => {
         let value = '';
         if (column.includes('.')) {
-          // Handle nested expertFeedback fields
           const [parent, child] = column.split('.');
           value = log[parent]?.[child] || '';
+        } else if (column.startsWith('sentence')) {
+          value = sentences[column] || '';
         } else {
           value = log[column] || '';
         }
