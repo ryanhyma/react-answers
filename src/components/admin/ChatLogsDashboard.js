@@ -187,21 +187,25 @@ const ChatLogsDashboard = () => {
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
         
-        <GcdsButton 
-          onClick={downloadJSON}
-          disabled={loading || logs.length === 0}
-          className="me-400 hydrated"
-        >
-          Download JSON
-        </GcdsButton>
+        {logs.length > 0 && (
+          <>
+            <GcdsButton 
+              onClick={downloadJSON}
+              disabled={loading}
+              className="me-400 hydrated"
+            >
+              Download JSON
+            </GcdsButton>
 
-        <GcdsButton 
-          onClick={downloadCSV}
-          disabled={loading || logs.length === 0}
-          className="me-400 hydrated"
-        >
-          Download CSV
-        </GcdsButton>
+            <GcdsButton 
+              onClick={downloadCSV}
+              disabled={loading}
+              className="me-400 hydrated"
+            >
+              Download CSV
+            </GcdsButton>
+          </>
+        )}
       </div>
 
       <div className="bg-white shadow rounded-lg">
