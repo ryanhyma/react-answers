@@ -1,4 +1,4 @@
-export const canadaMenuStructure = {
+export const menuStructure_EN = {
   "Jobs and the workplace": {
     url: "https://www.canada.ca/en/services/jobs.html",
     submenus: {
