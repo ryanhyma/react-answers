@@ -11,6 +11,7 @@ import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
+import { loadGPTSystemPrompt } from '../../services/gptSystemPrompt.js';
 
 const MAX_POLLING_DURATION = 12 * 60 * 60 * 1000; // 12 hours (in milliseconds)
 const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes (in milliseconds)   
@@ -185,13 +186,17 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
             
-            // Set all relevant states at the start
             setProcessing(true);
             setBatchStatus('preparing');
             setError(null);
             setProcessedCount(0);
             
-            const systemPrompt = await loadSystemPrompt();
+            // Load appropriate system prompt based on selected AI
+            const systemPrompt = selectedAI === 'claude' 
+                ? await loadSystemPrompt()
+                : await loadGPTSystemPrompt();
+            
+            console.log('System prompt size:', Buffer.byteLength(systemPrompt, 'utf8') / 1024, 'KB');
             
             // Format entries for batch processing
             const requests = entries.map((entry, index) => {
@@ -208,7 +213,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             
             console.log('Sending batch request with:', {
                 requestCount: requests.length,
-                systemPromptLength: systemPrompt?.length
+                systemPromptLength: systemPrompt.length,
+                aiService: selectedAI
             });
 
             // Select endpoint based on AI service
@@ -740,7 +746,19 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         {fileUploaded && (
                             <div className="processing-controls">
                                 {!processing ? (
-                                    <button onClick={handleProcessFile}>
+                                    <button 
+                                        onClick={handleProcessFile}
+                                        className="secondary-button"
+                                        style={{
+                                            marginTop: '10px',
+                                            padding: '8px 16px',
+                                            backgroundColor: '#26374a',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
                                         Start Processing
                                     </button>
                                 ) : (
