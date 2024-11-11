@@ -182,6 +182,13 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setUseBatchProcessing(e.target.checked);
     };
 
+    // TODO: Batch Processing Improvements Needed
+    // - Add timestamp when creating batches
+    // - Create new API endpoint /api/process-pending-batches to handle background processing
+    // - Set up cron job using cron-job.org to periodically check batch status
+    // - Add database table/schema for tracking batch status
+    // - Update UI to show that processing will continue even if user leaves page
+    // See conversation: https://github.com/your-repo/issues/XX
     const processBatch = async (entries) => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
@@ -603,7 +610,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             <>
                                 <GcdsText>
                                     Checking status every 10 minutes... 
-                                    Large batches may take several hours to complete.
+                                    Large batches may take up to 24 hours to complete. Leave this page open for now. 
                                 </GcdsText>
                                 <GcdsText>
                                     Last checked: {lastCheckTime ? formatTimestamp(lastCheckTime) : 'Not yet checked'}
