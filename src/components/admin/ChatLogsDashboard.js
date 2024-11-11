@@ -74,40 +74,53 @@ const ChatLogsDashboard = () => {
       return column.includes('.') ? column.split('.')[1] : column;
     }).join(',');
 
-    // Function to extract sentences from aiResponse
-    const extractSentences = (aiResponse) => {
-      const sentences = {
-        sentence1: '',
-        sentence2: '',
-        sentence3: '',
-        sentence4: ''
+    const extractResponseData = (aiResponse) => {
+      const data = {
+        sentences: {
+          sentence1: '',
+          sentence2: '',
+          sentence3: '',
+          sentence4: ''
+        },
+        confidence: '',
+        citationUrl: ''
       };
 
-      if (!aiResponse) return sentences;
+      if (!aiResponse) return data;
 
-      // Check if response contains s-tags
+      // Extract sentences
       if (aiResponse.includes('<s-')) {
-        // Extract content between s-tags
         const matches = aiResponse.match(/<s-(\d)>(.*?)<\/s-\1>/g);
         if (matches) {
           matches.forEach((match, index) => {
             if (index < 4) {
               const content = match.replace(/<\/?s-\d>/g, '').trim();
-              sentences[`sentence${index + 1}`] = content;
+              data.sentences[`sentence${index + 1}`] = content;
             }
           });
         }
       } else {
-        // If no s-tags, put entire response in sentence1
-        sentences.sentence1 = aiResponse.trim();
+        data.sentences.sentence1 = aiResponse.trim();
       }
 
-      return sentences;
+      // Extract confidence
+      const confidenceMatch = aiResponse.match(/<confidence>(.*?)<\/confidence>/);
+      if (confidenceMatch) {
+        data.confidence = confidenceMatch[1];
+      }
+
+      // Extract citation URL
+      const citationMatch = aiResponse.match(/<citation-url>(.*?)<\/citation-url>/);
+      if (citationMatch) {
+        data.citationUrl = citationMatch[1];
+      }
+
+      return data;
     };
 
     // Create CSV rows
     const rows = logs.map(log => {
-      const sentences = extractSentences(log.aiResponse);
+      const extractedData = extractResponseData(log.aiResponse);
       
       return columns.map(column => {
         let value = '';
@@ -115,11 +128,14 @@ const ChatLogsDashboard = () => {
           const [parent, child] = column.split('.');
           value = log[parent]?.[child] || '';
         } else if (column.startsWith('sentence')) {
-          value = sentences[column] || '';
+          value = extractedData.sentences[column] || '';
+        } else if (column === 'confidenceRating') {
+          value = extractedData.confidence;
+        } else if (column === 'citationUrl') {
+          value = extractedData.citationUrl;
         } else {
           value = log[column] || '';
         }
-        // Escape quotes and wrap in quotes if contains comma or newline
         const escapedValue = value.toString().replace(/"/g, '""');
         return `"${escapedValue}"`;
       }).join(',');
