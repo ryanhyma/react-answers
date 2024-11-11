@@ -196,8 +196,6 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 ? await loadSystemPrompt()
                 : await loadGPTSystemPrompt();
             
-            console.log('System prompt size:', Buffer.byteLength(systemPrompt, 'utf8') / 1024, 'KB');
-            
             // Format entries for batch processing
             const requests = entries.map((entry, index) => {
                 const { redactedText } = RedactionService.redactText(entry.question);
