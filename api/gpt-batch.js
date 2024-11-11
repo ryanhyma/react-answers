@@ -12,35 +12,41 @@ export default async function handler(req, res) {
     try {
         const { requests, systemPrompt } = req.body;
         
-        console.log('Starting GPT batch creation with:', {
-            requestCount: requests.length,
-            systemPromptLength: systemPrompt?.length
+        console.log('Payload sizes:', {
+            systemPromptSize: Buffer.byteLength(systemPrompt, 'utf8') / 1024 / 1024, // Size in MB
+            requestsSize: Buffer.byteLength(JSON.stringify(requests), 'utf8') / 1024 / 1024,
+            totalRequests: requests.length
         });
 
-        // Create smaller JSONL content
-        const jsonlContent = requests.map(request => JSON.stringify({
-            messages: [
-                // Truncate system prompt if too long
-                { role: "system", content: systemPrompt.slice(0, 32000) },
-                { role: "user", content: request }
-            ],
-            model: "gpt-4-turbo-preview",
-            max_tokens: 1024  // Reduced from 4096
-        })).join('\n');
+        const truncatedSystemPrompt = systemPrompt.slice(0, 4000); // Much smaller limit
 
-        // Set response timeout header
-        res.setHeader('Connection', 'keep-alive');
-        res.setHeader('Keep-Alive', 'timeout=60');
+        const jsonlContent = requests.map(request => {
+            const entry = {
+                messages: [
+                    { role: "system", content: truncatedSystemPrompt },
+                    { role: "user", content: request.slice(0, 2000) } // Smaller limit
+                ],
+                model: "gpt-4-turbo-preview",
+                max_tokens: 1024
+            };
+            
+            const entrySize = Buffer.byteLength(JSON.stringify(entry), 'utf8');
+            console.log(`Entry size: ${entrySize / 1024}KB`);
+            
+            return JSON.stringify(entry);
+        }).join('\n');
 
-        // Upload the file with progress logging
-        console.log('Uploading file...');
+        const totalSize = Buffer.byteLength(jsonlContent, 'utf8');
+        console.log(`Total JSONL size: ${totalSize / 1024 / 1024}MB`);
+
         const file = await openai.files.create({
             file: Buffer.from(jsonlContent),
-            purpose: 'batch'
+            purpose: 'batch',
+            content_type: 'application/jsonl'
         });
+
         console.log('File uploaded:', file.id);
 
-        // Create batch immediately after file upload
         const batch = await openai.batches.create({
             input_file_id: file.id,
             endpoint: "/v1/chat/completions"
@@ -55,7 +61,8 @@ export default async function handler(req, res) {
         console.error('GPT Batch creation error:', {
             message: error.message,
             name: error.name,
-            stack: error.stack
+            stack: error.stack,
+            size: error.size // Log size if available
         });
         
         return res.status(500).json({ 
