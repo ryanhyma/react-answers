@@ -9,6 +9,7 @@ const API_URL = process.env.NODE_ENV === 'production'
 const ClaudeService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
+      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
       const SYSTEM_PROMPT = await loadSystemPrompt(lang);
       
       // Only change: check for evaluation and use empty array if true

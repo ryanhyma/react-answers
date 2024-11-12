@@ -9,6 +9,7 @@ const API_URL = process.env.NODE_ENV === 'production'
 const ChatGPTService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
+      console.log(`🤖 ChatGPT Service: Processing message in ${lang.toUpperCase()}`);
       const SYSTEM_PROMPT = await loadSystemPrompt(lang);
       
       // Only change: check for evaluation and use empty array if true
