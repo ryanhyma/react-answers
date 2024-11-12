@@ -121,17 +121,18 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             const problemDetailsIndex = headers.findIndex(h => h.trim() === 'Problem Details');
             const urlIndex = headers.findIndex(h => h.trim() === 'URL');
 
-            if (problemDetailsIndex === -1 || urlIndex === -1) {
-                throw new Error('Required columns "Problem Details" and "URL" not found in CSV file. Please ensure you are using a file with those columns ordownloaded from the Feedback Viewer.');
+            if (problemDetailsIndex === -1) {
+                throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
             }
 
             const entries = lines.slice(1)
                 .map(line => {
                     const values = parseCSVLine(line);
                     const question = values[problemDetailsIndex]?.trim();
-                    const url = values[urlIndex]?.trim();
+                    // Only get URL if the column exists
+                    const url = urlIndex !== -1 ? values[urlIndex]?.trim() : '';
 
-                    if (question && url) {
+                    if (question) {
                         console.log('Processing valid entry:', { question, url });
                     }
 
@@ -140,7 +141,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         referringUrl: url || ''
                     };
                 })
-                .filter(entry => entry.question && entry.referringUrl);
+                .filter(entry => entry.question); // Only filter based on question presence
 
             console.log(`Found ${entries.length} valid entries to process`);
             return entries;
