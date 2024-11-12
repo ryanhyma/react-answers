@@ -1,4 +1,4 @@
-// Simplified system prompt for GPT batch processing
+// Simplified system prompt for GPT batch processing - this was an EXPERIMENT and it didn't work
 const GPT_SYSTEM_PROMPT = `
 # AI Assistant for Canada.ca Information
 

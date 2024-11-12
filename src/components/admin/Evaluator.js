@@ -36,6 +36,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const [pollingErrors, setPollingErrors] = useState(0);
 
+    const [selectedLanguage, setSelectedLanguage] = useState('en');
+
     const handleFileChange = (event) => {
         setError(null);
         const uploadedFile = event.target.files[0];
@@ -201,7 +203,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             
             // Load appropriate system prompt based on selected AI
             const systemPrompt = selectedAI === 'claude' 
-                ? await loadSystemPrompt()
+                ? await loadSystemPrompt(selectedLanguage)
                 : await loadGPTSystemPrompt();
             
             // Format entries for batch processing
@@ -662,12 +664,17 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         );
     };
 
+    // Add language toggle handler
+    const handleLanguageToggle = (e) => {
+        setSelectedLanguage(e.target.value);
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
-                    <GcdsText>Select the AI service and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL.</GcdsText>
+                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL.</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
                         <div className="ai-toggle" style={{ marginBottom: '20px' }}>
@@ -697,6 +704,38 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             style={{ marginRight: '5px' }}
                                         />
                                         <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div className="language-toggle" style={{ marginBottom: '20px' }}>
+                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <legend style={{ marginRight: '10px' }}>Evaluation Language:</legend>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                        <input
+                                            type="radio"
+                                            id="english"
+                                            name="language-selection"
+                                            value="en"
+                                            checked={selectedLanguage === 'en'}
+                                            onChange={handleLanguageToggle}
+                                            style={{ marginRight: '5px' }}
+                                        />
+                                        <label htmlFor="english" style={{ marginRight: '15px' }}>English</label>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <input
+                                            type="radio"
+                                            id="french"
+                                            name="language-selection"
+                                            value="fr"
+                                            checked={selectedLanguage === 'fr'}
+                                            onChange={handleLanguageToggle}
+                                            style={{ marginRight: '5px' }}
+                                        />
+                                        <label htmlFor="french">French</label>
                                     </div>
                                 </div>
                             </fieldset>
