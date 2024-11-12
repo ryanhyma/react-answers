@@ -667,7 +667,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
-                    <GcdsText>Select the AI service and CSV file that you've downloaded and cleaned from the Feedback viewer. You can use any CSV file as long as there are columns labelled 'Problem Details' and 'URL' with the question and referral URL.</GcdsText>
+                    <GcdsText>Select the AI service and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL.</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
                         <div className="ai-toggle" style={{ marginBottom: '20px' }}>
