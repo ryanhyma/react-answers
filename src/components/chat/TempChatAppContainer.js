@@ -190,9 +190,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
         let response;
         if (selectedAI === 'claude') {
-          response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory);
+          response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
         } else {
-          response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory);
+          response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
         }
 
         setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);

@@ -8,6 +8,8 @@ import { menuStructure_FR } from './menuStructure_FR.js';
 let IMPORT_ERROR = false;
 
 async function loadSystemPrompt(language = 'en') {
+  console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}`);
+  
   try {
     // Validate imports
     if (!craAccountInfo || !menuStructure_EN || !menuStructure_FR) {
@@ -17,6 +19,11 @@ async function loadSystemPrompt(language = 'en') {
     // Select language-specific content
     const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const scenarios = language === 'fr' ? SCENARIOS_FR : SCENARIOS_EN;
+    
+    console.log(`📚 Selected ${language.toUpperCase()} content:`, {
+      menuStructure: 'loaded',
+      scenarios: 'loaded'
+    });
 
     // Build the prompt differently based on language
     const fullPrompt = language === 'fr' 
@@ -43,7 +50,7 @@ ${JSON.stringify(menuStructure, null, 2)}
 ${scenarios}
       `;
 
-    console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()}`);
+    console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
     return fullPrompt;
 
   } catch (error) {

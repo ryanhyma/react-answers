@@ -7,9 +7,9 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
-  sendMessage: async (message, conversationHistory = []) => {
+  sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
-      const SYSTEM_PROMPT = await loadSystemPrompt();
+      const SYSTEM_PROMPT = await loadSystemPrompt(lang);
       
       // Only change: check for evaluation and use empty array if true
       const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
