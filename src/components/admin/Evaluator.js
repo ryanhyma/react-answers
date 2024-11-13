@@ -11,7 +11,6 @@ import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
-import { loadGPTSystemPrompt } from '../../services/gptSystemPrompt.js';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
@@ -202,9 +201,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             setProcessedCount(0);
             
             // Load appropriate system prompt based on selected AI
-            const systemPrompt = selectedAI === 'claude' 
-                ? await loadSystemPrompt(selectedLanguage)
-                : await loadGPTSystemPrompt();
+            const systemPrompt = await loadSystemPrompt(selectedLanguage);
             
             // Format entries for batch processing
             const requests = entries.map((entry, index) => {
@@ -462,19 +459,19 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     }, [batchId, processResults, processedCount, pollingErrors, selectedAI]);
 
-    // Add function to fetch GPT batch results
-    const fetchGPTBatchResults = async (outputFileId) => {
-        try {
-            const response = await fetch(`/api/gpt-batch-results?fileId=${outputFileId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch batch results');
-            }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching GPT batch results:', error);
-            throw error;
-        }
-    };
+    // // Add function to fetch GPT batch results HAS TO BE FIXED EVENTUALLY
+    // const fetchGPTBatchResults = async (outputFileId) => {
+    //     try {
+    //         const response = await fetch(`/api/gpt-batch-results?fileId=${outputFileId}`);
+    //         if (!response.ok) {
+    //             throw new Error('Failed to fetch batch results');
+    //         }
+    //         return await response.json();
+    //     } catch (error) {
+    //         console.error('Error fetching GPT batch results:', error);
+    //         throw error;
+    //     }
+    // };
 
     const handleCancel = async () => {
         if (!batchId) return;
