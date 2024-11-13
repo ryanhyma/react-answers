@@ -46,11 +46,11 @@
   }
   
   .feedback-container {
-    font-size: 0.875rem; /* 14px */
+    font-size: 1rem; /* 16px */
   }
   
   .feedback-text {
-    color: #666;
+    color: #000;
   }
   
   .feedback-link {
