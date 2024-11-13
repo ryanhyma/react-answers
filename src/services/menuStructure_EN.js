@@ -117,7 +117,8 @@ export const menuStructure_EN = {
     mostRequested: {
       "Apply for Employment Insurance": "https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit.html",
       "Apply for student loans and grants": "https://www.canada.ca/en/services/benefits/education/student-aid/grants-loans.html",
-      "Sign in to a Government of Canada online account": "https://www.canada.ca/en/government/sign-in-online-account.html",
+      "Sign in to your My Service Canada Account": "https://www.canada.ca/en/employment-social-development/services/my-account.html",
+      "Create or register for a My Service Canada Account (MSCA)": "https://www.canada.ca/en/employment-social-development/services/my-account/registration.html",
       "Set up or change direct deposit": "https://www.canada.ca/en/public-services-procurement/services/payments-to-from-government/direct-deposit.html",
       "Submit your EI report": "https://www.canada.ca/en/services/benefits/ei/ei-internet-reporting.html",
       "Child and family benefits calculators": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/child-family-benefits-calculator.html",

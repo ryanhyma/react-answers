@@ -116,19 +116,20 @@ export const menuStructure_FR = {
     mostRequested: {
       "Présenter une demande d'assurance-emploi": "https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-reguliere.html",
       "Faire une demande de bourses et de prêts d'études": "https://www.canada.ca/fr/services/prestations/education/aide-etudiants/bourses-prets.html",
-      "Ouvrir une session pour un compte en ligne du gouvernement du Canada": "https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne.html",
+      "Connectez vous a votre compte Mon dossier Service Canada (MDSC)": "https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier.html",
+      "Créer un compte Mon dossier Service Canada (MDSC)": "https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/inscription.html",
       "S'inscrire ou modifier vos informations de dépôt direct": "https://www.canada.ca/fr/services-publics-approvisionnement/services/paiements-vers-depuis-gouvernement/depot-direct.html",
       "Calculateur de prestations pour enfants et familles": "https://www.canada.ca/fr/agence-revenu/services/prestations-enfants-familles/calculateur-prestations-enfants-familles.html",
       "Soumettre une déclaration d'assurance-emploi": "https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-declaration-internet.html",
-      "Allocation canadienne pour enfants": "/fr/agence-revenu/services/prestations-enfants-familles/allocation-canadienne-enfants-apercu.html",
-      "Prestations pour proches aidants et congés": "/fr/services/prestations/ae/proches-aidants.html",
-      "Prestations de maternité et parentales": "/fr/services/prestations/ae/assurance-emploi-maternite-parentales.html",
+      "Allocation canadienne pour enfants": "https://www.canada.ca/fr/agence-revenu/services/prestations-enfants-familles/allocation-canadienne-enfants-apercu.html",
+      "Prestations pour proches aidants et congés": "https://www.canada.ca/fr/services/prestations/ae/proches-aidants.html",
+      "Prestations de maternité et parentales": "https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-maternite-parentales.html",
       "Crédit pour la taxe sur les produits et services/taxe de vente harmonisée (TPS/TVH)": "http://www.cra-arc.gc.ca/bnfts/gsthst/menu-fra.html",
-      "Régime canadien de soins dentaires": "/fr/services/prestations/dentaire/regime-soins-dentaires.html",
+      "Régime canadien de soins dentaires": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires.html",
       "Prestations pour enfants handicapés": "http://www.cra-arc.gc.ca/bnfts/dsblty-fra.html",
-      "Pension de survivant du Régime de pensions du Canada": "/fr/services/prestations/pensionspubliques/rpc/rpc-pension-survivant.html",
-      "Prestations d'enfants du Régime de pensions du Canada": "/fr/services/prestations/pensionspubliques/rpc/prestation-rpc-enfant.html",
-      "Allocation canadienne aux parents de jeunes victimes de crimes": "/fr/emploi-developpement-social/services/parents-jeunes-victimes-crimes.html"
+      "Pension de survivant du Régime de pensions du Canada": "https://www.canada.ca/fr/services/prestations/pensionspubliques/rpc/rpc-pension-survivant.html",
+      "Prestations d'enfants du Régime de pensions du Canada": "https://www.canada.ca/fr/services/prestations/pensionspubliques/rpc/prestation-rpc-enfant.html",
+      "Allocation canadienne aux parents de jeunes victimes de crimes": "https://www.canada.ca/fr/emploi-developpement-social/services/parents-jeunes-victimes-crimes.html"
     }
   },
   "Santé": {
@@ -165,7 +166,7 @@ export const menuStructure_FR = {
       "Organismes de bienfaisance et dons": "https://www.canada.ca/fr/services/impots/bienfaisance.html",
     },
     mostRequested: {
-      "Mon dossier": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/dossier-particuliers.html",
+      "Mon dossier ARC": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/dossier-particuliers.html",
       "Mon dossier d'entreprise": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-entreprises/dossier-entreprise.html",
       "Représenter un client": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/representer-client.html",
       "Transmettre une déclaration de TPS/TVH (IMPÔTNET)": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-entreprises/impotnet-tps-tvh.html",
