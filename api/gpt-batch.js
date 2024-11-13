@@ -20,15 +20,20 @@ export default async function handler(req, res) {
 
         const truncatedSystemPrompt = systemPrompt.slice(0, 4000); // Much smaller limit
 
-        const jsonlContent = requests.map(request => {
+        const jsonlContent = requests.map((request, index) => {
             const entry = {
-                messages: [
-                    { role: "system", content: truncatedSystemPrompt },
-                    { role: "user", content: request.slice(0, 2000) } // Smaller limit
-                ],
-                model: "gpt-4-turbo-preview",
-                max_tokens: 1024,
-                temperature: 0.5  // Added temperature parameter
+                custom_id: `request-${index}`,
+                method: "POST",
+                url: "/v1/chat/completions",
+                body: {
+                    model: "gpt-4-turbo-preview",
+                    messages: [
+                        { role: "system", content: truncatedSystemPrompt },
+                        { role: "user", content: request.slice(0, 2000) }
+                    ],
+                    max_tokens: 1024,
+                    temperature: 0.5
+                }
             };
             
             const entrySize = Buffer.byteLength(JSON.stringify(entry), 'utf8');

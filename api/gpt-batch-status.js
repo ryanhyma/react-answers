@@ -13,28 +13,17 @@ export default async function handler(req, res) {
         const { batchId } = req.query;
         const batch = await openai.batches.retrieve(batchId);
         
-        // Return the full batch object structure
+        // Check if the batch is completed and has output
+        const isCompleted = batch.status === 'completed';
+        const hasOutput = batch.output_file_id != null;
+
+        // Return a more focused response with just the essential status info
         return res.status(200).json({
-            id: batch.id,
-            object: batch.object, // Will be "batch"
-            endpoint: batch.endpoint,
-            errors: batch.errors,
-            input_file_id: batch.input_file_id,
-            completion_window: batch.completion_window,
             status: batch.status,
+            isCompleted,
+            hasOutput,
             output_file_id: batch.output_file_id,
-            error_file_id: batch.error_file_id,
-            created_at: batch.created_at,
-            in_progress_at: batch.in_progress_at,
-            expires_at: batch.expires_at,
-            finalizing_at: batch.finalizing_at,
-            completed_at: batch.completed_at,
-            failed_at: batch.failed_at,
-            expired_at: batch.expired_at,
-            cancelling_at: batch.cancelling_at,
-            cancelled_at: batch.cancelled_at,
-            request_counts: batch.request_counts,
-            metadata: batch.metadata
+            error_file_id: batch.error_file_id
         });
     } catch (error) {
         console.error('GPT Batch status error:', error);

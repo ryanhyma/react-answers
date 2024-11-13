@@ -412,51 +412,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             const data = await response.json();
             console.log('Status response:', data);
 
-            // Map GPT status to match our UI expectations
-            let displayStatus = data.status;
-            if (selectedAI === 'chatgpt') {
-                switch(data.status) {
-                    case 'completed':
-                        displayStatus = 'ended';
-                        break;
-                    case 'in_progress':
-                        displayStatus = 'processing';
-                        break;
-                    case 'validating':
-                        displayStatus = 'preparing';
-                        break;
-                    case 'cancelling':
-                        displayStatus = 'cancelling';
-                        break;
-                    case 'cancelled':
-                        displayStatus = 'cancelled';
-                        break;
-                    case 'failed':
-                        displayStatus = 'error';
-                        break;
-                    default:
-                        displayStatus = data.status;
-                        break;
-                }
-            }
-            
-            setBatchStatus(displayStatus);
-            setLastCheckTime(new Date());
-
-            if (selectedAI === 'chatgpt') {
-                setProcessedCount(data.request_counts?.completed || 0);
-                
-                // Handle completion
-                if (data.status === 'completed' && data.output_file_id) {
-                    setIsPolling(false);
-                    // You'll need to implement a way to fetch results from the output file
-                    const results = await fetchGPTBatchResults(data.output_file_id);
-                    setBatchResults(results);
-                    await processResults(results);
-                    setProcessing(false);
-                }
-            } else {
+            if (selectedAI === 'claude') {
                 // Existing Claude batch handling
+                setBatchStatus(data.status);
                 if (data.processedCount) {
                     setProcessedCount(data.processedCount);
                 }
@@ -472,6 +430,25 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     if (unprocessedResults.length > 0) {
                         await processResults(unprocessedResults);
                     }
+                    setProcessing(false);
+                }
+            } else {
+                // GPT batch handling
+                setBatchStatus(data.status);
+                setLastCheckTime(new Date());
+
+                if (data.status === 'completed' && data.output_file_id) {
+                    setIsPolling(false);
+                    const results = await fetch(`/api/gpt-batch-results?fileId=${data.output_file_id}`);
+                    const resultData = await results.json();
+                    setBatchResults(resultData);
+                    await processResults(resultData);
+                    setProcessing(false);
+                }
+                
+                if (data.status === 'failed') {
+                    setIsPolling(false);
+                    setError('GPT batch processing failed. Please check the error logs.');
                     setProcessing(false);
                 }
             }
@@ -551,7 +528,6 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             };
 
             doPoll();
-            
             pollInterval = setInterval(doPoll, POLLING_INTERVAL);
         }
         
