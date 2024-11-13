@@ -39,9 +39,9 @@ const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
       >
         {t('homepage.feedback.useful')}
       </button>
-      <span className="feedback-separator"> · </span>
+      <span className="feedback-separator">·</span>
       <span className="feedback-text">{t('homepage.feedback.or')}</span>
-      <span className="feedback-separator"> · </span>
+      <span className="feedback-separator">·</span>
       <button 
         className="feedback-link button-as-link"
         onClick={() => handleFeedback(false)}
