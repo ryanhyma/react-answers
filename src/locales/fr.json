@@ -1,64 +1,64 @@
-{
+  {
     "homepage": {
       "title": "Réponses IA",
       "subtitle": "Obtenez des réponses à vos questions sur Canada.ca.",
       "alpha": {
         "label": "Alpha",
-        "description": "Page expérimentale - non publique."
+        "description": "Page expérimentale — non publique."
       },
       "intro": {
-        "researchOnly": "Discutez avec un service d'IA personnalisé, et non avec un humain. Disponibilité privée à des fins de recherche uniquement."
+        "researchOnly": "Cette preuve de concept est uniquement destinée à la recherche. Elle fait l'objet de travaux continus."
       },
       "about": {
         "title": "À propos de Réponses IA",
         "privacyNote": "Pour protéger votre vie privée, les numéros et les adresses seront supprimés avant que votre question ne soit envoyée au service d'IA. Le texte supprimé s'affichera sous la forme XXX.",
         "aiServices": {
-          "claude": "Service IA Claude : Anthropic Claude Sonnet 3.5, connaissances jusqu'en avril 2024",
-          "chatgpt": "Service IA ChatGPT : OpenAI 4o, connaissances jusqu'en mai 2024"
+          "claude": "Service d'IA Claude : Claude 3.5 Sonnet d'Anthropic, connaissances jusqu'en avril 2024",
+          "chatgpt": "Service d'IA ChatGPT : GPT-4o d'OpenAI, connaissances jusqu'en mai 2024"
         },
         "systemPrompt": "Lire l'invite système",
-        "contact": "Le développement est toujours en cours - contactez lisa.fast@cds-snc.ca pour plus d'informations."
+        "contact": "Le développement est toujours en cours — Contactez lisa.fast@cds-snc.ca pour plus d'informations."
       },
       "feedback": {
         "title": "",
-        "surveyLink": "Partager votre rétroaction (ouvre dans un nouvel onglet)",
+        "surveyLink": "Donnez votre avis (s'ouvre dans un nouvel onglet)",
         "question": "Cette réponse était-elle utile?",
         "useful": "Utile",
         "notUseful": "pas utile",
         "or": "ou",
-        "thankYou": "Merci de votre rétroaction!"
+        "thankYou": "Merci d'avoir donné votre avis!"
       },
       "privacy": {
         "title": "Confidentialité et conditions d'utilisation de l'IA",
-        "storage": "Nous pouvons stocker vos questions et réponses pour améliorer les performances du système. Les informations personnelles seront supprimées et remplacées par XXX. Les informations personnelles ne seront pas stockées.",
-        "disclaimer": "Utilisez le lien Canada.ca fourni dans la réponse pour vérifier votre réponse. Les réponses générées par ce système d'IA ne doivent pas être considérées comme des conseils professionnels, juridiques ou médicaux. Nous nous efforçons d'assurer l'exactitude des informations fournies, mais il est possible que les informations contiennent des inexactitudes et que l'information ne reflète pas encore les changements récents ou ne réponde pas à vos besoins ou objectifs particuliers.",
+        "storage": "Nous pouvons conserver vos questions et réponses pour améliorer les performances du système. Les informations personnelles seront supprimées et remplacées par XXX. Les informations personnelles ne seront pas conservées.",
+        "disclaimer": "Utilisez le lien Canada.ca fourni dans la réponse pour vérifier votre réponse. Les réponses générées par ce système d'IA ne doivent pas être considérées comme des conseils professionnels, juridiques ou médicaux. Nous nous efforçons de garantir l'exactitude des informations fournies, mais il est possible que les informations contiennent des inexactitudes, ne reflètent pas encore les changements récents ou ne répondent pas à vos besoins ou objectifs particuliers.",
         "terms": "Ce système d'IA s'appuie sur les informations fournies sur les sites Web du gouvernement du Canada et votre utilisation de ce système et de toute information générée est également soumise aux",
         "termsLink": "Conditions d'utilisation de Canada.ca."
       },
       "errors": {
         "timeout": {
           "title": "Réponses IA a expiré.",
-          "message": "Rechargez la page pour réessayer.",
-          "button": "Recharger"
+          "message": "Actualisez la page pour réessayer.",
+          "button": "Actualiser"
         },
-            "serviceUnavailable": "Réponses IA n'est pas disponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
+        "serviceUnavailable": "Réponses IA est indisponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
       },
       "chat": {
         "input": {
           "initial": "Posez une question sur Canada.ca",
           "followUp": "Posez une question de suivi ou répondez",
-          "hint": "Conseil : Ajoutez des détails. L'IA peut faire des erreurs, vérifiez toujours votre réponse."
+          "hint": "Conseil : Ajoutez des détails. L'IA peut faire des erreurs, vérifiez toujours la réponse."
         },
         "buttons": {
           "send": "Envoyer",
-          "reload": "Recharger la page"
+          "reload": "Actualiser la page"
         },
         "options": {
           "title": "Options",
           "aiSelection": {
             "label": "IA :",
-            "claude": "Anthropic Claude 3.5 Sonnet",
-            "chatgpt": "OpenAI ChatGPT 4o"
+            "claude": "Claude 3.5 Sonnet d'Anthropic",
+            "chatgpt": "ChatGPT-4o d'OpenAI"
           },
           "referringUrl": {
             "label": "URL de référence Canada.ca (facultatif)"
@@ -66,15 +66,14 @@
         },
         "messages": {
           "thinking": "En réflexion...",
-          "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Rechargez la page pour commencer une nouvelle conversation.",
-          "error": "Désolé, je n'ai pas pu traiter votre demande. Veuillez réessayer plus tard.",
+          "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Actualisez la page pour commencer une nouvelle conversation.",
+          "error": "Désolé, le service n'est pas disponible. Veuillez réessayer plus tard.",
           "profanity": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
           "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
-          "threat": "Votre question n'a pas été envoyée au service d'IA.",
-          "characterLimit": "Votre message est trop long. Veuillez réessayer avec un message plus court."
+          "threat": "Votre question n'a pas été envoyée au service d'IA."
         },
         "citation": {
-          "confidence": "Confiance :",
+          "confidence": "Niveau de confiance :",
           "ai": "IA :"
         }
       },
@@ -89,7 +88,7 @@
           "citationSomewhatIncorrect": "L'URL de citation est partiellement incorrecte",
           "betterCitation": "Meilleure URL de citation (facultatif) :"
         },
-        "submit": "Soumettre la rétroaction"
+        "submit": "Soumettre"
       }
     }
   }
