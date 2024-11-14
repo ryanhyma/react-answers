@@ -653,12 +653,12 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
-                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL.</GcdsText>
+                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL. Admin code is required to enable file upload (temporary fix for testing).</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
                         <div className="admin-code-input" style={{ marginBottom: '20px' }}>
                             <label htmlFor="adminCode" style={{ display: 'block', marginBottom: '10px' }}>
-                                Enter Admin Code:
+                                Enter Admin Code to enable file upload:
                             </label>
                             <input
                                 type="text"
