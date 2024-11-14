@@ -158,7 +158,7 @@ const ChatLogsDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
           <label 
             htmlFor="timeRange" 
@@ -183,6 +183,7 @@ const ChatLogsDashboard = () => {
           onClick={fetchLogs}
           disabled={loading}
           className="me-400 hydrated"
+          style={{ marginTop: '1rem' }}
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
@@ -193,6 +194,7 @@ const ChatLogsDashboard = () => {
               onClick={downloadJSON}
               disabled={loading}
               className="me-400 hydrated"
+              style={{ marginTop: '1rem' }}
             >
               Download JSON
             </GcdsButton>
@@ -201,6 +203,7 @@ const ChatLogsDashboard = () => {
               onClick={downloadCSV}
               disabled={loading}
               className="me-400 hydrated"
+              style={{ marginTop: '1rem' }}
             >
               Download CSV
             </GcdsButton>

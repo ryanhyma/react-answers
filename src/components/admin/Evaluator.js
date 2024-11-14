@@ -36,6 +36,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [pollingErrors, setPollingErrors] = useState(0);
 
     const [selectedLanguage, setSelectedLanguage] = useState('en');
+    const [adminCode, setAdminCode] = useState('');
+    const correctAdminCode = '2024';
 
     const handleFileChange = (event) => {
         setError(null);
@@ -642,6 +644,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setSelectedLanguage(e.target.value);
     };
 
+    const handleAdminCodeChange = (e) => {
+        setAdminCode(e.target.value);
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
@@ -650,6 +656,19 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL.</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
+                        <div className="admin-code-input" style={{ marginBottom: '20px' }}>
+                            <label htmlFor="adminCode" style={{ display: 'block', marginBottom: '10px' }}>
+                                Enter Admin Code:
+                            </label>
+                            <input
+                                type="text"
+                                id="adminCode"
+                                value={adminCode}
+                                onChange={handleAdminCodeChange}
+                                style={{ marginBottom: '10px' }}
+                            />
+                        </div>
+
                         <div className="ai-toggle" style={{ marginBottom: '20px' }}>
                             <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -763,6 +782,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                     borderRadius: '4px',
                                     cursor: 'pointer'
                                 }}
+                                disabled={adminCode !== correctAdminCode}
                             >
                                 Upload File
                             </button>
