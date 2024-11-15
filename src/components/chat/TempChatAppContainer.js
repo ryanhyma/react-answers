@@ -132,7 +132,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           ...prevMessages,
           { 
             text: t('homepage.chat.messages.characterLimit'),
-            sender: 'ai',
+            sender: 'system',
             error: true
           }
         ]);
@@ -155,8 +155,8 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setMessages(prevMessages => [
           ...prevMessages,
           { 
-            text: "Your question used words that aren't accepted. Please try asking it differently.",
-            sender: 'ai',
+            text: t('homepage.chat.messages.blockedContent'),
+            sender: 'system',
             error: true
           }
         ]);
@@ -213,7 +213,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [
           ...prevMessages,
-          { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'ai', error: true }
+          { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'system', error: true }
         ]);
       } finally {
         setIsLoading(false);
@@ -319,7 +319,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [parseAIResponse, checkedCitations, t]);
 
   const privacyMessage = t('homepage.chat.messages.privacy');
-  const threatMessage = t('homepage.chat.messages.threat');
+  const blockedMessage = t('homepage.chat.messages.blockedMessage');
 
   const getLabelForInput = () => {
     if (turnCount >= 1) {
@@ -344,7 +344,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                       <p className="redacted-preview">{privacyMessage}</p>
                     )}
                     {message.redactedText.includes('###') && (
-                      <p className="redacted-preview">{threatMessage}</p>
+                      <p className="redacted-preview">{blockedMessage}</p>
                     )}
                   </>
                 )}

@@ -68,9 +68,9 @@
           "thinking": "En réflexion...",
           "limitReached": "Votre limite de {{count}} questions par conversation a été atteinte. Actualisez la page pour commencer une nouvelle conversation.",
           "error": "Désolé, le service n'est pas disponible. Veuillez réessayer plus tard.",
-          "profanity": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
-          "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
-          "threat": "Votre question n'a pas été envoyée au service d'IA."
+          "blockedContent": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
+          "blockedMessage": "Votre question n'a pas été envoyée au service d'IA.",
+          "privacy": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX."
         },
         "citation": {
           "confidence": "Niveau de confiance :",
