@@ -150,17 +150,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       // Check for any blocked content by looking for three or more consecutive '#' symbols
       const hasBlockedContent = redactedText.includes('###');
 
-      // Add message to chat history
-      setMessages(prevMessages => [...prevMessages, {
-        text: userMessage,
-        redactedText: redactedText,
-        redactedItems: redactedItems,
-        sender: 'user',
-        ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-      }]);
-
-      clearInput();
-
       // If message contains blocked content, add rejection message and return
       if (hasBlockedContent) {
         setMessages(prevMessages => [
@@ -173,6 +162,17 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         ]);
         return;
       }
+
+      // Add message to chat history
+      setMessages(prevMessages => [...prevMessages, {
+        text: userMessage,
+        redactedText: redactedText,
+        redactedItems: redactedItems,
+        sender: 'user',
+        ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
+      }]);
+
+      clearInput();
 
       // Continue with normal AI processing if no profanity/threats
       setIsLoading(true);
