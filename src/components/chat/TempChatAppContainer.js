@@ -219,7 +219,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t, lang]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
