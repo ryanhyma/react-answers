@@ -70,14 +70,12 @@ class URLValidator {
       return { isValid: true, confidence: 1.0 };
     }
 
-    // Regular expressions to validate domain patterns
-    const validDomainPatterns = [
-      /^https:\/\/www\.canada\.ca\/(en|fr)\//,  // Main Canada.ca domain
-      /^https:\/\/[a-zA-Z0-9-]+\.gc\.ca\//      // Subdomain gc.ca URLs
-    ];
+    // Basic check for canada.ca or gc.ca domains without being too restrictive
+    const validDomains = ['.canada.ca', '.gc.ca'];
+    const hasValidDomain = validDomains.some(domain => 
+      url.toLowerCase().includes(domain) && url.startsWith('http')
+    );
 
-    // Check if URL matches valid domain patterns
-    const hasValidDomain = validDomainPatterns.some(pattern => pattern.test(url));
     if (!hasValidDomain) {
       return { isValid: false, confidence: 0 };
     }
@@ -86,8 +84,6 @@ class URLValidator {
     const suspiciousPatterns = [
       /\/temp\//,   // Temporary directories
       /\/test\//,   // Test directories
-      /\.php$/,     // PHP files (not typically used on Canada.ca)
-      /\.asp$/,     // ASP files (not typically used on Canada.ca)
       /\s/,         // URLs shouldn't contain spaces
       /[^a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]/  // Invalid URL characters
     ];
@@ -100,20 +96,11 @@ class URLValidator {
     // Start with base confidence for valid domain
     let confidence = 0.7;
 
-    // Patterns that increase our confidence in the URL's validity
-    const confidenceBoosts = [
-      { pattern: /\/services\//, boost: 0.1 },
-      { pattern: /\/department-/, boost: 0.1 },
-      { pattern: /\/programs\//, boost: 0.1 },
-      { pattern: /\/benefits\//, boost: 0.1 }
-    ];
-
-    // Apply confidence boosts for recognized patterns
-    confidenceBoosts.forEach(({ pattern, boost }) => {
-      if (pattern.test(url)) {
-        confidence = Math.min(confidence + boost, 0.95);
-      }
-    });
+    // Boost confidence if URL follows patterns we see in our menu structure
+    // For example, if it matches the language pattern of known good URLs
+    if (url.includes(`/${lang}/`)) {
+      confidence = Math.min(confidence + 0.1, 0.95);
+    }
 
     return { isValid: true, confidence };
   }
