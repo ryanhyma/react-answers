@@ -120,7 +120,7 @@ class URLValidator {
       return {
         isValid: true,
         url: url,
-        confidenceRating: validationResult.confidence
+        confidenceRating: '1.0'
       };
     }
 
@@ -133,7 +133,7 @@ class URLValidator {
         isValid: false,
         fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
         fallbackText: 'Unable to find a citation - use canada.ca search',
-        confidenceRating: 0
+        confidenceRating: '0.0'
       };
     }
 
@@ -141,7 +141,7 @@ class URLValidator {
     return {
       isValid: true,
       url: checkResult.url,
-      confidenceRating: Math.min(validationResult.confidence, checkResult.confidenceRating)
+      confidenceRating: '0.8'  // Medium confidence for URLs that pass both checks but aren't in menu
     };
   }
 
