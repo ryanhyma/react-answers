@@ -1,0 +1,202 @@
+import { menuStructure_EN } from './menuStructure_EN';
+import { menuStructure_FR } from './menuStructure_FR';
+import checkCitationUrl from './urlChecker';
+
+/**
+ * URLValidator class provides methods to validate and verify URLs for Canada.ca domains
+ * It uses a cached set of known good URLs from the menu structure and performs
+ * both static validation and network checks
+ */
+class URLValidator {
+  constructor() {
+    // Cache of valid URLs from the menu structure
+    this.menuUrls = new Set();
+  }
+
+  /**
+   * Initialize cache with URLs from menu structure for given language
+   * This builds a Set of all known good URLs from the menu structure
+   * @param {string} lang - Language code ('en' or 'fr')
+   */
+  initializeMenuUrls(lang = 'en') {
+    // Clear existing cache
+    this.menuUrls.clear();
+    // Select menu structure based on language
+    const menuStructure = lang.toLowerCase() === 'fr' ? menuStructure_FR : menuStructure_EN;
+
+    // Helper function to process each section of the menu
+    const processMenuSection = (section) => {
+      // Add main section URL if it exists
+      if (section.url) {
+        this.menuUrls.add(section.url);
+      }
+      // Add URLs from submenus
+      if (section.submenus) {
+        Object.values(section.submenus).forEach(url => {
+          if (typeof url === 'string') {
+            this.menuUrls.add(url);
+          }
+        });
+      }
+      // Add URLs from most requested links
+      if (section.mostRequested) {
+        Object.values(section.mostRequested).forEach(url => {
+          if (typeof url === 'string') {
+            this.menuUrls.add(url);
+          }
+        });
+      }
+    };
+
+    // Process all sections in the menu structure
+    Object.values(menuStructure).forEach(processMenuSection);
+  }
+
+  /**
+   * Validate if a URL appears to be a legitimate Canada.ca or gc.ca URL
+   * Performs static validation without making network requests
+   * @param {string} url - URL to validate
+   * @param {string} lang - Language code ('en' or 'fr')
+   * @returns {object} Validation result with isValid and confidence score
+   */
+  validateUrl(url, lang = 'en') {
+    // Initialize/refresh URL cache if needed
+    if (this.menuUrls.size === 0) {
+      this.initializeMenuUrls(lang);
+    }
+
+    // If URL exists in our menu structure, it's definitely valid
+    if (this.menuUrls.has(url)) {
+      return { isValid: true, confidence: 1.0 };
+    }
+
+    // Regular expressions to validate domain patterns
+    const validDomainPatterns = [
+      /^https:\/\/www\.canada\.ca\/(en|fr)\//,  // Main Canada.ca domain
+      /^https:\/\/[a-zA-Z0-9-]+\.gc\.ca\//      // Subdomain gc.ca URLs
+    ];
+
+    // Check if URL matches valid domain patterns
+    const hasValidDomain = validDomainPatterns.some(pattern => pattern.test(url));
+    if (!hasValidDomain) {
+      return { isValid: false, confidence: 0 };
+    }
+
+    // Patterns that might indicate a hallucinated or invalid URL
+    const suspiciousPatterns = [
+      /\/temp\//,   // Temporary directories
+      /\/test\//,   // Test directories
+      /\.php$/,     // PHP files (not typically used on Canada.ca)
+      /\.asp$/,     // ASP files (not typically used on Canada.ca)
+      /\s/,         // URLs shouldn't contain spaces
+      /[^a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]/  // Invalid URL characters
+    ];
+
+    // Check for suspicious patterns
+    if (suspiciousPatterns.some(pattern => pattern.test(url))) {
+      return { isValid: false, confidence: 0 };
+    }
+
+    // Start with base confidence for valid domain
+    let confidence = 0.7;
+
+    // Patterns that increase our confidence in the URL's validity
+    const confidenceBoosts = [
+      { pattern: /\/services\//, boost: 0.1 },
+      { pattern: /\/department-/, boost: 0.1 },
+      { pattern: /\/programs\//, boost: 0.1 },
+      { pattern: /\/benefits\//, boost: 0.1 }
+    ];
+
+    // Apply confidence boosts for recognized patterns
+    confidenceBoosts.forEach(({ pattern, boost }) => {
+      if (pattern.test(url)) {
+        confidence = Math.min(confidence + boost, 0.95);
+      }
+    });
+
+    return { isValid: true, confidence };
+  }
+
+  /**
+   * Validate and check URL accessibility
+   * @param {string} url - URL to validate and check
+   * @returns {Promise<object>} Validation result with network check
+   */
+  async validateAndCheckUrl(url) {
+    // First do the static validation
+    const validationResult = this.validateUrl(url);
+    
+    // If URL is clearly invalid, return early
+    if (!validationResult.isValid) {
+      return {
+        isValid: false,
+        fallbackUrl: `https://www.canada.ca/en/sr/srb.html`,
+        confidenceRating: 0
+      };
+    }
+
+    // If confidence is high (URL exists in menu), skip network check
+    if (validationResult.confidence >= 0.95) {
+      return {
+        isValid: true,
+        url: url,
+        confidenceRating: validationResult.confidence
+      };
+    }
+
+    // For medium confidence URLs, perform network validation
+    const checkResult = await checkCitationUrl(url);
+    
+    return {
+      isValid: checkResult.isValid,
+      url: checkResult.url || checkResult.fallbackUrl,
+      confidenceRating: Math.min(validationResult.confidence, checkResult.confidenceRating)
+    };
+  }
+
+  /**
+   * Get a fallback URL from the menu structure based on topic
+   */
+  getFallbackUrl(topic, lang = 'en') {
+    const menuStructure = lang.toLowerCase() === 'fr' ? menuStructure_FR : menuStructure_EN;
+    const normalizedTopic = topic.toLowerCase();
+    
+    // First try to find a most requested URL
+    for (const content of Object.values(menuStructure)) {
+      if (content.mostRequested) {
+        for (const [title, url] of Object.entries(content.mostRequested)) {
+          if (title.toLowerCase().includes(normalizedTopic)) {
+            return { url, confidence: 0.8 };
+          }
+        }
+      }
+    }
+
+    // Then try to find a submenu URL
+    for (const [sectionName, content] of Object.entries(menuStructure)) {
+      if (sectionName.toLowerCase().includes(normalizedTopic) && content.submenus) {
+        const firstSubmenuUrl = Object.values(content.submenus)[0];
+        if (firstSubmenuUrl) {
+          return { url: firstSubmenuUrl, confidence: 0.6 };
+        }
+      }
+    }
+
+    // Finally, fall back to main section URL
+    for (const [sectionName, content] of Object.entries(menuStructure)) {
+      if (sectionName.toLowerCase().includes(normalizedTopic) && content.url) {
+        return { url: content.url, confidence: 0.5 };
+      }
+    }
+
+    // Ultimate fallback
+    return { 
+      url: `https://www.canada.ca/en/services.html`,
+      confidence: 0.3 
+    };
+  }
+}
+
+// Export a singleton instance
+export const urlValidator = new URLValidator(); 

@@ -6,7 +6,7 @@ import FeedbackComponent from './FeedbackComponent';
 import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsInput, GcdsDetails } from '@cdssnc/gcds-components-react';
 import '../../styles/TempChatAppContainer.css';
-import checkCitationUrl from '../../utils/urlChecker.js';
+import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations';
 
 
@@ -230,9 +230,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const checkAndUpdateCitation = useCallback(async (messageIndex, citationUrl) => {
     if (!citationUrl || checkedCitations[messageIndex]) return;
 
-    const result = await checkCitationUrl(citationUrl);
+    const result = await urlValidator.validateAndCheckUrl(citationUrl, lang);
     setCheckedCitations(prev => ({ ...prev, [messageIndex]: result }));
-  }, [checkedCitations]);
+  }, [checkedCitations, lang]);
 
   useEffect(() => {
     messages.forEach((message, index) => {

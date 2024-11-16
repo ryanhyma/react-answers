@@ -16,9 +16,10 @@ const checkCitationUrl = async (url) => {
   }
 
   // Define the fallback result object
+  // TODO: Update this to use the correct search page for the language
   const fallbackResult = {
     isValid: false,
-    fallbackUrl: 'https://www.canada.ca/en/sr/srb/sra.html',
+    fallbackUrl: 'https://www.canada.ca/en/sr/srb.html',
     fallbackText: 'Unable to find a citation - use canada.ca search',
     confidenceRating: 0
   };
