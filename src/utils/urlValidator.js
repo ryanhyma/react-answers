@@ -108,21 +108,13 @@ class URLValidator {
   /**
    * Validate and check URL accessibility
    * @param {string} url - URL to validate and check
+   * @param {string} lang - Language code ('en' or 'fr')
    * @returns {Promise<object>} Validation result with network check
    */
-  async validateAndCheckUrl(url) {
+  async validateAndCheckUrl(url, lang = 'en') {
     // First do the static validation
-    const validationResult = this.validateUrl(url);
+    const validationResult = this.validateUrl(url, lang);
     
-    // If URL is clearly invalid, return early
-    if (!validationResult.isValid) {
-      return {
-        isValid: false,
-        fallbackUrl: `https://www.canada.ca/en/sr/srb.html`,
-        confidenceRating: 0
-      };
-    }
-
     // If confidence is high (URL exists in menu), skip network check
     if (validationResult.confidence >= 0.95) {
       return {
@@ -132,12 +124,23 @@ class URLValidator {
       };
     }
 
-    // For medium confidence URLs, perform network validation
+    // For all other URLs, perform network validation
     const checkResult = await checkCitationUrl(url);
     
+    // If URL is invalid (either from structural validation or network check)
+    if (!validationResult.isValid || !checkResult.isValid) {
+      return {
+        isValid: false,
+        fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
+        fallbackText: 'Unable to find a citation - use canada.ca search',
+        confidenceRating: 0
+      };
+    }
+
+    // For valid URLs, return the complete result with combined confidence
     return {
-      isValid: checkResult.isValid,
-      url: checkResult.url || checkResult.fallbackUrl,
+      isValid: true,
+      url: checkResult.url,
       confidenceRating: Math.min(validationResult.confidence, checkResult.confidenceRating)
     };
   }

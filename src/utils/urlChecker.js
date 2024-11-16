@@ -15,15 +15,6 @@ const checkCitationUrl = async (url) => {
     };
   }
 
-  // Define the fallback result object
-  // TODO: Update this to use the correct search page for the language
-  const fallbackResult = {
-    isValid: false,
-    fallbackUrl: 'https://www.canada.ca/en/sr/srb.html',
-    fallbackText: 'Unable to find a citation - use canada.ca search',
-    confidenceRating: 0
-  };
-
   // Define known 404 pages
   const notFoundPages = [
     'https://www.canada.ca/errors/404.html',
@@ -39,12 +30,12 @@ const checkCitationUrl = async (url) => {
 
     // Check if the final URL (after potential redirects) is a known 404 page
     if (notFoundPages.some(notFoundUrl => response.url.includes(notFoundUrl))) {
-      return fallbackResult;
+      return { isValid: false };
     }
 
     // Check for 404 status
     if (response.status === 404) {
-      return fallbackResult;
+      return { isValid: false };
     }
 
     return { 
@@ -55,9 +46,7 @@ const checkCitationUrl = async (url) => {
   } catch (error) {
     console.error('Error checking Canada.ca URL:', error);
     return { 
-      isValid: true, 
-      url: url,
-      confidenceRating: 0.5
+      isValid: false
     };
   }
 };
