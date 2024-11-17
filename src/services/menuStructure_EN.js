@@ -1,7 +1,7 @@
 export const menuStructure_EN = {
   "Jobs and the workplace": {
     url: "https://www.canada.ca/en/services/jobs.html",
-    submenus: {
+    topics: {
       "Find a job": "https://www.canada.ca/en/services/jobs/opportunities.html",
       "Funding for jobs and training": "https://www.canada.ca/en/employment-social-development/services/funding/programs.html",
       "Training": "https://www.canada.ca/en/services/jobs/training.html",
@@ -23,7 +23,7 @@ export const menuStructure_EN = {
   },
   "Immigration and citizenship": {
     url: "https://www.canada.ca/en/services/immigration-citizenship.html",
-    submenus: {
+    topics: {
       "My application": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application.html",
       "Visit": "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html",
       "Immigrate": "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada.html",
@@ -47,7 +47,7 @@ export const menuStructure_EN = {
   },
   "Travel and tourism": {
     url: "https://travel.gc.ca/",
-    submenus: {
+    topics: {
       "Travel advice and advisories": "https://travel.gc.ca/travelling/advisories",
       "Visit Canada": "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html?outside",
       "Travel outside Canada": "https://travel.gc.ca/travelling",
@@ -69,7 +69,7 @@ export const menuStructure_EN = {
   },
   "Business and industry": {
     url: "https://www.canada.ca/en/services/business.html",
-    submenus: {
+    topics: {
       "Starting a business": "https://www.canada.ca/en/services/business/start.html",
       "Business grants and financing": "https://www.canada.ca/en/services/business/grants.html",
       "Business taxes": "https://www.canada.ca/en/services/business/taxes.html",
@@ -100,7 +100,7 @@ export const menuStructure_EN = {
   },
   "Benefits": {
     url: "https://www.canada.ca/en/services/benefits.html",
-    submenus: {
+    topics: {
       "Employment Insurance benefits and leave": "https://www.canada.ca/en/services/benefits/ei.html",
       "Dental coverage": "https://www.canada.ca/en/services/benefits/dental/dental-care-plan.html",
       "Family and caregiving benefits": "https://www.canada.ca/en/services/benefits/family.html",
@@ -128,7 +128,7 @@ export const menuStructure_EN = {
   },
   "Health": {
     url: "https://www.canada.ca/en/services/health.html",
-    submenus: {
+    topics: {
       "Food and nutrition": "https://www.canada.ca/en/services/health/food-nutrition.html",
       "Diseases and conditions": "https://www.canada.ca/en/public-health/services/diseases.html",
       "Vaccines and immunization": "https://www.canada.ca/en/public-health/topics/immunization-vaccines.html",
@@ -149,7 +149,7 @@ export const menuStructure_EN = {
   },
   "Taxes": {
     url: "https://www.canada.ca/en/services/taxes.html",
-    submenus: {
+    topics: {
       "Income tax": "https://www.canada.ca/en/services/taxes/income-tax.html",
       "GST/HST": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses.html",
       "Payroll": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll.html",
@@ -171,7 +171,7 @@ export const menuStructure_EN = {
   },
   "Environment and natural resources": {
     url: "https://www.canada.ca/en/services/environment.html",
-    submenus: {
+    topics: {
       "Weather, climate and hazards": "https://www.canada.ca/en/services/environment/weather.html",
       "Energy": "https://www.canada.ca/en/services/environment/energy.html",
       "Natural resources": "https://www.canada.ca/en/services/environment/natural-resources.html",
@@ -191,7 +191,7 @@ export const menuStructure_EN = {
   },
   "National security and defence": {
     url: "https://www.canada.ca/en/services/defence.html",
-    submenus: {
+    topics: {
       "National security": "https://www.canada.ca/en/services/defence/nationalsecurity.html",
       "Canadian Armed Forces": "https://www.canada.ca/en/services/defence/caf.html",
       "Defence equipment purchases and upgrades": "https://www.canada.ca/en/services/defence/defence-equipment-purchases-upgrades.html",
@@ -212,7 +212,7 @@ export const menuStructure_EN = {
   },
   "Culture, history and sport": {
     url: "https://www.canada.ca/en/services/culture.html",
-    submenus: {
+    topics: {
       "Funding - Culture, history and sport": "https://www.canada.ca/en/canadian-heritage/services/funding.html",
       "Events, celebrations and commemorations": "https://www.canada.ca/en/services/culture/events-celebrations-commemorations.html",
       "Cultural landmarks and attractions": "https://www.canada.ca/en/services/culture/cultural-attractions.html",
@@ -234,7 +234,7 @@ export const menuStructure_EN = {
   },
   "Policing, justice and emergencies": {
     url: "https://www.canada.ca/en/services/policing.html",
-    submenus: {
+    topics: {
       "Policing": "https://www.canada.ca/en/services/policing/police/index.html",
       "Justice": "https://www.canada.ca/en/services/policing/justice.html",
       "Emergencies": "https://www.canada.ca/en/services/policing/emergencies.html",
@@ -253,7 +253,7 @@ export const menuStructure_EN = {
   },
   "Transport and infrastructure": {
     url: "https://www.canada.ca/en/services/transport.html",
-    submenus: {
+    topics: {
       "Aviation": "https://tc.canada.ca/en/aviation",
       "Marine transportation": "https://tc.canada.ca/en/marine-transportation",
       "Road transportation": "https://tc.canada.ca/en/road-transportation",
@@ -273,7 +273,7 @@ export const menuStructure_EN = {
   },
   "Canada and the world": {
     url: "https://www.international.gc.ca/world-monde/index.aspx?lang=eng",
-    submenus: {
+    topics: {
       "International offices and emergency contacts": "https://www.international.gc.ca/world-monde/offices-bureaux/index.aspx?lang=eng",
       "Study, work and travel worldwide": "https://www.international.gc.ca/world-monde/study_work_travel-etude_travail_voyage/index.aspx?lang=eng",
       "Information by countries and territories": "https://www.international.gc.ca/world-monde/country-pays/index.aspx?lang=eng",
@@ -294,7 +294,7 @@ export const menuStructure_EN = {
   },
   "Money and finances": {
     url: "https://www.canada.ca/en/services/finance.html",
-    submenus: {
+    topics: {
       "Managing your money": "https://www.canada.ca/en/services/finance/manage.html",
       "Debt and borrowing": "https://www.canada.ca/en/services/finance/debt.html",
       "Savings and investments": "https://www.canada.ca/en/services/finance/savings.html",
@@ -322,7 +322,7 @@ export const menuStructure_EN = {
   },
   "Science and innovation": {
     url: "https://www.canada.ca/en/services/science.html",
-    submenus: {
+    topics: {
       "Research funding and awards": "https://www.canada.ca/en/services/science/researchfunding.html",
       "Science subjects": "https://www.canada.ca/en/services/science/sciencesubjects.html",
       "Open data, statistics and archives": "https://www.canada.ca/en/services/science/open-data.html",
@@ -343,7 +343,7 @@ export const menuStructure_EN = {
   },
   "About government": {
     url: "https://www.canada.ca/en/government/system.html",
-    submenus: {
+    topics: {
       "How government works": "https://www.canada.ca/en/government/system/how-government-works.html",
       "Government priorities": "https://www.canada.ca/en/government/system/priorities.html",
       "Treaties, laws and regulations": "https://www.canada.ca/en/government/system/laws.html",
@@ -369,7 +369,7 @@ export const menuStructure_EN = {
   },
   "Working for the government": {
     url: "https://www.canada.ca/en/government/publicservice.html",
-    submenus: {
+    topics: {
       "precautionary measures": "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/bgrs-sirva-canada-systems-privacy-breach-affecting-current-former-federal-employees.html",
       "Government of Canada jobs": "https://www.canada.ca/en/services/jobs/opportunities/government.html",
       "Pay, pension and benefits": "https://www.canada.ca/en/government/publicservice/pay.html",

@@ -1,7 +1,7 @@
 export const menuStructure_FR = {
   "Emplois et milieu de travail": {
     url: "https://www.canada.ca/fr/services/emplois.html",
-    submenus: {
+    topics: {
       "Trouver un emploi": "https://www.canada.ca/fr/services/emplois/opportunites.html",
       "Financement pour les emplois et formations": "https://www.canada.ca/fr/emploi-developpement-social/services/financement/programmes.html",
       "Formation": "https://www.canada.ca/fr/services/emplois/formation.html",
@@ -23,7 +23,7 @@ export const menuStructure_FR = {
   },
   "Immigration et citoyenneté": {
     url: "https://www.canada.ca/fr/services/immigration-citoyennete.html",
-    submenus: {
+    topics: {
       "Ma demande": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande.html",
       "Visiter": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/visiter-canada.html",
       "Immigrer": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/immigrer-canada.html",
@@ -47,7 +47,7 @@ export const menuStructure_FR = {
   },
   "Voyage et tourisme": {
     url: "https://voyage.gc.ca/",
-    submenus: {
+    topics: {
       "Conseils aux voyageurs et avertissements": "https://voyage.gc.ca/voyager/avertissements",
       "COVID-19 : voyage, dépistage et frontières": "https://voyage.gc.ca/voyage-covid",
       "Visiter le Canada": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/visiter-canada.html?outside",
@@ -70,7 +70,7 @@ export const menuStructure_FR = {
   },
   "Entreprises et industrie": {
     url: "https://www.canada.ca/fr/services/entreprises.html",
-    submenus: {
+    topics: {
       "Démarrage d'entreprise": "https://www.canada.ca/fr/services/entreprises/lancer.html",
       "Subventions et financement pour les entreprises": "https://www.canada.ca/fr/services/entreprises/subventions.html",
       "Taxes et impôt des entreprises": "https://www.canada.ca/fr/services/entreprises/impots.html",
@@ -99,7 +99,7 @@ export const menuStructure_FR = {
   },
   "Prestations": {
     url: "https://www.canada.ca/fr/services/prestations.html",
-    submenus: {
+    topics: {
       "Prestations d'assurance-emploi et congés": "https://www.canada.ca/fr/services/prestations/ae.html",
       "Couverture dentaire": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires.html",
       "Prestations pour les familles et les proches aidants": "https://www.canada.ca/fr/services/prestations/famille.html",
@@ -134,7 +134,7 @@ export const menuStructure_FR = {
   },
   "Santé": {
     url: "https://www.canada.ca/fr/services/sante.html",
-    submenus: {
+    topics: {
       "Aliments et nutrition": "https://www.canada.ca/fr/services/sante/aliments-et-nutrition.html",
       "Maladies et affections": "https://www.canada.ca/fr/sante-publique/services/maladies.html",
       "Vaccins et immunisation": "https://www.canada.ca/fr/sante-publique/sujets/immunisation-et-vaccins.html",
@@ -155,7 +155,7 @@ export const menuStructure_FR = {
   },
   "Impôts": {
     url: "https://www.canada.ca/fr/services/impots.html",
-    submenus: {
+    topics: {
       "Impôt sur le revenu": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu.html",
       "TPS/TVH": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/tps-tvh-entreprises.html",
       "Retenues sur la paie": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/retenues-paie.html",
@@ -176,7 +176,7 @@ export const menuStructure_FR = {
   },
   "Environnement et ressources naturelles": {
     url: "https://www.canada.ca/fr/services/environnement.html",
-    submenus: {
+    topics: {
       "Météo, climat et catastrophes naturelles": "https://www.canada.ca/fr/services/environnement/meteo.html",
       "Énergie": "https://www.canada.ca/fr/services/environnement/energie.html",
       "Ressources naturelles": "https://www.canada.ca/fr/services/environnement/ressources-naturelles.html",
@@ -196,7 +196,7 @@ export const menuStructure_FR = {
   },
   "Sécurité nationale et défense": {
     url: "https://www.canada.ca/fr/services/defense.html",
-    submenus: {
+    topics: {
       "Sécurité nationale": "https://www.canada.ca/fr/services/defense/securitenationale.html",
       "Forces armées canadiennes": "https://www.canada.ca/fr/services/defense/fac.html",
       "Achat et mise à niveau d'équipement de la Défense": "https://www.canada.ca/fr/services/defense/achat-mise-a-niveau-equipement-defense.html",
@@ -216,7 +216,7 @@ export const menuStructure_FR = {
   },
   "Culture, histoire et sport": {
     url: "https://www.canada.ca/fr/services/culture.html",
-    submenus: {
+    topics: {
       "Financement - Culture, histoire et sport": "https://www.canada.ca/fr/patrimoine-canadien/services/financement.html",
       "Événements, célébrations et commémorations": "https://www.canada.ca/fr/services/culture/evenements-celebrations-commemorations.html",
       "Lieux et attraits culturels": "https://www.canada.ca/fr/services/culture/attraits-culturels.html",
@@ -238,7 +238,7 @@ export const menuStructure_FR = {
   },
   "Services de police, justice et urgences": {
     url: "https://www.canada.ca/fr/services/police.html",
-    submenus: {
+    topics: {
       "Services de police": "https://www.canada.ca/fr/services/police/servicespolice.html",
       "Justice": "https://www.canada.ca/fr/services/police/justice.html",
       "Urgences": "https://www.canada.ca/fr/services/police/urgences.html",
@@ -257,7 +257,7 @@ export const menuStructure_FR = {
   },
   "Transport et infrastructure": {
     url: "https://www.canada.ca/fr/services/transport.html",
-    submenus: {
+    topics: {
       "Aviation": "https://tc.canada.ca/fr/aviation",
       "Transport maritime": "https://tc.canada.ca/fr/transport-maritime",
       "Transport routier": "https://tc.canada.ca/fr/transport-routier",
@@ -277,7 +277,7 @@ export const menuStructure_FR = {
   },
   "Canada et le monde": {
     url: "https://www.international.gc.ca/world-monde/index.aspx?lang=fra",
-    submenus: {
+    topics: {
       "Bureaux internationaux et contacts d'urgence": "https://www.international.gc.ca/world-monde/offices-bureaux/index.aspx?lang=fra",
       "Étude, travail et voyage partout dans le monde": "https://www.international.gc.ca/world-monde/study_work_travel-etude_travail_voyage/index.aspx?lang=fra",
       "Information par pays et territoires": "https://www.international.gc.ca/world-monde/country-pays/index.aspx?lang=fra",
@@ -298,7 +298,7 @@ export const menuStructure_FR = {
   },
   "Argent et finances": {
     url: "https://www.canada.ca/fr/services/finance.html",
-    submenus: {
+    topics: {
       "Gérer votre argent": "https://www.canada.ca/fr/services/finance/gerer.html",
       "Dettes et emprunts": "https://www.canada.ca/fr/services/finance/dettes.html",
       "Épargne et investissement": "https://www.canada.ca/fr/services/finance/epargne.html",
@@ -326,7 +326,7 @@ export const menuStructure_FR = {
   },
   "Science et innovation": {
     url: "https://www.canada.ca/fr/services/science.html",
-    submenus: {
+    topics: {
       "Financement, subventions et prix pour la recherche": "https://www.canada.ca/fr/services/science/financementrecherche.html",
       "Thèmes scientifiques": "https://www.canada.ca/fr/services/science/themesscientifiques.html",
       "Données ouvertes, statistiques et archives": "https://www.canada.ca/fr/services/science/donnees-ouvertes.html",
@@ -347,7 +347,7 @@ export const menuStructure_FR = {
   },
   "À propos du gouvernement": {
     url: "https://www.canada.ca/fr/gouvernement/systeme.html",
-    submenus: {
+    topics: {
       "Comment le gouvernement fonctionne": "https://www.canada.ca/fr/gouvernement/systeme/comment-gouvernement-fonctionne.html",
       "Priorités du gouvernement": "https://www.canada.ca/fr/gouvernement/systeme/priorites.html",
       "Traités, lois et règlements": "https://www.canada.ca/fr/gouvernement/systeme/lois.html",
@@ -373,7 +373,7 @@ export const menuStructure_FR = {
   },
   "Travailler au gouvernement": {
     url: "https://www.canada.ca/fr/gouvernement/fonctionpublique.html",
-    submenus: {
+    topics: {
       "mesures de précaution": "https://www.canada.ca/fr/gouvernement/systeme/gouvernement-numerique/securite-confidentialite-ligne/atteinte-vie-privee-systemes-bgrs-sirva-canada-touchant-personnel-actuel-ancien-gouvernement-federal.html",
       "Emplois au gouvernement du Canada": "https://www.canada.ca/fr/services/emplois/opportunites/gouvernement.html",
       "Rémunération, pension et avantages sociaux": "https://www.canada.ca/fr/gouvernement/fonctionpublique/remuneration.html",
