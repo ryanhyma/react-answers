@@ -95,6 +95,10 @@ export const menuStructure_FR = {
       "Importer et exporter à partir du Canada": "https://www.cbsa-asfc.gc.ca/comm-fra.html",
       "Trouver un nom pour votre compagnie": "https://ic.gc.ca/eic/site/cd-dgc.nsf/fra/h_cs03922.html",
       "Apporter des changements à votre société (Centre de dépôt en ligne)": "https://ised-isde.canada.ca/cc/lgcy/hm.html?locale=fr_CA",
+      "Trouver un numéro d'entreprise": "https://www.canada.ca/fr/services/impots/numero-dentreprise.html",
+      "Déposer le rapport annuel de votre société": "https://ised-isde.canada.ca/site/corporations-canada/fr/maintenir-votre-societe-en-regle/rapport-annuel",
+      "Aider les petites entreprises à obtenir des prêts": "https://ised-isde.canada.ca/site/programme-financement-petites-entreprises-canada/fr",
+      "Financement et soutien aux entreprises": "https://innovation.ised-isde.canada.ca/s/?language=fr_CA"
     }
   },
   "Prestations": {
@@ -185,6 +189,10 @@ export const menuStructure_FR = {
       "Faune, flore et espèces": "https://www.canada.ca/fr/services/environnement/faune-flore-especes.html",
       "Pollution et gestion des déchets": "https://www.canada.ca/fr/services/environnement/pollution-gestion-dechets.html",
       "Conservation et protection de l'environnement": "https://www.canada.ca/fr/services/environnement/conservation.html",
+      "Parcs et aires protégées": "https://www.canada.ca/fr/services/environnement/parcs-aires-protegees.html",
+      "Changements climatiques": "https://www.canada.ca/fr/services/environnement/meteo/changementsclimatiques.html",
+      "Qualité de l'eau": "https://www.canada.ca/fr/services/environnement/eau/qualite.html",
+      "Qualité de l'air": "https://www.canada.ca/fr/services/environnement/meteo/qualiteair.html"
     },
     mostRequested: {
       "Prévisions météo locales": "https://meteo.gc.ca/canada_f.html",
@@ -390,6 +398,42 @@ export const menuStructure_FR = {
       "Taux de rémunération": "https://www.canada.ca/fr/secretariat-conseil-tresor/sujets/remuneration.html#taux",
       "Travail hybride": "https://www.canada.ca/fr/gouvernement/fonctionpublique/modernisation/travail-hybride.html",
       "Négociations collectives": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/conventions-collectives/negociations-collectives.html"
+    }
+  },
+  "Autochtones": {
+    url: "https://www.canada.ca/fr/services/autochtones.html",
+    topics: {
+    "Programmes de santé et de services sociaux": "https://www.canada.ca/fr/services/autochtones/services-de-sante-et-programmes-sociaux-autochtones.html",
+    "Traités, revendications et ententes": "https://www.rcaanc-cirnac.gc.ca/fra/1100100028568",
+    "Développement commercial et économique": "https://www.canada.ca/fr/services/autochtones/developpement-commercial-economique-autochtones.html",
+    "Justice et services de police autochtones": "https://www.canada.ca/fr/services/autochtones/services-de-police-justice-et-urgences.html",
+    "Réconciliation": "https://www.rcaanc-cirnac.gc.ca/fra/1400782178444",
+    "Environnement et ressources naturelles": "https://www.canada.ca/fr/services/autochtones/environnement-et-ressources-naturelles-pour-les-autochtones.html",
+    "Le Nord": "https://www.rcaanc-cirnac.gc.ca/fra/1464271923135",
+    "Infrastructures": "https://www.sac-isc.gc.ca/fra/1100100010567",
+    "Gestion des urgences": "https://www.sac-isc.gc.ca/fra/1309369889599"
+    },
+    mostRequested: {
+      "Obtenez, renouvelez ou remplacez une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032380/1572461388012",
+      "Traverser la frontière canado-américaine avec une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032399/1572459562067"
+    }
+  },
+  "Vétérans et militaires": {
+    url: "https://www.canada.ca/fr/services/veterans-militaire.html",
+    topics: {
+        "Services et avantages sociaux à l'intention des vétérans": "https://www.veterans.gc.ca/fr",
+        "Services et avantages sociaux à l'intention du personnel militaire": "https://www.canada.ca/fr/gouvernement/fonctionpublique/avantagesmilitaires.html",
+        "Services et avantages sociaux pour les membres de la GRC": "https://www.canada.ca/fr/gouvernement/fonctionpublique/avantagesgrc.html",
+        "Études et emplois à l'intention des vétérans et des militaires": "https://www.canada.ca/fr/services/veterans-militaire/emplois-a-lintention-des-veterans-et-des-militaires.html",
+        "Santé et mieux-être des vétérans et des militaires": "https://www.canada.ca/fr/services/veterans-militaire/sante-et-mieux-etre-des-veterans-et-des-militaires.html"
+    },
+    mostRequested: {
+        "Trouver un emploi dans les Forces armées canadiennes": "https://forces.ca/fr/carrieres/",
+        "Carte de service des vétérans": "https://www.canada.ca/fr/ministere-defense-nationale/services/avantages-militaires/transition/carte-service.html",
+        "Mon dossier ACC": "https://www.veterans.gc.ca/fra/endirect?utm_source=header&utm_medium=button&utm_campaign=MVA",
+        "Taux de solde des militaires": "https://www.canada.ca/fr/ministere-defense-nationale/services/avantages-militaires/solde-pension-indemnites/solde.html",
+        "Transition de carrière pour les militaires": "https://www.canada.ca/fr/ministere-defense-nationale/services/avantages-militaires/transition.html",
+        "Santé mentale et bien-être": "https://www.veterans.gc.ca/fr/sante-mentale-et-physique/sante-mentale-et-bien-etre"
     }
   }
 };

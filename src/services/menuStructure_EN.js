@@ -95,7 +95,9 @@ export const menuStructure_EN = {
       "Name a business": "https://ic.gc.ca/eic/site/cd-dgc.nsf/eng/h_cs03922.html",
       "Make changes to your corporation (Online Filing Centre)": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/hm.html?locale=en_CA",
       "Find a business number": "https://www.canada.ca/en/services/taxes/business-number.html",
-      "File your corporation's annual return": "https://ised-isde.canada.ca/site/corporations-canada/en/keep-your-corporation-good-shape/annual-return"
+      "File your corporation's annual return": "https://ised-isde.canada.ca/site/corporations-canada/en/keep-your-corporation-good-shape/annual-return",
+      "Helping small businesses get loans": "https://ised-isde.canada.ca/site/canada-small-business-financing-program/en",
+      "Business financing and support": "https://innovation.ised-isde.canada.ca/s/?language=en_CA"
     }
   },
   "Benefits": {
@@ -123,7 +125,7 @@ export const menuStructure_EN = {
       "Submit your EI report": "https://www.canada.ca/en/services/benefits/ei/ei-internet-reporting.html",
       "Child and family benefits calculators": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/child-family-benefits-calculator.html",
       "Change your address": "https://www.canada.ca/en/government/change-address.html",
-      "Direct deposit for CPP,OAS, EI":"https://www.canada.ca/en/employment-social-development/programs/direct-deposit.html"
+      "Direct deposit for CPP,OAS, EI": "https://www.canada.ca/en/employment-social-development/programs/direct-deposit.html"
     }
   },
   "Health": {
@@ -173,20 +175,26 @@ export const menuStructure_EN = {
     url: "https://www.canada.ca/en/services/environment.html",
     topics: {
       "Weather, climate and hazards": "https://www.canada.ca/en/services/environment/weather.html",
+      "Climate change": "https://www.canada.ca/en/services/environment/climatechange.html",
       "Energy": "https://www.canada.ca/en/services/environment/energy.html",
       "Natural resources": "https://www.canada.ca/en/services/environment/natural-resources.html",
       "Agriculture": "https://agriculture.canada.ca/en",
+      "Agricultural production tools and data": "https://agriculture.canada.ca/en/agricultural-production",
       "Fisheries": "https://www.canada.ca/en/services/environment/fisheries.html",
+      "Commercial fisheries": "https://www.dfo-mpo.gc.ca/fisheries-peches/commercial-commerciale/index-eng.html",
       "Wildlife, plants and species": "https://www.canada.ca/en/services/environment/wildlife-plants-species.html",
       "Pollution and waste management": "https://www.canada.ca/en/services/environment/pollution-waste-management.html",
-      "Environmental conservation and protection": "https://www.canada.ca/en/services/environment/conservation.html"
+      "Environmental conservation and protection": "https://www.canada.ca/en/services/environment/conservation.html",
+      "Environment statistics": "https://www.statcan.gc.ca/en/subjects-start/environment",
+      "Water and the environment": "https://www.canada.ca/en/environment-climate-change/services/water-overview.html"
     },
     mostRequested: {
       "Local weather forecast": "https://weather.gc.ca/canada_e.html",
       "Fuel-efficient vehicles": "https://www.nrcan.gc.ca/energy/efficiency/transportation/20996",
       "Home energy efficiency": "https://www.nrcan.gc.ca/homes",
       "Species at risk": "https://www.canada.ca/en/environment-climate-change/services/species-risk-public-registry.html",
-      "Prepare for severe weather": "https://www.canada.ca/en/environment-climate-change/services/seasonal-weather-hazards.html"
+      "Prepare for severe weather": "https://www.canada.ca/en/environment-climate-change/services/seasonal-weather-hazards.html",
+      "How carbon pricing works": "https://www.canada.ca/en/environment-climate-change/services/climate-change/pricing-pollution-how-it-will-work/putting-price-on-carbon-pollution.html"
     }
   },
   "National security and defence": {
@@ -298,16 +306,11 @@ export const menuStructure_EN = {
       "Managing your money": "https://www.canada.ca/en/services/finance/manage.html",
       "Debt and borrowing": "https://www.canada.ca/en/services/finance/debt.html",
       "Savings and investments": "https://www.canada.ca/en/services/finance/savings.html",
-      "Education funding": "https://www.canada.ca/en/services/finance/educationfunding.html",
-      "Pensions and retirement": "https://www.canada.ca/en/services/finance/pensions.html",
       "Protection from frauds and scams": "https://www.canada.ca/en/services/finance/fraud.html",
       "Financial tools and calculators": "https://www.canada.ca/en/services/finance/tools.html",
       "Financial literacy programs": "https://www.canada.ca/en/financial-consumer-agency/services/financial-literacy-programs.html",
       "Consumer affairs": "https://www.canada.ca/en/services/finance/consumer-affairs.html",
       "Insolvency": "https://www.canada.ca/en/services/finance/bankruptcy.html",
-      "Taxes": "https://www.canada.ca/en/services/taxes.html",
-      "Government finances": "https://www.canada.ca/en/government/system/finances.html",
-      "Business grants and financing": "https://www.canada.ca/en/services/business/grants.html",
       "Financial and money services regulation": "https://www.canada.ca/en/services/business/permits/federallyregulatedindustrysectors/financialservicesregulation.html"
     },
     mostRequested: {
@@ -387,5 +390,48 @@ export const menuStructure_EN = {
       "Hybrid work": "https://www.canada.ca/en/government/publicservice/modernizing/hybrid-work.html",
       "Collective bargaining": "https://www.canada.ca/en/treasury-board-secretariat/services/collective-agreements/collective-bargaining.html"
     }
+  },
+  "Indigenous Peoples": {
+    url: "https://www.canada.ca/en/services/indigenous-peoples.html",
+    topics: {
+      "Benefits and rights": "https://www.canada.ca/en/services/indigenous-peoples/benefits-and-rights-for-indigenous-peoples.html",
+      "Funding": "https://www.canada.ca/en/services/indigenous-peoples/funding-for-indigenous-peoples.html",
+      "Education, training and jobs": "https://www.canada.ca/en/services/indigenous-peoples/education-training-jobs.html",
+      "Indian status": "https://www.sac-isc.gc.ca/eng/1100100032374",
+      "About Indigenous peoples and communities": "https://www.canada.ca/en/services/indigenous-peoples/about-indigenous-peoples-and-communities.html",
+      "Housing": "https://www.canada.ca/en/services/indigenous-peoples/housing-for-indigenous-peoples.html",
+      "Health services and social programs": "https://www.canada.ca/en/services/indigenous-peoples/health-services-and-social-programs-indigenous-peoples.html",
+      "Treaties, claims and agreements": "https://www.rcaanc-cirnac.gc.ca/eng/1100100028568/1529354090684",
+      "Business and economic development": "https://www.canada.ca/en/services/indigenous-peoples/business-and-economic-development-indigenous-peoples.html",
+      "Indigenous justice and policing": "https://www.canada.ca/en/services/indigenous-peoples/indigenous-justice-and-policing.html",
+      "Reconciliation": "https://www.rcaanc-cirnac.gc.ca/eng/1400782178444/1529183710887",
+      "Environment and natural resources": "https://www.canada.ca/en/services/indigenous-peoples/environment-and-natural-resources-for-indigenous-peoples.html",
+      "The North": "https://www.rcaanc-cirnac.gc.ca/eng/1464271923135/1558619267020",
+      "Infrastructure": "https://www.sac-isc.gc.ca/eng/1100100010567",
+      "Emergency management": "https://www.sac-isc.gc.ca/eng/1309369889599"
+    },
+    mostRequested: {
+      "Get, renew or replace a status card": "https://www.sac-isc.gc.ca/eng/1100100032380/1572461388012",
+      "Crossing the Canada-U.S. border with a status card": "https://www.sac-isc.gc.ca/eng/1100100032399/1572459562067"
+    }
+  },
+  "Veterans and military": {
+    url: "https://www.canada.ca/en/government/publicservice/benefitsmilitary.html",
+    topics: {
+      "Veteran services and benefits": "https://www.veterans.gc.ca/en",
+      "Military services and benefits": "https://www.canada.ca/en/government/publicservice/benefitsmilitary.html",
+      "RCMP services and benefits": "https://www.canada.ca/en/government/publicservice/benefitsrcmp.html",
+      "Education and jobs for Veterans and military members": "https://www.canada.ca/en/services/veterans-military/jobs-for-veterans-and-military-members.html",
+      "Health and wellness for Veterans and military": "https://www.canada.ca/en/services/veterans-military/health-and-wellness-for-veterans-and-military-members.html",
+      "Canadian Armed Forces": "https://www.canada.ca/en/services/defence/caf.html"
+    },
+    mostRequested: {
+      "Find a job in the military": "https://forces.ca/en/careers/",
+      "Veteran's Service Card": "https://www.canada.ca/en/department-national-defence/services/benefits-military/transition/service-card.html",
+      "My VAC Account": "https://www.veterans.gc.ca/eng/e_services?utm_source=header&utm_medium=button&utm_campaign=MVA",
+      "Military pay": "https://www.canada.ca/en/department-national-defence/services/benefits-military/pay-pension-benefits/pay.html",
+      "Military career transition": "https://www.canada.ca/en/department-national-defence/services/benefits-military/transition.html",
+      "Mental health and wellness for Veterans": "https://www.veterans.gc.ca/en/health-programs-and-services/mental-health-and-wellness"
+    }
   }
-}
+};
