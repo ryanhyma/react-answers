@@ -76,7 +76,7 @@ manipulationPattern = new RegExp(`(${pattern})`, 'gi');
 
 const privatePatterns = [
   /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,  // Name patterns in EN/FR - matches up to 2 words after specific phrases
-  /\b\d{1,4}[-.]?\d{1,4}[-.]?\d{1,4}([-.]?\d{1,4})?\b/g,  // Phone numbers
+  /\b(?!19\d{2}\b|20\d{2}\b)\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,  // Phone numbers - exclude years 19xx and 20xx
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email addresses
   /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi, // Addresses
   /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d\b/gi, // Canadian postal codes
