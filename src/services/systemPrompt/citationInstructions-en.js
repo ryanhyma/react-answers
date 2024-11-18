@@ -4,41 +4,33 @@ export const CITATION_INSTRUCTIONS_EN = `
 ### URL Structure Rules (STRICT ENFORCEMENT REQUIRED)
 1. ALL citation URLs MUST follow these rules without exception:
    - Domain must include canada.ca or gc.ca
-   - For canada.ca domains with language then services segments, maximum 4 path segments after the services segment
-   - For canada.ca domains without services segments, maximum 4 path segments after the domain
-   - For gc.ca domains, maximum 3 path segments not including language segments or site segments if present
    - Must be production URLs only
    - Must use valid URL characters and structure
-   - Must not use URLs with numeric IDs (like .../1384347388298/...)
-
-2. Example of valid URLs:
-   ✅ VALID: https://www.canada.ca/en/services/benefits/ei.html (1 segment after services segment)
-   ✅ VALID: https://www.canada.ca/en/services/benefits/ei/caregiving/individuals-medical-professionals.html (4 segments after services segment)
-   ✅ VALID: https://inspection.canada.ca/en/importing-food-plants-animals/food-imports/food-specific-requirements (3 segments after domain not including language segment)
-3.Examples of invalid URLs - NEVER USE ONES LIKE THESE:
-   ❌ INVALID: https://inspection.canada.ca/importing-food/specific-requirements/honey/eng/1633532116475/1633532116903 (gc.ca domain with 4 segments not including language segments)
-   ❌ ANY URL with numeric IDs (like .../1384347388298/...)
-   ❌ INVALID: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/account-register.html (5 segments after services segment)
+   - Must start with https:// not http://
+   - Other than for sac-isc.gc.ca, URLS must not have segments with numeric IDs 
+2. Example of valid and invalid URLs:
+   ✅ VALID: https://inspection.canada.ca/fr/importation-daliments-vegetaux-ou-danimaux/importation-daliments/exigences-propres-certaines-denrees
+   ✅ VALID:https://www.sac-isc.gc.ca/fra/1100100032796/1610546385227 (numeric at sac-isc.gc.ca)
+   ❌ INVALID: https://inspection.canada.ca/importing-food/specific-requirements/honey/fr/1633532116475/1633532116903 (has numeric IDs in segments)
+   ❌ INVALID: 
 
 ### Citation Selection Process
 1. First check the menu structure for the most relevant top-level theme URL
 2. Then check for a relevant topic or most-requested page URL, use the most specific one available
-3. If a page URL has too many segments according to the URL structure rules, ALWAYS fall back to:
-   - A topic URL from the menu structure, or
-   - a shorter URL that meets the URL structure rules
-
-### CRITICAL RULE
-When in doubt, ALWAYS use a higher-level menu URL instead of a specific page URL.
+3. When in doubt about the validity of a long URL with many hyphens, and segments that doesn't seem to follow the canada.ca URL patterns, ALWAYS use a higher-level URL instead of the specific page URL. Fall back to:
+   - a URL from the next level of the breadcrumb trail of the doubtful page URL, or
+   - A topic or most-requested page URL from the menu structure
+   2. Example of a suspicious long url that produces a 404 error and a higher level replacement URL:
+   ❌ Suspicious long url with many hyphens and extra 'taxes' segment that produces a 404 error: https://www.canada.ca/en/revenue-agency/taxes/services/tax/businesses/topics/payroll/remitting-source-deductions/how-and-when-to-pay.html
+    ✅ Replacement URL from higher level in Payroll breadcrumb trail: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/remitting-source-deductions.html
 
 ### Confidence Rating
 Include rating in <confidence></confidence> tags:
 - 1.0: Direct menu structure URLs
-- 0.9: Specific canada.ca/gc.ca URLs (≤3 segments)
+- 0.9: Specific canada.ca/gc.ca URLs (≤5 segments)
 - 0.7: Less specific but valid URLs
-- 0.5: Fall back topic URLs
+- 0.5: Fall back URLs
 
 ### Important
-- Never provide URLs with more than 3 path segments
-- When in doubt, use broader topic URLs from menu structure
 - Better to provide a higher-level valid URL than a specific invalid one
 `;
