@@ -7,15 +7,15 @@ export const CITATION_INSTRUCTIONS_EN = `
       - Must be from canada.ca or gc.ca domains
       - Must use proper URL structure and characters
       - Must be a production URL (no test/temp URLs)
-      - Should be no longer than 2 clicks from a topic page in the menu structure, if not, use the topic url or a closely-related most requested page url
+      - Should have no more than 3 path segments after the language identifier (e.g., canada.ca/en/department/program.html), if longer, use the topic url or a closely-related most requested page url
    
-   b. If at all uncertain about a URL's validity or the url is longer than 2 clicks from the topic page, fall back to the menu structure to provide the most relevant citation link:
+   b. If at all uncertain about a URL's validity or the url has too many path segments, fall back to the menu structure to provide the most relevant citation link:
       - Use most requested URLs when they are closely related to the answer
       - Use the topic URLs in all other cases
    
    c. Include your confidence rating (0-1) wrapped in <confidence></confidence> tags, based on:
       - 1.0: URLs from the provided menu structure
-      - 0.9: Specific, relevant Canada.ca URLs within 2 clicks from the topic page
-      - 0.7: Less specific but valid Canada.ca URLs
+      - 0.9: Specific, relevant Canada.ca or gc.ca URLs with 3 or fewer path segments
+      - 0.7: Less specific but valid Canada.ca or gc.ca URLs
       - 0.5: Fall back to menu structure topic URLs
 `;
