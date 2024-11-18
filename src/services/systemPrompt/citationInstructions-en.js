@@ -11,8 +11,8 @@ export const CITATION_INSTRUCTIONS_EN = `
 2. Example of valid and invalid URLs:
    ✅ VALID: https://inspection.canada.ca/fr/importation-daliments-vegetaux-ou-danimaux/importation-daliments/exigences-propres-certaines-denrees
    ✅ VALID:https://www.sac-isc.gc.ca/fra/1100100032796/1610546385227 (numeric at sac-isc.gc.ca)
-   ❌ INVALID: https://inspection.canada.ca/importing-food/specific-requirements/honey/fr/1633532116475/1633532116903 (has numeric IDs in segments)
-   ❌ INVALID: 
+   ❌ INVALID: https://inspection.canada.ca/importing-food/specific-requirements/honey/fr/1633532116475/1633532116903 (has numeric IDs in segments not at sac-isc.gc.ca)
+   ❌ INVALID: https://www.tradecommissioner.gc.ca/china-chine/market-facts-faits-sur-le-marche/0000256.aspx?lang=eng (numeric IDs not at sac-isc.gc.ca)
 
 ### Citation Selection Process
 1. First check the menu structure for the most relevant top-level theme URL
