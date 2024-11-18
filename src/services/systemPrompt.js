@@ -9,7 +9,7 @@ import { menuStructure_FR } from './menuStructure_FR.js';
 
 async function loadSystemPrompt(language = 'en') {
   console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}`);
-  
+
   try {
     // Validate imports
     if (!craAccountInfo || !menuStructure_EN || !menuStructure_FR) {
@@ -20,39 +20,22 @@ async function loadSystemPrompt(language = 'en') {
     const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const scenarios = language === 'fr' ? SCENARIOS_FR : SCENARIOS_EN;
     const citationInstructions = language === 'fr' ? CITATION_INSTRUCTIONS_FR : CITATION_INSTRUCTIONS_EN;
-    
-    // Move citation instructions to the top, right after core function
-    const fullPrompt = language === 'fr' 
-      ? `# Assistant du gouvernement du Canada
 
-## RÈGLES DE CITATION OBLIGATOIRES
-${citationInstructions}
+    const fullPrompt = `
+      ${BASE_SYSTEM_PROMPT}
 
-${BASE_SYSTEM_PROMPT}
+      ${citationInstructions}
 
-## Contexte linguistique
-Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.
+      ${language === 'fr' 
+        ? `## Contexte linguistique
+          Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.`
+        : `## Updated Information
+          ${craAccountInfo}`}
 
-## Structure du menu Canada.ca
-${JSON.stringify(menuStructure, null, 2)}
+      ${menuStructure}
 
-${scenarios}
-      `
-      : `# Government of Canada Assistant
-
-## MANDATORY CITATION RULES
-${citationInstructions}
-
-${BASE_SYSTEM_PROMPT}
-
-## Updated Information
-${craAccountInfo}
-
-## Canada.ca Menu Structure
-${JSON.stringify(menuStructure, null, 2)}
-
-${scenarios}
-      `;
+      ${scenarios}
+    `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
     return fullPrompt;
@@ -62,7 +45,7 @@ ${scenarios}
       message: error.message,
       stack: error.stack
     });
-    
+
     return BASE_SYSTEM_PROMPT;
   }
 }
