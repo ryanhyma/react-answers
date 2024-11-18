@@ -1,22 +1,38 @@
 export const CITATION_INSTRUCTIONS_EN = `
 ## Citation and Link Guidelines
--First review the menu structure to identify the most relevant citation link at the top theme level and then for the topic or most requested page that best matches the answer to the user's question
--When providing citation URLs for English content:
 
-   a. Apply these validation rules to any URL you provide:
-      - Must be from canada.ca or gc.ca domains
-      - Must use proper URL structure and characters
-      - Must be a production URL (no test/temp URLs)
-      - All URLS should have no more than 3 path segments after the domain, not including a language identifier segment, or 'site' segment, or 'services' segment if present
+### URL Structure Rules (STRICT ENFORCEMENT REQUIRED)
+1. ALL citation URLs MUST follow these rules without exception:
+   - Domain must include canada.ca or gc.ca
+   - For canada.ca domains with language then services segments, maximum 4 path segments after the services segment
+   - For canada.ca domains without services segments, maximum 4 path segments after the domain
+   - For gc.ca domains, maximum 3 path segments not including language segments or site segments if present
+   - Must be production URLs only
+   - Must use valid URL characters and structure
 
-   b. If at all uncertain about a URL's validity or the url has too many path segments, fall back to the menu structure or next level of the URL structure to provide the most relevant citation link:
-      - Use most requested URLs when they are closely related to the answer
-      - For canada.ca domains, fall back the topic URL from the menu structure or a sub-topic URL (e.g., the URL of the Employment Insurance topic in the Benefits theme is too broad for a question about completing a medical certificate for a disability benefit with a URL of 4 segments not including language and 'services' segments https://www.canada.ca/en/services/benefits/ei/caregiving/individuals-medical-professionals.html - instead fall back to the EI caregiving topic URL with 3 segments after the domain not including language and 'services' segments https://www.canada.ca/en/services/benefits/ei/caregiving.html)
-      - For gc.ca domains, step back up the URL structure to just 3 path segments after the domain if the URL has 4 or more segments (e.g., the URL of the Fisheries topic in the Environment theme is too broad for a question about ghost gear funding at the 5 segment URL https://www.dfo-mpo.gc.ca/fisheries-peches/management-gestion/ghostgear-equipementfantome/program-programme/index-eng.html - instead fall back to 3 path segments after the domain to https://www.dfo-mpo.gc.ca/fisheries-peches/commercial-commerciale/management-gestion-eng.html)
-   
-   c. Include your confidence rating (0-1) wrapped in <confidence></confidence> tags, based on:
-      - 1.0: URLs from the provided menu structure
-      - 0.9: Specific, relevant Canada.ca or gc.ca URLs with 3 or fewer path segments
-      - 0.7: Less specific but valid Canada.ca or gc.ca URLs
-      - 0.5: Fall back to menu structure topic URLs
+2. Examples:
+   ✅ VALID: https://www.canada.ca/en/services/benefits/ei.html (1 segment after services segment)
+    ✅ VALID: https://www.canada.ca/en/services/benefits/ei/caregiving/individuals-medical-professionals.html (4 segments after services segment)
+   ❌ INVALID: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/account-register.html (5 segments after services segment)
+   ✅ VALID: https://inspection.canada.ca/en/importing-food-plants-animals/food-imports/food-specific-requirements (3 segments not including language segments)
+   ❌ INVALID: https://inspection.canada.ca/importing-food/specific-requirements/honey/eng/1633532116475/1633532116903 (gc.ca domain with 4 segments not including language segments)
+
+### Citation Selection Process
+1. First check the menu structure for the most relevant top-level theme URL
+2. Then check for a relevant topic or most-requested page URL
+3. If a URL has too many segments, ALWAYS fall back to:
+   - The parent topic URL from the menu structure, or
+   - a shorter URL that meets the URL structure rules
+
+### Confidence Rating
+Include rating in <confidence></confidence> tags:
+- 1.0: Direct menu structure URLs
+- 0.9: Specific canada.ca/gc.ca URLs (≤3 segments)
+- 0.7: Less specific but valid URLs
+- 0.5: Fall back topic URLs
+
+### Important
+- Never provide URLs with more than 3 path segments
+- When in doubt, use broader topic URLs from menu structure
+- Better to provide a higher-level valid URL than a specific invalid one
 `;
