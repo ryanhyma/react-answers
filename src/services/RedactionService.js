@@ -86,7 +86,7 @@ const privatePatterns = [
   /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi, // ipAddress
   /\b\d{3}[ -.]\d{2}[ -.]\d{4}\b/g, //usSocialSecurityNumber
   /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g, //url
-  /(?<!\$)\b\d{5,}\b/g // Sequences of 5 or more digits not preceded by $
+  /(?<!\$)(?!\d{4}\b)\b\d{5,}\b/g // Sequences of 5 or more digits, not preceded by $ and not a 4-digit number
 ];
 
 const redactionPatterns = [
