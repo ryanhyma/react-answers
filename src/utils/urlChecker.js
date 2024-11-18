@@ -22,6 +22,7 @@ const checkCitationUrl = async (url) => {
   ];
 
   try {
+    // First try with cors mode
     const response = await fetch(url, { 
       method: 'GET',
       mode: 'cors',
@@ -44,10 +45,29 @@ const checkCitationUrl = async (url) => {
       confidenceRating: 1
     };
   } catch (error) {
+    // If we get a CORS error, try again with no-cors mode
+    if (error.toString().includes('CORS')) {
+      try {
+        await fetch(url, { 
+          method: 'GET',
+          mode: 'no-cors',
+          credentials: 'omit',
+        });
+        
+        // If we reach here, the request succeeded (though we can't see the response details)
+        return { 
+          isValid: true, 
+          url: url,
+          confidenceRating: 0.75 // Slightly lower confidence since we couldn't fully validate
+        };
+      } catch (secondError) {
+        console.error('Error checking Canada.ca URL (no-cors):', secondError);
+        return { isValid: false };
+      }
+    }
+    
     console.error('Error checking Canada.ca URL:', error);
-    return { 
-      isValid: false
-    };
+    return { isValid: false };
   }
 };
 
