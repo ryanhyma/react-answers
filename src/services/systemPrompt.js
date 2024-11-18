@@ -21,18 +21,14 @@ async function loadSystemPrompt(language = 'en') {
     const scenarios = language === 'fr' ? SCENARIOS_FR : SCENARIOS_EN;
     const citationInstructions = language === 'fr' ? CITATION_INSTRUCTIONS_FR : CITATION_INSTRUCTIONS_EN;
     
-    console.log(`📚 Selected ${language.toUpperCase()} content:`, {
-      menuStructure: 'loaded',
-      scenarios: 'loaded',
-      citationInstructions: 'loaded'
-    });
-
-    // Build the prompt differently based on language
+    // Move citation instructions to the top, right after core function
     const fullPrompt = language === 'fr' 
-      ? `
-${BASE_SYSTEM_PROMPT}
+      ? `# Assistant du gouvernement du Canada
 
+## RÈGLES DE CITATION OBLIGATOIRES
 ${citationInstructions}
+
+${BASE_SYSTEM_PROMPT}
 
 ## Contexte linguistique
 Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.
@@ -42,10 +38,12 @@ ${JSON.stringify(menuStructure, null, 2)}
 
 ${scenarios}
       `
-      : `
-${BASE_SYSTEM_PROMPT}
+      : `# Government of Canada Assistant
 
+## MANDATORY CITATION RULES
 ${citationInstructions}
+
+${BASE_SYSTEM_PROMPT}
 
 ## Updated Information
 ${craAccountInfo}
