@@ -189,20 +189,45 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         }));
 
         let response;
-        if (selectedAI === 'claude') {
-          response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
-        } else {
-          response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
+        let usedAI = selectedAI;
+
+        try {
+          if (selectedAI === 'claude') {
+            response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
+          } else {
+            response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
+          }
+        } catch (error) {
+          // Log the error for debugging
+          console.error('Error with AI service:', error);
+
+          // Show "thinking more" message
+          setMessages(prevMessages => [
+            ...prevMessages,
+            { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
+          ]);
+
+          // Try the other service
+          usedAI = selectedAI === 'claude' ? 'chatgpt' : 'claude';
+          response = await (usedAI === 'claude' 
+            ? ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang)
+            : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
         }
 
-        setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
+        setMessages(prevMessages => {
+          // Remove the "thinking more" message if it exists
+          const filteredMessages = prevMessages.filter(msg => 
+            !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
+          );
+          return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
+        });
         setShowFeedback(true);
 
         // Log the interaction
         logInteraction(
           redactedText,
           response,
-          selectedAI,
+          usedAI,
           referringUrl.trim() || undefined
         );
 
@@ -213,7 +238,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [
           ...prevMessages,
-          { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'system', error: true }
+          { text: t('homepage.chat.messages.error'), sender: 'system', error: true }
         ]);
       } finally {
         setIsLoading(false);
