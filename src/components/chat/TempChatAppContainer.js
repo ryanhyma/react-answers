@@ -155,11 +155,18 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setMessages(prevMessages => [
           ...prevMessages,
           { 
+            text: redactedText,
+            redactedText: redactedText,
+            redactedItems: redactedItems,
+            sender: 'user'
+          },
+          { 
             text: t('homepage.chat.messages.blockedContent'),
             sender: 'system',
             error: true
           }
         ]);
+        clearInput();
         return;
       }
 
@@ -369,7 +376,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                       <p className="redacted-preview">{privacyMessage}</p>
                     )}
                     {message.redactedText.includes('###') && (
-                      <p className="redacted-preview">{blockedMessage}</p>
+                      <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
                     )}
                   </>
                 )}
