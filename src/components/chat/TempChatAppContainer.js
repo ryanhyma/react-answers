@@ -157,7 +157,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           { 
             text: redactedText, // Display the redacted text
             sender: 'user',
-            redactedItems: redactedItems
+            redactedItems: redactedItems || []
           },
           { 
             text: t('homepage.chat.messages.blockedMessage'), // Message indicating it won't be sent
@@ -178,7 +178,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       setMessages(prevMessages => [...prevMessages, {
         text: userMessage,
         redactedText: redactedText,
-        redactedItems: redactedItems,
+        redactedItems: redactedItems || [],
         sender: 'user',
         ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
       }]);
@@ -200,45 +200,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         }));
 
         let response;
-        let usedAI = selectedAI;
-
-        try {
-          if (selectedAI === 'claude') {
-            response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
-          } else {
-            response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
-          }
-        } catch (error) {
-          // Log the error for debugging
-          console.error('Error with AI service:', error);
-
-          // Show "thinking more" message
-          setMessages(prevMessages => [
-            ...prevMessages,
-            { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
-          ]);
-
-          // Try the other service
-          usedAI = selectedAI === 'claude' ? 'chatgpt' : 'claude';
-          response = await (usedAI === 'claude' 
-            ? ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang)
-            : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
+        if (selectedAI === 'claude') {
+          response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
+        } else {
+          response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
         }
 
-        setMessages(prevMessages => {
-          // Remove the "thinking more" message if it exists
-          const filteredMessages = prevMessages.filter(msg => 
-            !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
-          );
-          return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
-        });
+        setMessages(prevMessages => [...prevMessages, { text: response, sender: 'ai', aiService: selectedAI }]);
         setShowFeedback(true);
 
         // Log the interaction
         logInteraction(
           redactedText,
           response,
-          usedAI,
+          selectedAI,
           referringUrl.trim() || undefined
         );
 
@@ -249,7 +224,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [
           ...prevMessages,
-          { text: t('homepage.chat.messages.error'), sender: 'system', error: true }
+          { text: "Sorry, I couldn't process your request. Please try again later.", sender: 'system', error: true }
         ]);
       } finally {
         setIsLoading(false);
