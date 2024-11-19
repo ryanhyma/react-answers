@@ -1,13 +1,121 @@
 # React app for learning and ux research for gen AI applications
 
+A React-based AI chat application that provides answers designed and sourced exclusively from and for Government of Canada websites. Built to assist users navigating Canada.ca and other government services.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Status - deployed on Vercel - contact me for link - this is a proof of concept prototype for research purposes only
+## Status - proof of concept prototype - deployed on Vercel - contact me for link - this is a proof of concept prototype for research purposes only
 - Back-end database to store user questions and answers and expert feedback
 - Evaluation input of csv files generated from user feedback questions to score AI responses
 - Can choose either Claude or OpenAI 4o API AI service
 - System prompt includes menu structure, updated CRA account context, and specific instructions for top task examples 
 
-## Uses GC Design system 
+## Uses GC Design system (but not fully integrated)
 -  https://design-system.alpha.canada.ca/
+
+## 🌟 Key Features
+
+### Tuned for Canada.ca user needs 
+- ai response is tagged so sentences in answer can be displayed in accessible canada.ca format and citation urls can be displayed in a single url for next step of task with clickable link available for clickthrough rate measurement
+- system prompt forces short answers of a maximum of 4 sentences to improve clarity, use plain language, and reduce risk of hallucinations
+- scenarios address top user questions on canada.ca 
+- takes advantage of canada.ca interaction patterns and support - e.g. if a wizard is already in place, direct the user to answer those questions rather than attempting to walk them through the process in the ai service. AI services aren't optimized for question logic and aren't effective for that purpose.  
+
+### Official languages support
+- Bilingual system prompts (English/French) - loads based on selected language to improve response quality and reduce input token load
+- Language selector available in evaluation process
+- loads Canada.caFrench menu structure and navigation options
+- Full French version of application with official translation
+- All text displayed to users in JSON language files for easy updates and translations -  view the [fr.json file](src/locales/fr.json).
+
+### AI Integration
+- Multiple AI service providers with failover support
+- Prompt caching implementation
+  - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`
+  - GPT: Automatic caching
+- Confidence rating system
+- Temperature set to 0.5 for more deterministic responses
+- Conversation history management
+- Enhanced citation handling
+- System prompts optimized for 2024 model compatibility
+
+### Privacy Protection
+- PII (Personally Identifiable Information) safeguards:
+  - Basic redaction for name patterns in English and French - TODO better algorithm
+  - Pattern detection for unformatted numbers like phone numbers account numbers, addresses 
+  - Anonymous data storage
+- Conversation history management with privacy controls
+
+### Security Features
+- Profanity and threat word filtering - displays warning to user and doesn't log or send to AI service
+- Character limit (750) to prevent prompt injection
+- Rate limiting: 3 questions per session
+- threat filtering in system prompt to prevent use of languages other than English or French - TODO - improve this
+
+### Data Management
+- MongoDB Atlas Cloud integration
+- Structured database schema for conversations
+- External database entry viewer
+- CSV/JSON export capabilities for:
+  - User feedback
+  - Evaluation data
+  - Tagged response sentences
+
+### User Interface
+- GCDS (Government of Canada Design System) compliance
+- Feedback collection system
+  - Feedback suppression for clarifying questions
+  - Structured response collection
+- User survey integration via Qualtrics
+- AI service selector
+- Referring URL tracking
+- Expandable options menu
+
+### Content Integration
+- Dynamic menu structure from Canada.ca
+- Specialized content for:
+  - Passport services (EN/FR)
+  - IRCC scenarios
+  - CRA account services
+  - Government employment information
+
+### Citation urls - single citaton url for next step of task
+- Extensive citation instructions to reduce hallucinations and improve accuracy
+- Citation link validation (404 checking)
+- URL validation and sanitization
+- TODO - replace with search function
+
+## 🚀 Deployment
+
+### Development
+- Local development using Create React App
+- Environment variables prefixed with `REACT_APP_`
+- GitHub Desktop for version control
+
+### Production
+- Deployed on Vercel
+- MongoDB Atlas for database
+- Environment variables configured without `REACT_APP_` prefix
+
+## 📈 Evaluation & Testing
+- UserFeel study implementation (4 participants)
+- Evaluation process improvements:
+  - Feedback file import capability
+  - Response parsing optimization
+  - Structured CSV/JSON output
+
+## 🛠️ Technical Notes
+- System prompt separation for better maintenance
+- Menu structure automation improvements needed
+- Automated testing implementation ongoing
+
+## 📝 Contributing
+Please refer to our contributing guidelines and code of conduct for details on how to participate in this project.
+
+## 📄 License
+[Add your license information here]
+
+## Localization
+
+For more details on the French translations used in the application, you can view the [fr.json file](src/locales/fr.json).
 
