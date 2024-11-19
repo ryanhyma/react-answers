@@ -20,6 +20,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - system prompt forces short answers of a maximum of 4 sentences to improve clarity, use plain language, and reduce risk of hallucinations
 - scenarios address top user questions on canada.ca 
 - takes advantage of canada.ca interaction patterns and support - e.g. if a wizard is already in place, direct the user to answer those questions rather than attempting to walk them through the process in the ai service. AI services aren't optimized for question logic and aren't effective for that purpose.  
+- evaluation system and logging for continuous improvement as models evolve and both users and teams experiment with the ai application
+- TODO - use referral url to track where the user came from and use that information to improve the response - already is used for context in system prompt
+- TODO - someday could use model as a judge to determine context and apply specific context to system prompt to improve response quality
 
 ### Official languages support
 - Bilingual system prompts (English/French) - loads based on selected language to improve response quality and reduce input token load
@@ -29,19 +32,20 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - All text displayed to users in JSON language files for easy updates and translations -  view the [fr.json file](src/locales/fr.json).
 
 ### AI Integration
-- Multiple AI service providers with failover support
-- Prompt caching implementation
+- Multiple AI service providers  enables testing and exploration of strengths and weaknesses of different models
+- Failover to other AI service if one fails
+- Prompt caching implementation to improve response quality and speed
   - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`
   - GPT: Automatic caching
 - Confidence rating system
-- Temperature set to 0.5 for more deterministic responses
-- Conversation history management
-- Enhanced citation handling
+- Temperature set to 0.5 for more deterministic responses for both models, but still allows for some variation to improve response quality
+- Conversation history management - pass conversation history to AI service for context 
+- Enhanced citation handling - 404 errors for canada.ca urls are replaced by link to canada.ca search page
 - System prompts optimized for 2024 model compatibility
 
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
-  - Basic redaction for name patterns in English and French - TODO better algorithm
+  - Basic redaction for name patterns in English and French - TODO apply better algorithm from [feedback tool](https://github.com/alpha-canada-ca/feedback-viewer/blob/master/src/main/java/ca/gc/tbs/service/ContentService.java)
   - Pattern detection for unformatted numbers like phone numbers account numbers, addresses 
   - Anonymous data storage
 - Conversation history management with privacy controls
