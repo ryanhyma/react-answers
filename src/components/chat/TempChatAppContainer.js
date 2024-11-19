@@ -198,21 +198,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
           }
         } catch (error) {
-          if (error.status === 500) {
-            // Show "thinking more" message
-            setMessages(prevMessages => [
-              ...prevMessages,
-              { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
-            ]);
+          // Log the error for debugging
+          console.error('Error with AI service:', error);
 
-            // Try the other service
-            usedAI = selectedAI === 'claude' ? 'chatgpt' : 'claude';
-            response = await (usedAI === 'claude' 
-              ? ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang)
-              : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
-          } else {
-            throw error; // Re-throw other errors
-          }
+          // Show "thinking more" message
+          setMessages(prevMessages => [
+            ...prevMessages,
+            { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
+          ]);
+
+          // Try the other service
+          usedAI = selectedAI === 'claude' ? 'chatgpt' : 'claude';
+          response = await (usedAI === 'claude' 
+            ? ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang)
+            : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
         }
 
         setMessages(prevMessages => {
