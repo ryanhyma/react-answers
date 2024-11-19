@@ -155,11 +155,22 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setMessages(prevMessages => [
           ...prevMessages,
           { 
-            text: t('homepage.chat.messages.blockedContent'),
+            text: redactedText, // Display the redacted text
+            sender: 'user',
+            redactedItems: redactedItems
+          },
+          { 
+            text: t('homepage.chat.messages.blockedMessage'), // Message indicating it won't be sent
+            sender: 'system',
+            error: true
+          },
+          { 
+            text: t('homepage.chat.messages.blockedContent'), // Error message about unaccepted words
             sender: 'system',
             error: true
           }
         ]);
+        clearInput(); // Clear the input field
         return;
       }
 
@@ -174,7 +185,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
       clearInput();
 
-      // Continue with normal AI processing if no profanity/threats
+      // Continue with normal AI processing if no blocked content
       setIsLoading(true);
       try {
         // Add referring URL to the message if provided
