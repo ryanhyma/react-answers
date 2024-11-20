@@ -144,8 +144,11 @@ const ChatLogsDashboard = () => {
     // Combine header and rows
     const csv = [header, ...rows].join('\n');
 
+    // Add UTF-8 BOM and create blob
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+    
     // Create and download file
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
