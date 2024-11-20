@@ -68,25 +68,33 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     return result;
   }, []);
 
-  const logInteraction = useCallback((redactedQuestion, aiResponse, aiService, referringUrl, citationUrl, confidenceRating, feedback, expertFeedback) => {
-    const { citationUrl: originalCitationUrl } = parseAIResponse(aiResponse, aiService);
-
+  const logInteraction = useCallback((
+    redactedQuestion, 
+    aiResponse, 
+    aiService, 
+    referringUrl, 
+    citationUrl, 
+    confidenceRating, 
+    feedback, 
+    expertFeedback
+  ) => {
     const logEntry = {
       redactedQuestion,
       aiResponse,
       aiService,
       ...(referringUrl && { referringUrl }),
       ...(citationUrl && { citationUrl }),
-      ...(originalCitationUrl && { originalCitationUrl }),
+      originalCitationUrl: parseAIResponse(aiResponse, aiService).citationUrl,
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback }),
       ...(expertFeedback && { expertFeedback })
     };
+
     // Log to console in all environments
     console.log('Chat Interaction:', logEntry);
     // Only log to database in production environment
     if (process.env.REACT_APP_ENV === 'production') {
-      LoggingService.logInteraction(logEntry, false); // false indicates this is not an evaluation
+      LoggingService.logInteraction(logEntry, false);
     }
   }, [parseAIResponse]);
 
