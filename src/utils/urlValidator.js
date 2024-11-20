@@ -130,9 +130,16 @@ class URLValidator {
     
     // If URL is invalid (either from structural validation or network check)
     if (!validationResult.isValid || !checkResult.isValid) {
+      // Try to get a relevant fallback URL based on the URL path
+      const urlPath = new URL(url).pathname;
+      const topic = urlPath.split('/').pop().replace(/-/g, ' '); // Extract last path segment as topic
+      const fallback = this.getFallbackUrl(topic, lang);
+
       return {
         isValid: false,
-        fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
+        fallbackUrl: fallback.confidence > 0.3 
+          ? fallback.url 
+          : `https://www.canada.ca/${lang}/sr/srb.html`, // Use hardcoded fallback only if no better match found
         fallbackText: t('homepage.chat.citation.fallbackText'),
         confidenceRating: '0.0'
       };

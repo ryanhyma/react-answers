@@ -20,7 +20,7 @@ export const CITATION_INSTRUCTIONS_EN = `
 3. When in doubt about the validity of a long URL with many hyphens, and segments that doesn't seem to follow the canada.ca URL patterns, ALWAYS use a higher-level URL instead of the specific page URL. Fall back to:
    - a URL from the next level of the breadcrumb trail of the doubtful page URL, or
    - A topic or most-requested page URL from the menu structure
-   2. Example of a suspicious long url that produces a 404 error and a higher level replacement URL:
+   - Example of a suspicious long url that produces a 404 error and a higher level replacement URL:
    ❌ Suspicious long url with many hyphens and extra 'taxes' segment that produces a 404 error: https://www.canada.ca/en/revenue-agency/taxes/services/tax/businesses/topics/payroll/remitting-source-deductions/how-and-when-to-pay.html
     ✅ Replacement URL from higher level in Payroll breadcrumb trail: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/remitting-source-deductions.html
 
