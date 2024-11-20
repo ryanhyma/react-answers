@@ -31,10 +31,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Full French version of application with official translation
 - All text displayed to users in JSON language files for easy updates and translations -  view the [fr.json file](src/locales/fr.json).
 
-### AI Integration
-- Multiple AI service providers  enables testing and exploration of strengths and weaknesses of different models
+### Multi-model design is independent of AI service provider
+- Multiple AI service providers enables testing and exploration of strengths and weaknesses of different models
+- Anthropic Claude Sonnet 3.5 and OpenAI GPT-4o are currently supported - Cohere is next on roadmap
 - Failover to other AI service if one fails
-- Prompt caching implementation to improve response quality and speed
+- Prompt caching implemented to improve response quality and speed
   - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`
   - GPT: Automatic caching
 - Confidence rating system
@@ -43,6 +44,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Enhanced citation handling - 404 errors for canada.ca urls are replaced by link to canada.ca search page
 - System prompts optimized for 2024 model compatibility
 
+### Evaluation-driven design to achieve 100% answer accuracy
+- Evaluation system to score AI responses and provide feedback for continuous improvement
+- Evaluation input of csv files generated from user feedback questions to score AI responses
+- Good source of learning about this methodology is: https://www.ycombinator.com/library/Lg-why-vertical-llm-agents-are-the-new-1-billion-saas-opportunities
+
+
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
   - Basic redaction for name patterns in English and French - TODO apply better algorithm from [feedback tool](https://github.com/alpha-canada-ca/feedback-viewer/blob/master/src/main/java/ca/gc/tbs/service/ContentService.java)
@@ -50,11 +57,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   - Anonymous data storage
 - Conversation history management with privacy controls
 
-### Security Features
+### Guardrails for security
 - Profanity and threat word filtering - displays warning to user and doesn't log or send to AI service
 - Character limit (750) to prevent prompt injection
 - Rate limiting: 3 questions per session
 - threat filtering in system prompt to prevent use of languages other than English or French - TODO - improve this
+- Ideas here: https://www.guardrailsai.com/ and https://github.com/guardrails-ai/guardrails
+
 
 ### Data Management
 - MongoDB Atlas Cloud integration
