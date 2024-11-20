@@ -151,7 +151,7 @@ class URLValidator {
   }
 
   /**
-   * Get a fallback URL from the menu structure based on topic
+   * Get a fallback URL from the menu structure based on topic if it's 404 
    */
   getFallbackUrl(url, lang = 'en') {
     const menuStructure = lang === 'fr' ? menuStructure_FR : menuStructure_EN;
@@ -179,7 +179,7 @@ class URLValidator {
                     !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
                 );
             
-            console.log('Comparing with menu segments:', menuSegments);
+            // console.log('Comparing with menu segments:', menuSegments);
 
             // Count matching segments
             let matchingSegments = 0;
@@ -188,13 +188,13 @@ class URLValidator {
             urlSegments.forEach(segment => {
                 if (menuSegments.includes(segment)) {
                     matchingSegments++;
-                    console.log(`Exact segment match: ${segment}`);
+                    // console.log(`Exact segment match: ${segment}`);
                 } else {
                     // Check for partial matches within segments
                     for (const menuSegment of menuSegments) {
                         if (menuSegment.includes(segment) || segment.includes(menuSegment)) {
                             partialMatches++;
-                            console.log(`Partial segment match: ${segment} ≈ ${menuSegment}`);
+                            // console.log(`Partial segment match: ${segment} ≈ ${menuSegment}`);
                             break;
                         }
                     }
@@ -205,10 +205,10 @@ class URLValidator {
             const confidence = (matchingSegments + (partialMatches * 0.5)) / 
                 Math.max(urlSegments.length, menuSegments.length);
             
-            console.log(`Confidence for ${menuUrl}: ${confidence}`);
+            // console.log(`Confidence for ${menuUrl}: ${confidence}`);
             return confidence;
         } catch (e) {
-            console.log(`Invalid URL in menu: ${menuUrl}`);
+            // console.log(`Invalid URL in menu: ${menuUrl}`);
             return 0;
         }
     };
@@ -218,7 +218,7 @@ class URLValidator {
         // Check main category URL
         const mainUrlConfidence = compareUrls(data.url);
         if (mainUrlConfidence > bestMatch.confidence) {
-            console.log(`New best match (category): ${category} - ${data.url}`);
+            // console.log(`New best match (category): ${category} - ${data.url}`);
             bestMatch = { url: data.url, confidence: mainUrlConfidence };
         }
 
@@ -228,7 +228,7 @@ class URLValidator {
                 if (typeof itemUrl === 'string') {
                     const itemConfidence = compareUrls(itemUrl);
                     if (itemConfidence > bestMatch.confidence) {
-                        console.log(`New best match (most requested): ${item} - ${itemUrl}`);
+                        // console.log(`New best match (most requested): ${item} - ${itemUrl}`);
                         bestMatch = { url: itemUrl, confidence: itemConfidence };
                     }
                 }
@@ -241,7 +241,7 @@ class URLValidator {
                 if (typeof topicUrl === 'string') {
                     const topicConfidence = compareUrls(topicUrl);
                     if (topicConfidence > bestMatch.confidence) {
-                        console.log(`New best match (topic): ${topic} - ${topicUrl}`);
+                        // console.log(`New best match (topic): ${topic} - ${topicUrl}`);
                         bestMatch = { url: topicUrl, confidence: topicConfidence };
                     }
                 }
@@ -249,7 +249,7 @@ class URLValidator {
         }
     });
 
-    console.log('Final best match:', bestMatch);
+    // console.log('Final best match:', bestMatch);
     return bestMatch;
   }
 }

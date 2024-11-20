@@ -153,6 +153,7 @@ export const menuStructure_EN = {
     url: "https://www.canada.ca/en/services/taxes.html",
     topics: {
       "Income tax": "https://www.canada.ca/en/services/taxes/income-tax.html",
+      "Personal income tax": "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax.html",
       "GST/HST": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses.html",
       "Payroll": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll.html",
       "Business number": "https://www.canada.ca/en/services/taxes/business-number.html",
