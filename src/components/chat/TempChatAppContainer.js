@@ -235,28 +235,33 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
         }
 
+        const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
+        
+        // Validate URL before adding message to state
+        let validationResult;
+        if (originalCitationUrl) {
+          validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
+        }
+
+        // Add message to state with validation result
         setMessages(prevMessages => {
+          const newMessageIndex = prevMessages.length;
+          // Update checkedCitations first
+          setCheckedCitations(prev => ({ 
+            ...prev, 
+            [newMessageIndex]: validationResult 
+          }));
+          
           const filteredMessages = prevMessages.filter(msg => 
             !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
           );
           return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
         });
+        
         setShowFeedback(true);
 
-        // Single place where we validate and log
-        const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
-        
+        // Log interaction
         if (originalCitationUrl) {
-          const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
-          
-          // Store validation result for display purposes
-          const newMessageIndex = messages.length;
-          setCheckedCitations(prev => ({ 
-            ...prev, 
-            [newMessageIndex]: validationResult 
-          }));
-
-          // Single place where we log
           logInteraction(
             redactedText,
             response,
