@@ -247,16 +247,25 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         // Extract citation URL from response
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
         
-        // Validate URL before logging
+        // Add debug logs
+        console.log('Before validation:', { originalCitationUrl });
+        
         if (originalCitationUrl) {
           const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
-          // Log interaction with validated URL
+          
+          // Add debug logs
+          console.log('After validation:', {
+            originalUrl: originalCitationUrl,
+            validatedUrl: validationResult?.url,
+            fallbackUrl: validationResult?.fallbackUrl
+          });
+
           logInteraction(
             redactedText,
             response,
             usedAI,
             referringUrl.trim() || undefined,
-            validationResult?.url || validationResult?.fallbackUrl, // Use validated URL
+            validationResult?.url || validationResult?.fallbackUrl,
             validationResult?.confidenceRating
           );
         } else {
