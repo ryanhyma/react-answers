@@ -157,61 +157,67 @@ class URLValidator {
     const menuStructure = lang === 'fr' ? menuStructure_FR : menuStructure_EN;
     let bestMatch = { url: '', confidence: 0 };
 
-    // Extract meaningful parts from the invalid URL and clean them
+    // Extract meaningful parts and log them
     const urlParts = url.toLowerCase()
-        .replace(/[.-]/g, ' ')  // Replace dots and hyphens with spaces
-        .replace(/html$/, '')   // Remove .html extension
+        .replace(/[.-]/g, ' ')
+        .replace(/html$/, '')
         .split('/')
         .filter(part => 
-            part.length > 2 && // Changed from 3 to catch more terms
+            part.length > 2 && 
             !['www', 'canada', 'ca', 'fr', 'en', 'services', 'topics', 'about', 'your'].includes(part)
         );
     
-    // Create searchable terms including both full phrases and individual words
+    console.log('URL Parts extracted:', urlParts);
+
     const allTerms = new Set([
         ...urlParts,
-        ...urlParts.join(' ').split(/\s+/)  // Split into individual words
-    ].filter(term => term.length > 2));  // Filter out very short terms
+        ...urlParts.join(' ').split(/\s+/)
+    ].filter(term => term.length > 2));
     
     const searchTerms = Array.from(allTerms).join(' ');
+    console.log('Search terms:', searchTerms);
 
-    // Improved similarity calculation
     const calculateSimilarity = (str1, str2) => {
         const words1 = new Set(str1.toLowerCase().split(/[\s-]+/));
         const words2 = new Set(str2.toLowerCase().split(/[\s-]+/));
         
         let matches = 0;
         words1.forEach(word => {
-            if (words2.has(word)) matches += 1;
-            else {
-                // Check for partial matches (e.g., "tax" matches "taxation")
+            if (words2.has(word)) {
+                matches += 1;
+                console.log(`Exact match found: "${word}" between "${str1}" and "${str2}"`);
+            } else {
                 for (const w2 of words2) {
                     if (w2.includes(word) || word.includes(w2)) {
-                        matches += 0.8; // Partial match gets slightly lower score
+                        matches += 0.8;
+                        console.log(`Partial match found: "${word}" with "${w2}" between "${str1}" and "${str2}"`);
                         break;
                     }
                 }
             }
         });
 
-        return matches / Math.max(words1.size, words2.size);
+        const similarity = matches / Math.max(words1.size, words2.size);
+        console.log(`Similarity score between "${str1}" and "${str2}": ${similarity}`);
+        return similarity;
     };
 
     // Search through menu structure
     Object.entries(menuStructure).forEach(([category, data]) => {
-        // Check main category with combined terms
+        // Check main category
         const mainUrlSimilarity = calculateSimilarity(searchTerms, category);
         if (mainUrlSimilarity > bestMatch.confidence) {
+            console.log(`New best match found (category): "${category}" with confidence ${mainUrlSimilarity}`);
             bestMatch = { url: data.url, confidence: mainUrlSimilarity };
         }
 
-        // Check most requested with more weight
+        // Check most requested
         if (data.mostRequested) {
             Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
                 if (typeof itemUrl === 'string') {
-                    // Give slightly higher weight to most requested items
                     const itemSimilarity = calculateSimilarity(searchTerms, item) * 1.1;
                     if (itemSimilarity > bestMatch.confidence) {
+                        console.log(`New best match found (most requested): "${item}" with confidence ${itemSimilarity}`);
                         bestMatch = { 
                             url: itemUrl, 
                             confidence: Math.min(itemSimilarity, 1.0)
@@ -221,12 +227,13 @@ class URLValidator {
             });
         }
 
-        // Check topics if they exist
+        // Check topics
         if (data.topics) {
             Object.entries(data.topics).forEach(([topic, topicUrl]) => {
                 if (typeof topicUrl === 'string') {
                     const topicSimilarity = calculateSimilarity(searchTerms, topic);
                     if (topicSimilarity > bestMatch.confidence) {
+                        console.log(`New best match found (topic): "${topic}" with confidence ${topicSimilarity}`);
                         bestMatch = { url: topicUrl, confidence: topicSimilarity };
                     }
                 }
@@ -234,6 +241,7 @@ class URLValidator {
         }
     });
 
+    console.log('Final best match:', bestMatch);
     return bestMatch;
   }
 }
