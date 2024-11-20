@@ -445,7 +445,19 @@ export const menuStructure_EN = {
       "Taxes and finances related to death": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died.html",
       "Estates and wills": "https://www.canada.ca/en/services/death/estates-wills.html",
       "Death-related documents": "https://www.canada.ca/en/services/death/documents.html",
-      "Who to contact about a death": "https://www.canada.ca/en/services/death/contacting-services.html"
+      "Who to contact about a death": "https://www.canada.ca/en/services/death/contacting-services.html",
+      "Someone died,what do I do?":"https://www.canada.ca/en/services/death/questionnaire.html"
     }
+  },
+  "Learn and plan for your retirement": {
+    url: "https://www.canada.ca/en/services/retirement.html",
+    topics: {
+        "Deciding when to start your public pensions": "https://www.canada.ca/en/services/retirement/learn/deciding-when-start-your-public-pensions.html",
+        "Rules of thumb for your public pensions": "https://www.canada.ca/en/services/retirement/learn/rules-thumb-public-pensions.html",
+        "Bonnie delays to reduce the savings she needs": "https://www.canada.ca/en/services/retirement/learn/case-studies-bonnie.html",
+        "Canadian Retirement Income Calculator": "https://www.canada.ca/en/services/benefits/publicpensions/cpp/retirement-income-calculator.html",
+        "Old Age Security Benefits Estimator": "https://estimateursv-oasestimator.service.canada.ca/en",
+        "Personalized retirement checklist quiz": "https://www.canada.ca/en/services/retirement/quiz-main.html"
+      }
   }
 };

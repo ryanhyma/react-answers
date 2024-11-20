@@ -435,5 +435,32 @@ export const menuStructure_FR = {
         "Transition de carrière pour les militaires": "https://www.canada.ca/fr/ministere-defense-nationale/services/avantages-militaires/transition.html",
         "Santé mentale et bien-être": "https://www.veterans.gc.ca/fr/sante-mentale-et-physique/sante-mentale-et-bien-etre"
     }
-  }
+  },
+  "Que faire lors d'un décès": {
+    url: "https://www.canada.ca/fr/services/deces.html",
+    topics: {
+      "Préparation à la fin de vie": "https://www.canada.ca/fr/services/deces/preparer.html",
+      "Aviser d'un décès": "https://www.canada.ca/fr/services/deces/aviser.html",
+      "Prestations et programmes": "https://www.canada.ca/fr/services/deces/prestations-programmes.html",
+      "Représenter une personne décédée": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/evenements-vie/faire-impots-personne-decedee/representer-personne-decedee.html",
+      "Impôts et finances liés au décès": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/evenements-vie/faire-impots-personne-decedee.html",
+      "Successions et testaments": "https://www.canada.ca/fr/services/deces/successions-testaments.html",
+      "Documents relatifs au décès": "https://www.canada.ca/fr/services/deces/documents.html",
+      "Avec qui communiquer": "https://www.canada.ca/fr/services/deces/contacter-services.html",
+      "Que faire lors d'un décès?": "https://www.canada.ca/fr/services/deces/questionnaire.html"
+    }
+  },
+  "Planifier votre retraite": {
+    url: "https://www.canada.ca/fr/services/retraite.html",
+    topics: {
+        "Renseignez-vous sur la retraite": "https://www.canada.ca/fr/services/retraite/apprendre.html",
+        "Décider quand recevoir sa pension publique": "https://www.canada.ca/fr/services/retraite/apprendre/decider-quand-recevoir-sa-pension-publique.html",
+        "Règles générales concernant les pensions publiques": "https://www.canada.ca/fr/services/retraite/apprendre/regles-generales-pensions-publiques.html",
+        "Bonnie reporte sa pension pour réduire les épargnes dont elle a besoin": "https://www.canada.ca/fr/services/retraite/apprendre/etudes-cas-bonnie.html",
+        "Répondez au questionnaire": "https://www.canada.ca/fr/services/retraite/questionnaire-principal.html",
+        "Calculatrice du revenu de retraite canadienne": "https://www.canada.ca/fr/services/prestations/pensionspubliques/rpc/calculatrice-revenu-retraite.html",
+        "Estimateur de prestations de la Sécurité de la vieillesse": "https://estimateursv-oasestimator.service.canada.ca/fr",
+        "Questionnaire de retraite personnalisé": "https://www.canada.ca/fr/services/retraite/questionnaire-principal.html"
+      }
+    }
 };
