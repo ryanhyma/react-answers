@@ -33,7 +33,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Multi-model design is independent of AI service provider
 - Multiple AI service providers enables testing and exploration of strengths and weaknesses of different models
-- Anthropic Claude Sonnet 3.5 and OpenAI GPT-4o are currently supported - Cohere is next on roadmap
+- Anthropic Claude Sonnet 3.5 and OpenAI GPT-4o are currently supported - Cohere is next on roadmap - should explore Mistral to see if it performs better for French - all of these models are available through [Amazon Bedrock](https://aws.amazon.com/bedrock/?sec=aiapps&pos=2)
 - Failover to other AI service if one fails
 - Prompt caching implemented to improve response quality and speed
   - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`

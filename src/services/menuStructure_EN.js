@@ -433,5 +433,18 @@ export const menuStructure_EN = {
       "Military career transition": "https://www.canada.ca/en/department-national-defence/services/benefits-military/transition.html",
       "Mental health and wellness for Veterans": "https://www.veterans.gc.ca/en/health-programs-and-services/mental-health-and-wellness"
     }
+  },
+  "What to do when someone dies": {
+    url: "https://www.canada.ca/en/services/death.html",
+    topics: {
+      "Prepare for end of life": "https://www.canada.ca/en/services/death/prepare.html",
+      "Notify of a death": "https://www.canada.ca/en/services/death/notify.html",
+      "Entitlements to benefits and programs after a death": "https://www.canada.ca/en/services/death/benefits-programs.html",
+      "Represent someone who died": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died/represent-deceased.html",
+      "Taxes and finances related to death": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died.html",
+      "Estates and wills": "https://www.canada.ca/en/services/death/estates-wills.html",
+      "Death-related documents": "https://www.canada.ca/en/services/death/documents.html",
+      "Who to contact about a death": "https://www.canada.ca/en/services/death/contacting-services.html"
+    }
   }
 };
