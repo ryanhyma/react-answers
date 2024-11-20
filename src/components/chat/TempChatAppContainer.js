@@ -235,7 +235,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
         }
 
-        const aiResponse = response;
         setMessages(prevMessages => {
           const filteredMessages = prevMessages.filter(msg => 
             !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
@@ -247,18 +246,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         // Extract citation URL from response
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
         
-        // Add debug logs
         console.log('Before validation:', { originalCitationUrl });
         
         if (originalCitationUrl) {
           const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
           
-          // Add debug logs
           console.log('After validation:', {
             originalUrl: originalCitationUrl,
             validatedUrl: validationResult?.url,
             fallbackUrl: validationResult?.fallbackUrl
           });
+
+          // Store the validation result in checkedCitations to prevent re-validation
+          const newMessageIndex = messages.length;
+          setCheckedCitations(prev => ({ ...prev, [newMessageIndex]: validationResult }));
 
           logInteraction(
             redactedText,
@@ -291,7 +292,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t, lang]);
+  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t, lang, parseAIResponse]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -308,14 +309,14 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
   useEffect(() => {
     messages.forEach((message, index) => {
-      if (message.sender === 'ai') {
+      if (message.sender === 'ai' && !checkedCitations[index]) {
         const { citationUrl } = parseAIResponse(message.text, message.aiService);
         if (citationUrl) {
           checkAndUpdateCitation(index, citationUrl);
         }
       }
     });
-  }, [messages, checkAndUpdateCitation, parseAIResponse]);
+  }, [messages, checkAndUpdateCitation, parseAIResponse, checkedCitations]);
 
   const formatAIResponse = useCallback((text, aiService, messageIndex) => {
     // console.log('Formatting AI response:', text, aiService, messageIndex);
