@@ -185,15 +185,15 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       setIsLoading(true);
       try {
         // Add referring URL to the message if provided
-        const messageWithUrl = referringUrl.trim()
-          ? `${redactedText}\n<referring-url>${referringUrl.trim()}</referring-url>`
+        const messageWithUrl = referringUrl
+          ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
           : redactedText;
 
-        console.log('Full message being sent:', {
-          messageWithUrl,
-          referringUrl: referringUrl.trim(),
-          conversationHistory
-        });
+        // console.log('Full message being sent:', {
+        //   messageWithUrl,
+        //   referringUrl: referringUrl.trim(),
+        //   conversationHistory
+        // });
 
         // Create conversation history
         const conversationHistory = messages.map(msg => ({
