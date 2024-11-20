@@ -351,7 +351,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [parseAIResponse, checkedCitations, t]);
 
   const privacyMessage = t('homepage.chat.messages.privacy');
-  const blockedMessage = t('homepage.chat.messages.blockedMessage');
 
   const getLabelForInput = () => {
     if (turnCount >= 1) {

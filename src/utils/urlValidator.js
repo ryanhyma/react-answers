@@ -133,23 +133,20 @@ class URLValidator {
       // Try to get a relevant fallback URL using the full invalid URL
       const fallback = this.getFallbackUrl(url, lang);
 
-      // If we found a good match (confidence > 0.3), use it
-      // Otherwise fall back to search page
       return {
         isValid: false,
         fallbackUrl: fallback.confidence > 0.3 
           ? fallback.url 
           : `https://www.canada.ca/${lang}/sr/srb.html`,
         fallbackText: t('homepage.chat.citation.fallbackText'),
-        confidenceRating: fallback.confidence.toString()
+        confidenceRating: fallback.confidence.toFixed(1)  // Format to one decimal place
       };
     }
 
-    // For valid URLs, return the complete result with combined confidence
     return {
       isValid: true,
       url: checkResult.url,
-      confidenceRating: '0.8'  // Medium confidence for URLs that pass both checks but aren't in menu
+      confidenceRating: '0.8'
     };
   }
 
@@ -160,43 +157,52 @@ class URLValidator {
     const menuStructure = lang === 'fr' ? menuStructure_FR : menuStructure_EN;
     let bestMatch = { url: '', confidence: 0 };
 
-    // Extract meaningful parts from the invalid URL
-    const urlParts = url.toLowerCase().split('/');
-    const searchTerms = urlParts
-        .filter(part => part.length > 3 && !['www', 'canada', 'ca', 'fr', 'en'].includes(part))
+    // Extract meaningful parts from the invalid URL and clean them
+    const urlParts = url.toLowerCase()
+        .replace(/[.-]/g, ' ')  // Replace dots and hyphens with spaces
+        .split('/')
+        .filter(part => part.length > 3 && 
+            !['www', 'canada', 'ca', 'fr', 'en', 'services', 'topics', 'about'].includes(part));
+    
+    // Join parts and add individual important words for better matching
+    const searchTerms = [...urlParts, ...urlParts.join(' ').split(' ')]
+        .filter((term, index, self) => self.indexOf(term) === index)  // Remove duplicates
         .join(' ');
 
-    // Helper function to calculate string similarity
+    // Helper function to calculate string similarity with improved matching
     const calculateSimilarity = (str1, str2) => {
-        const set1 = new Set(str1.toLowerCase().split(/[\s-]+/));
-        const set2 = new Set(str2.toLowerCase().split(/[\s-]+/));
-        const intersection = new Set([...set1].filter(x => set2.has(x)));
-        return intersection.size / Math.max(set1.size, set2.size);
+        const words1 = str1.toLowerCase().split(/[\s-]+/);
+        const words2 = str2.toLowerCase().split(/[\s-]+/);
+        
+        // Count matching words
+        const matches = words1.filter(word => 
+            words2.some(w2 => w2.includes(word) || word.includes(w2))
+        ).length;
+
+        // Calculate similarity score
+        return matches / Math.max(words1.length, words2.length);
     };
 
-    // Search through menu structure
+    // Search through menu structure with improved matching
     Object.entries(menuStructure).forEach(([category, data]) => {
-        // Check main category URL
+        // Check main category URL - removed special tax handling
         const mainUrlSimilarity = calculateSimilarity(searchTerms, category);
         if (mainUrlSimilarity > bestMatch.confidence) {
             bestMatch = { url: data.url, confidence: mainUrlSimilarity };
         }
 
-        // Check topics
-        Object.entries(data.topics || {}).forEach(([topic, topicUrl]) => {
-            const topicSimilarity = calculateSimilarity(searchTerms, topic);
-            if (topicSimilarity > bestMatch.confidence) {
-                bestMatch = { url: topicUrl, confidence: topicSimilarity };
-            }
-        });
-
-        // Check most requested
-        Object.entries(data.mostRequested || {}).forEach(([item, itemUrl]) => {
-            const itemSimilarity = calculateSimilarity(searchTerms, item);
-            if (itemSimilarity > bestMatch.confidence) {
-                bestMatch = { url: itemUrl, confidence: itemSimilarity };
-            }
-        });
+        // Check most requested items
+        if (data.mostRequested) {
+            Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
+                // Only process if itemUrl is a valid string
+                if (typeof itemUrl === 'string') {
+                    const itemSimilarity = calculateSimilarity(searchTerms, item);
+                    if (itemSimilarity > bestMatch.confidence) {
+                        bestMatch = { url: itemUrl, confidence: itemSimilarity };
+                    }
+                }
+            });
+        }
     });
 
     return bestMatch;

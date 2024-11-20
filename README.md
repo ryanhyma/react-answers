@@ -91,6 +91,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   - IRCC scenarios
   - CRA account services
   - Government employment information
+- TODO - add more scenarios per theme or topic or department that are selectively loaded based on user question 
+- TODO - add more canada.ca urls to the system prompt to load selectively to improve response quality in French - for example https://www.canada.ca/fr/agence-revenu.sitemap.xml with https://www.canada.ca/en/revenue-agency.sitemap.xml or even better, have the topic tree per theme
 
 ### Citation urls - single citaton url for next step of task
 - Extensive citation instructions to reduce hallucinations and improve accuracy
