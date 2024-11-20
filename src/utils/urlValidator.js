@@ -157,71 +157,79 @@ class URLValidator {
     const menuStructure = lang === 'fr' ? menuStructure_FR : menuStructure_EN;
     let bestMatch = { url: '', confidence: 0 };
 
-    // Extract meaningful parts and log them
-    const urlParts = url.toLowerCase()
-        .replace(/[.-]/g, ' ')
-        .replace(/html$/, '')
+    // Parse the 404 URL into meaningful segments
+    const urlObj = new URL(url);
+    const urlSegments = urlObj.pathname
         .split('/')
-        .filter(part => 
-            part.length > 2 && 
-            !['www', 'canada', 'ca', 'fr', 'en', 'services', 'topics', 'about', 'your'].includes(part)
+        .filter(segment => 
+            segment && 
+            !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
         );
     
-    console.log('URL Parts extracted:', urlParts);
+    console.log('404 URL segments:', urlSegments);
 
-    const allTerms = new Set([
-        ...urlParts,
-        ...urlParts.join(' ').split(/\s+/)
-    ].filter(term => term.length > 2));
-    
-    const searchTerms = Array.from(allTerms).join(' ');
-    console.log('Search terms:', searchTerms);
+    // Helper function to compare URL paths
+    const compareUrls = (menuUrl) => {
+        try {
+            const menuUrlObj = new URL(menuUrl);
+            const menuSegments = menuUrlObj.pathname
+                .split('/')
+                .filter(segment => 
+                    segment && 
+                    !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
+                );
+            
+            console.log('Comparing with menu segments:', menuSegments);
 
-    const calculateSimilarity = (str1, str2) => {
-        const words1 = new Set(str1.toLowerCase().split(/[\s-]+/));
-        const words2 = new Set(str2.toLowerCase().split(/[\s-]+/));
-        
-        let matches = 0;
-        words1.forEach(word => {
-            if (words2.has(word)) {
-                matches += 1;
-                console.log(`Exact match found: "${word}" between "${str1}" and "${str2}"`);
-            } else {
-                for (const w2 of words2) {
-                    if (w2.includes(word) || word.includes(w2)) {
-                        matches += 0.8;
-                        console.log(`Partial match found: "${word}" with "${w2}" between "${str1}" and "${str2}"`);
-                        break;
+            // Count matching segments
+            let matchingSegments = 0;
+            let partialMatches = 0;
+
+            urlSegments.forEach(segment => {
+                if (menuSegments.includes(segment)) {
+                    matchingSegments++;
+                    console.log(`Exact segment match: ${segment}`);
+                } else {
+                    // Check for partial matches within segments
+                    for (const menuSegment of menuSegments) {
+                        if (menuSegment.includes(segment) || segment.includes(menuSegment)) {
+                            partialMatches++;
+                            console.log(`Partial segment match: ${segment} ≈ ${menuSegment}`);
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        const similarity = matches / Math.max(words1.size, words2.size);
-        console.log(`Similarity score between "${str1}" and "${str2}": ${similarity}`);
-        return similarity;
+            // Calculate confidence based on matches
+            const confidence = (matchingSegments + (partialMatches * 0.5)) / 
+                Math.max(urlSegments.length, menuSegments.length);
+            
+            console.log(`Confidence for ${menuUrl}: ${confidence}`);
+            return confidence;
+        } catch (e) {
+            console.log(`Invalid URL in menu: ${menuUrl}`);
+            return 0;
+        }
     };
 
     // Search through menu structure
     Object.entries(menuStructure).forEach(([category, data]) => {
-        // Check main category
-        const mainUrlSimilarity = calculateSimilarity(searchTerms, category);
-        if (mainUrlSimilarity > bestMatch.confidence) {
-            console.log(`New best match found (category): "${category}" with confidence ${mainUrlSimilarity}`);
-            bestMatch = { url: data.url, confidence: mainUrlSimilarity };
+        // Check main category URL
+        const mainUrlConfidence = compareUrls(data.url);
+        if (mainUrlConfidence > bestMatch.confidence) {
+            console.log(`New best match (category): ${category} - ${data.url}`);
+            bestMatch = { url: data.url, confidence: mainUrlConfidence };
         }
 
         // Check most requested
         if (data.mostRequested) {
             Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
                 if (typeof itemUrl === 'string') {
-                    const itemSimilarity = calculateSimilarity(searchTerms, item) * 1.1;
-                    if (itemSimilarity > bestMatch.confidence) {
-                        console.log(`New best match found (most requested): "${item}" with confidence ${itemSimilarity}`);
-                        bestMatch = { 
-                            url: itemUrl, 
-                            confidence: Math.min(itemSimilarity, 1.0)
-                        };
+                    const itemConfidence = compareUrls(itemUrl);
+                    if (itemConfidence > bestMatch.confidence) {
+                        console.log(`New best match (most requested): ${item} - ${itemUrl}`);
+                        bestMatch = { url: itemUrl, confidence: itemConfidence };
                     }
                 }
             });
@@ -231,10 +239,10 @@ class URLValidator {
         if (data.topics) {
             Object.entries(data.topics).forEach(([topic, topicUrl]) => {
                 if (typeof topicUrl === 'string') {
-                    const topicSimilarity = calculateSimilarity(searchTerms, topic);
-                    if (topicSimilarity > bestMatch.confidence) {
-                        console.log(`New best match found (topic): "${topic}" with confidence ${topicSimilarity}`);
-                        bestMatch = { url: topicUrl, confidence: topicSimilarity };
+                    const topicConfidence = compareUrls(topicUrl);
+                    if (topicConfidence > bestMatch.confidence) {
+                        console.log(`New best match (topic): ${topic} - ${topicUrl}`);
+                        bestMatch = { url: topicUrl, confidence: topicConfidence };
                     }
                 }
             });

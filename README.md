@@ -127,8 +127,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## 📝 Contributing
 Please refer to our contributing guidelines and code of conduct for details on how to participate in this project.
 
-## 📄 License
-[Add your license information here]
+## Backlog
+- How to prevent old stuff like transparency, archived, corporate reports, audits etc from being used for answers and citations unless user asks about it specifically
+
 
 ## Localization
 
