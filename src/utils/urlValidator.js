@@ -130,18 +130,18 @@ class URLValidator {
     
     // If URL is invalid (either from structural validation or network check)
     if (!validationResult.isValid || !checkResult.isValid) {
-      // Try to get a relevant fallback URL based on the URL path
-      const urlPath = new URL(url).pathname;
-      const topic = urlPath.split('/').pop().replace(/-/g, ' '); // Extract last path segment as topic
-      const fallback = this.getFallbackUrl(topic, lang);
+      // Try to get a relevant fallback URL using the full invalid URL
+      const fallback = this.getFallbackUrl(url, lang);
 
+      // If we found a good match (confidence > 0.3), use it
+      // Otherwise fall back to search page
       return {
         isValid: false,
         fallbackUrl: fallback.confidence > 0.3 
           ? fallback.url 
-          : `https://www.canada.ca/${lang}/sr/srb.html`, // Use hardcoded fallback only if no better match found
+          : `https://www.canada.ca/${lang}/sr/srb.html`,
         fallbackText: t('homepage.chat.citation.fallbackText'),
-        confidenceRating: '0.0'
+        confidenceRating: fallback.confidence.toString()
       };
     }
 
@@ -156,43 +156,50 @@ class URLValidator {
   /**
    * Get a fallback URL from the menu structure based on topic
    */
-  getFallbackUrl(topic, lang = 'en') {
-    const menuStructure = lang.toLowerCase() === 'fr' ? menuStructure_FR : menuStructure_EN;
-    const normalizedTopic = topic.toLowerCase();
-    
-    // First try to find a most requested URL
-    for (const content of Object.values(menuStructure)) {
-      if (content.mostRequested) {
-        for (const [title, url] of Object.entries(content.mostRequested)) {
-          if (title.toLowerCase().includes(normalizedTopic)) {
-            return { url, confidence: 0.8 };
-          }
-        }
-      }
-    }
+  getFallbackUrl(url, lang = 'en') {
+    const menuStructure = lang === 'fr' ? menuStructure_FR : menuStructure_EN;
+    let bestMatch = { url: '', confidence: 0 };
 
-    // Then try to find a submenu URL
-    for (const [sectionName, content] of Object.entries(menuStructure)) {
-      if (sectionName.toLowerCase().includes(normalizedTopic) && content.submenus) {
-        const firstSubmenuUrl = Object.values(content.submenus)[0];
-        if (firstSubmenuUrl) {
-          return { url: firstSubmenuUrl, confidence: 0.6 };
-        }
-      }
-    }
+    // Extract meaningful parts from the invalid URL
+    const urlParts = url.toLowerCase().split('/');
+    const searchTerms = urlParts
+        .filter(part => part.length > 3 && !['www', 'canada', 'ca', 'fr', 'en'].includes(part))
+        .join(' ');
 
-    // Finally, fall back to main section URL
-    for (const [sectionName, content] of Object.entries(menuStructure)) {
-      if (sectionName.toLowerCase().includes(normalizedTopic) && content.url) {
-        return { url: content.url, confidence: 0.5 };
-      }
-    }
-
-    // Ultimate fallback
-    return { 
-      url: `https://www.canada.ca/en/services.html`,
-      confidence: 0.3 
+    // Helper function to calculate string similarity
+    const calculateSimilarity = (str1, str2) => {
+        const set1 = new Set(str1.toLowerCase().split(/[\s-]+/));
+        const set2 = new Set(str2.toLowerCase().split(/[\s-]+/));
+        const intersection = new Set([...set1].filter(x => set2.has(x)));
+        return intersection.size / Math.max(set1.size, set2.size);
     };
+
+    // Search through menu structure
+    Object.entries(menuStructure).forEach(([category, data]) => {
+        // Check main category URL
+        const mainUrlSimilarity = calculateSimilarity(searchTerms, category);
+        if (mainUrlSimilarity > bestMatch.confidence) {
+            bestMatch = { url: data.url, confidence: mainUrlSimilarity };
+        }
+
+        // Check topics
+        Object.entries(data.topics || {}).forEach(([topic, topicUrl]) => {
+            const topicSimilarity = calculateSimilarity(searchTerms, topic);
+            if (topicSimilarity > bestMatch.confidence) {
+                bestMatch = { url: topicUrl, confidence: topicSimilarity };
+            }
+        });
+
+        // Check most requested
+        Object.entries(data.mostRequested || {}).forEach(([item, itemUrl]) => {
+            const itemSimilarity = calculateSimilarity(searchTerms, item);
+            if (itemSimilarity > bestMatch.confidence) {
+                bestMatch = { url: itemUrl, confidence: itemSimilarity };
+            }
+        });
+    });
+
+    return bestMatch;
   }
 }
 
