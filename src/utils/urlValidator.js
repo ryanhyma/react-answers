@@ -1,5 +1,5 @@
-import { menuStructure_EN } from '../services/menuStructure_EN';
-import { menuStructure_FR } from '../services/menuStructure_FR';
+import { menuStructure_EN } from '../services/systemPrompt/menuStructure_EN';
+import { menuStructure_FR } from '../services/systemPrompt/menuStructure_FR';
 import checkCitationUrl from './urlChecker';
 
 /**

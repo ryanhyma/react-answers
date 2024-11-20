@@ -3,9 +3,9 @@ import { SCENARIOS_EN } from './systemPrompt/scenarios-en.js';
 import { SCENARIOS_FR } from './systemPrompt/scenarios-fr.js';
 import { CITATION_INSTRUCTIONS_EN } from './systemPrompt/citationInstructions-en.js';
 import { CITATION_INSTRUCTIONS_FR } from './systemPrompt/citationInstructions-fr.js';
-import { craAccountInfo } from './context_CRA.js';
-import { menuStructure_EN } from './menuStructure_EN.js';
-import { menuStructure_FR } from './menuStructure_FR.js';
+import { craAccountInfo } from './systemPrompt/context_CRA.js';
+import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
+import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 
 async function loadSystemPrompt(language = 'en') {
   console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}`);
