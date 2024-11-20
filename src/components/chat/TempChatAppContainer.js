@@ -243,24 +243,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         });
         setShowFeedback(true);
 
-        // Extract citation URL from response
+        // Single place where we validate and log
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
-        
-        console.log('Before validation:', { originalCitationUrl });
         
         if (originalCitationUrl) {
           const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
           
-          console.log('After validation:', {
-            originalUrl: originalCitationUrl,
-            validatedUrl: validationResult?.url,
-            fallbackUrl: validationResult?.fallbackUrl
-          });
-
-          // Store the validation result in checkedCitations to prevent re-validation
+          // Store validation result for display purposes
           const newMessageIndex = messages.length;
-          setCheckedCitations(prev => ({ ...prev, [newMessageIndex]: validationResult }));
+          setCheckedCitations(prev => ({ 
+            ...prev, 
+            [newMessageIndex]: validationResult 
+          }));
 
+          // Single place where we log
           logInteraction(
             redactedText,
             response,
@@ -269,17 +265,8 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             validationResult?.url || validationResult?.fallbackUrl,
             validationResult?.confidenceRating
           );
-        } else {
-          // Log interaction without URL if none provided
-          logInteraction(
-            redactedText,
-            response,
-            usedAI,
-            referringUrl.trim() || undefined
-          );
         }
 
-        // Increment turnCount after AI response
         setTurnCount(prevCount => prevCount + 1);
 
       } catch (error) {
@@ -299,24 +286,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       clearInput();
     }
   }, [isLoading, messages, clearInput]);
-
-  const checkAndUpdateCitation = useCallback(async (messageIndex, citationUrl) => {
-    if (!citationUrl || checkedCitations[messageIndex]) return;
-
-    const result = await urlValidator.validateAndCheckUrl(citationUrl, lang, t);
-    setCheckedCitations(prev => ({ ...prev, [messageIndex]: result }));
-  }, [checkedCitations, lang, t]);
-
-  useEffect(() => {
-    messages.forEach((message, index) => {
-      if (message.sender === 'ai' && !checkedCitations[index]) {
-        const { citationUrl } = parseAIResponse(message.text, message.aiService);
-        if (citationUrl) {
-          checkAndUpdateCitation(index, citationUrl);
-        }
-      }
-    });
-  }, [messages, checkAndUpdateCitation, parseAIResponse, checkedCitations]);
 
   const formatAIResponse = useCallback((text, aiService, messageIndex) => {
     // console.log('Formatting AI response:', text, aiService, messageIndex);
