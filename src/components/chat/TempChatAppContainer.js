@@ -262,9 +262,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const checkAndUpdateCitation = useCallback(async (messageIndex, citationUrl) => {
     if (!citationUrl || checkedCitations[messageIndex]) return;
 
-    const result = await urlValidator.validateAndCheckUrl(citationUrl, lang);
+    const result = await urlValidator.validateAndCheckUrl(citationUrl, lang, t);
     setCheckedCitations(prev => ({ ...prev, [messageIndex]: result }));
-  }, [checkedCitations, lang]);
+  }, [checkedCitations, lang, t]);
 
   useEffect(() => {
     messages.forEach((message, index) => {

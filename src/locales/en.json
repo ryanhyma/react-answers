@@ -76,7 +76,8 @@
         },
         "citation": {
           "confidence": "Confidence:",
-          "ai": "AI:"
+          "ai": "AI:",
+          "fallbackText": "Unable to find a citation - use canada.ca search"
         }
       },
       "expertRating": {

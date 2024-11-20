@@ -109,9 +109,10 @@ class URLValidator {
    * Validate and check URL accessibility
    * @param {string} url - URL to validate and check
    * @param {string} lang - Language code ('en' or 'fr')
+   * @param {function} t - Translation function
    * @returns {Promise<object>} Validation result with network check
    */
-  async validateAndCheckUrl(url, lang = 'en') {
+  async validateAndCheckUrl(url, lang, t) {
     // First do the static validation
     const validationResult = this.validateUrl(url, lang);
     
@@ -132,7 +133,7 @@ class URLValidator {
       return {
         isValid: false,
         fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
-        fallbackText: 'Unable to find a citation - use canada.ca search',
+        fallbackText: t('homepage.chat.citation.fallbackText'),
         confidenceRating: '0.0'
       };
     }
