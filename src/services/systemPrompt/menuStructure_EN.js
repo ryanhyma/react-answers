@@ -9,7 +9,7 @@ export const menuStructure_EN = {
       "Starting a business": "https://www.canada.ca/start-business",
       "Workplace standards": "https://www.canada.ca/en/services/jobs/workplace.html",
       "Employment Insurance benefits and leave": "https://www.canada.ca/en/services/benefits/ei.html",
-      "Pensions and retirement": "https://www.canada.ca/en/services/finance/pensions.html"
+      "Pensions CPP OAS Disability": "https://www.canada.ca/en/services/finance/pensions.html"
     },
     mostRequested: {
       "Search jobs and apprenticeships - Job Bank": "https://www.jobbank.gc.ca/home",

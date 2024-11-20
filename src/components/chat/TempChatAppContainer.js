@@ -221,8 +221,8 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
         }
 
+        const aiResponse = response;
         setMessages(prevMessages => {
-          // Remove the "thinking more" message if it exists
           const filteredMessages = prevMessages.filter(msg => 
             !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
           );
@@ -230,13 +230,30 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         });
         setShowFeedback(true);
 
-        // Log the interaction
-        logInteraction(
-          redactedText,
-          response,
-          usedAI,
-          referringUrl.trim() || undefined
-        );
+        // Extract citation URL from response
+        const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
+        
+        // Validate URL before logging
+        if (originalCitationUrl) {
+          const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
+          // Log interaction with validated URL
+          logInteraction(
+            redactedText,
+            response,
+            usedAI,
+            referringUrl.trim() || undefined,
+            validationResult?.url || validationResult?.fallbackUrl, // Use validated URL
+            validationResult?.confidenceRating
+          );
+        } else {
+          // Log interaction without URL if none provided
+          logInteraction(
+            redactedText,
+            response,
+            usedAI,
+            referringUrl.trim() || undefined
+          );
+        }
 
         // Increment turnCount after AI response
         setTurnCount(prevCount => prevCount + 1);
