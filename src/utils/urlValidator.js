@@ -160,45 +160,74 @@ class URLValidator {
     // Extract meaningful parts from the invalid URL and clean them
     const urlParts = url.toLowerCase()
         .replace(/[.-]/g, ' ')  // Replace dots and hyphens with spaces
+        .replace(/html$/, '')   // Remove .html extension
         .split('/')
-        .filter(part => part.length > 3 && 
-            !['www', 'canada', 'ca', 'fr', 'en', 'services', 'topics', 'about'].includes(part));
+        .filter(part => 
+            part.length > 2 && // Changed from 3 to catch more terms
+            !['www', 'canada', 'ca', 'fr', 'en', 'services', 'topics', 'about', 'your'].includes(part)
+        );
     
-    // Join parts and add individual important words for better matching
-    const searchTerms = [...urlParts, ...urlParts.join(' ').split(' ')]
-        .filter((term, index, self) => self.indexOf(term) === index)  // Remove duplicates
-        .join(' ');
+    // Create searchable terms including both full phrases and individual words
+    const allTerms = new Set([
+        ...urlParts,
+        ...urlParts.join(' ').split(/\s+/)  // Split into individual words
+    ].filter(term => term.length > 2));  // Filter out very short terms
+    
+    const searchTerms = Array.from(allTerms).join(' ');
 
-    // Helper function to calculate string similarity with improved matching
+    // Improved similarity calculation
     const calculateSimilarity = (str1, str2) => {
-        const words1 = str1.toLowerCase().split(/[\s-]+/);
-        const words2 = str2.toLowerCase().split(/[\s-]+/);
+        const words1 = new Set(str1.toLowerCase().split(/[\s-]+/));
+        const words2 = new Set(str2.toLowerCase().split(/[\s-]+/));
         
-        // Count matching words
-        const matches = words1.filter(word => 
-            words2.some(w2 => w2.includes(word) || word.includes(w2))
-        ).length;
+        let matches = 0;
+        words1.forEach(word => {
+            if (words2.has(word)) matches += 1;
+            else {
+                // Check for partial matches (e.g., "tax" matches "taxation")
+                for (const w2 of words2) {
+                    if (w2.includes(word) || word.includes(w2)) {
+                        matches += 0.8; // Partial match gets slightly lower score
+                        break;
+                    }
+                }
+            }
+        });
 
-        // Calculate similarity score
-        return matches / Math.max(words1.length, words2.length);
+        return matches / Math.max(words1.size, words2.size);
     };
 
-    // Search through menu structure with improved matching
+    // Search through menu structure
     Object.entries(menuStructure).forEach(([category, data]) => {
-        // Check main category URL - removed special tax handling
+        // Check main category with combined terms
         const mainUrlSimilarity = calculateSimilarity(searchTerms, category);
         if (mainUrlSimilarity > bestMatch.confidence) {
             bestMatch = { url: data.url, confidence: mainUrlSimilarity };
         }
 
-        // Check most requested items
+        // Check most requested with more weight
         if (data.mostRequested) {
             Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
-                // Only process if itemUrl is a valid string
                 if (typeof itemUrl === 'string') {
-                    const itemSimilarity = calculateSimilarity(searchTerms, item);
+                    // Give slightly higher weight to most requested items
+                    const itemSimilarity = calculateSimilarity(searchTerms, item) * 1.1;
                     if (itemSimilarity > bestMatch.confidence) {
-                        bestMatch = { url: itemUrl, confidence: itemSimilarity };
+                        bestMatch = { 
+                            url: itemUrl, 
+                            confidence: Math.min(itemSimilarity, 1.0)
+                        };
+                    }
+                }
+            });
+        }
+
+        // Check topics if they exist
+        if (data.topics) {
+            Object.entries(data.topics).forEach(([topic, topicUrl]) => {
+                if (typeof topicUrl === 'string') {
+                    const topicSimilarity = calculateSimilarity(searchTerms, topic);
+                    if (topicSimilarity > bestMatch.confidence) {
+                        bestMatch = { url: topicUrl, confidence: topicSimilarity };
                     }
                 }
             });
