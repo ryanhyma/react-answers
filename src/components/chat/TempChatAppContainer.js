@@ -126,6 +126,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [messages, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
+    console.log('Referring URL changed:', e.target.value);
     setReferringUrl(e.target.value);
   };
 
@@ -135,6 +136,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
+      // Add console log to check referringUrl
+      console.log('Referring URL before sending message:', referringUrl);
+
       if (inputText.length > MAX_CHAR_LIMIT) {
         setMessages(prevMessages => [
           ...prevMessages,
