@@ -126,6 +126,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [messages, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
+    console.log('Referring URL event:', e);
     console.log('Referring URL changed:', e.target.value);
     setReferringUrl(e.target.value);
   };
@@ -482,7 +483,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             label={t('homepage.chat.options.referringUrl.label')}
             type="url"
             value={referringUrl}
-            onGcdsChange={handleReferringUrlChange}
+            onChange={handleReferringUrlChange}
             style={{ marginBottom: '10px' }}
           />
           </GcdsDetails>
