@@ -99,7 +99,7 @@ const HomePage = ({ lang = 'en' }) => {
         {/* TODO: make this only show up after an ai response was successfully displayed */}
         <GcdsText>
           <a 
-            href="https://cdssnc.qualtrics.com/jfe/form/SV_4N2YTcAHkcBEGfs" 
+            href={t('homepage.feedback.surveyUrl')}
             className="feedback-survey-link" 
             target="_blank" 
             rel="noopener noreferrer"

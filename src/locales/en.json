@@ -22,6 +22,7 @@
       "feedback": {
         "title": "",
         "surveyLink": "Share your feedback (opens in new tab)",
+        "surveyUrl": "https://cdssnc.qualtrics.com/jfe/form/SV_4N2YTcAHkcBEGfs",
         "question": "How was this answer?",
         "useful": "Useful",
         "notUseful": "not useful",
