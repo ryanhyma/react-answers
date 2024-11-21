@@ -78,6 +78,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     feedback, 
     expertFeedback
   ) => {
+    // Add console log to verify referringUrl is received by logInteraction
+    console.log('Logging interaction with referringUrl:', referringUrl);
+
     const logEntry = {
       redactedQuestion,
       aiResponse,
@@ -89,6 +92,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       ...(feedback !== undefined && { feedback }),
       ...(expertFeedback && { expertFeedback })
     };
+
+    // Log the final entry to verify all data
+    console.log('Final log entry:', logEntry);
 
     // Log to console in all environments
     console.log('Chat Interaction:', logEntry);
