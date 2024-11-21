@@ -132,9 +132,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [messages, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
-    console.log('Referring URL event:', e);
-    console.log('Referring URL changed:', e.target.value);
-    setReferringUrl(e.target.value);
+    const url = e.target.value.trim();
+    console.log('Referring URL changed:', url);
+    setReferringUrl(url);
   };
 
   const handleReload = () => {
@@ -485,13 +485,22 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
               </div>
             </fieldset>
           </div>
-          <GcdsInput
-            label={t('homepage.chat.options.referringUrl.label')}
-            type="url"
-            value={referringUrl}
-            onChange={handleReferringUrlChange}
-            style={{ marginBottom: '10px' }}
-          />
+          <div style={{ marginBottom: '10px' }}>
+            <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
+            <input
+              id="referring-url"
+              type="url"
+              value={referringUrl}
+              onChange={handleReferringUrlChange}
+              style={{
+                width: '100%',
+                padding: '8px',
+                marginTop: '4px',
+                border: '1px solid #ccc',
+                borderRadius: '4px'
+              }}
+            />
+          </div>
           </GcdsDetails>
 
         </div>
