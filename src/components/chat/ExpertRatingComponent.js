@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GcdsFieldset } from '@cdssnc/gcds-components-react'
-import '../../styles/ExpertRatingPlain.css';
+import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations';
 
 const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
