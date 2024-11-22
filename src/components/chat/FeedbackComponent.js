@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ExpertRatingComponent from './ExpertRatingComponent';
-import '../../styles/ExpertRatingPlain.css';
+import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations';
 
 const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
