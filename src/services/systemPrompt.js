@@ -21,8 +21,19 @@ async function loadSystemPrompt(language = 'en') {
     const scenarios = language === 'fr' ? SCENARIOS_FR : SCENARIOS_EN;
     const citationInstructions = language === 'fr' ? CITATION_INSTRUCTIONS_FR : CITATION_INSTRUCTIONS_EN;
 
+    // Add current date information
+    const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
     const fullPrompt = `
       ${BASE_SYSTEM_PROMPT}
+
+      ## Current Date
+      Today is ${currentDate}.
 
       ${citationInstructions}
 

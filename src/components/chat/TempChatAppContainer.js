@@ -4,7 +4,7 @@ import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
 import LoggingService from '../../services/LoggingService.js';
-import { GcdsTextarea, GcdsButton, GcdsInput, GcdsDetails } from '@cdssnc/gcds-components-react';
+import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import '../../styles/TempChatAppContainer.css';
 import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations';

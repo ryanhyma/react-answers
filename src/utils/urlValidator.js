@@ -116,13 +116,18 @@ class URLValidator {
     // First do the static validation
     const validationResult = this.validateUrl(url, lang);
     
-    // If confidence is high (URL exists in menu), skip network check
-    if (validationResult.confidence >= 0.95) {
-      return {
-        isValid: true,
-        url: url,
-        confidenceRating: '1.0'
-      };
+    // If confidence is low, try to get a fallback URL
+    if (validationResult.confidence < 0.8) {
+        const fallback = this.getFallbackUrl(url, lang);
+        
+        if (fallback.confidence > 0.4) {
+            return {
+                isValid: true,  // Changed to true since we found a good menu match
+                url: fallback.url,  // Use url instead of fallbackUrl
+                confidenceRating: fallback.confidence.toFixed(1)
+                // Removed fallbackText since this is now treated as a valid URL
+            };
+        }
     }
 
     // For all other URLs, perform network validation
@@ -130,23 +135,18 @@ class URLValidator {
     
     // If URL is invalid (either from structural validation or network check)
     if (!validationResult.isValid || !checkResult.isValid) {
-      // Try to get a relevant fallback URL using the full invalid URL
-      const fallback = this.getFallbackUrl(url, lang);
-
-      return {
-        isValid: false,
-        fallbackUrl: fallback.confidence > 0.3 
-          ? fallback.url 
-          : `https://www.canada.ca/${lang}/sr/srb.html`,
-        fallbackText: t('homepage.chat.citation.fallbackText'),
-        confidenceRating: fallback.confidence.toFixed(1)  // Format to one decimal place
-      };
+        return {
+            isValid: false,
+            fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
+            fallbackText: t('homepage.chat.citation.fallbackText'),
+            confidenceRating: '0.1'
+        };
     }
 
     return {
-      isValid: true,
-      url: checkResult.url,
-      confidenceRating: '0.8'
+        isValid: true,
+        url: checkResult.url,
+        confidenceRating: '0.8'
     };
   }
 
