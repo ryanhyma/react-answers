@@ -332,6 +332,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
     const { paragraphs, citationHead, citationUrl: originalCitationUrl } = parseAIResponse(content, aiService);
     const citationResult = checkedCitations[messageIndex];
+    
+    // Get the validated URL if it exists
+    const displayUrl = citationResult?.url || citationResult?.fallbackUrl;
 
     // Use the checked citation's confidence rating if available, otherwise use the original
     const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
@@ -357,22 +360,16 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </p>
           ));
         })}
-        {responseType === 'normal' && (citationHead || originalCitationUrl || aiService) && (
+        {responseType === 'normal' && (citationHead || displayUrl || originalCitationUrl || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
-            {originalCitationUrl && (
+            {(displayUrl || originalCitationUrl) && (
               <p className="citation-link">
-                {citationResult ? (
-                  <a href={citationResult.url || citationResult.fallbackUrl || originalCitationUrl} 
-                     target="_blank" 
-                     rel="noopener noreferrer">
-                    {citationResult.url || citationResult.fallbackUrl || originalCitationUrl}
-                  </a>
-                ) : (
-                  <a href={originalCitationUrl} target="_blank" rel="noopener noreferrer">
-                    {originalCitationUrl}
-                  </a>
-                )}
+                <a href={displayUrl || originalCitationUrl} 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                  {displayUrl || originalCitationUrl}
+                </a>
               </p>
             )}
             <p className="confidence-rating">
