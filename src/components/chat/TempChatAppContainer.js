@@ -73,11 +73,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     aiResponse, 
     aiService, 
     referringUrl, 
-    citationUrl, 
-    confidenceRating, 
-    feedback, 
-    expertFeedback,
-    originalCitationUrl
+    citationUrl,
+    originalCitationUrl,
+    confidenceRating,
+    feedback,
+    expertFeedback
   ) => {
     console.log('Logging interaction with referringUrl:', referringUrl);
 
@@ -330,11 +330,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
     }
 
-    const { paragraphs, citationHead, citationUrl, confidenceRating: originalConfidenceRating } = parseAIResponse(content, aiService);
+    const { paragraphs, citationHead, citationUrl: originalCitationUrl } = parseAIResponse(content, aiService);
     const citationResult = checkedCitations[messageIndex];
 
     // Use the checked citation's confidence rating if available, otherwise use the original
-    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : originalConfidenceRating;
+    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
 
     // Function to extract sentences from a paragraph
     const extractSentences = (paragraph) => {
@@ -357,18 +357,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </p>
           ));
         })}
-        {responseType === 'normal' && (citationHead || citationUrl || aiService) && (
+        {responseType === 'normal' && (citationHead || originalCitationUrl || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
-            {citationUrl && citationResult && (
+            {originalCitationUrl && (
               <p className="citation-link">
-                {citationResult.isValid ? (
-                  <a href={citationResult.url} target="_blank" rel="noopener noreferrer">
-                    {citationResult.url}
+                {citationResult ? (
+                  <a href={citationResult.url || citationResult.fallbackUrl || originalCitationUrl} 
+                     target="_blank" 
+                     rel="noopener noreferrer">
+                    {citationResult.url || citationResult.fallbackUrl || originalCitationUrl}
                   </a>
                 ) : (
-                  <a href={citationResult.fallbackUrl} target="_blank" rel="noopener noreferrer">
-                    {citationResult.fallbackText}
+                  <a href={originalCitationUrl} target="_blank" rel="noopener noreferrer">
+                    {originalCitationUrl}
                   </a>
                 )}
               </p>
