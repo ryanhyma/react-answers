@@ -53,59 +53,6 @@ class URLValidator {
   }
 
   /**
-   * Validate if a URL appears to be a legitimate Canada.ca or gc.ca URL
-   * Performs static validation without making network requests
-   * @param {string} url - URL to validate
-   * @param {string} lang - Language code ('en' or 'fr')
-   * @returns {object} Validation result with isValid and confidence score
-   */
-  validateUrl(url, lang = 'en') {
-    // Initialize/refresh URL cache if needed
-    if (this.menuUrls.size === 0) {
-      this.initializeMenuUrls(lang);
-    }
-
-    // If URL exists in our menu structure, it's definitely valid
-    if (this.menuUrls.has(url)) {
-      return { isValid: true, confidence: 1.0 };
-    }
-
-    // Basic check for canada.ca or gc.ca domains without being too restrictive
-    const validDomains = ['.canada.ca', '.gc.ca'];
-    const hasValidDomain = validDomains.some(domain => 
-      url.toLowerCase().includes(domain) && url.startsWith('http')
-    );
-
-    if (!hasValidDomain) {
-      return { isValid: false, confidence: 0 };
-    }
-
-    // Patterns that might indicate a hallucinated or invalid URL
-    const suspiciousPatterns = [
-      /\/temp\//,   // Temporary directories
-      /\/test\//,   // Test directories
-      /\s/,         // URLs shouldn't contain spaces
-      /[^a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]/  // Invalid URL characters
-    ];
-
-    // Check for suspicious patterns
-    if (suspiciousPatterns.some(pattern => pattern.test(url))) {
-      return { isValid: false, confidence: 0 };
-    }
-
-    // Start with base confidence for valid domain
-    let confidence = 0.7;
-
-    // Boost confidence if URL follows patterns we see in our menu structure
-    // For example, if it matches the language pattern of known good URLs
-    if (url.includes(`/${lang}/`)) {
-      confidence = Math.min(confidence + 0.1, 0.95);
-    }
-
-    return { isValid: true, confidence };
-  }
-
-  /**
    * Validate and check URL accessibility
    * @param {string} url - URL to validate and check
    * @param {string} lang - Language code ('en' or 'fr')
@@ -113,41 +60,37 @@ class URLValidator {
    * @returns {Promise<object>} Validation result with network check
    */
   async validateAndCheckUrl(url, lang, t) {
-    // First check if the URL is structurally valid
-    const validationResult = this.validateUrl(url, lang);
-    
-    // Perform network validation
+    // 1 Perform network validation to see if it is a canada.ca URL that is going to 404
     const checkResult = await checkCitationUrl(url);
-    
-    // If the URL is valid and accessible, keep it as is
+
+    // 2 If the URL isn't 404, return the original URL
     if (checkResult.isValid) {
-        return {
-            isValid: true,
-            url: url,  // Keep the original URL
-            confidenceRating: '1.0'
-        };
+      return {
+        isValid: true,
+        url: url,  // Keep the original URL
+        confidenceRating: '1.0'
+      };
     }
-    
-    // Only look for fallback URLs if the original URL is invalid
-    if (!checkResult.isValid) {
-        const fallback = this.getFallbackUrl(url, lang);
-        
-        if (fallback.confidence > 0.4) {
-            return {
-                isValid: true,
-                url: fallback.url,
-                confidenceRating: fallback.confidence.toFixed(1)
-            };
-        }
-        
-        // If no good fallback found, return search page
-        return {
-            isValid: false,
-            fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
-            fallbackText: t('homepage.chat.citation.fallbackText'),
-            confidenceRating: '0.1'
-        };
+
+    // 3. If 404/invalid, initialize menu and look for fallback
+    this.initializeMenuUrls(lang);
+    const fallback = this.getFallbackUrl(url, lang);
+
+    if (fallback.confidence > 0.4) {
+      return {
+        isValid: true,
+        url: fallback.url,
+        confidenceRating: fallback.confidence.toFixed(1)
+      };
     }
+
+    // If no good fallback found, return search page
+    return {
+      isValid: false,
+      fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
+      fallbackText: t('homepage.chat.citation.fallbackText'),
+      confidenceRating: '0.1'
+    };
   }
 
   /**
@@ -160,99 +103,99 @@ class URLValidator {
     // Parse the 404 URL into meaningful segments
     const urlObj = new URL(url);
     const urlSegments = urlObj.pathname
-        .split('/')
-        .filter(segment => 
-            segment && 
-            !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
-        );
-    
+      .split('/')
+      .filter(segment =>
+        segment &&
+        !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
+      );
+
     console.log('404 URL segments:', urlSegments);
 
     // Helper function to compare URL paths
     const compareUrls = (menuUrl) => {
-        try {
-            const menuUrlObj = new URL(menuUrl);
-            const menuSegments = menuUrlObj.pathname
-                .split('/')
-                .filter(segment => 
-                    segment && 
-                    !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
-                );
-            
-            // console.log('Comparing with menu segments:', menuSegments);
+      try {
+        const menuUrlObj = new URL(menuUrl);
+        const menuSegments = menuUrlObj.pathname
+          .split('/')
+          .filter(segment =>
+            segment &&
+            !['en', 'fr', 'www', 'canada', 'ca'].includes(segment)
+          );
 
-            // Count matching segments
-            let matchingSegments = 0;
-            let partialMatches = 0;
+        // console.log('Comparing with menu segments:', menuSegments);
 
-            urlSegments.forEach(segment => {
-                if (menuSegments.includes(segment)) {
-                    matchingSegments++;
-                    // console.log(`Exact segment match: ${segment}`);
-                } else {
-                    // Check for partial matches within segments
-                    for (const menuSegment of menuSegments) {
-                        if (menuSegment.includes(segment) || segment.includes(menuSegment)) {
-                            partialMatches++;
-                            // console.log(`Partial segment match: ${segment} ≈ ${menuSegment}`);
-                            break;
-                        }
-                    }
-                }
-            });
+        // Count matching segments
+        let matchingSegments = 0;
+        let partialMatches = 0;
 
-            // Calculate confidence based on matches
-            const confidence = (matchingSegments + (partialMatches * 0.5)) / 
-                Math.max(urlSegments.length, menuSegments.length);
-            
-            // console.log(`Confidence for ${menuUrl}: ${confidence}`);
-            return confidence;
-        } catch (e) {
-            // console.log(`Invalid URL in menu: ${menuUrl}`);
-            return 0;
-        }
+        urlSegments.forEach(segment => {
+          if (menuSegments.includes(segment)) {
+            matchingSegments++;
+            // console.log(`Exact segment match: ${segment}`);
+          } else {
+            // Check for partial matches within segments
+            for (const menuSegment of menuSegments) {
+              if (menuSegment.includes(segment) || segment.includes(menuSegment)) {
+                partialMatches++;
+                // console.log(`Partial segment match: ${segment} ≈ ${menuSegment}`);
+                break;
+              }
+            }
+          }
+        });
+
+        // Calculate confidence based on matches
+        const confidence = (matchingSegments + (partialMatches * 0.5)) /
+          Math.max(urlSegments.length, menuSegments.length);
+
+        // console.log(`Confidence for ${menuUrl}: ${confidence}`);
+        return confidence;
+      } catch (e) {
+        // console.log(`Invalid URL in menu: ${menuUrl}`);
+        return 0;
+      }
     };
 
     // Search through menu structure
     Object.entries(menuStructure).forEach(([category, data]) => {
-        // Check main category URL
-        const mainUrlConfidence = compareUrls(data.url);
-        if (mainUrlConfidence > bestMatch.confidence) {
-            // console.log(`New best match (category): ${category} - ${data.url}`);
-            bestMatch = { url: data.url, confidence: mainUrlConfidence };
-        }
+      // Check main category URL
+      const mainUrlConfidence = compareUrls(data.url);
+      if (mainUrlConfidence > bestMatch.confidence) {
+        // console.log(`New best match (category): ${category} - ${data.url}`);
+        bestMatch = { url: data.url, confidence: mainUrlConfidence };
+      }
 
-        // Check most requested
-        if (data.mostRequested) {
-            Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
-                if (typeof itemUrl === 'string') {
-                    const itemConfidence = compareUrls(itemUrl);
-                    if (itemConfidence > bestMatch.confidence) {
-                        // console.log(`New best match (most requested): ${item} - ${itemUrl}`);
-                        bestMatch = { url: itemUrl, confidence: itemConfidence };
-                    }
-                }
-            });
-        }
+      // Check most requested
+      if (data.mostRequested) {
+        Object.entries(data.mostRequested).forEach(([item, itemUrl]) => {
+          if (typeof itemUrl === 'string') {
+            const itemConfidence = compareUrls(itemUrl);
+            if (itemConfidence > bestMatch.confidence) {
+              // console.log(`New best match (most requested): ${item} - ${itemUrl}`);
+              bestMatch = { url: itemUrl, confidence: itemConfidence };
+            }
+          }
+        });
+      }
 
-        // Check topics
-        if (data.topics) {
-            Object.entries(data.topics).forEach(([topic, topicUrl]) => {
-                if (typeof topicUrl === 'string') {
-                    const topicConfidence = compareUrls(topicUrl);
-                    if (topicConfidence > bestMatch.confidence) {
-                        // console.log(`New best match (topic): ${topic} - ${topicUrl}`);
-                        bestMatch = { url: topicUrl, confidence: topicConfidence };
-                    }
-                }
-            });
-        }
+      // Check topics
+      if (data.topics) {
+        Object.entries(data.topics).forEach(([topic, topicUrl]) => {
+          if (typeof topicUrl === 'string') {
+            const topicConfidence = compareUrls(topicUrl);
+            if (topicConfidence > bestMatch.confidence) {
+              // console.log(`New best match (topic): ${topic} - ${topicUrl}`);
+              bestMatch = { url: topicUrl, confidence: topicConfidence };
+            }
+          }
+        });
+      }
     });
 
     // console.log('Final best match:', bestMatch);
     return bestMatch;
   }
-}
+};
 
 // Export a singleton instance
-export const urlValidator = new URLValidator(); 
+export const urlValidator = new URLValidator();
