@@ -81,9 +81,7 @@ const ChatLogsDashboard = () => {
           sentence2: '',
           sentence3: '',
           sentence4: ''
-        },
-        confidence: '',
-        citationUrl: ''
+        }
       };
 
       if (!aiResponse) return data;
@@ -103,18 +101,6 @@ const ChatLogsDashboard = () => {
         data.sentences.sentence1 = aiResponse.trim();
       }
 
-      // Extract confidence
-      const confidenceMatch = aiResponse.match(/<confidence>(.*?)<\/confidence>/);
-      if (confidenceMatch) {
-        data.confidence = confidenceMatch[1];
-      }
-
-      // Extract citation URL
-      const citationMatch = aiResponse.match(/<citation-url>(.*?)<\/citation-url>/);
-      if (citationMatch) {
-        data.citationUrl = citationMatch[1];
-      }
-
       return data;
     };
 
@@ -130,9 +116,11 @@ const ChatLogsDashboard = () => {
         } else if (column.startsWith('sentence')) {
           value = extractedData.sentences[column] || '';
         } else if (column === 'confidenceRating') {
-          value = extractedData.confidence;
+          value = log.confidenceRating || '';
         } else if (column === 'citationUrl') {
-          value = extractedData.citationUrl;
+          value = log.citationUrl || '';
+        } else if (column === 'originalCitationUrl') {
+          value = log.originalCitationUrl || '';
         } else {
           value = log[column] || '';
         }
