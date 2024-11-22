@@ -279,7 +279,10 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             const newMessageIndex = prevMessages.length;
             setCheckedCitations(prev => ({ 
               ...prev, 
-              [newMessageIndex]: validationResult 
+              [newMessageIndex]: {
+                ...validationResult,
+                finalCitationUrl  // Add this to explicitly store the final URL
+              }
             }));
             
             const filteredMessages = prevMessages.filter(msg => 
@@ -330,11 +333,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
     }
 
-    const { paragraphs, citationHead, citationUrl: originalCitationUrl } = parseAIResponse(content, aiService);
+    const { paragraphs, citationHead } = parseAIResponse(content, aiService);
     const citationResult = checkedCitations[messageIndex];
     
-    // Get the validated URL if it exists
-    const displayUrl = citationResult?.url || citationResult?.fallbackUrl;
+    // Explicitly use the finalCitationUrl we stored
+    const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
 
     // Use the checked citation's confidence rating if available, otherwise use the original
     const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
@@ -360,15 +363,15 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </p>
           ));
         })}
-        {responseType === 'normal' && (citationHead || displayUrl || originalCitationUrl || aiService) && (
+        {responseType === 'normal' && (citationHead || displayUrl || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
-            {(displayUrl || originalCitationUrl) && (
+            {displayUrl && (
               <p className="citation-link">
-                <a href={displayUrl || originalCitationUrl} 
+                <a href={displayUrl} 
                    target="_blank" 
                    rel="noopener noreferrer">
-                  {displayUrl || originalCitationUrl}
+                  {displayUrl}
                 </a>
               </p>
             )}
