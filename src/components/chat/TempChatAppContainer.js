@@ -108,7 +108,13 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.sender === 'ai') {
       const { text: aiResponse, aiService } = lastMessage;
-      const { citationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
+      // Get original URL from AI response
+      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
+
+      // Get validated URL from checkedCitations
+      const lastIndex = messages.length - 1;
+      const validationResult = checkedCitations[lastIndex];
+      const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
 
       // Get the user's message (which should be the second-to-last message)
       const userMessage = messages[messages.length - 2];
@@ -119,15 +125,15 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           aiResponse,
           aiService,
           userMessage.referringUrl,
-          citationUrl,
+          finalCitationUrl,
+          originalCitationUrl,
           confidenceRating,
-          feedback,  // Now passing the actual feedback
-          expertFeedback,
-          originalCitationUrl
+          feedback,
+          expertFeedback
         );
       }
     }
-  }, [messages, logInteraction, parseAIResponse]);
+  }, [messages, checkedCitations, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
     const url = e.target.value.trim();
