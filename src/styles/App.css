@@ -1,409 +1,338 @@
 /* top banner for alpha warning copied from wayfinding repo*/
-	.alpha-top {
-		/* border-bottom: 1px solid black !important; */
-		padding-top: 2px !important;
-		padding-bottom: 2px !important;
-		/* position: sticky; */
-		/* turn this on if you want it to follow along and stick to the top */
-		top: 0;
-		background-color: #f2f2f2;
-		z-index: 100;
-	}
-
-	.alpha {
-		/* border-bottom: 1px solid black; */
-		padding-top: 5px;
-		padding-bottom: 5px;
-		background-color: white;
-		z-index: 100;
-	}
-
-	.alpha-label {
-
-		background-color: black;
-		border: none;
-		color: white;
-		font-weight: 700;
-		padding: 8px 8px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		margin: 4px 2px;
-		border-radius: 0px;
-		font-size: 14px !important;
-	}
-
-	.alpha-fill {
-		background-color: #f2f2f2;
-		padding: .6em 1em .6em .6em;
-	}
-
-	.referring-url-container {
-		max-width: 600px;
-		margin: 20px auto;
-		padding: 0 20px;
-	}
-
+.alpha-top {
+    /* border-bottom: 1px solid black !important;
+     */
+     padding-top: 2px !important;
+     padding-bottom: 2px !important;
+    /* position: sticky; */
+    /* turn this on if you want it to follow along and stick to the top */
+     top: 0;
+     background-color: #f2f2f2;
+     z-index: 100;
+}
+ .alpha {
+    /* border-bottom: 1px solid black;
+     */
+     padding-top: 5px;
+     padding-bottom: 5px;
+     background-color: white;
+     z-index: 100;
+}
+ .alpha-label {
+     background-color: black;
+     border: none;
+     color: white;
+     font-weight: 700;
+     padding: 8px 8px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     margin: 4px 2px;
+     border-radius: 0px;
+     font-size: 14px !important;
+}
+ .alpha-fill {
+     background-color: #f2f2f2;
+     padding: .6em 1em .6em .6em;
+}
+ .referring-url-container {
+     max-width: 600px;
+     margin: 20px auto;
+     padding: 0 20px;
+}
 /* index.css */
-body {
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-	  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-	  sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-  }
-  
-  code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-	  monospace;
-  }
-  
-
-.admin-navigation {
-	margin-left: auto;
-	padding: 0.5rem 1rem;
-  }
-  
-  .admin-link {
-	color: white;
-	text-decoration: none;
-	padding: 0.5rem;
-	font-size: 0.875rem;
-  }
-  
-  .admin-link:hover {
-	text-decoration: underline;
-  }
-
-  
+ body {
+     margin: 0;
+     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+}
+ code {
+     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+ .admin-navigation {
+     margin-left: auto;
+     padding: 0.5rem 1rem;
+}
+ .admin-link {
+     color: white;
+     text-decoration: none;
+     padding: 0.5rem;
+     font-size: 0.875rem;
+}
+ .admin-link:hover {
+     text-decoration: underline;
+}
 /* temp chat app container */
-.chat-container {
-	width: 100%;
-	max-width: 800px;
-	padding: 1rem;
-  }
-  
-  .chat-container > * {
-	margin-left: 0;
-	margin-right: 0;
-  }
-  
-  .message-list {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-  }
-  
-  .message {
-	max-width: 100%;
-	padding: 0.5rem;
-	border-radius: 0.5rem;
-  }
-  
-  .message.user {
-	align-self: flex-end;
-  }
-  
-  .message.ai {
-	align-self: flex-start;
-  }
-  
-  .user-message-box {
-	background-color: #e1f5fe;
-	padding: 0.5rem;
-	border-radius: 0.5rem;
-  }
-  
-  .user-message-box.redacted-box {
-	background-color: #ffff; 
-	border: 2px solid #710402;
-  }
-  
-  .redacted-message {
-	color: #3b0202;
-  }
-  
-  .redacted-preview {
-	margin-top: 10px;
-	font-style: italic;
-  }
-  
-  .ai-message-content {
-	background-color: #f1f4f4;
-	padding: 0.5rem;
-	border-radius: 0.5rem;
-	display: flex;
-	flex-direction: column;
-	gap: 1em;
-  }
-  
-  .ai-paragraph, .ai-list-item {
-	margin: 0;
-  }
-  
-  .ai-sentence {
-	margin-bottom: 0.2em;
-  }
-  .ai-list-item {
-	display: flex;
-	align-items: flex-start;
-  }
-  
-  .list-number {
-	flex-shrink: 0;
-	margin-right: 0.5em;
-	font-weight: bold;
-  }
-  
-  .citation-container {
-	border: 2px solid #4a3f9f;
-	border-radius: 4px;
-	padding: 10px;
-	margin-top: 1em;
-  }
-  
-  .citation-head {
-	font-weight: bold;
-	margin-bottom: 0.5rem;
-  }
-  
-  .citation-link {
-	font-size: 0.9em;
-	word-break: break-all;
-  }
-  
-  .citation-link a {
-	color: #0066cc;
-	text-decoration: underline;
-  }
-  
-  .confidence-rating {
-	font-style: italic;
-	color: #666;
-	margin-top: 0.5rem;
-  }
-  
-  .follow-up-prompt {
-	margin-top: 1rem;
-	font-style: italic;
-	color: #555;
-  }
-  
-  .input-area {
-	margin-top: 1rem;
-	width: 100%;
-  }
-  
-  .input-form {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-  }
-  
-  .main-input-container {
-	display: flex;
-	gap: 10px;
-	align-items: flex-start;
-  }
-  
-  .main-input-container .gcds-textarea {
-	flex-grow: 1;
-  }
-  
-  .send-button {
-	align-self: flex-end;
-  }
-  
-  .optional-inputs {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-  }
-  
-  @media (max-width: 768px) {
-	.chat-container {
-	  padding: 0.5rem;
-	}
-  
-	.message {
-	  max-width: 100%;
-	  padding: 0.5rem 0;
-	}
-  
-	.user-message-box,
-	.ai-message-content {
-	  padding: 0.5rem;
-	}
-  
-	.main-input-container {
-	  flex-direction: column;
-	}
-  
-	.send-button {
-	  width: 100%;
-	  margin-top: 10px;
-	}
-  }
-  
-  @media (min-width: 769px) {
-	.chat-container {
-	  padding-left: 0;
-	  padding-right: 0;
-	}
-  }
-  /* Existing styles ... */
-  
-  .feedback-container {
-	margin-top: 10px;
-	padding: 10px;
-	border-top: 1px solid #e0e0e0;
-  }
-  
-  .feedback-container p {
-	margin-bottom: 10px;
-  }
-  
-  .feedback-container button {
-	margin-right: 10px;
-  }
-  
-  .feedback-survey-link {
-	display: inline-block;
-	margin-left: 10px;
-	text-decoration: underline;
-	color: #284162;
-  }
-  
-  .feedback-survey-link:hover {
-	text-decoration: none;
-  }
-  .error-message {
-	color: #721c24;
-	background-color: #f8d7da;
-	border: 1px solid #f5c6cb;
-	border-radius: 4px;
-	padding: 10px;
-	margin-bottom: 10px;
-  }
-  
-  .limit-reached-message {
-	text-align: center;
-	padding: 1rem;
-  }
-  
-  .limit-reached-message .reload-button {
-	margin-top: 1rem;
-  }  
-
+ .chat-container {
+     width: 100%;
+     max-width: 800px;
+     padding: 1rem;
+}
+ .chat-container > * {
+     margin-left: 0;
+     margin-right: 0;
+}
+ .message-list {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+}
+ .message {
+     max-width: 100%;
+     padding: 0.5rem;
+     border-radius: 0.5rem;
+}
+ .message.user {
+     align-self: flex-end;
+}
+ .message.ai {
+     align-self: flex-start;
+}
+ .user-message-box {
+     background-color: #e1f5fe;
+     padding: 0.5rem;
+     border-radius: 0.5rem;
+}
+ .user-message-box.redacted-box {
+     background-color: #ffff;
+     border: 2px solid #710402;
+}
+ .redacted-message {
+     color: #3b0202;
+}
+ .redacted-preview {
+     margin-top: 10px;
+     font-style: italic;
+}
+ .ai-message-content {
+     background-color: #f1f4f4;
+     padding: 0.5rem;
+     border-radius: 0.5rem;
+     display: flex;
+     flex-direction: column;
+     gap: 1em;
+}
+ .ai-paragraph, .ai-list-item {
+     margin: 0;
+}
+ .ai-sentence {
+     margin-bottom: 0.2em;
+}
+ .ai-list-item {
+     display: flex;
+     align-items: flex-start;
+}
+ .list-number {
+     flex-shrink: 0;
+     margin-right: 0.5em;
+     font-weight: bold;
+}
+ .citation-container {
+     border: 2px solid #4a3f9f;
+     border-radius: 4px;
+     padding: 10px;
+     margin-top: 1em;
+}
+ .citation-head {
+     font-weight: bold;
+     margin-bottom: 0.5rem;
+}
+ .citation-link {
+     font-size: 0.9em;
+     word-break: break-all;
+}
+ .citation-link a {
+     color: #0066cc;
+     text-decoration: underline;
+}
+ .confidence-rating {
+     font-style: italic;
+     color: #666;
+     margin-top: 0.5rem;
+}
+ .follow-up-prompt {
+     margin-top: 1rem;
+     font-style: italic;
+     color: #555;
+}
+ .input-area {
+     margin-top: 1rem;
+     width: 100%;
+}
+ .input-form {
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+}
+ .main-input-container {
+     display: flex;
+     gap: 10px;
+     align-items: flex-start;
+}
+ .main-input-container .gcds-textarea {
+     flex-grow: 1;
+}
+ .send-button {
+     align-self: flex-end;
+}
+ .optional-inputs {
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+}
+ @media (max-width: 768px) {
+     .chat-container {
+         padding: 0.5rem;
+    }
+     .message {
+         max-width: 100%;
+         padding: 0.5rem 0;
+    }
+     .user-message-box, .ai-message-content {
+         padding: 0.5rem;
+    }
+     .main-input-container {
+         flex-direction: column;
+    }
+     .send-button {
+         width: 100%;
+         margin-top: 10px;
+    }
+}
+ @media (min-width: 769px) {
+     .chat-container {
+         padding-left: 0;
+         padding-right: 0;
+    }
+}
+/* Existing styles ... */
+ .feedback-container {
+     margin-top: 10px;
+     padding: 10px;
+     border-top: 1px solid #e0e0e0;
+}
+ .feedback-container p {
+     margin-bottom: 10px;
+}
+ .feedback-container button {
+     margin-right: 10px;
+}
+ .feedback-survey-link {
+     display: inline-block;
+     margin-left: 10px;
+     text-decoration: underline;
+     color: #284162;
+}
+ .feedback-survey-link:hover {
+     text-decoration: none;
+}
+ .error-message {
+     color: #721c24;
+     background-color: #f8d7da;
+     border: 1px solid #f5c6cb;
+     border-radius: 4px;
+     padding: 10px;
+     margin-bottom: 10px;
+}
+ .limit-reached-message {
+     text-align: center;
+     padding: 1rem;
+}
+ .limit-reached-message .reload-button {
+     margin-top: 1rem;
+}
 /* expert rating */
-
-.expert-rating-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .expert-rating-container h3 {
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .expert-rating-container label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
-  
-  .expert-rating-container input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  .expert-rating-container input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .expert-rating-container button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .expert-rating-container button:hover {
-    background-color: #003d82;
-  }
-  
-  .feedback-container {
-    font-size: 1rem; /* 16px */
-  }
-  
-  .feedback-text {
-    color: #000;
-  }
-  
-  .feedback-link {
-    text-decoration: none;
-    color: #2077D4;
-  }
-  
-  .feedback-link:hover {
-    text-decoration: underline;
-  }
-  
-  .feedback-separator {
-    color: #666;
-    margin: 0 0.2rem;
-  }
-  
-  .button-as-link {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-  }
-  
-  .button-as-link:focus {
-    outline: 2px solid #2b4382;
-    outline-offset: 2px;
-  }
-
+ .expert-rating-container {
+     max-width: 600px;
+     margin: 0 auto;
+     padding: 20px;
+     background-color: #f5f5f5;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+ .expert-rating-container h3 {
+     margin-bottom: 20px;
+     color: #333;
+}
+ .expert-rating-container label {
+     display: block;
+     margin-bottom: 10px;
+     font-size: 16px;
+}
+ .expert-rating-container input[type="checkbox"] {
+     margin-right: 10px;
+}
+ .expert-rating-container input[type="text"] {
+     width: 100%;
+     padding: 8px;
+     margin-top: 5px;
+     border: 1px solid #ddd;
+     border-radius: 4px;
+}
+ .expert-rating-container button {
+     margin-top: 20px;
+     padding: 10px 20px;
+     background-color: #0056b3;
+     color: white;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     font-size: 16px;
+}
+ .expert-rating-container button:hover {
+     background-color: #003d82;
+}
+ .feedback-container {
+     font-size: 1rem;
+    /* 16px */
+}
+ .feedback-text {
+     color: #000;
+}
+ .feedback-link {
+     text-decoration: none;
+     color: #2077D4;
+}
+ .feedback-link:hover {
+     text-decoration: underline;
+}
+ .feedback-separator {
+     color: #666;
+     margin: 0 0.2rem;
+}
+ .button-as-link {
+     background: none;
+     border: none;
+     padding: 0;
+     cursor: pointer;
+     font-family: inherit;
+     font-size: inherit;
+}
+ .button-as-link:focus {
+     outline: 2px solid #2b4382;
+     outline-offset: 2px;
+}
 /* modifications of GCDS-tokens to Canada.ca design where appropriate */
-
-:root { 
-	--gcds-header-margin: 0 0 1.55rem !important;
-	--gcds-heading-h1-border-background: #af3c43 !important;
-	--gcds-link-font-regular-desktop: 400 1rem / 150% "Noto Sans", sans-serif !important;
-	--gcds-link-font-small-desktop: 400 1rem / 135% "Noto Sans", sans-serif;
-	--gcds-header-brand-grid-gap: 0rem !important;
-	--gcds-header-brand-padding: 0 0 0.9rem !important;
-	--gcds-header-brand-border-color: #26374a; /* to change to thin grey line which is used w/o if needed */
-	--gcds-header-brand-border-width: 0.1875rem;  /* to change thickness on thin grey line which is used w/o if needed */
+ :root {
+     --gcds-header-margin: 0 0 1.55rem !important;
+     --gcds-heading-h1-border-background: #af3c43 !important;
+     --gcds-link-font-regular-desktop: 400 1rem / 150% "Noto Sans", sans-serif !important;
+     --gcds-link-font-small-desktop: 400 1rem / 135% "Noto Sans", sans-serif;
+     --gcds-header-brand-grid-gap: 0rem !important;
+     --gcds-header-brand-padding: 0 0 0.9rem !important;
+     --gcds-header-brand-border-color: #26374a;
+    /* to change to thin grey line which is used w/o if needed */
+     --gcds-header-brand-border-width: 0.1875rem;
+    /* to change thickness on thin grey line which is used w/o if needed */
 }
-
 /* clean up margins and spacing */
-
-.send-button {
-	margin-bottom: 16px;
+ .send-button {
+     margin-bottom: 16px;
 }
-
-gcds-container {
-	margin-bottom: 40px !important;
+ gcds-container {
+     margin-bottom: 40px !important;
 }
-
-gcds-details {
-	margin-bottom: 0px !important;
+ gcds-details {
+     margin-bottom: 0px !important;
 }
