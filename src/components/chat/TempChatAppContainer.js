@@ -258,7 +258,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
 
           // Get the final URL and confidence rating safely
-          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl || originalCitationUrl;
+          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
           const confidenceRating = validationResult?.confidenceRating || '0.1';
 
           // Initial log with correct URL distinction
@@ -274,21 +274,18 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             undefined
           );
 
-          // Add message to state with validation result
           setMessages(prevMessages => {
             const newMessageIndex = prevMessages.length;
             setCheckedCitations(prev => ({ 
               ...prev, 
               [newMessageIndex]: {
                 ...validationResult,
-                finalCitationUrl  // Add this to explicitly store the final URL
+                finalCitationUrl,  // Store the validated URL explicitly
+                originalCitationUrl // Store the original URL for reference
               }
             }));
             
-            const filteredMessages = prevMessages.filter(msg => 
-              !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
-            );
-            return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
+            return [...prevMessages, { text: response, sender: 'ai', aiService: usedAI }];
           });
           
           setShowFeedback(true);
@@ -336,7 +333,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     const { paragraphs, citationHead } = parseAIResponse(content, aiService);
     const citationResult = checkedCitations[messageIndex];
     
-    // Explicitly use the finalCitationUrl we stored
+    // Prioritize the validated URL
     const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
 
     // Use the checked citation's confidence rating if available, otherwise use the original
