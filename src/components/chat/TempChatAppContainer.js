@@ -76,9 +76,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     citationUrl, 
     confidenceRating, 
     feedback, 
-    expertFeedback
+    expertFeedback,
+    originalCitationUrl
   ) => {
-    // Add console log to verify referringUrl is received by logInteraction
     console.log('Logging interaction with referringUrl:', referringUrl);
 
     const logEntry = {
@@ -87,13 +87,12 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       aiService,
       ...(referringUrl && { referringUrl }),
       ...(citationUrl && { citationUrl }),
-      originalCitationUrl: parseAIResponse(aiResponse, aiService).citationUrl,
+      ...(originalCitationUrl && { originalCitationUrl }),
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback }),
       ...(expertFeedback && { expertFeedback })
     };
 
-    // Log the final entry to verify all data
     console.log('Final log entry:', logEntry);
 
     // Log to console in all environments
@@ -102,7 +101,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     if (process.env.REACT_APP_ENV === 'production') {
       LoggingService.logInteraction(logEntry, false);
     }
-  }, [parseAIResponse]);
+  }, []);
 
   const handleFeedback = useCallback((isPositive, expertFeedback = null) => {
     const feedback = isPositive ? 'positive' : 'negative';
@@ -124,8 +123,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           userMessage.referringUrl,
           citationUrl,
           confidenceRating,
-          feedback,
-          expertFeedback
+          undefined,
+          undefined,
+          undefined
         );
       }
     }
@@ -257,7 +257,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         // Add message to state with validation result
         setMessages(prevMessages => {
           const newMessageIndex = prevMessages.length;
-          // Update checkedCitations first
           setCheckedCitations(prev => ({ 
             ...prev, 
             [newMessageIndex]: validationResult 
@@ -271,7 +270,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         
         setShowFeedback(true);
 
-        // Log interaction
+        // Log interaction with both original and validated URLs
         if (originalCitationUrl) {
           logInteraction(
             redactedText,
@@ -279,7 +278,10 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             usedAI,
             referringUrl.trim() || undefined,
             validationResult?.url || validationResult?.fallbackUrl,
-            validationResult?.confidenceRating
+            validationResult?.confidenceRating,
+            undefined,
+            undefined,
+            originalCitationUrl
           );
         }
 
