@@ -86,18 +86,15 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       aiResponse,
       aiService,
       ...(referringUrl && { referringUrl }),
-      ...(citationUrl && { citationUrl }),
-      ...(originalCitationUrl && { originalCitationUrl }),
+      citationUrl,
+      originalCitationUrl,
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback }),
       ...(expertFeedback && { expertFeedback })
     };
 
     console.log('Final log entry:', logEntry);
-
-    // Log to console in all environments
-    console.log('Chat Interaction:', logEntry);
-    // Only log to database in production environment
+    
     if (process.env.REACT_APP_ENV === 'production') {
       LoggingService.logInteraction(logEntry, false);
     }
@@ -116,6 +113,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       // Get the user's message (which should be the second-to-last message)
       const userMessage = messages[messages.length - 2];
       if (userMessage && userMessage.sender === 'user') {
+        // Only log if there's feedback
         logInteraction(
           userMessage.redactedText,
           aiResponse,
@@ -123,9 +121,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           userMessage.referringUrl,
           citationUrl,
           confidenceRating,
-          undefined,
-          undefined,
-          undefined
+          feedback,  // Now passing the actual feedback
+          expertFeedback,
+          originalCitationUrl
         );
       }
     }
@@ -254,20 +252,20 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
 
           // Get the final URL and confidence rating safely
-          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
+          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl || originalCitationUrl;
           const confidenceRating = validationResult?.confidenceRating || '0.1';
 
-          // Log interaction with correct URL order and safe values
+          // Initial log with correct URL distinction
           logInteraction(
             redactedText,
             response,
             usedAI,
             referringUrl.trim() || undefined,
-            finalCitationUrl || originalCitationUrl, // Fallback to original if no validated URL
+            finalCitationUrl,
+            originalCitationUrl,
             confidenceRating,
             undefined,
-            undefined,
-            originalCitationUrl
+            undefined
           );
 
           // Add message to state with validation result
