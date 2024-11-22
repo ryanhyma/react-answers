@@ -113,28 +113,34 @@ class URLValidator {
    * @returns {Promise<object>} Validation result with network check
    */
   async validateAndCheckUrl(url, lang, t) {
-    // First do the static validation
+    // First check if the URL is structurally valid
     const validationResult = this.validateUrl(url, lang);
     
-    // If confidence is low, try to get a fallback URL
-    if (validationResult.confidence < 0.8) {
+    // Perform network validation
+    const checkResult = await checkCitationUrl(url);
+    
+    // If the URL is valid and accessible, keep it as is
+    if (checkResult.isValid) {
+        return {
+            isValid: true,
+            url: url,  // Keep the original URL
+            confidenceRating: '1.0'
+        };
+    }
+    
+    // Only look for fallback URLs if the original URL is invalid
+    if (!checkResult.isValid) {
         const fallback = this.getFallbackUrl(url, lang);
         
         if (fallback.confidence > 0.4) {
             return {
-                isValid: true,  // Changed to true since we found a good menu match
-                url: fallback.url,  // Use url instead of fallbackUrl
+                isValid: true,
+                url: fallback.url,
                 confidenceRating: fallback.confidence.toFixed(1)
-                // Removed fallbackText since this is now treated as a valid URL
             };
         }
-    }
-
-    // For all other URLs, perform network validation
-    const checkResult = await checkCitationUrl(url);
-    
-    // If URL is invalid (either from structural validation or network check)
-    if (!validationResult.isValid || !checkResult.isValid) {
+        
+        // If no good fallback found, return search page
         return {
             isValid: false,
             fallbackUrl: `https://www.canada.ca/${lang}/sr/srb.html`,
@@ -142,12 +148,6 @@ class URLValidator {
             confidenceRating: '0.1'
         };
     }
-
-    return {
-        isValid: true,
-        url: checkResult.url,
-        confidenceRating: '0.8'
-    };
   }
 
   /**
