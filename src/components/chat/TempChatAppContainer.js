@@ -252,37 +252,39 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         let validationResult;
         if (originalCitationUrl) {
           validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
-        }
 
-        // Add message to state with validation result
-        setMessages(prevMessages => {
-          const newMessageIndex = prevMessages.length;
-          setCheckedCitations(prev => ({ 
-            ...prev, 
-            [newMessageIndex]: validationResult 
-          }));
-          
-          const filteredMessages = prevMessages.filter(msg => 
-            !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
-          );
-          return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
-        });
-        
-        setShowFeedback(true);
+          // Get the final URL and confidence rating safely
+          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
+          const confidenceRating = validationResult?.confidenceRating || '0.1';
 
-        // Log interaction with both original and validated URLs
-        if (originalCitationUrl) {
+          // Log interaction with correct URL order and safe values
           logInteraction(
             redactedText,
             response,
             usedAI,
             referringUrl.trim() || undefined,
-            validationResult?.url || validationResult?.fallbackUrl,
-            validationResult?.confidenceRating,
+            finalCitationUrl || originalCitationUrl, // Fallback to original if no validated URL
+            confidenceRating,
             undefined,
             undefined,
             originalCitationUrl
           );
+
+          // Add message to state with validation result
+          setMessages(prevMessages => {
+            const newMessageIndex = prevMessages.length;
+            setCheckedCitations(prev => ({ 
+              ...prev, 
+              [newMessageIndex]: validationResult 
+            }));
+            
+            const filteredMessages = prevMessages.filter(msg => 
+              !(msg.sender === 'system' && msg.text === t('homepage.chat.messages.thinkingMore'))
+            );
+            return [...filteredMessages, { text: response, sender: 'ai', aiService: usedAI }];
+          });
+          
+          setShowFeedback(true);
         }
 
         setTurnCount(prevCount => prevCount + 1);
