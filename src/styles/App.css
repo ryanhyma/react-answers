@@ -62,6 +62,93 @@
 	text-decoration: underline;
   }
 
+/* expert rating plain css */
+
+.expert-rating-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .expert-rating-container h3 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .expert-rating-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .expert-rating-container input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .expert-rating-container input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .expert-rating-container button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .expert-rating-container button:hover {
+    background-color: #003d82;
+  }
+  
+  .feedback-container {
+    font-size: 1rem; /* 16px */
+  }
+  
+  .feedback-text {
+    color: #000;
+  }
+  
+  .feedback-link {
+    text-decoration: none;
+    color: #2077D4;
+  }
+  
+  .feedback-link:hover {
+    text-decoration: underline;
+  }
+  
+  .feedback-separator {
+    color: #666;
+    margin: 0 0.2rem;
+  }
+  
+  .button-as-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+  }
+  
+  .button-as-link:focus {
+    outline: 2px solid #2b4382;
+    outline-offset: 2px;
+  }
+
+/* modifications of GCDS-tokens to Canada.ca design where appropriate */
+
 :root { 
 	--gcds-header-margin: 0 0 1.55rem !important;
 	--gcds-heading-h1-border-background: #af3c43 !important;
@@ -71,4 +158,14 @@
 	--gcds-header-brand-padding: 0 0 0.9rem !important;
 	--gcds-header-brand-border-color: #26374a; /* to change to thin grey line which is used w/o if needed */
 	--gcds-header-brand-border-width: 0.1875rem;  /* to change thickness on thin grey line which is used w/o if needed */
+}
+
+/* clean up margins and spacing */
+
+.send-button {
+	margin-bottom: 16px;
+}
+
+gcds-container {
+	margin-bottom: 32px;
 }
