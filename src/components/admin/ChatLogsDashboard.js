@@ -27,13 +27,7 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadJSON = () => {
-    // Create a sanitized version of logs without originalQuestion
-    const sanitizedLogs = logs.map(log => {
-      const { originalQuestion, ...rest } = log; // Destructure to remove originalQuestion
-      return rest;
-    });
-
-    const blob = new Blob([JSON.stringify(sanitizedLogs, null, 2)], { 
+    const blob = new Blob([JSON.stringify(logs, null, 2)], { 
       type: 'application/json' 
     });
     const url = window.URL.createObjectURL(blob);
