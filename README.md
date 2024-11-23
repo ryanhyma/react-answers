@@ -44,11 +44,42 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Enhanced citation handling - 404 errors for canada.ca urls are replaced by link to canada.ca search page
 - System prompts optimized for 2024 model compatibility
 
-### Evaluation-driven design to achieve 100% answer accuracy
+### Evaluation-driven design to eventually achieve 100% answer accuracy
 - Evaluation system to score AI responses and provide feedback for continuous improvement
 - Evaluation input of csv files generated from user feedback questions to score AI responses
 - Good source of learning about this methodology is: https://www.ycombinator.com/library/Lg-why-vertical-llm-agents-are-the-new-1-billion-saas-opportunities
 
+### Microservices prompt-chaining architecture
+- TODO - implement microservices prompt-chaining architecture to improve response quality and speed
+References: 
+* https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/chain-prompt
+* https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration/
+
+#### Context service 
+The context service would select the question topic/dept area using EITHER the referral URL - e.g. the page the user triggered the AI from - OR an AI model as a judge system. 
+
+Model as a judge uses a small light AI model to evaluate the question to determine the topic area of the question. Then that microservice would pass the topic to th
+
+Input: Menu structure without urls and list of departments/agencies from department page
+Output: topic or department context
+
+#### Answer service
+Input: base system prompt, plus topic or department context name from context service to load the context files for that topic/dept, including top task scenarios, confusions, and examples. 
+Output: answer
+
+#### Citation service
+Input: context from context service, question, and answer from answer service
+
+ Feed input to AI with base systemp prompt citation selection criteria, and use context to load hierarchical sitemap, or menu structure and any update files. 
+
+Or use search api and select first search result url as citation
+
+Output: citation url 
+
+#### Evaluation service
+Input: questions and correct citation and answers from evaluation  file
+Output: answers and citations from current system and selected model and model version - send to scoring AI service 
+References: https://platform.openai.com/docs/guides/evals 
 
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
