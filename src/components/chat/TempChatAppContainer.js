@@ -16,7 +16,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('claude');
+  const [selectedAI, setSelectedAI] = useState('chatgpt');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState('');

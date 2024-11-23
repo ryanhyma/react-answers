@@ -61,7 +61,7 @@ const AdminPage = ({ lang = 'en' }) => {
         <div className="status-control-section">
           <div className="status-toggle">
             <GcdsCheckbox
-              label="Service Available"
+              label="Turn service on/off"
               checked={status.isAvailable}
               onChange={handleStatusToggle}
             />
