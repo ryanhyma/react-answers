@@ -10,7 +10,7 @@ import {
   CohereUnprocessableEntityError,
   CohereTooManyRequestsError,
   CohereInternalServerError
-} from 'cohere-ai/v2';
+} from 'cohere-ai';
 
 export default async function handler(req, res) {
   console.log('Starting Cohere handler');
