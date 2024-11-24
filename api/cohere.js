@@ -1,58 +1,27 @@
 // api/cohere.js
-// api/cohere.js
-import { CohereClientV2 } from 'cohere-ai';
+import { CohereClient } from 'cohere-ai/v2';
 
-const apiKey = process.env.NODE_ENV === 'production' 
-  ? process.env.COHERE_API_KEY
-  : process.env.REACT_APP_COHERE_API_KEY;
-
-const cohere = new CohereClientV2({
-  token: apiKey,
+const cohere = new CohereClient({
+  token: process.env.REACT_APP_COHERE_API_KEY || process.env.COHERE_API_KEY,
 });
 
-
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    try {
-      console.log('Cohere API request received');
-      const { message, systemPrompt, conversationHistory } = req.body;
-      
-      console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
-      console.log('Current Message:', message);
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-      if (!process.env.COHERE_API_KEY) {
-        throw new Error('COHERE_API_KEY is not set');
-      }
+  try {
+    const { messages } = req.body;
 
-      // Convert conversation history to Cohere's format
-      const messages = [
-        // Add system prompt as first message if it exists
-        ...(systemPrompt ? [{ role: 'system', content: systemPrompt }] : []),
-        ...conversationHistory.map(msg => ({
-          role: msg.role,
-          content: msg.content
-        })),
-        { role: "user", content: message }
-      ];
+    const response = await cohere.chat({
+      model: 'command-r-plus-08-2024',
+      messages,
+      temperature: 0.5
+    });
 
-      const response = await cohere.chat({
-        model: 'command-r-plus',
-        messages: messages,
-        temperature: 0.5
-      });
-
-      console.log('Cohere Response:', {
-        content: response.text.substring(0, 100) + '...',
-        tokens: response.tokenCount
-      });
-      
-      res.status(200).json({ content: response.text });
-    } catch (error) {
-      console.error('Error calling Cohere API:', error.message);
-      res.status(500).json({ error: 'Error processing your request', details: error.message });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(200).json({ content: response.text });
+  } catch (error) {
+    console.error('Cohere API error:', error);
+    return res.status(500).json({ error: error.message });
   }
 }

@@ -14,7 +14,8 @@
         "privacyNote": "To protect your privacy, numbers and addresses will be removed before your question is sent to the AI service. The removed text will display as XXX.",
         "aiServices": {
           "claude": "AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024",
-          "chatgpt": "AI service ChatGPT: OpenAI 4o, knowledge to May 2024"
+          "chatgpt": "AI service ChatGPT: OpenAI 4o, knowledge to May 2024",
+          "cohere": "AI service Cohere: Cohere Chat V2, knowledge to August 2024"
         },
         "systemPrompt": "Read the System Prompt",
         "contact": "Development is still in progress - contact lisa.fast@cds-snc.ca for information."
@@ -59,7 +60,8 @@
           "aiSelection": {
             "label": "AI:",
             "claude": "Anthropic Claude 3.5 Sonnet",
-            "chatgpt": "OpenAI ChatGPT 4o"
+            "chatgpt": "OpenAI ChatGPT 4o",
+            "cohere": "Cohere"
           },
           "referringUrl": {
             "label": "Referring Canada.ca URL (optional)"

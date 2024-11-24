@@ -5,6 +5,7 @@ const OpenAI = require('openai');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
+const { CohereClient } = require('cohere-ai');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
@@ -41,6 +42,7 @@ if (process.env.REACT_APP_ENV === 'development') {
   console.log('Development environment variables:');
   console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
   console.log('REACT_APP_ANTHROPIC_API_KEY:', process.env.REACT_APP_ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
+  console.log('REACT_APP_COHERE_API_KEY:', process.env.REACT_APP_COHERE_API_KEY ? 'Set' : 'Not Set');
   console.log('REACT_APP_MONGODB_URI:', process.env.REACT_APP_MONGODB_URI ? 'Set' : 'Not Set');
 } else {
   console.log('Running in production mode');
@@ -49,6 +51,7 @@ if (process.env.REACT_APP_ENV === 'development') {
 console.log('Environment variables:');
 console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
 console.log('REACT_APP_ANTHROPIC_API_KEY:', process.env.REACT_APP_ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
+console.log('REACT_APP_COHERE_API_KEY:', process.env.REACT_APP_COHERE_API_KEY ? 'Set' : 'Not Set');
 
 const anthropic = new Anthropic({
   apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
@@ -56,6 +59,10 @@ const anthropic = new Anthropic({
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+});
+
+const cohere = new CohereClient({
+  token: process.env.REACT_APP_COHERE_API_KEY,
 });
 
 app.post('/api/claude', async (req, res) => {
@@ -116,6 +123,30 @@ app.post('/api/chatgpt', async (req, res) => {
     res.json({ content: response.choices[0].message.content });
   } catch (error) {
     console.error('Error calling ChatGPT API:', error);
+    res.status(500).json({ error: 'Error processing your request' });
+  }
+});
+
+// Add Cohere endpoint
+app.post('/api/cohere', async (req, res) => {
+  console.log('Received request to /api/cohere');
+  console.log('Request body:', req.body);
+  try {
+    const { messages } = req.body;
+    
+    // Log conversation details
+    console.log('Messages:', JSON.stringify(messages, null, 2));
+
+    const response = await cohere.chat({
+      model: "command-r-plus-08-2024",
+      messages: messages,
+      temperature: 0.5
+    });
+
+    console.log('Cohere API response received');
+    res.json({ content: response.text });
+  } catch (error) {
+    console.error('Error calling Cohere API:', error);
     res.status(500).json({ error: 'Error processing your request' });
   }
 });
