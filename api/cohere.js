@@ -18,17 +18,23 @@ export default async function handler(req, res) {
 
     // Get the latest message and chat history
     const userMessage = messages[messages.length - 1].content;
-    const chatHistory = messages.slice(1, -1).map(msg => ({
+    
+    // Format chat history for Cohere (excluding the system message and current message)
+    const chat_history = messages.slice(1, -1).map(msg => ({
       role: msg.role.toUpperCase(),
       message: msg.content
     }));
 
-    // Make the API call
+    console.log('Calling Cohere with:', {
+      message: userMessage,
+      historyLength: chat_history.length
+    });
+
+    // Make the API call - matching the working server.js structure
     const response = await cohere.chat({
       model: 'command-r-plus-08-2024',
-      message: userMessage,
-      chat_history: chatHistory,
-      preamble: messages[0].content, // This is the system message
+      message: userMessage,  // The current message
+      chat_history: chat_history,  // Previous messages
       temperature: 0.5
     });
 
