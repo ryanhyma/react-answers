@@ -16,17 +16,23 @@ export default async function handler(req, res) {
     // Log the incoming messages for debugging
     console.log('Incoming messages:', JSON.stringify(messages, null, 2));
 
-    // Format the messages according to Cohere's API expectations
+    // Get the latest message and chat history
+    const userMessage = messages[messages.length - 1].content;
+    const chatHistory = messages.slice(1, -1).map(msg => ({
+      role: msg.role.toUpperCase(),
+      message: msg.content
+    }));
+
+    // Make the API call
     const response = await cohere.chat({
-      message: messages[messages.length - 1].content, // Get the latest message
-      chat_history: messages.slice(0, -1).map(msg => ({
-        role: msg.role,
-        message: msg.content
-      })),
       model: 'command-r-plus-08-2024',
+      message: userMessage,
+      chat_history: chatHistory,
+      preamble: messages[0].content, // This is the system message
       temperature: 0.5
     });
 
+    console.log('Cohere response received');
     return res.status(200).json({ content: response.text });
   } catch (error) {
     if (error instanceof CohereTimeoutError) {

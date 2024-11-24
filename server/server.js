@@ -101,6 +101,7 @@ app.post('/api/claude', async (req, res) => {
     res.status(500).json({ error: 'Error processing your request' });
   }
 });
+//use this for local development of chatGPT
 app.post('/api/chatgpt', async (req, res) => {
   console.log('Received request to /api/chatgpt');
   console.log('Request body:', req.body);
@@ -122,24 +123,45 @@ app.post('/api/chatgpt', async (req, res) => {
   }
 });
 
-// Add Cohere endpoint
+// server.js - update the Cohere endpoint
 app.post('/api/cohere', async (req, res) => {
   console.log('Received request to /api/cohere');
   console.log('Request body:', req.body);
   try {
     const { messages } = req.body;
     
+    // Get the latest message (user's input)
+    const userMessage = messages[messages.length - 1].content;
+    
+    // Format chat history for Cohere
+    const chat_history = messages.slice(0, -1).map(msg => ({
+      role: msg.role.toUpperCase(),
+      message: msg.content
+    }));
+
+    console.log('Calling Cohere with:', {
+      message: userMessage,
+      historyLength: chat_history.length
+    });
+
     const response = await cohere.chat({
       model: "command-r-plus-08-2024",
-      messages,
+      message: userMessage,  // The current message
+      chat_history: chat_history,  // Previous messages
       temperature: 0.5
     });
 
     console.log('Cohere API response received');
     res.json({ content: response.text });
   } catch (error) {
-    console.error('Error calling Cohere API:', error);
-    res.status(500).json({ error: 'Error processing your request' });
+    console.error('Error calling Cohere API:', {
+      message: error.message,
+      details: error
+    });
+    res.status(500).json({ 
+      error: 'Error processing your request',
+      details: error.message 
+    });
   }
 });
 
