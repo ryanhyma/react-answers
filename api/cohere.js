@@ -1,23 +1,19 @@
 // api/cohere.js
-const { CohereClient } = require('cohere-ai');
+import { CohereClient } from 'cohere-ai';
 
 const cohere = new CohereClient({
-  token: process.env.COHERE_API_KEY,
+  token: process.env.COHERE_API_KEY
 });
 
-module.exports = async function handler(req, res) {
-  console.log('Starting Cohere handler');
-  console.log('Environment check:', {
-    hasApiKey: !!process.env.COHERE_API_KEY,
-    nodeEnv: process.env.NODE_ENV
-  });
-
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return;
   }
 
   try {
-    console.log('Request body received');
+    console.log('Cohere API request received');
     const { messages } = req.body;
     
     // Get the latest message and chat history
@@ -27,10 +23,16 @@ module.exports = async function handler(req, res) {
       message: msg.content
     }));
 
-    console.log('Making Cohere API call with:', {
+    // Log the request details
+    console.log('Processing request:', {
       messageLength: userMessage?.length,
-      historyLength: chat_history.length
+      historyLength: chat_history.length,
+      model: 'command-r-plus-08-2024'
     });
+
+    if (!process.env.COHERE_API_KEY) {
+      throw new Error('COHERE_API_KEY is not set');
+    }
 
     const response = await cohere.chat({
       model: 'command-r-plus-08-2024',
@@ -39,19 +41,17 @@ module.exports = async function handler(req, res) {
       temperature: 0.5
     });
 
-    console.log('Cohere API call successful');
-    return res.status(200).json({ content: response.text });
-  } catch (error) {
-    console.error('Error details:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      type: error.constructor.name
+    console.log('Cohere Response:', {
+      content: response.text.substring(0, 100) + '...',
+      response_id: response.response_id
     });
 
-    return res.status(500).json({ 
-      error: 'An error occurred',
-      details: error.message
+    res.status(200).json({ content: response.text });
+  } catch (error) {
+    console.error('Error calling Cohere API:', error.message);
+    res.status(500).json({ 
+      error: 'Error processing your request', 
+      details: error.message 
     });
   }
 }
