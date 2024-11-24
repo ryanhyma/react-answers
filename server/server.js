@@ -1,4 +1,4 @@
-// server/server.js
+// server/server.js - this is only used for local development NOT for Vercel
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const OpenAI = require('openai');
@@ -48,11 +48,6 @@ if (process.env.REACT_APP_ENV === 'development') {
   console.log('Running in production mode');
 }
 
-console.log('Environment variables:');
-console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
-console.log('REACT_APP_ANTHROPIC_API_KEY:', process.env.REACT_APP_ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
-console.log('REACT_APP_COHERE_API_KEY:', process.env.REACT_APP_COHERE_API_KEY ? 'Set' : 'Not Set');
-
 const anthropic = new Anthropic({
   apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
 });
@@ -62,7 +57,7 @@ const openai = new OpenAI({
 });
 
 const cohere = new CohereClient({
-  token: process.env.REACT_APP_COHERE_API_KEY,
+  token: process.env.REACT_APP_COHERE_API_KEY
 });
 
 app.post('/api/claude', async (req, res) => {
@@ -134,12 +129,9 @@ app.post('/api/cohere', async (req, res) => {
   try {
     const { messages } = req.body;
     
-    // Log conversation details
-    console.log('Messages:', JSON.stringify(messages, null, 2));
-
     const response = await cohere.chat({
       model: "command-r-plus-08-2024",
-      messages: messages,
+      messages,
       temperature: 0.5
     });
 

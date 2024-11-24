@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Status - proof of concept prototype - deployed on Vercel - contact me for link - this is a proof of concept prototype for research purposes only
 - Back-end database to store user questions and answers and expert feedback
 - Evaluation input of csv files generated from user feedback questions to score AI responses
-- Can choose either Claude or OpenAI 4o API AI service
+- Can choose either Claude Sonnet 3.5, 🇨🇦 Cohere command-r-plus-08-2024, or OpenAI GPT-4o API AI service
 - System prompt includes menu structure, updated CRA account context, and specific instructions for top task examples 
 
 ## Uses GC Design system (but not fully integrated)

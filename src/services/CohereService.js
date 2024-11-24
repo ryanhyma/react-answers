@@ -9,25 +9,21 @@ const API_URL = process.env.NODE_ENV === 'production'
 const CohereService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
-      console.log(`🤖 Cohere Service: Processing message in ${lang.toUpperCase()}`);
+      console.log(`🤖🇦 Cohere Service: Processing message`);
       const SYSTEM_PROMPT = await loadSystemPrompt(lang);
       
-      // Format messages according to Cohere's expected structure
       const messages = [
         ...(SYSTEM_PROMPT ? [{ role: 'system', content: SYSTEM_PROMPT }] : []),
         ...conversationHistory.map(msg => ({
-          role: msg.role.toLowerCase(), // Ensure role is lowercase as per Cohere's API
+          role: msg.role.toLowerCase(),
           content: msg.content
         })),
         { role: 'user', content: message }
       ];
 
-      // Use empty array for evaluation messages
-      const finalMessages = message.includes('<evaluation>') ? [{ role: 'user', content: message }] : messages;
-
       console.log('Sending to Cohere API:', {
-        messages: finalMessages,
-        systemPromptLength: SYSTEM_PROMPT?.length
+        currentMessage: message,
+        historyLength: conversationHistory.length
       });
 
       const response = await fetch(API_URL, {
@@ -36,7 +32,7 @@ const CohereService = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: finalMessages
+          messages
         }),
       });
 
@@ -47,7 +43,6 @@ const CohereService = {
       }
 
       const data = await response.json();
-      
       return data.content;
     } catch (error) {
       console.error('Error calling Cohere API:', error);
