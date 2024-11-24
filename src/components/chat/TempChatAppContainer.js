@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
+import CohereService from '../../services/CohereService.js';
 import RedactionService from '../../services/RedactionService.js';
 import FeedbackComponent from './FeedbackComponent';
 import LoggingService from '../../services/LoggingService.js';
@@ -145,6 +146,29 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     window.location.reload();
   };
 
+  // Define the failover order for each AI service
+  const getNextAIService = (currentAI) => {
+    const failoverOrder = {
+      'claude': 'chatgpt',
+      'chatgpt': 'cohere',
+      'cohere': 'claude'
+    };
+    return failoverOrder[currentAI];
+  };
+
+  const tryAIService = async (aiType, messageWithUrl, conversationHistory, lang) => {
+    switch(aiType) {
+      case 'claude':
+        return await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
+      case 'chatgpt':
+        return await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
+      case 'cohere':
+        return await CohereService.sendMessage(messageWithUrl, conversationHistory, lang);
+      default:
+        throw new Error('Invalid AI service');
+    }
+  };
+
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
       // Add console log to check referringUrl
@@ -228,26 +252,27 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         let usedAI = selectedAI;
 
         try {
-          if (selectedAI === 'claude') {
-            response = await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
-          } else {
-            response = await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
-          }
+          response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
         } catch (error) {
-          // Log the error for debugging
-          console.error('Error with AI service:', error);
-
+          console.error(`Error with ${selectedAI}:`, error);
+          
           // Show "thinking more" message
           setMessages(prevMessages => [
             ...prevMessages,
             { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
           ]);
 
-          // Try the other service
-          usedAI = selectedAI === 'claude' ? 'chatgpt' : 'claude';
-          response = await (usedAI === 'claude' 
-            ? ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang)
-            : ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang));
+          // Try next service in the failover chain
+          usedAI = getNextAIService(selectedAI);
+          try {
+            response = await tryAIService(usedAI, messageWithUrl, conversationHistory, lang);
+          } catch (secondError) {
+            console.error(`Error with ${usedAI}:`, secondError);
+            
+            // Try the final service in the chain
+            usedAI = getNextAIService(usedAI);
+            response = await tryAIService(usedAI, messageWithUrl, conversationHistory, lang);
+          }
         }
 
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
@@ -477,7 +502,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                   />
                   <label htmlFor="claude" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.claude')}</label>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
                   <input
                     type="radio"
                     id="chatgpt"
@@ -487,7 +512,19 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     onChange={handleAIToggle}
                     style={{ marginRight: '5px' }}
                   />
-                  <label htmlFor="chatgpt">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  <label htmlFor="chatgpt" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="radio"
+                    id="cohere"
+                    name="ai-selection"
+                    value="cohere"
+                    checked={selectedAI === 'cohere'}
+                    onChange={handleAIToggle}
+                    style={{ marginRight: '5px' }}
+                  />
+                  <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
                 </div>
               </div>
             </fieldset>
