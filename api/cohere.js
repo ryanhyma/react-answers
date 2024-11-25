@@ -1,11 +1,11 @@
 // api/cohere.js
-const { CohereClientV2 } = require('cohere-ai');
-
-// Initialize with V2 client
-const cohere = new CohereClientV2({
+import cohere from 'cohere-ai';
+const cohereClient = new cohere.CohereClientV2({
   token: process.env.COHERE_API_KEY
 });
-
+// const { CohereClientV2 } = require('cohere-ai'); - failed with same constructor error
+// Initialize with V2 client
+// const cohere = new CohereClientV2({
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       throw new Error('COHERE_API_KEY is not set');
     }
 
-    const response = await cohere.chat({
+    const response = await cohereClient.chat({
       model: 'command-r-plus-08-2024',
       message: userMessage,
       chat_history: chat_history,
