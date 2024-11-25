@@ -1,6 +1,5 @@
 // api/cohere.js
-import pkg from 'cohere-ai';
-const { CohereClient } = pkg;
+const { CohereClient} = require('cohere-ai');
 
 // Initialize outside the handler to avoid re-creating on each request
 const cohere = new CohereClient({
