@@ -1,8 +1,8 @@
 // api/cohere.js
-const { CohereClient} = require('cohere-ai');
+const { CohereClientV2 } = require('cohere-ai');
 
-// Initialize outside the handler to avoid re-creating on each request
-const cohere = new CohereClient({
+// Initialize with V2 client
+const cohere = new CohereClientV2({
   token: process.env.COHERE_API_KEY
 });
 
