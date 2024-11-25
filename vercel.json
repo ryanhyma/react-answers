@@ -1,7 +1,14 @@
 {
+  "version": 2,
   "functions": {
-    "api/gpt-batch.js": {
-      "maxDuration": 60
+    "api/cohere.js": {
+      "runtime": "nodejs18.x"
     }
-  }
-} 
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 // api/cohere.js
-import { CohereClient } from 'cohere-ai';
+import pkg from 'cohere-ai';
+const { CohereClient } = pkg;
 
+// Initialize outside the handler to avoid re-creating on each request
 const cohere = new CohereClient({
   token: process.env.COHERE_API_KEY
 });
@@ -48,7 +50,11 @@ export default async function handler(req, res) {
 
     res.status(200).json({ content: response.text });
   } catch (error) {
-    console.error('Error calling Cohere API:', error.message);
+    console.error('Error calling Cohere API:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
     res.status(500).json({ 
       error: 'Error processing your request', 
       details: error.message 
