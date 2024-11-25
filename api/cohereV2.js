@@ -1,9 +1,11 @@
-// api/cohere.js V1 api NOT V2 to check if works on Vercel serverless
+// api/cohere.js
 import cohere from 'cohere-ai';
-const cohereClient = cohere.Client({
+const cohereClient = new cohere.CohereClientV2({
   token: process.env.COHERE_API_KEY
 });
-
+// const { CohereClientV2 } = require('cohere-ai'); - failed with same constructor error
+// Initialize with V2 client
+// const cohere = new CohereClientV2({
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -18,7 +20,7 @@ export default async function handler(req, res) {
     // Get the latest message and chat history
     const userMessage = messages[messages.length - 1].content;
     const chat_history = messages.slice(1, -1).map(msg => ({
-      role: msg.role === 'assistant' ? 'chatbot' : msg.role,
+      role: msg.role.toUpperCase(),
       message: msg.content
     }));
 
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
     console.log('Processing request:', {
       messageLength: userMessage?.length,
       historyLength: chat_history.length,
-      model: 'command-r-plus'
+      model: 'command-r-plus-08-2024'
     });
 
     if (!process.env.COHERE_API_KEY) {
@@ -34,7 +36,7 @@ export default async function handler(req, res) {
     }
 
     const response = await cohereClient.chat({
-      model: 'command-r-plus',
+      model: 'command-r-plus-08-2024',
       message: userMessage,
       chat_history: chat_history,
       temperature: 0.5
@@ -42,6 +44,7 @@ export default async function handler(req, res) {
 
     console.log('Cohere Response:', {
       content: response.text.substring(0, 100) + '...',
+      response_id: response.response_id
     });
 
     res.status(200).json({ content: response.text });
