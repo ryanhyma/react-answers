@@ -336,3 +336,7 @@
  gcds-details {
      margin-bottom: 0px !important;
 }
+.ai-message-content p {
+     display: block;
+     margin: 0;
+}

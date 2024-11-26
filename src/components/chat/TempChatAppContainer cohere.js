@@ -253,20 +253,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
         try {
           response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
-          console.log('Raw AI response:', response);
-          
-          // Add debug log here
-          console.log('About to update messages with AI response');
-
-          setMessages(prevMessages => {
-            console.log('Updating messages state with:', response);
-            return [...prevMessages, { text: response, sender: 'ai', aiService: usedAI }];
-          });
-          
-          // Add debug log here
-          console.log('Messages state updated');
-          
-          setShowFeedback(true);
         } catch (error) {
           console.error(`Error with ${selectedAI}:`, error);
           
@@ -280,7 +266,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           usedAI = getNextAIService(selectedAI);
           try {
             response = await tryAIService(usedAI, messageWithUrl, conversationHistory, lang);
-            console.log('Raw AI response:', response);
           } catch (secondError) {
             console.error(`Error with ${usedAI}:`, secondError);
             
@@ -352,10 +337,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   }, [isLoading, messages, clearInput]);
 
   const formatAIResponse = useCallback((text, aiService, messageIndex) => {
-    console.log('formatAIResponse - Starting with text:', text);
-    console.log('formatAIResponse - AI service:', aiService);
-    console.log('formatAIResponse - Message index:', messageIndex);
-    
+    // console.log('Formatting AI response:', text, aiService, messageIndex);
     let responseType = 'normal';
     let content = text;
 
@@ -365,7 +347,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       content = content.replace(/<not-gc>/g, '').replace(/<\/not-gc>/g, '').trim();
     } 
     if (content.includes('<pt-muni>') && content.includes('</pt-muni>')) {
-      console.log('Found pt-muni tags');
       responseType = 'pt-muni';
       content = content.replace(/<pt-muni>/g, '').replace(/<\/pt-muni>/g, '').trim();
     }
@@ -375,9 +356,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     }
 
     const { paragraphs, citationHead } = parseAIResponse(content, aiService);
-    console.log('After parsing - responseType:', responseType);
-    console.log('After parsing - paragraphs:', paragraphs);
-
     const citationResult = checkedCitations[messageIndex];
     
     // Prioritize the validated URL
@@ -399,7 +377,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
     return (
       <div className="ai-message-content">
-        {/* Always show paragraphs regardless of response type */}
         {paragraphs.map((paragraph, index) => {
           const sentences = extractSentences(paragraph);
           return sentences.map((sentence, sentenceIndex) => (
@@ -408,7 +385,6 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </p>
           ));
         })}
-        {/* Only show citation container for normal responses with citations */}
         {responseType === 'normal' && (citationHead || displayUrl || aiService) && (
           <div className="citation-container">
             {citationHead && <p className="citation-head">{citationHead}</p>}
