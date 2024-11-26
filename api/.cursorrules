@@ -2,6 +2,11 @@
   "project_type": "Create React App with AI Services",
   "rules": [
     {
+      "description": "User is a beginner React developer, so add comments to explain the code and don't remove comments unless they are incorrect",
+      "match": "//",
+      "action": "add_comments"
+    }, 
+    {
       "description": "Consider leveraging reusable components to save repeated code",
       "match": "component",
       "action": "suggest_component_reuse"
@@ -22,7 +27,7 @@
       "action": "encourage_modular_structure"
     },
     {
-      "description": "Leverage serverless functions for scaling",
+      "description": "Deployed on Vercel - leverage serverless functions for scaling",
       "match": "serverless|Vercel",
       "action": "promote_scalability"
     },

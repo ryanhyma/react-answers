@@ -4,13 +4,14 @@ A React-based AI chat application that provides answers designed and sourced exc
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Status - proof of concept prototype - deployed on Vercel - contact me for link - this is a proof of concept prototype for research purposes only
-- Back-end database to store user questions and answers and expert feedback
+## Status - proof of concept prototype - deployed on Vercel - contact me for link 
+- this is a proof of concept prototype for research purposes only
+- Back-end MongoDB database to store user questions and answers and expert feedback
 - Evaluation input of csv files generated from user feedback questions to score AI responses
-- Can choose either Claude Sonnet 3.5, 🇨🇦 Cohere command-r-plus-08-2024, or OpenAI GPT-4o API AI service
+- Can choose either Claude Sonnet 3.5, 🇨🇦 Cohere command-r-plus-08-2024 (not yet on production), or OpenAI GPT-4o API AI service
 - System prompt includes menu structure, updated CRA account context, and specific instructions for top task examples 
 
-## Uses GC Design system (but not fully integrated)
+## Uses GC Design system (but not fully integrated) - couldn't get inputs to work for url field, radio buttons or checkboxes
 -  https://design-system.alpha.canada.ca/
 
 ## 🌟 Key Features
@@ -21,8 +22,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - scenarios address top user questions on canada.ca 
 - takes advantage of canada.ca interaction patterns and support - e.g. if a wizard is already in place, direct the user to answer those questions rather than attempting to walk them through the process in the ai service. AI services aren't optimized for question logic and aren't effective for that purpose.  
 - evaluation system and logging for continuous improvement as models evolve and both users and teams experiment with the ai application
-- TODO - use referral url to track where the user came from and use that information to improve the response - already is used for context in system prompt
-- TODO - someday could use model as a judge to determine context and apply specific context to system prompt to improve response quality
 
 ### Official languages support
 - Bilingual system prompts (English/French) - loads based on selected language to improve response quality and reduce input token load
@@ -49,6 +48,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Evaluation input of csv files generated from user feedback questions to score AI responses
 - Good source of learning about this methodology is: https://www.ycombinator.com/library/Lg-why-vertical-llm-agents-are-the-new-1-billion-saas-opportunities
 
+### Accessibility features
+- GCDS components - TODO should the input field have focus when page loads?
+- No streaming of responses - response is formatted and complete before it is displayed
+- Check against this accessibility AI application: https://adf-ask-accessibility-daeeafembaazdzfk.z01.azurefd.net/
+
 ### Microservices prompt-chaining architecture
 - TODO - implement microservices prompt-chaining architecture to improve response quality and speed
 References: 
@@ -57,10 +61,8 @@ References:
 
 #### Context service 
 The context service would select the question topic/dept area using EITHER the referral URL - e.g. the page the user triggered the AI from - OR an AI model as a judge system. 
-
-Model as a judge uses a small light AI model to evaluate the question to determine the topic area of the question. Then that microservice would pass the topic to th
-
-Input: Menu structure without urls and list of departments/agencies from department page
+-Model as a judge uses a small light AI model to evaluate the question to determine the topic area of the question. Then that microservice would pass the topic to the answer service.
+-Input: Menu structure without urls and list of departments/agencies from department page
 Output: topic or department context
 
 #### Answer service
@@ -69,12 +71,14 @@ Output: answer
 
 #### Citation service
 Input: context from context service, question, and answer from answer service
-
- Feed input to AI with base systemp prompt citation selection criteria, and use context to load hierarchical sitemap, or menu structure and any update files. 
-
+-Feed input to AI with base systemp prompt citation selection criteria, and use context to load hierarchical sitemap, or menu structure and any update files. 
 Or use search api and select first search result url as citation
 
-Output: citation url 
+Output: single citation url 
+- Extensive citation instructions to reduce hallucinations and improve accuracy
+- Citation link validation (404 checking)
+- URL validation and sanitization
+- TODO - replace with search function
 
 #### Evaluation service
 Input: questions and correct citation and answers from evaluation  file
@@ -125,11 +129,6 @@ References: https://platform.openai.com/docs/guides/evals
 - TODO - add more scenarios per theme or topic or department that are selectively loaded based on user question 
 - TODO - add more canada.ca urls to the system prompt to load selectively to improve response quality in French - for example https://www.canada.ca/fr/agence-revenu.sitemap.xml with https://www.canada.ca/en/revenue-agency.sitemap.xml or even better, have the topic tree per theme
 
-### Citation urls - single citaton url for next step of task
-- Extensive citation instructions to reduce hallucinations and improve accuracy
-- Citation link validation (404 checking)
-- URL validation and sanitization
-- TODO - replace with search function
 
 ## 🚀 Deployment
 
