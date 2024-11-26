@@ -43,6 +43,8 @@ export const menuStructure_FR = {
       "Payer les frais": "https://ircc.canada.ca/francais/information/frais/index.asp",
       "Déterminer si vous avez besoin d'une AVE ou d'un visa pour visiter le Canada": "https://ircc.canada.ca/francais/visiter/visas.asp",
       "Trouver réponse à ses questions dans le Centre d'aide": "https://ircc.canada.ca/francais/centre-aide/index-en-vedette-can.asp",
+      "Vérifier l'état de votre demande de passeport": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/verifier-demande-passeports-documents-voyage.html",
+      "Obtenir un service de passeport urgent ou express": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/passeport-urgent-express.html",
     }
   },
   "Voyage et tourisme": {
@@ -108,6 +110,8 @@ export const menuStructure_FR = {
       "Couverture dentaire": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires.html",
       "Prestations pour les familles et les proches aidants": "https://www.canada.ca/fr/services/prestations/famille.html",
       "Pensions publiques": "https://www.canada.ca/fr/services/prestations/pensionspubliques.html",
+      "Pension de retraite du RPC - admissibilité, quand commencer à recevoir, comment faire une demande": "https://www.canada.ca/fr/services/prestations/pensionspubliques/rpc.html",
+      "Présenter une demande Pension de retraite du Régime de pensions du Canada (RPC)": "https://www.canada.ca/fr/services/prestations/pensionspubliques/rpc/prestation-rpc/demande.html",
       "Subventions et occasions de financement": "https://www.canada.ca/fr/emploi-developpement-social/services/financement/programmes.html",
       "Aide financière aux étudiants et planification des études": "https://www.canada.ca/fr/services/prestations/etudes.html",
       "Prestations relatives au logement": "https://www.canada.ca/fr/services/prestations/logement.html",
@@ -161,6 +165,8 @@ export const menuStructure_FR = {
     url: "https://www.canada.ca/fr/services/impots.html",
     topics: {
       "Impôt sur le revenu": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu.html",
+      "Remboursements d'impôt sur le revenu des particuliers - délais, vérification de l'état, transferts": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html",
+      "Déclaration de revenus des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-particuliers.html",  
       "TPS/TVH": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/tps-tvh-entreprises.html",
       "Retenues sur la paie": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/retenues-paie.html",
       "Numéro d'entreprise": "https://www.canada.ca/fr/services/impots/numero-dentreprise.html",
@@ -168,6 +174,10 @@ export const menuStructure_FR = {
       "Crédits d'impôt et prestations pour les particuliers": "https://www.canada.ca/fr/services/impots/prestations-pour-enfants-et-familles.html",
       "Taxes d'accise, droits et prélèvements": "https://www.canada.ca/fr/services/impots/taxes-daccise-droits-et-prelevements.html",
       "Organismes de bienfaisance et dons": "https://www.canada.ca/fr/services/impots/bienfaisance.html",
+      "Impôt sur le revenu des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-revenu-particuliers.html",
+      "Remboursements d'impôt sur le revenu des particuliers - délais, vérification de l'état, transferts": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html",
+      "Déclaration de revenus des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/declaration-revenus-particuliers.html",
+      "Taux d'imposition des sociétés, crédits, tenue de registres, paiements et acomptes provisionnels": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-societe.html",
     },
     mostRequested: {
       "Mon dossier ARC": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/dossier-particuliers.html",
@@ -198,7 +208,7 @@ export const menuStructure_FR = {
       "Prévisions météo locales": "https://meteo.gc.ca/canada_f.html",
       "Véhicules écoénergétiques": "https://www.rncan.gc.ca/energie/efficacite/transports/20997",
       "Efficacité énergétique des maisons": "https://www.rncan.gc.ca/maisons",
-      "Espèces en péril": "https://www.canada.ca/fr/environnement-changement-climatique/services/registre-public-especes-peril.html",
+      "Espèces en p��ril": "https://www.canada.ca/fr/environnement-changement-climatique/services/registre-public-especes-peril.html",
       "Préparation aux conditions météorologiques dangereuses": "https://www.canada.ca/fr/environnement-changement-climatique/services/meteo-saisonniere-dangereuse.html",
     }
   },
