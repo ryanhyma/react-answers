@@ -26,17 +26,16 @@ const parseMessageContent = (text) => {
   let responseType = 'normal';
   let content = text;
 
-  if (content.includes('<not-gc>')) {
+  // Check for and remove tags, storing the response type
+  if (text.includes('<not-gc>')) {
     responseType = 'not-gc';
-    content = content.replace(/<not-gc>/g, '').replace(/<\/not-gc>/g, '').trim();
-  } 
-  if (content.includes('<pt-muni>')) {
+    content = text.replace(/<\/?not-gc>/g, '').trim();
+  } else if (text.includes('<pt-muni>')) {
     responseType = 'pt-muni';
-    content = content.replace(/<pt-muni>/g, '').replace(/<\/pt-muni>/g, '').trim();
-  }
-  if (content.includes('<clarifying-question>')) {
+    content = text.replace(/<\/?p?-?pt-muni>/g, '').trim();  // Updated regex to catch both <pt-muni> and <p-pt-muni>
+  } else if (text.includes('<clarifying-question>')) {
     responseType = 'question';
-    content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
+    content = text.replace(/<\/?clarifying-question>/g, '').trim();
   }
   
   return { responseType, content };
@@ -447,7 +446,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </p>
           ));
         })}
-        {parsedResponse.responseType === 'normal' && (parsedResponse.citationHead || displayUrl || aiService) && (
+        {parsedResponse.responseType === 'normal' && (parsedResponse.citationHead || displayUrl) && (
           <div className="citation-container">
             {parsedResponse.citationHead && <p className="citation-head">{parsedResponse.citationHead}</p>}
             {displayUrl && (
