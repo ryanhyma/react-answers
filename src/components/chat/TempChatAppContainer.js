@@ -189,7 +189,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const getNextAIService = (currentAI) => {
     const failoverOrder = {
       'claude': 'chatgpt',
-      'chatgpt': 'cohere',
+      'chatgpt': 'claude',
       'cohere': 'claude'
     };
     return failoverOrder[currentAI];
