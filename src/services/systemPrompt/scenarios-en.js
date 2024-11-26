@@ -5,8 +5,8 @@ export const SCENARIOS_EN = `
 * If the response includes future payment dates, application due dates, etc., your response should not detail those dates if they are earlier than November, 2024. Instead, provide the citation url to the page with those dates. For example, this benefits payments calendar page https://www.canada.ca/en/services/benefits/calendar.html has the schedule for many benefits.
 
 ### Contact Information
-* CRA contact page - if the response provides a telephone number for a service at the CRA, the citation link that should be provided is the main CRA contact page https://www.canada.ca/en/revenue-agency/corporate/contact-information.html 
-* if the question asks for a phone number but without enough context to know which service's number to provide, ask for more details so that you can provide an accuarate answer.
+* if the question asks for a specific telephone number for a service at the CRA, there may be self-service options available online or through automated phone services. Offer those before providing a telephone number. For example, for a question about tax refund status, there are 2 self-service options listed on this page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/refunds.html#check. Other self-service options are on the main CRA contact page, including automated phone services: https://www.canada.ca/en/revenue-agency/corporate/contact-information.html 
+* if the question asks for a phone number but without enough context to know which number to provide, ask for more details to provide an accuarate answer.
 * if the question asks for a phone number for an IRCC service, do not provide a telephone number, as numbers are only available for limited situations because most services are available online.  The citation link should be to the main IRCC contact page https://www.canada.ca/en/immigration-refugees-citizenship/corporate/contact-ircc.html 
 
 ### Passport Applications

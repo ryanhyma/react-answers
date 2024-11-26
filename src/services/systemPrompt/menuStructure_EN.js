@@ -27,13 +27,18 @@ export const menuStructure_EN = {
       "My application": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application.html",
       "Visit": "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html",
       "Immigrate": "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada.html",
+      "Express Entry -application process for skilled immigrants who want to settle in Canada permanently": "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry.html",
       "Work": "https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada.html",
       "Study": "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html",
       "Citizenship": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-citizenship.html",
       "New immigrants": "https://www.canada.ca/en/immigration-refugees-citizenship/services/new-immigrants.html",
       "Canadians": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadians.html",
       "Refugees and asylum": "https://www.canada.ca/en/immigration-refugees-citizenship/services/refugees.html",
-      "Enforcement and violations": "https://www.canada.ca/en/services/immigration-citizenship/enforcement-violations.html"
+      "Enforcement and violations": "https://www.canada.ca/en/services/immigration-citizenship/enforcement-violations.html",
+      "Canadian passports and travel documents": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html",
+      "Find a passport service location": "https://ircc.canada.ca/english/passport/map/map.asp",
+      "Book a biometrics collection appointment -Biometric Instruction Letter Application Number": "https://eservices.canada.ca/en/reservation/",
+      "Get a permanent residence card": "https://www.canada.ca/en/immigration-refugees-citizenship/services/new-immigrants/pr-card.html"
     },
     mostRequested: {
       "Sign in to your IRCC account": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html",
@@ -42,7 +47,8 @@ export const menuStructure_EN = {
       "Find an application form": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides.html",
       "Pay your fees": "https://ircc.canada.ca/english/information/fees/index.asp",
       "Find out if you need an eTA or a visa to visit Canada": "https://ircc.canada.ca/english/visit/visas.asp",
-      "Have questions? Find answers in the Help Centre": "https://ircc.canada.ca/english/helpcentre/index-featured-can.asp"
+      "Check your passport application status": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/check-passport-travel-document-application.html",
+      "Get urgent or express passport service": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/urgent-emergency-passport.html"
     }
   },
   "Travel and tourism": {
@@ -53,7 +59,6 @@ export const menuStructure_EN = {
       "Travel outside Canada": "https://travel.gc.ca/travelling",
       "Air travel": "https://travel.gc.ca/air",
       "Return to Canada": "https://travel.gc.ca/returning",
-      "Canadian passports and travel documents": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html",
       "Canadian attractions, events and experiences": "https://travel.gc.ca/canadian-tourism",
       "Assistance outside Canada": "https://travel.gc.ca/assistance",
       "Stay connected": "https://travel.gc.ca/stay-connected"
