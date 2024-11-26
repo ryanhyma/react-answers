@@ -37,9 +37,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Prompt caching implemented to improve response quality and speed
   - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`
   - GPT: Automatic caching
-- Confidence rating system
+- Confidence rating system for citation urls 
 - Temperature set to 0.5 for more deterministic responses for both models, but still allows for some variation to improve response quality
-- Conversation history management - pass conversation history to AI service for context 
+- Conversation history management - pass conversation history to AI service for context in 'message' field
 - Enhanced citation handling - 404 errors for canada.ca urls are replaced by link to canada.ca search page
 - System prompts optimized for 2024 model compatibility
 
