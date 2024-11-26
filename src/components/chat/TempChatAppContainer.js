@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import CohereService from '../../services/CohereService.js';
@@ -10,6 +10,37 @@ import '../../styles/App.css';
 import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations';
 
+// Utility functions go here, before the component
+const extractSentences = (paragraph) => {
+  const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
+  const sentences = [];
+  let match;
+  while ((match = sentenceRegex.exec(paragraph)) !== null) {
+    sentences.push(match[1].trim());
+  }
+  return sentences.length > 0 ? sentences : [paragraph];
+};
+
+// Move parsing logic outside component
+const parseMessageContent = (text) => {
+  let responseType = 'normal';
+  let content = text;
+
+  if (content.includes('<not-gc>')) {
+    responseType = 'not-gc';
+    content = content.replace(/<not-gc>/g, '').replace(/<\/not-gc>/g, '').trim();
+  } 
+  if (content.includes('<pt-muni>')) {
+    responseType = 'pt-muni';
+    content = content.replace(/<pt-muni>/g, '').replace(/<\/pt-muni>/g, '').trim();
+  }
+  if (content.includes('<clarifying-question>')) {
+    responseType = 'question';
+    content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
+  }
+  
+  return { responseType, content };
+};
 
 const TempChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
@@ -24,9 +55,18 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
+  const messageIdCounter = useRef(0);
+
+  // Add a ref to track if we're currently typing
+  const isTyping = useRef(false);
 
   const handleInputChange = (e) => {
+    isTyping.current = true;
     setInputText(e.target.value);
+    // Reset typing state after a short delay
+    setTimeout(() => {
+      isTyping.current = false;
+    }, 100);
   };
 
   const handleAIToggle = (e) => {
@@ -169,6 +209,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     }
   };
 
+  const addMessage = useCallback((messageData) => {
+    const messageId = messageIdCounter.current++;
+    setMessages(prev => [...prev, { ...messageData, id: messageId }]);
+  }, []);
+
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '') {
       // Add console log to check referringUrl
@@ -218,13 +263,13 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
       }
 
       // Add message to chat history
-      setMessages(prevMessages => [...prevMessages, {
+      addMessage({
         text: userMessage,
         redactedText: redactedText,
         redactedItems: redactedItems,
         sender: 'user',
         ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-      }]);
+      });
 
       clearInput();
 
@@ -255,26 +300,22 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
           console.log('Raw AI response:', response);
           
-          // Add debug log here
-          console.log('About to update messages with AI response');
-
-          setMessages(prevMessages => {
-            console.log('Updating messages state with:', response);
-            return [...prevMessages, { text: response, sender: 'ai', aiService: usedAI }];
-          });
-          
-          // Add debug log here
-          console.log('Messages state updated');
+          // Remove this addMessage call since we'll add it after URL validation
+          // addMessage({
+          //   text: response,
+          //   sender: 'ai',
+          //   aiService: usedAI
+          // });
           
           setShowFeedback(true);
         } catch (error) {
           console.error(`Error with ${selectedAI}:`, error);
           
           // Show "thinking more" message
-          setMessages(prevMessages => [
-            ...prevMessages,
-            { text: t('homepage.chat.messages.thinkingMore'), sender: 'system' }
-          ]);
+          addMessage({
+            text: t('homepage.chat.messages.thinkingMore'),
+            sender: 'system'
+          });
 
           // Try next service in the failover chain
           usedAI = getNextAIService(selectedAI);
@@ -292,44 +333,51 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
 
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
         
-        // Validate URL before adding message to state
-        let validationResult;
+        // Create a new message ID before adding the message
+        const newMessageId = messageIdCounter.current++;
+        
+        // Validate URL if present
+        let finalCitationUrl, confidenceRating;
         if (originalCitationUrl) {
-          validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
-
-          // Get the final URL and confidence rating safely
-          const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
-          const confidenceRating = validationResult?.confidenceRating || '0.1';
-
-          // Initial log with correct URL distinction
-          logInteraction(
-            redactedText,
-            response,
-            usedAI,
-            referringUrl.trim() || undefined,
-            finalCitationUrl,
-            originalCitationUrl,
-            confidenceRating,
-            undefined,
-            undefined
-          );
-
-          setMessages(prevMessages => {
-            const newMessageIndex = prevMessages.length;
-            setCheckedCitations(prev => ({ 
-              ...prev, 
-              [newMessageIndex]: {
-                ...validationResult,
-                finalCitationUrl,  // Store the validated URL explicitly
-                originalCitationUrl // Store the original URL for reference
-              }
-            }));
-            
-            return [...prevMessages, { text: response, sender: 'ai', aiService: usedAI }];
-          });
+          const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
           
-          setShowFeedback(true);
+          // Store validation result in checkedCitations using the new message ID
+          setCheckedCitations(prev => ({
+            ...prev,
+            [newMessageId]: {
+              url: validationResult?.url,
+              fallbackUrl: validationResult?.fallbackUrl,
+              confidenceRating: validationResult?.confidenceRating || '0.1',
+              finalCitationUrl: validationResult?.url || validationResult?.fallbackUrl
+            }
+          }));
+
+          finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
+          confidenceRating = validationResult?.confidenceRating || '0.1';
         }
+
+        // Always log interaction for all response types (normal, not-gc, pt-muni, question)
+        logInteraction(
+          redactedText,
+          response,
+          usedAI,
+          referringUrl.trim() || undefined,
+          finalCitationUrl,
+          originalCitationUrl,
+          confidenceRating,
+          undefined,
+          undefined
+        );
+
+        // Add message with the new ID
+        setMessages(prev => [...prev, {
+          id: newMessageId,
+          text: response,
+          sender: 'ai',
+          aiService: usedAI
+        }]);
+        
+        setShowFeedback(true);
 
         setTurnCount(prevCount => prevCount + 1);
 
@@ -343,7 +391,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         setIsLoading(false);
       }
     }
-  }, [inputText, selectedAI, clearInput, logInteraction, referringUrl, messages, turnCount, t, lang, parseAIResponse]);
+  }, [inputText, referringUrl, turnCount, addMessage, clearInput, t, messages, selectedAI, parseAIResponse, lang, logInteraction]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -351,72 +399,60 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
     }
   }, [isLoading, messages, clearInput]);
 
-  const formatAIResponse = useCallback((text, aiService, messageIndex) => {
-    console.log('formatAIResponse - Starting with text:', text);
-    console.log('formatAIResponse - AI service:', aiService);
-    console.log('formatAIResponse - Message index:', messageIndex);
-    
-    let responseType = 'normal';
-    let content = text;
+  // Memoize the parsed responses with better message tracking
+  const parsedResponses = useMemo(() => {
+    if (isTyping.current) return {};
 
-    // Check for special response types and remove tags anywhere in the content
-    if (content.includes('<not-gc>') && content.includes('</not-gc>')) {
-      responseType = 'not-gc';
-      content = content.replace(/<not-gc>/g, '').replace(/<\/not-gc>/g, '').trim();
-    } 
-    if (content.includes('<pt-muni>') && content.includes('</pt-muni>')) {
-      console.log('Found pt-muni tags');
-      responseType = 'pt-muni';
-      content = content.replace(/<pt-muni>/g, '').replace(/<\/pt-muni>/g, '').trim();
-    }
-    if (content.includes('<clarifying-question>') && content.includes('</clarifying-question>')) {
-      responseType = 'question';
-      content = content.replace(/<clarifying-question>/g, '').replace(/<\/clarifying-question>/g, '').trim();
-    }
+    const responses = {};
+    const processedIds = new Set(); // Track which messages we've processed
 
-    const { paragraphs, citationHead } = parseAIResponse(content, aiService);
-    console.log('After parsing - responseType:', responseType);
-    console.log('After parsing - paragraphs:', paragraphs);
-
-    const citationResult = checkedCitations[messageIndex];
-    
-    // Prioritize the validated URL
-    const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
-
-    // Use the checked citation's confidence rating if available, otherwise use the original
-    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
-
-    // Function to extract sentences from a paragraph
-    const extractSentences = (paragraph) => {
-      const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
-      const sentences = [];
-      let match;
-      while ((match = sentenceRegex.exec(paragraph)) !== null) {
-        sentences.push(match[1].trim());
+    messages.forEach((message) => {
+      if (message.sender === 'ai' && !processedIds.has(message.id)) {
+        processedIds.add(message.id);
+        console.log(`Parsing message ${message.id}:`, message.text.substring(0, 100) + '...');
+        
+        const { responseType, content } = parseMessageContent(message.text);
+        const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
+        
+        responses[message.id] = {
+          responseType,
+          paragraphs,
+          citationHead,
+          aiService: message.aiService
+        };
       }
-      return sentences.length > 0 ? sentences : [paragraph];
-    };
+    });
+    return responses;
+  }, [messages, parseAIResponse]);
+
+  const formatAIResponse = useCallback((text, aiService, messageId) => {
+    if (!isTyping.current) {
+      console.log('Formatting message:', messageId);
+    }
+    
+    const parsedResponse = parsedResponses[messageId];
+    if (!parsedResponse) return null;
+    
+    const citationResult = checkedCitations[messageId];
+    const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
+    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
 
     return (
       <div className="ai-message-content">
-        {/* Always show paragraphs regardless of response type */}
-        {paragraphs.map((paragraph, index) => {
+        {parsedResponse.paragraphs.map((paragraph, index) => {
           const sentences = extractSentences(paragraph);
           return sentences.map((sentence, sentenceIndex) => (
-            <p key={`${index}-${sentenceIndex}`} className="ai-sentence">
+            <p key={`${messageId}-${index}-${sentenceIndex}`} className="ai-sentence">
               {sentence}
             </p>
           ));
         })}
-        {/* Only show citation container for normal responses with citations */}
-        {responseType === 'normal' && (citationHead || displayUrl || aiService) && (
+        {parsedResponse.responseType === 'normal' && (parsedResponse.citationHead || displayUrl || aiService) && (
           <div className="citation-container">
-            {citationHead && <p className="citation-head">{citationHead}</p>}
+            {parsedResponse.citationHead && <p className="citation-head">{parsedResponse.citationHead}</p>}
             {displayUrl && (
               <p className="citation-link">
-                <a href={displayUrl} 
-                   target="_blank" 
-                   rel="noopener noreferrer">
+                <a href={displayUrl} target="_blank" rel="noopener noreferrer">
                   {displayUrl}
                 </a>
               </p>
@@ -430,7 +466,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
         )}
       </div>
     );
-  }, [parseAIResponse, checkedCitations, t]);
+  }, [parsedResponses, checkedCitations, t]);
 
   const privacyMessage = t('homepage.chat.messages.privacy');
 
@@ -444,8 +480,8 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   return (
     <div className="chat-container">
       <div className="message-list">
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
+        {messages.map((message) => (
+          <div key={message.id} className={`message ${message.sender}`}>
             {message.sender === 'user' ? (
               <div className={`user-message-box ${message.redactedItems && message.redactedItems.length > 0 ? 'redacted-box' : ''}`}>
                 <p className={message.redactedItems && message.redactedItems.length > 0 ? "redacted-message" : ""}>
@@ -467,9 +503,9 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                 {message.error ? (
                   <div className="error-message">{message.text}</div>
                 ) : (
-                  formatAIResponse(message.text, message.aiService, index)
+                  formatAIResponse(message.text, message.aiService, message.id)
                 )}
-                {index === messages.length - 1 && 
+                {message.id === messages.length - 1 && 
                  showFeedback && 
                  !message.error && 
                  !message.text.includes('<clarifying-question>') && (
