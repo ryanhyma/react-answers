@@ -26,7 +26,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ### Official languages support
 - Bilingual system prompts (English/French) - loads based on selected language to improve response quality and reduce input token load
 - Language selector available in evaluation process
-- loads Canada.caFrench menu structure and navigation options
+- loads Canada.ca French menu structure and navigation options
 - Full French version of application with official translation
 - All text displayed to users in JSON language files for easy updates and translations -  view the [fr.json file](src/locales/fr.json).
 
@@ -169,8 +169,37 @@ Please refer to our contributing guidelines and code of conduct for details on h
 ## Backlog
 - How to prevent old stuff like transparency, archived, corporate reports, audits etc from being used for answers and citations unless user asks about it specifically
 
+```mermaid
+flowchart TB
+    User(["User/Browser"])
+    Context["**Context Service**<br>- Topic/Dept Detection<br>- Referral URL Analysis"]
+    Answer["**Answer Service**<br>- Question Processing<br>- AI Response Generation"]
+    AIManager["**AI Service Manager**<br>- API Key Management<br>- Service Selection<br>- Load Balancing"]
+    Citation["**Citation Service**<br>- URL Validation<br>- Link Generation<br>- 404 Handling"]
+    DB["**Database Service**<br>- MongoDB Atlas<br>- Logging<br>- Data Export"]
+    Eval["**Evaluation Service**<br>- Response Scoring<br>- Quality Metrics<br>- Performance Analysis"]
 
-## Localization
-
-For more details on the French translations used in the application, you can view the [fr.json file](src/locales/fr.json).
+    User -->|Question| Context
+    Context -->|Topic/Context| Answer
+    Answer -->|Service Request| AIManager
+    AIManager -->|AI Response| Answer
+    Answer -->|Response Text| Citation
+    Citation -->|Validated URL| Answer
+    
+    Answer -->|Interaction Data| DB
+    Citation -->|URL Data| DB
+    Context -->|Context Data| DB
+    
+    DB -->|Historical Data| Eval
+    Answer -->|Response Quality| Eval
+    Citation -->|URL Accuracy| Eval
+    
+    subgraph AI_Providers
+        Claude["Claude"]
+        GPT["OpenAI"]
+        Cohere["Cohere"]
+    end
+    
+    AIManager -->|API Calls| AI_Providers
+```
 
