@@ -53,7 +53,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - No streaming of responses - response is formatted and complete before it is displayed
 - Get ideas from this accessibility AI application: https://adf-ask-accessibility-daeeafembaazdzfk.z01.azurefd.net/
 
-### Microservices prompt-chaining architecture
+## Microservices prompt-chaining architecture
 - TODO - implement microservices prompt-chaining architecture to improve response quality and speed [see diagram](#microservices-prompt-chaining-architecture-diagram)
 References: 
 * https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/chain-prompt
