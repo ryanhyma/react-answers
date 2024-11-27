@@ -30,9 +30,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Full French version of application with official translation
 - All text displayed to users in JSON language files for easy updates and translations -  view the [fr.json file](src/locales/fr.json).
 
-### Multi-model design is independent of AI service provider
+### Multi-model design - independent of AI service provider
 - Multiple AI service providers enables testing and exploration of strengths and weaknesses of different models
-- Anthropic Claude Sonnet 3.5 and OpenAI GPT-4o are currently supported - Cohere is next on roadmap - should explore Mistral to see if it performs better for French - all of these models are available through [Amazon Bedrock](https://aws.amazon.com/bedrock/?sec=aiapps&pos=2)
+- Anthropic Claude Sonnet  and OpenAI GPT are currently supported - Cohere is in progress - should explore Mistral to see if it performs better for French - all of these models are available through [Amazon Bedrock](https://aws.amazon.com/bedrock/?sec=aiapps&pos=2)
 - Failover to other AI service if one fails
 - Prompt caching implemented to improve response quality and speed
   - Claude: Using `anthropic-beta: prompt-caching-2024-07-31`
@@ -49,12 +49,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Good source of learning about this methodology is: https://www.ycombinator.com/library/Lg-why-vertical-llm-agents-are-the-new-1-billion-saas-opportunities
 
 ### Accessibility features
-- GCDS components - TODO should the input field have focus when page loads?
+- GCDS components - TODO should the input field have focus when page loads? TODO: some components couldn't get inputs to work so are temporarily replaced with plain html
 - No streaming of responses - response is formatted and complete before it is displayed
-- Check against this accessibility AI application: https://adf-ask-accessibility-daeeafembaazdzfk.z01.azurefd.net/
+- Get ideas from this accessibility AI application: https://adf-ask-accessibility-daeeafembaazdzfk.z01.azurefd.net/
 
 ### Microservices prompt-chaining architecture
-- TODO - implement microservices prompt-chaining architecture to improve response quality and speed
+- TODO - implement microservices prompt-chaining architecture to improve response quality and speed [see diagram](#microservices-prompt-chaining-architecture-diagram)
 References: 
 * https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/chain-prompt
 * https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration/
@@ -135,39 +135,34 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
   - IRCC scenarios
   - CRA account services
   - Government employment information
-- TODO - add more scenarios per theme or topic or department that are selectively loaded based on user question 
-- TODO - add more canada.ca urls to the system prompt to load selectively to improve response quality in French - for example https://www.canada.ca/fr/agence-revenu.sitemap.xml with https://www.canada.ca/en/revenue-agency.sitemap.xml or even better, have the topic tree per theme
+- TODO - add more scenarios per context (theme or topic or department) that are selectively loaded based on user question 
+- TODO - add more canada.ca urls to the menu structure to load selectively to improve response quality in French - for example https://www.canada.ca/fr/agence-revenu.sitemap.xml with https://www.canada.ca/en/revenue-agency.sitemap.xml or even better, have the topic tree per theme
 
-
-## 🚀 Deployment
 
 ### Development
 - Local development using Create React App
-- Environment variables prefixed with `REACT_APP_`
-- GitHub Desktop for version control
+- Environment variables prefixed with `REACT_APP_` for local development
+- GitHub repo for version control 
 
 ### Production
 - Deployed on Vercel
-- MongoDB Atlas for database
-- Environment variables configured without `REACT_APP_` prefix
+- Environment variables configured without `REACT_APP_` prefix and stored in Vercel environment variables
+- MongoDB Atlas for database - only writes to database from production
+- deploys to Vercel from Github (any change to main triggers deploy)
 
 ## 📈 Evaluation & Testing
-- UserFeel study implementation (4 participants)
+- UserFeel study 1 - October 2024 (4 participants) - participants solve 
+- UserFeel study 2 - November 2024 (8 participants)
 - Evaluation process improvements:
   - Feedback file import capability
   - Response parsing optimization
   - Structured CSV/JSON output
 
-## 🛠️ Technical Notes
-- System prompt separation for better maintenance
-- Menu structure automation improvements needed
-- Automated testing implementation ongoing
-
 ## 📝 Contributing
-Please refer to our contributing guidelines and code of conduct for details on how to participate in this project.
+TODO:contributing guidelines and code of conduct for details on how to participate in this project.
 
-## Backlog
-- How to prevent old stuff like transparency, archived, corporate reports, audits etc from being used for answers and citations unless user asks about it specifically
+
+## Microservices prompt-chaining architecture diagram {#architecture-diagram}
 
 ```mermaid
 flowchart TB

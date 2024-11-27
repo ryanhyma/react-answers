@@ -34,7 +34,14 @@ export default async function handler(req, res) {
         timeoutPromise
       ]);
 
-      res.status(200).json({ content: response.choices[0].message.content });
+      console.log(`Token usage for request: ${response.usage.total_tokens} tokens`);
+      // TODO: Log token usage to database when implementing response storage
+      // Fields to consider: timestamp, total_tokens, prompt_tokens, completion_tokens
+
+      res.status(200).json({ 
+        content: response.choices[0].message.content,
+        usage: response.usage
+      });
     } catch (error) {
       console.error('Error calling ChatGPT API:', {
         message: error.message,

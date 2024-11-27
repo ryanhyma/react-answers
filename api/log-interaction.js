@@ -1,6 +1,8 @@
 import dbConnect from './db-connect';
 import mongoose from 'mongoose';
 
+//Schema for logging user interactions with the chatbot 
+// TODO: add fields for token usage
 const ChatInteractionSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
   redactedQuestion: {
