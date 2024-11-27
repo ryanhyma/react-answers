@@ -1,36 +1,6 @@
 // api/chat-logs.js to retrieve logs from the database for evaluation purposes
 import dbConnect from './db-connect';
-import mongoose from 'mongoose';
-
-// Use the same model as log-interaction.js
-let ChatInteraction;
-try {
-  ChatInteraction = mongoose.model('ChatInteraction');
-} catch {
-  const ChatInteractionSchema = new mongoose.Schema({
-    timestamp: { type: Date, default: Date.now },
-    redactedQuestion: {
-      type: String,
-      required: true
-    },
-    aiResponse: String,
-    aiService: String,
-    referringUrl: String,
-    citationUrl: String,
-    originalCitationUrl: String,
-    confidenceRating: String,
-    feedback: String,
-    expertFeedback: {
-      veryIncorrect: Boolean,
-      somewhatIncorrect: Boolean,
-      incomplete: Boolean,
-      citationVeryIncorrect: Boolean,
-      citationSomewhatIncorrect: Boolean,
-      expertCitationUrl: String
-    }
-  });
-  ChatInteraction = mongoose.model('ChatInteraction', ChatInteractionSchema);
-}
+import { ChatInteraction } from '../models/chat/interaction';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

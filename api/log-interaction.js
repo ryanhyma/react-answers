@@ -1,37 +1,5 @@
 import dbConnect from './db-connect';
-import mongoose from 'mongoose';
-
-//Schema for logging user interactions with the chatbot 
-// TODO: add fields for token usage
-const ChatInteractionSchema = new mongoose.Schema({
-  timestamp: { type: Date, default: Date.now },
-  redactedQuestion: {
-    type: String,
-    required: true
-  },
-  aiResponse: String,
-  aiService: String,
-  referringUrl: String,
-  citationUrl: String,
-  originalCitationUrl: String,
-  confidenceRating: String,
-  feedback: String,
-  expertFeedback: {
-    veryIncorrect: Boolean,
-    somewhatIncorrect: Boolean,
-    incomplete: Boolean,
-    citationVeryIncorrect: Boolean,
-    citationSomewhatIncorrect: Boolean,
-    expertCitationUrl: String
-  }
-});
-
-let ChatInteraction;
-try {
-  ChatInteraction = mongoose.model('ChatInteraction');
-} catch {
-  ChatInteraction = mongoose.model('ChatInteraction', ChatInteractionSchema);
-}
+import { ChatInteraction } from '../models/chat/interaction';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
