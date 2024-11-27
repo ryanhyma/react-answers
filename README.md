@@ -59,17 +59,21 @@ References:
 * https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/chain-prompt
 * https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration/
 
-#### Context service 
+#### 1. Context service 
 The context service would select the question topic/dept area using EITHER the referral URL - e.g. the page the user triggered the AI from - OR an AI model as a judge system. 
+- Risk of using referral url is that it may not be accurate (e.g. they're on the CRA account page but they asked about EI claims) or relevant to the question (e.g. they're on the CRA account page but they asked about IRCC passport services).
 -Model as a judge uses a small light AI model to evaluate the question to determine the topic area of the question. Then that microservice would pass the topic to the answer service.
 -Input: Menu structure without urls and list of departments/agencies from department page
 Output: topic or department context
 
-#### Answer service
-Input: base system prompt, plus topic or department context name from context service to load the context files for that topic/dept, including top task scenarios, confusions, and examples. 
+#### 2. Answer service
+Input: base system prompt, plus topic or department context name from context service to load the context files for that topic/dept, including top task scenarios, confusions, and examples. Uses selected AI service.
 Output: answer
 
-#### Citation service
+#### 3. AI service manager
+Manage API keys, endpoints and batches for each AI service
+
+#### 4. Citation service
 Input: context from context service, question, and answer from answer service
 -Feed input to AI with base systemp prompt citation selection criteria, and use context to load hierarchical sitemap, or menu structure and any update files. 
 Or use search api and select first search result url as citation
@@ -80,10 +84,15 @@ Output: single citation url
 - URL validation and sanitization
 - TODO - replace with search function
 
-#### Evaluation service
+#### 5. Database service
+Log all interactions to database - eventually need department filter? 
+Input: referring url (if provided), TODO: add context from context service, userquestion, answer, AI service selected TODO: addAI service used,citation-original and citation-used (from citation service), user-feedback items, confidence ratings for citation url, TODO:add token counts, TODO: add evaluation data?
+Output:logs and evaluation data?
+
+#### 6. Evaluation service
 Input: questions and correct citation and answers from evaluation  file
 Output: answers and citations from current system and selected model and model version - send to scoring AI service 
-References: https://platform.openai.com/docs/guides/evals 
+References: https://platform.openai.com/docs/guides/evals and https://github.com/anthropics/evals
 
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
