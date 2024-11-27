@@ -97,12 +97,14 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
   - Basic redaction for name patterns in English and French - TODO apply better algorithm from [feedback tool](https://github.com/alpha-canada-ca/feedback-viewer/blob/master/src/main/java/ca/gc/tbs/service/ContentService.java)
-  - Pattern detection for unformatted numbers like phone numbers account numbers, addresses 
+  - Pattern detection for unformatted numbers like phone numbers account numbers, addresses that will also use the feedback tool algoright - right now it's very basic
   - Anonymous data storage
+ - all the redaction happens in our code - no PII gets logged into the database and no PII is sent to an AI service(the system prompt tells the AI why it might see the letters XXX in the user question)
 - Conversation history management with privacy controls
 
 ### Guardrails for security
-- Profanity and threat word filtering - displays warning to user and doesn't log or send to AI service
+- Profanity and threat word filtering - displays warning to user and doesn't log or send to AI service 
+- TODO: messages with redacted threat words and obscenities are NEVER stored, so we’ll have no analytics to show it’s happening. That’s maybe not good. We might want to store the redacted versions in the database, without ever sending them to the AI service, just to track that kind of activity
 - Character limit (750) to prevent prompt injection
 - Rate limiting: 3 questions per session
 - threat filtering in system prompt to prevent use of languages other than English or French - TODO - improve this
