@@ -171,6 +171,7 @@ TODO:contributing guidelines and code of conduct for details on how to participa
 ```mermaid
 flowchart TB
     User(["User/Browser"])
+    Redaction["**Redaction Service**<br>- PII Detection<br>- Pattern Matching<br>- Threat Filtering"]
     Context["**Context Service**<br>- Topic/Dept Detection<br>- Referral URL Analysis"]
     Answer["**Answer Service**<br>- Question Processing<br>- AI Response Generation"]
     AIManager["**AI Service Manager**<br>- API Key Management<br>- Service Selection<br>- Load Balancing"]
@@ -178,7 +179,8 @@ flowchart TB
     DB["**Database Service**<br>- MongoDB Atlas<br>- Logging<br>- Data Export"]
     Eval["**Evaluation Service**<br>- Response Scoring<br>- Quality Metrics<br>- Performance Analysis"]
 
-    User -->|Question| Context
+    User -->|Question| Redaction
+    Redaction -->|Sanitized Question| Context
     Context -->|Topic/Context| Answer
     Answer -->|Service Request| AIManager
     AIManager -->|AI Response| Answer
