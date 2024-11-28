@@ -65,7 +65,7 @@ export function usePageContext() {
     
     // Find matching department
     for (const segment of pathSegments) {
-      for (const [key, value] of Object.entries(DEPARTMENT_MAPPINGS)) {
+      for (const [, value] of Object.entries(DEPARTMENT_MAPPINGS)) {
         if (segment === value.en || segment === value.fr) {
           department = value.code;
           break;
