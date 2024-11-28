@@ -41,7 +41,10 @@ export function usePageContext() {
   console.log('usePageContext - raw ref:', rawRef);
   
   try {
-    // Fix the missing slash encodings in the URL
+    // TODO: Handle malformed URLs where some slashes are not properly encoded as %2F
+    // Current implementation only works with properly encoded URLs
+    // Example of malformed: https%3A%2F%2Fwww.canada.ca%2Fen/immigration-refugees-citizenship%2Fservices/canadian-passports.html
+    
     const fixedRef = rawRef.replace(/\//g, '%2F');
     console.log('usePageContext - fixed ref:', fixedRef);
     
