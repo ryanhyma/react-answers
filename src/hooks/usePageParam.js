@@ -37,32 +37,28 @@ const DEPARTMENT_MAPPINGS = {
 export function usePageContext() {
   const [searchParams] = useSearchParams();
   
-  // Get the encoded ref parameter
-  const encodedRef = searchParams.get('ref') || '';
+  const rawRef = searchParams.get('ref') || '';
+  console.log('usePageContext - raw ref:', rawRef);
   
   try {
-    // First create the URL object with the encoded string
-    const urlObj = new URL(encodedRef);
+    // Fix the missing slash encodings in the URL
+    const fixedRef = rawRef.replace(/\//g, '%2F');
+    console.log('usePageContext - fixed ref:', fixedRef);
+    
+    const decodedRef = decodeURIComponent(fixedRef);
+    console.log('usePageContext - decoded:', decodedRef);
+    
+    const urlObj = new URL(decodedRef);
     
     // Determine language for ISC domain
     const isISC = urlObj.hostname.includes('sac-isc.gc.ca');
     const language = isISC 
       ? urlObj.pathname.includes('/fra/') ? 'fr' : 'en'
       : urlObj.pathname.includes('/fr/') ? 'fr' : 'en';
-    
-    // Check for ISC domain first
-    if (isISC) {
-      return {
-        referrer: encodedRef,
-        url: decodeURIComponent(encodedRef),
-        language,
-        department: 'isc'
-      };
-    }
 
-    // Get path segments and look for department in canada.ca URLs
-    const pathSegments = urlObj.pathname.split('/').filter(Boolean);
+    // Parse department from URL
     let department = '';
+    const pathSegments = urlObj.pathname.split('/').filter(Boolean);
     
     // Find matching department
     for (const segment of pathSegments) {
@@ -76,13 +72,12 @@ export function usePageContext() {
     }
 
     return {
-      referrer: encodedRef,
-      url: decodeURIComponent(encodedRef),
+      referrer: rawRef,
+      url: decodedRef,
       language,
       department
     };
   } catch {
-    // If URL parsing fails, return defaults
     return {
       referrer: '',
       url: '',

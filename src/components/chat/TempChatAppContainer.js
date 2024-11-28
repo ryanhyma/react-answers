@@ -45,6 +45,7 @@ const parseMessageContent = (text) => {
 const TempChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
   const { url: pageUrl } = usePageContext();
+  console.log('TempChatAppContainer - pageUrl:', pageUrl);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +54,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
+  console.log('TempChatAppContainer - referringUrl state:', referringUrl);
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
