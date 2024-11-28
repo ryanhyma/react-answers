@@ -9,6 +9,7 @@ import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-r
 import '../../styles/App.css';
 import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations';
+import { usePageContext } from '../../hooks/usePageParam';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -43,6 +44,7 @@ const parseMessageContent = (text) => {
 
 const TempChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
+  const { url: pageUrl } = usePageContext();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +52,7 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   const [selectedAI, setSelectedAI] = useState('chatgpt');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
-  const [referringUrl, setReferringUrl] = useState('');
+  const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
