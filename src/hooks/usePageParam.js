@@ -37,11 +37,12 @@ const DEPARTMENT_MAPPINGS = {
 export function usePageContext() {
   const [searchParams] = useSearchParams();
   
-  // Get the referrer URL from query parameter and decode it
-  const referrer = decodeURIComponent(searchParams.get('ref') || '');
+  // Get the encoded ref parameter
+  const encodedRef = searchParams.get('ref') || '';
   
   try {
-    const urlObj = new URL(referrer);
+    // First create the URL object with the encoded string
+    const urlObj = new URL(encodedRef);
     
     // Determine language for ISC domain
     const isISC = urlObj.hostname.includes('sac-isc.gc.ca');
@@ -52,8 +53,8 @@ export function usePageContext() {
     // Check for ISC domain first
     if (isISC) {
       return {
-        referrer: decodeURIComponent(referrer),
-        url: decodeURIComponent(urlObj.href),
+        referrer: encodedRef,
+        url: decodeURIComponent(encodedRef),
         language,
         department: 'isc'
       };
@@ -75,8 +76,8 @@ export function usePageContext() {
     }
 
     return {
-      referrer: decodeURIComponent(referrer),
-      url: decodeURIComponent(urlObj.href),
+      referrer: encodedRef,
+      url: decodeURIComponent(encodedRef),
       language,
       department
     };
