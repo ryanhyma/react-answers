@@ -37,8 +37,8 @@ const DEPARTMENT_MAPPINGS = {
 export function usePageContext() {
   const [searchParams] = useSearchParams();
   
-  // Get the referrer URL from query parameter
-  const referrer = searchParams.get('ref') || '';
+  // Get the referrer URL from query parameter and decode it
+  const referrer = decodeURIComponent(searchParams.get('ref') || '');
   
   try {
     const urlObj = new URL(referrer);
@@ -52,8 +52,8 @@ export function usePageContext() {
     // Check for ISC domain first
     if (isISC) {
       return {
-        referrer,
-        url: urlObj.href,
+        referrer: decodeURIComponent(referrer),
+        url: decodeURIComponent(urlObj.href),
         language,
         department: 'isc'
       };
@@ -75,8 +75,8 @@ export function usePageContext() {
     }
 
     return {
-      referrer,
-      url: urlObj.href,
+      referrer: decodeURIComponent(referrer),
+      url: decodeURIComponent(urlObj.href),
       language,
       department
     };
