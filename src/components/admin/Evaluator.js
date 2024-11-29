@@ -732,7 +732,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         <div className="file-input-container mrgn-bttm-20">
-                            <label htmlFor="csvFile mrgn-bttm-10 display-block">
+                            <label htmlFor="csvFile mrgn-bttm-10">
                                 Select feedback CSV file:
                             </label>
                             <input
@@ -740,7 +740,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 id="csvFile"
                                 accept=".csv"
                                 onChange={handleFileChange}
-                                className="mrgn-bttm-10"
+                                className="mrgn-bttm-10 display-block"
                             />
                             {file && (
                                 <div>Selected file: {file.name}</div>

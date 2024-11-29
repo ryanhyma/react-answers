@@ -435,3 +435,11 @@
 .mrgn-tp-1r {
     margin-top: 1rem;
 }
+
+.service-status-alert {
+    background-color: '#F3E9E8';
+    border: '1px solid #BC3331'; 
+    padding: '1rem'; 
+    margin-bottom: '1rem';
+    border-radius: '4px';
+}
