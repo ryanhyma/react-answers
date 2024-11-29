@@ -546,10 +546,10 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
           </div>
           <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
           <div className="ai-toggle">
-            <fieldset className="ai-toggle__fieldset">
-              <div className="ai-toggle__container">
-                <legend className="ai-toggle__legend">{t('homepage.chat.options.aiSelection.label')}</legend>
-                <div className="ai-toggle__option">
+            <fieldset className="ai-toggle_fieldset">
+              <div className="ai-toggle_container">
+                <legend className="ai-toggle_legend">{t('homepage.chat.options.aiSelection.label')}</legend>
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="claude"
@@ -557,11 +557,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="claude"
                     checked={selectedAI === 'claude'}
                     onChange={handleAIToggle}
-                    className="ai-toggle__radio-input"
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="claude" className="ai-toggle__label">{t('homepage.chat.options.aiSelection.claude')}</label>
+                  <label htmlFor="claude" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.claude')}</label>
                 </div>
-                <div className="ai-toggle__option">
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="chatgpt"
@@ -569,11 +569,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="chatgpt"
                     checked={selectedAI === 'chatgpt'}
                     onChange={handleAIToggle}
-                    className="ai-toggle__radio-input"
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="chatgpt" className="ai-toggle__label">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  <label htmlFor="chatgpt" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
                 </div>
-                <div className="ai-toggle__option">
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="cohere"
@@ -581,27 +581,21 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="cohere"
                     checked={selectedAI === 'cohere'}
                     onChange={handleAIToggle}
-                    className="ai-toggle__radio-input"
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="cohere" className="ai-toggle__label">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  <label htmlFor="cohere" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.cohere')}</label>
                 </div>
               </div>
             </fieldset>
           </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
+          <div className="referring-url">
+            <label className="referring-url__label" htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
             <input
               id="referring-url"
               type="url"
               value={referringUrl}
               onChange={handleReferringUrlChange}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
+              className="referring-url__input"
             />
           </div>
           </GcdsDetails>

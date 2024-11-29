@@ -346,31 +346,48 @@
     margin-bottom: 10px;
     }
 
-.ai-toggle__fieldset {
+.ai-toggle_fieldset {
     border: none;
     padding: 0;
     margin: 0;
     }
 
-.ai-toggle__container {
+.ai-toggle_container {
     display: flex;
     align-items: center;
     }
 
-.ai-toggle__legend {
+.ai-toggle_legend {
     margin-right: 10px;
     }
 
-.ai-toggle__option {
+.ai-toggle_option {
     display: flex;
     align-items: center;
     margin-right: 15px;
     }
 
-.ai-toggle__radio-input {
+.ai-toggle_radio-input {
     margin-right: 5px;
     }
 
-.ai-toggle__label {
+.ai-toggle_label {
     margin-right: 15px;
     }
+
+.referring-url {
+        margin-bottom: 10px;
+      }
+
+.referring-url_input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* box-sizing: border-box; Ensures the width includes padding and border */
+    }
+
+/* .referring-url_label {
+    display: block;  Ensures proper spacing between label and input 
+    } */
