@@ -11,6 +11,7 @@ import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
+import '../../styles/App.css';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
