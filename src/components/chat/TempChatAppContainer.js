@@ -589,13 +589,13 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </fieldset>
           </div>
           <div className="referring-url">
-            <label className="referring-url__label" htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
+            <label className="referring-url_label" htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
             <input
               id="referring-url"
               type="url"
               value={referringUrl}
               onChange={handleReferringUrlChange}
-              className="referring-url__input"
+              className="referring-url_input"
             />
           </div>
           </GcdsDetails>

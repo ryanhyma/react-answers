@@ -486,11 +486,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
             </GcdsButton>
           </div>
           <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
-          <div className="ai-toggle" style={{ marginBottom: '10px' }}>
-            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <legend style={{ marginRight: '10px' }}>{t('homepage.chat.options.aiSelection.label')}</legend>
-                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+          <div className="ai-toggle">
+            <fieldset className="ai-toggle_fieldset">
+              <div className="ai-toggle_container">
+                <legend className="ai-toggle_legend">{t('homepage.chat.options.aiSelection.label')}</legend>
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="claude"
@@ -498,11 +498,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="claude"
                     checked={selectedAI === 'claude'}
                     onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="claude" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.claude')}</label>
+                  <label htmlFor="claude" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.claude')}</label>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="chatgpt"
@@ -510,11 +510,11 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="chatgpt"
                     checked={selectedAI === 'chatgpt'}
                     onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="chatgpt" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  <label htmlFor="chatgpt" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="ai-toggle_option">
                   <input
                     type="radio"
                     id="cohere"
@@ -522,27 +522,21 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
                     value="cohere"
                     checked={selectedAI === 'cohere'}
                     onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
+                    className="ai-toggle_radio-input"
                   />
-                  <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  <label htmlFor="cohere" className="ai-toggle_label">{t('homepage.chat.options.aiSelection.cohere')}</label>
                 </div>
               </div>
             </fieldset>
           </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
+          <div className="referring-url">
+            <label className="referring-url_label" htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
             <input
               id="referring-url"
               type="url"
               value={referringUrl}
               onChange={handleReferringUrlChange}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
+              className="referring-url_input"
             />
           </div>
           </GcdsDetails>
