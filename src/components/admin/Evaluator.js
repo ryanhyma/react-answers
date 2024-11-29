@@ -652,11 +652,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             />
                         </div>
 
-                        <div className="ai-toggle" style={{ marginBottom: '20px' }}>
-                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <legend style={{ marginRight: '10px' }}>AI Service:</legend>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                        <div className="ai-toggle">
+                            <fieldset className="ai-toggle_fieldset">
+                                <div className="ai-toggle_container">
+                                    <legend className="ai-toggle_legend">AI Service:</legend>
+                                    <div className="ai-toggle_option">
                                         <input
                                             type="radio"
                                             id="claude"
@@ -664,7 +664,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="claude"
                                             checked={selectedAI === 'claude'}
                                             onChange={handleAIToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
                                     </div>
@@ -676,7 +676,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="chatgpt"
                                             checked={selectedAI === 'chatgpt'}
                                             onChange={handleAIToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle__radio-input"
                                         />
                                         <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
                                     </div>
@@ -696,7 +696,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="en"
                                             checked={selectedLanguage === 'en'}
                                             onChange={handleLanguageToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle__radio-input"
                                         />
                                         <label htmlFor="english" style={{ marginRight: '15px' }}>English</label>
                                     </div>
@@ -708,7 +708,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="fr"
                                             checked={selectedLanguage === 'fr'}
                                             onChange={handleLanguageToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle__radio-input"
                                         />
                                         <label htmlFor="french">French</label>
                                     </div>
