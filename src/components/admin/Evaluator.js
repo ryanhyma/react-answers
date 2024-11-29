@@ -685,9 +685,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         <div className="language-toggle mrgn-bttm-20">
-                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+                            <fieldset class="ai-toggle_fieldset">
                                 <div class="flex-center">
-                                    <legend style={{ marginRight: '10px' }}>Evaluation Language:</legend>
+                                    <legend class="ai-toggle_legend">Evaluation Language:</legend>
                                     <div class="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
