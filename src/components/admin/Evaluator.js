@@ -676,7 +676,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="chatgpt"
                                             checked={selectedAI === 'chatgpt'}
                                             onChange={handleAIToggle}
-                                            className="ai-toggle__radio-input"
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
                                     </div>
@@ -696,7 +696,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="en"
                                             checked={selectedLanguage === 'en'}
                                             onChange={handleLanguageToggle}
-                                            className="ai-toggle__radio-input"
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label class="mrgn-rght-15" htmlFor="english">English</label>
                                     </div>
@@ -708,7 +708,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="fr"
                                             checked={selectedLanguage === 'fr'}
                                             onChange={handleLanguageToggle}
-                                            className="ai-toggle__radio-input"
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label htmlFor="french">French</label>
                                     </div>
