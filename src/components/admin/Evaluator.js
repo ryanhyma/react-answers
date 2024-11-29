@@ -562,19 +562,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 
                 {error ? (
                     <>
-                        <GcdsText style={{ color: 'red' }}>{error}</GcdsText>
+                        <GcdsText className="error-text">{error}</GcdsText>
                         <button 
                             onClick={handleReconnect}
-                            className="secondary-button"
-                            style={{
-                                marginTop: '10px',
-                                padding: '8px 16px',
-                                backgroundColor: '#26374a',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
+                            className="secondary-button force-style-button"
                         >
                             Reconnect
                         </button>
@@ -595,16 +586,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 </GcdsText>
                                 <button 
                                     onClick={handleCancel}
-                                    className="secondary-button"
-                                    style={{
-                                        marginTop: '10px',
-                                        padding: '8px 16px',
-                                        backgroundColor: '#dc3545',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
+                                    className="secondary-button force-style-button"
                                 >
                                     Cancel Batch
                                 </button>
@@ -656,8 +638,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL. Admin code is required to enable file upload (temporary fix for testing).</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
-                        <div className="admin-code-input" style={{ marginBottom: '20px' }}>
-                            <label htmlFor="adminCode" style={{ display: 'block', marginBottom: '10px' }}>
+                        <div className="admin-code-input mrgn-bttm-20">
+                            <label htmlFor="adminCode mrgn-bttm-10 display-block">
                                 Enter Admin Code to enable file upload:
                             </label>
                             <input
@@ -665,7 +647,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 id="adminCode"
                                 value={adminCode}
                                 onChange={handleAdminCodeChange}
-                                style={{ marginBottom: '10px' }}
+                                className="mrgn-bttm-10"
                             />
                         </div>
 
@@ -733,7 +715,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </fieldset>
                         </div>
 
-                        <div className="batch-toggle" style={{ marginBottom: '20px' }}>
+                        <div className="batch-toggle mrgn-bttm-20">
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <input
                                     type="checkbox"
@@ -748,8 +730,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </div>
                         </div>
 
-                        <div className="file-input-container" style={{ marginBottom: '20px' }}>
-                            <label htmlFor="csvFile" style={{ display: 'block', marginBottom: '10px' }}>
+                        <div className="file-input-container mrgn-bttm-20">
+                            <label htmlFor="csvFile mrgn-bttm-10 display-block">
                                 Select feedback CSV file:
                             </label>
                             <input
@@ -757,7 +739,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 id="csvFile"
                                 accept=".csv"
                                 onChange={handleFileChange}
-                                style={{ marginBottom: '10px' }}
+                                className="mrgn-bttm-10"
                             />
                             {file && (
                                 <div>Selected file: {file.name}</div>
@@ -765,7 +747,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         {error && (
-                            <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+                            <div className="error-message mrgn-bttm-10" style={{ color: 'red' }}>
                                 {error}
                             </div>
                         )}
@@ -773,15 +755,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         {file && !fileUploaded && (
                             <button 
                                 type="submit"
-                                className="primary-button"
-                                style={{
-                                    padding: '8px 16px',
-                                    backgroundColor: '#26374a',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
+                                className="primary-button force-style-button"
                                 disabled={adminCode !== correctAdminCode}
                             >
                                 Upload File
@@ -816,16 +790,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 {!processing ? (
                                     <button 
                                         onClick={handleProcessFile}
-                                        className="secondary-button"
-                                        style={{
-                                            marginTop: '10px',
-                                            padding: '8px 16px',
-                                            backgroundColor: '#26374a',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer'
-                                        }}
+                                        className="secondary-button force-style-button"
                                     >
                                         Start Processing
                                     </button>

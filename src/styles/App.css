@@ -391,3 +391,30 @@
 /* .referring-url_label {
     display: block;  Ensures proper spacing between label and input 
     } */
+
+/* evaluator styles */
+.error-text {
+    color: red;
+  }
+  
+.force-style-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #26374a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+.mrgn-bttm-20 {
+    margin-bottom: 20px;
+  }
+
+.mrgn-bttm-10 {
+    margin-bottom: 10px;
+}
+
+.display-block {
+    display: block;
+}
