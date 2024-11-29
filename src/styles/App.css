@@ -418,3 +418,16 @@
 .display-block {
     display: block;
 }
+
+.flex-center {
+    display: flex;
+    align-items: center;
+}
+
+.mrgn-rght-15 {
+    margin-right: 15px;
+}
+
+.red {
+    color: red;
+}

@@ -666,9 +666,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
+                                        <label class="mrgn-rght-15" htmlFor="claude">Anthropic Claude 3.5 Sonnet</label>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div class="flex-center">
                                         <input
                                             type="radio"
                                             id="chatgpt"
@@ -686,9 +686,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
                         <div className="language-toggle mrgn-bttm-20">
                             <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div class="flex-center">
                                     <legend style={{ marginRight: '10px' }}>Evaluation Language:</legend>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                    <div class="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
                                             id="english"
@@ -698,9 +698,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle__radio-input"
                                         />
-                                        <label htmlFor="english" style={{ marginRight: '15px' }}>English</label>
+                                        <label class="mrgn-rght-15" htmlFor="english">English</label>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div class="flex-center">
                                         <input
                                             type="radio"
                                             id="french"
@@ -717,13 +717,13 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         <div className="batch-toggle mrgn-bttm-20">
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div class="flex-center">
                                 <input
                                     type="checkbox"
                                     id="batchProcessing"
                                     checked={useBatchProcessing}
                                     onChange={handleBatchToggle}
-                                    style={{ marginRight: '5px' }}
+                                    className="mrgn-rght-15"
                                 />
                                 <label htmlFor="batchProcessing">
                                     Use batch processing (recommended for large files)
@@ -748,7 +748,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         {error && (
-                            <div className="error-message mrgn-bttm-10" style={{ color: 'red' }}>
+                            <div className="error-message mrgn-bttm-10 red">
                                 {error}
                             </div>
                         )}
