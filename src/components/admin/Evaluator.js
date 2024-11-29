@@ -684,7 +684,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </fieldset>
                         </div>
 
-                        <div className="language-toggle" style={{ marginBottom: '20px' }}>
+                        <div className="language-toggle mrgn-bttm-20">
                             <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <legend style={{ marginRight: '10px' }}>Evaluation Language:</legend>
