@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
+import '../../styles/App.css';
 
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
