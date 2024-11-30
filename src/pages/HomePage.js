@@ -1,6 +1,6 @@
 // src/pages/HomePage.js
 import React, { useState, useEffect } from 'react';
-import TempChatAppContainer from '../components/chat/TempChatAppContainer';
+import ChatAppContainer from '../components/chat/ChatAppContainer';
 import { GcdsContainer, GcdsDetails, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 import { useTranslations } from '../hooks/useTranslations';
 
@@ -93,7 +93,7 @@ const HomePage = ({ lang = 'en' }) => {
           <GcdsText>{t('homepage.about.contact')}</GcdsText>
         </GcdsDetails>
 
-        <TempChatAppContainer lang={lang} />
+        <ChatAppContainer lang={lang} />
       </GcdsContainer>
 
       <GcdsContainer size="xl" mainContainer centered tag="below" className="mb-600">

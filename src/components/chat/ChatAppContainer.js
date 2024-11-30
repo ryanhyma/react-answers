@@ -3,13 +3,13 @@ import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import CohereService from '../../services/CohereService.js';
 import RedactionService from '../../services/RedactionService.js';
-import FeedbackComponent from './FeedbackComponent';
+import FeedbackComponent from './FeedbackComponent.js';
 import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { urlValidator } from '../../utils/urlValidator.js';
-import { useTranslations } from '../../hooks/useTranslations';
-import { usePageContext } from '../../hooks/usePageParam';
+import { useTranslations } from '../../hooks/useTranslations.js';
+import { usePageContext } from '../../hooks/usePageParam.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -42,7 +42,7 @@ const parseMessageContent = (text) => {
   return { responseType, content };
 };
 
-const TempChatAppContainer = ({ lang = 'en' }) => {
+const ChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
   const { url: pageUrl } = usePageContext();
   console.log('TempChatAppContainer - pageUrl:', pageUrl);
@@ -616,4 +616,4 @@ const TempChatAppContainer = ({ lang = 'en' }) => {
   );
 };
 
-export default TempChatAppContainer;
+export default ChatAppContainer;

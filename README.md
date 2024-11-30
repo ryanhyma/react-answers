@@ -114,7 +114,7 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
 ### Data Management
 - MongoDB Atlas Cloud integration
 - Structured database schema for conversations in models/chat/interaction.js
-- TempChatAppContainer → LoggingService → API endpoint → Schema for logging user interactions
+- ChatAppContainer → LoggingService → API endpoint → Schema for logging user interactions
 - Chat-logs API endpoint to retrieve logs from the database 
 - External database entry viewer
 - CSV/JSON export capabilities for:
