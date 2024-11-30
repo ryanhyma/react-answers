@@ -9,7 +9,8 @@ import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-r
 import '../../styles/App.css';
 import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
-import { usePageContext } from '../../hooks/usePageParam.js';
+import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
+import DepartmentSelectorTesting from './DepartmentSelectorTesting';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -44,7 +45,7 @@ const parseMessageContent = (text) => {
 
 const ChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
-  const { url: pageUrl } = usePageContext();
+  const { url: pageUrl, department: urlDepartment } = usePageContext();
   console.log('TempChatAppContainer - pageUrl:', pageUrl);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
@@ -54,6 +55,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
+  const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
   console.log('TempChatAppContainer - referringUrl state:', referringUrl);
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
@@ -183,6 +185,32 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     const url = e.target.value.trim();
     console.log('Referring URL changed:', url);
     setReferringUrl(url);
+
+    // Parse department from manually entered URL
+    try {
+      const urlObj = new URL(url);
+      const pathSegments = urlObj.pathname.split('/').filter(Boolean);
+      
+      // Find matching department
+      let newDepartment = '';
+      for (const segment of pathSegments) {
+        for (const [, value] of Object.entries(DEPARTMENT_MAPPINGS)) {
+          if (segment === value.en || segment === value.fr) {
+            newDepartment = value.code;
+            break;
+          }
+        }
+        if (newDepartment) break;
+      }
+      
+      // Update department if found, otherwise keep existing
+      if (newDepartment) {
+        setSelectedDepartment(newDepartment);
+      }
+    } catch (error) {
+      // If URL is invalid or incomplete, don't change the department
+      console.log('Invalid URL format:', error);
+    }
   };
 
   const handleReload = () => {
@@ -279,14 +307,17 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       // Continue with normal AI processing if no profanity/threats
       setIsLoading(true);
       try {
-        // Add referring URL to the message if provided
-        const messageWithUrl = referringUrl
-          ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
-          : redactedText;
+        // Add referring URL and department to the message if provided
+        const messageWithUrl = `${redactedText}${
+          referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
+        }${
+          selectedDepartment ? `\n<department>${selectedDepartment}</department>` : ''
+        }`;
 
         // console.log('Full message being sent:', {
         //   messageWithUrl,
         //   referringUrl: referringUrl.trim(),
+        //   department: selectedDepartment,
         //   conversationHistory
         // });
 
@@ -394,7 +425,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         setIsLoading(false);
       }
     }
-  }, [inputText, referringUrl, turnCount, addMessage, clearInput, t, messages, selectedAI, parseAIResponse, lang, logInteraction]);
+  }, [inputText, referringUrl, turnCount, addMessage, clearInput, t, messages, selectedAI, parseAIResponse, lang, logInteraction, selectedDepartment]);
 
   useEffect(() => {
     if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
@@ -480,6 +511,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     return t('homepage.chat.input.initial');
   };
 
+  // Add handler for department changes
+  const handleDepartmentChange = (department) => {
+    setSelectedDepartment(department);
+  };
+
   return (
     <div className="chat-container">
       <div className="message-list">
@@ -549,67 +585,77 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             </GcdsButton>
           </div>
           <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
-          <div className="ai-toggle" style={{ marginBottom: '10px' }}>
-            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <legend style={{ marginRight: '10px' }}>{t('homepage.chat.options.aiSelection.label')}</legend>
-                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                  <input
-                    type="radio"
-                    id="claude"
-                    name="ai-selection"
-                    value="claude"
-                    checked={selectedAI === 'claude'}
-                    onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
-                  />
-                  <label htmlFor="claude" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.claude')}</label>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                  <input
-                    type="radio"
-                    id="chatgpt"
-                    name="ai-selection"
-                    value="chatgpt"
-                    checked={selectedAI === 'chatgpt'}
-                    onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
-                  />
-                  <label htmlFor="chatgpt" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.chatgpt')}</label>
-                </div>
+            <div className="ai-toggle" style={{ marginBottom: '10px' }}>
+              <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <input
-                    type="radio"
-                    id="cohere"
-                    name="ai-selection"
-                    value="cohere"
-                    checked={selectedAI === 'cohere'}
-                    onChange={handleAIToggle}
-                    style={{ marginRight: '5px' }}
-                  />
-                  <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  <legend style={{ marginRight: '10px' }}>{t('homepage.chat.options.aiSelection.label')}</legend>
+                  <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                    <input
+                      type="radio"
+                      id="claude"
+                      name="ai-selection"
+                      value="claude"
+                      checked={selectedAI === 'claude'}
+                      onChange={handleAIToggle}
+                      style={{ marginRight: '5px' }}
+                    />
+                    <label htmlFor="claude" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.claude')}</label>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                    <input
+                      type="radio"
+                      id="chatgpt"
+                      name="ai-selection"
+                      value="chatgpt"
+                      checked={selectedAI === 'chatgpt'}
+                      onChange={handleAIToggle}
+                      style={{ marginRight: '5px' }}
+                    />
+                    <label htmlFor="chatgpt" style={{ marginRight: '15px' }}>{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="radio"
+                      id="cohere"
+                      name="ai-selection"
+                      value="cohere"
+                      checked={selectedAI === 'cohere'}
+                      onChange={handleAIToggle}
+                      style={{ marginRight: '5px' }}
+                    />
+                    <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  </div>
                 </div>
-              </div>
-            </fieldset>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
-            <input
-              id="referring-url"
-              type="url"
-              value={referringUrl}
-              onChange={handleReferringUrlChange}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '4px',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
-            />
-          </div>
-          </GcdsDetails>
+              </fieldset>
+            </div>
 
+            {/* Add department selector here with label */}
+            <div style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'block', marginBottom: '4px' }}>Referred from:</label>
+              <DepartmentSelectorTesting
+                selectedDepartment={selectedDepartment}
+                onDepartmentChange={handleDepartmentChange}
+                lang={lang}
+              />
+            </div>
+
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
+              <input
+                id="referring-url"
+                type="url"
+                value={referringUrl}
+                onChange={handleReferringUrlChange}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  marginTop: '4px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+              />
+            </div>
+          </GcdsDetails>
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 // Simplified mappings for most common departments
-const DEPARTMENT_MAPPINGS = {
+export const DEPARTMENT_MAPPINGS = {
   'revenue-agency': {
     code: 'cra',
     fr: 'agence-revenu',
