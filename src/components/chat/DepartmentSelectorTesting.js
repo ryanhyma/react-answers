@@ -1,5 +1,4 @@
 import React from 'react';
-import { GcdsButton } from '@cdssnc/gcds-components-react';
 
 const DepartmentSelectorTesting = ({ 
   selectedDepartment, 
@@ -7,7 +6,8 @@ const DepartmentSelectorTesting = ({
   lang,
   className 
 }) => {
-  // Define departments with their labels in both languages
+  // Define departments with their labels in both languages - this component is a temporary solution for testing and context design since there are no AI buttons on any live web pages that can pass a url parameter yet 
+  
   const departments = [
     { code: '', label: { en: 'None/Home', fr: 'Aucun/Accueil' } },
     { code: 'cra', label: { en: 'CRA', fr: 'ARC' } },
@@ -19,18 +19,19 @@ const DepartmentSelectorTesting = ({
 
   return (
     <div className={`department-selector ${className || ''}`}>
-      <div className="department-buttons">
-        {departments.map((dept) => (
-          <GcdsButton
-            key={dept.code}
-            onClick={() => onDepartmentChange(dept.code)}
-            variant={selectedDepartment === dept.code ? 'primary' : 'secondary'}
-            className="department-button"
-          >
-            {dept.label[lang]}
-          </GcdsButton>
-        ))}
-      </div>
+      {departments.map((dept) => (
+        <button
+          key={dept.code}
+          onClick={() => onDepartmentChange(dept.code)}
+          className="button-as-link"
+          style={{
+            marginRight: '1rem',
+            textDecoration: selectedDepartment === dept.code ? 'underline' : 'none'
+          }}
+        >
+          {dept.label[lang]}
+        </button>
+      ))}
     </div>
   );
 };
