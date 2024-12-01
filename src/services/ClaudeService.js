@@ -10,7 +10,12 @@ const ClaudeService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
       console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
-      const SYSTEM_PROMPT = await loadSystemPrompt(lang);
+      
+      // Extract department from message if present
+      const departmentMatch = message.match(/<department>(.*?)<\/department>/);
+      const department = departmentMatch ? departmentMatch[1] : '';
+      
+      const SYSTEM_PROMPT = await loadSystemPrompt(lang, department);
       
       // Only change: check for evaluation and use empty array if true
       const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;

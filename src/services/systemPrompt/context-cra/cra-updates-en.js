@@ -1,4 +1,4 @@
-export const craAccountInfo = `
+export const CRA_UPDATES_EN = `
 <cra_account_info>
 ## CRA My Account for individuals - Sign-in page
 - Updated September 26, 2024. 
@@ -56,10 +56,6 @@ Affinity Credit Union, Alberta Treasury Branches, BMO Financial Group, Caisse Al
 **CRA user ID and password revoked:**
 - Use a different sign-in option or contact CRA to register with a new CRA user ID and password
 
-**Change sign-in option:**
-- Provincial partner registrants: Create CRA user ID and password or use Sign-In Partner
-- CRA user ID and password registrants: Sign in, revoke credential, register with different option
-- Sign-In Partner registrants: Sign in to current partner and switch to a different one
 </cra_account_info>
 <cra_register_info>
 ## CRA How to register for an account page
@@ -73,7 +69,6 @@ Follow the steps below to register for My Account for individuals.
 ## Decide if you need to register
 
 If you have already registered for the CRA sign-in services using a CRA user ID and password or a Sign-In Partner, you cannot register again. You must use the same sign-in information to access the following:
-
 - My Account
 - My Business Account
 - Represent a Client
