@@ -435,7 +435,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     if (urlDepartment && !selectedDepartment) {
       setSelectedDepartment(urlDepartment);
     }
-  }, [pageUrl, urlDepartment]);
+  }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
   // Memoize the parsed responses with better message tracking
   const parsedResponses = useMemo(() => {

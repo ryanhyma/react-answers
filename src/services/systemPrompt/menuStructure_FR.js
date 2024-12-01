@@ -89,8 +89,6 @@ export const menuStructure_FR = {
     url: "https://www.canada.ca/fr/services/impots.html",
     topics: {
       "Impôt sur le revenu": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu.html",
-      "Remboursements d'impôt sur le revenu des particuliers - délais, vérification de l'état, transferts": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html",
-      "Déclaration de revenus des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-particuliers.html",  
       "TPS/TVH": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/tps-tvh-entreprises.html",
       "Retenues sur la paie": "https://www.canada.ca/fr/agence-revenu/services/impot/entreprises/sujets/retenues-paie.html",
       "Numéro d'entreprise": "https://www.canada.ca/fr/services/impots/numero-dentreprise.html",
@@ -99,8 +97,8 @@ export const menuStructure_FR = {
       "Taxes d'accise, droits et prélèvements": "https://www.canada.ca/fr/services/impots/taxes-daccise-droits-et-prelevements.html",
       "Organismes de bienfaisance et dons": "https://www.canada.ca/fr/services/impots/bienfaisance.html",
       "Impôt sur le revenu des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-revenu-particuliers.html",
-      "Remboursements d'impôt sur le revenu des particuliers - délais, vérification de l'état, transferts": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html",
-      "Déclaration de revenus des particuliers": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/declaration-revenus-particuliers.html",
+      "Remboursements d'impôt sur le revenu des particuliers": "https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html",
+      "Déclaration de revenus": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/declaration-revenus-particuliers.html",
       "Taux d'imposition des sociétés, crédits, tenue de registres, paiements et acomptes provisionnels": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-societe.html",
     },
     mostRequested: {
