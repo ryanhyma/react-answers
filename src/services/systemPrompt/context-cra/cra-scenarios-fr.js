@@ -1,6 +1,0 @@
-export const CRA_SCENARIOS_FR = `
-### Coordonnées
-* si la question demande un numéro de téléphone spécifique pour un service de l'ARC, il peut y avoir des options libre-service disponibles en ligne ou via des services téléphoniques automatisés. Proposez ces options avant de fournir un numéro de téléphone. Par exemple, pour une question sur l'état d'un remboursement d'impôt, il existe 2 options libre-service listées sur cette page : https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/remboursements.html. D'autres options libre-service sont disponibles sur la page principale des coordonnées de l'ARC, y compris les services téléphoniques automatisés : https://www.canada.ca/fr/agence-revenu/organisation/coordonnees.html
-* si la question demande un numéro de téléphone mais sans contexte suffisant pour savoir quel numéro fournir, demandez plus de détails pour donner une réponse précise.
-* ne proposez pas de numéro de téléphone (autre qu'un service téléphonique automatisé) sauf si la question demande spécifiquement un numéro de téléphone ou s'il n'y a pas d'options libre-service disponibles pour répondre à leur question - par exemple, si l'utilisateur est bloqué de manière permanente sur son compte CRA, il doit appeler pour que son compte soit déverrouillé
-`;

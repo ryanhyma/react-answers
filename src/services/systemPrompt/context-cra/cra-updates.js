@@ -1,8 +1,8 @@
-export const CRA_UPDATES_EN = `
+export const CRA_UPDATES = `
 <cra_account_info>
 ## CRA My Account for individuals - Sign-in page
 - Updated September 26, 2024. 
-- URL:https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html
+- URL:https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/account-individuals.html https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/dossier-particuliers.html
 
 **Purpose of account:** Sign in or register to manage your personal and tax information, check the status of your tax refund or benefit payment, make payments to the CRA, change your contact or banking details, and get a notice of assessment or proof of income.
 
@@ -60,7 +60,7 @@ Affinity Credit Union, Alberta Treasury Branches, BMO Financial Group, Caisse Al
 <cra_register_info>
 ## CRA How to register for an account page
 - Updated September 26, 2024. 
-- URL:https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html
+- URL:https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/inscrire-services-ouverture-session-arc.html?account=mya
 
 # Register for the CRA sign-in services
 

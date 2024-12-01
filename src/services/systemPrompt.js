@@ -1,16 +1,11 @@
 import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
-import { SCENARIOS_EN } from './systemPrompt/scenarios-en.js';
-import { SCENARIOS_FR } from './systemPrompt/scenarios-fr.js';
+import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS_EN } from './systemPrompt/citationInstructions-en.js';
 import { CITATION_INSTRUCTIONS_FR } from './systemPrompt/citationInstructions-fr.js';
-import { CRA_UPDATES_EN } from './systemPrompt/context-cra/cra-updates-en.js';
-import { CRA_UPDATES_FR } from './systemPrompt/context-cra/cra-updates-fr.js';
-import { CRA_SCENARIOS_EN } from './systemPrompt/context-cra/cra-scenarios-en.js';
-import { CRA_SCENARIOS_FR } from './systemPrompt/context-cra/cra-scenarios-fr.js';
-import { ESDC_UPDATES_EN } from './systemPrompt/context-esdc/esdc-updates-en.js';
-import { ESDC_UPDATES_FR } from './systemPrompt/context-esdc/esdc-updates-fr.js';
-import { ESDC_SCENARIOS_EN } from './systemPrompt/context-esdc/esdc-scenarios-en.js';
-import { ESDC_SCENARIOS_FR } from './systemPrompt/context-esdc/esdc-scenarios-fr.js';
+import { CRA_UPDATES } from './systemPrompt/context-cra/cra-updates.js';
+import { CRA_SCENARIOS } from './systemPrompt/context-cra/cra-scenarios.js';
+import { ESDC_UPDATES } from './systemPrompt/context-esdc/esdc-updates.js';
+import { ESDC_SCENARIOS } from './systemPrompt/context-esdc/esdc-scenarios.js';
 import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
 import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 
@@ -19,7 +14,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
 
   try {
     // Validate imports
-    if (!CRA_UPDATES_EN || !CRA_SCENARIOS_EN || !menuStructure_EN || !menuStructure_FR) {
+    if (!CRA_UPDATES || !CRA_SCENARIOS || !menuStructure_EN || !menuStructure_FR) {
       throw new Error('Required imports are undefined');
     }
 
@@ -32,26 +27,28 @@ async function loadSystemPrompt(language = 'en', department = '') {
 
     // Select department-specific content
     const departmentUpdates = department === 'cra'
-      ? (language === 'fr' ? CRA_UPDATES_FR : CRA_UPDATES_EN)
+      ? CRA_UPDATES
       : department === 'esdc'
-        ? (language === 'fr' ? ESDC_UPDATES_FR : ESDC_UPDATES_EN)
+        ? ESDC_UPDATES
         : '';
-    if (department) {
+    if (department && (department === 'cra' || department === 'esdc')) {
       console.log(`🏢 Loaded ${department.toUpperCase()} updates: ${language.toUpperCase()}`);
     }
 
     const departmentScenarios = department === 'cra'
-      ? (language === 'fr' ? CRA_SCENARIOS_FR : CRA_SCENARIOS_EN)
+      ? CRA_SCENARIOS
       : department === 'esdc'
-        ? (language === 'fr' ? ESDC_SCENARIOS_FR : ESDC_SCENARIOS_EN)
+        ? ESDC_SCENARIOS
         : '';
-    if (department) {
+    if (department && (department === 'cra' || department === 'esdc')) {
       console.log(`📋 Loaded ${department.toUpperCase()} scenarios: ${language.toUpperCase()}`);
     }
 
-    // Use department scenarios if available, otherwise fall back to main scenarios
-    const scenarios = departmentScenarios || (language === 'fr' ? SCENARIOS_FR : SCENARIOS_EN);
-    console.log(`🎯 Using ${departmentScenarios ? 'department-specific' : 'general'} scenarios: ${language.toUpperCase()}`);
+    // Always load general scenarios AND department scenarios if available
+    const scenarios = departmentScenarios 
+      ? `${SCENARIOS}\n\n${departmentScenarios}`
+      : SCENARIOS;
+    console.log(`🎯 Loaded general scenarios and ${departmentScenarios ? 'department-specific' : 'no department'} scenarios: ${language.toUpperCase()}`);
 
     // Update the department context to use the updates
     const departmentContext = department 
