@@ -428,10 +428,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, [inputText, referringUrl, turnCount, addMessage, clearInput, t, messages, selectedAI, parseAIResponse, lang, logInteraction, selectedDepartment]);
 
   useEffect(() => {
-    if (!isLoading && messages.length > 0 && messages[messages.length - 1].sender === 'ai') {
-      clearInput();
+    if (pageUrl && !referringUrl) {
+      setReferringUrl(pageUrl);
     }
-  }, [isLoading, messages, clearInput]);
+    
+    if (urlDepartment && !selectedDepartment) {
+      setSelectedDepartment(urlDepartment);
+    }
+  }, [pageUrl, urlDepartment]);
 
   // Memoize the parsed responses with better message tracking
   const parsedResponses = useMemo(() => {
