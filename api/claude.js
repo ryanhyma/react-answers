@@ -1,13 +1,15 @@
 // api/claude.js
 import Anthropic from '@anthropic-ai/sdk';
-//use prompt caching beta
+import { getModelConfig } from '../../config/ai-models';
+
+const modelConfig = getModelConfig('anthropic');
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
   headers: {
-    'anthropic-beta': 'prompt-caching-2024-07-31'
+    'anthropic-beta': modelConfig.beta.promptCaching
   }
 });
-// In api/claude.js, update the handler:
+
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
@@ -23,7 +25,6 @@ export default async function handler(req, res) {
         throw new Error('ANTHROPIC_API_KEY is not set');
       }
 
-      // Convert conversation history if it exists to Claude's format and add current message
       const messages = [
         ...conversationHistory.map(msg => ({
           role: msg.role,
@@ -32,36 +33,23 @@ export default async function handler(req, res) {
         { role: "user", content: message }
       ];
 
-      // Log the final messages array being sent to Claude
-      // console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
-
       const response = await anthropic.beta.promptCaching.messages.create({
-        model: "claude-3-5-sonnet-20241022",
+        model: modelConfig.name,
         system: [{
           type: "text",
           text: systemPrompt,
           cache_control: { type: "ephemeral" }
         }],
         messages: messages,
-        max_tokens: 1024,
-        temperature: 0.5  // Middle ground for balanced responses
-      });
-
-      // Add detailed cache performance logging
-      console.log('Cache Performance:', {
-        // cacheCreation: response.usage.cache_creation_input_tokens + ' tokens written to cache',
-        cacheHits: response.usage.cache_read_input_tokens + ' tokens read from cache',
-        uncachedInput: response.usage.input_tokens + ' tokens processed without cache',
-        // totalInput: response.usage.input_tokens + 
-        //            response.usage.cache_creation_input_tokens + 
-        //            response.usage.cache_read_input_tokens + ' total input tokens',
-        outputTokens: response.usage.output_tokens + ' output tokens'
+        max_tokens: modelConfig.maxTokens,
+        temperature: modelConfig.temperature
       });
 
       console.log('Claude Response:', {
         content: response.content[0].text.substring(0, 100) + '...',
         role: response.role,
-        usage: response.usage
+        usage: response.usage,
+        model: modelConfig.name
       });
       
       res.status(200).json({ content: response.content[0].text });

@@ -1,9 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { getModelConfig } from '../../config/ai-models';
 
+const modelConfig = getModelConfig('anthropic');
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
   headers: {
-    'anthropic-beta': 'message-batches-2024-09-24'
+    'anthropic-beta': modelConfig.beta.messageBatches
   }
 });
 
@@ -19,34 +21,34 @@ export default async function handler(req, res) {
       firstRequestSample: req.body.requests?.[0]?.substring(0, 100)
     });
 
-    // Add validation
     if (!req.body.requests || !Array.isArray(req.body.requests)) {
       throw new Error('Invalid requests array in payload');
     }
 
-    // Add debug logging
     console.log('Preparing batch request:', {
       systemPromptLength: req.body.systemPrompt?.length,
       requestsCount: req.body.requests?.length,
-      sampleRequest: req.body.requests?.[0]
+      sampleRequest: req.body.requests?.[0],
+      model: modelConfig.name
     });
 
     const batch = await anthropic.beta.messages.batches.create({
       requests: req.body.requests.map((request, index) => ({
         custom_id: `eval-${index}`,
         params: {
-          model: "claude-3-5-sonnet-20241022",
+          model: modelConfig.name,
           messages: [{ role: "user", content: request }],
-          max_tokens: 1024,
+          max_tokens: modelConfig.maxTokens,
           system: req.body.systemPrompt,
-          temperature: 0.5
+          temperature: modelConfig.temperature
         }
       }))
     });
 
     console.log('[PROD] Batch created successfully:', {
       batchId: batch.id,
-      status: batch.processing_status
+      status: batch.processing_status,
+      model: modelConfig.name
     });
 
     return res.status(200).json({
