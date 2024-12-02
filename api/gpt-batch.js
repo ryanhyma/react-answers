@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { getModelConfig } from '../config/ai-models';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -11,14 +12,14 @@ export default async function handler(req, res) {
 
     try {
         const { requests, systemPrompt } = req.body;
+        const modelConfig = getModelConfig('openai');
         
-        // Create JSONL content
         const jsonlRequests = requests.map((request, index) => ({
             custom_id: `request-${index}`,
             method: "POST",
             url: "/v1/chat/completions",
             body: {
-                model: "gpt-4o",  // or "gpt-4-turbo-preview"
+                model: modelConfig.name,
                 messages: [
                     {
                         role: "system",
@@ -29,8 +30,8 @@ export default async function handler(req, res) {
                         content: request
                     }
                 ],
-                max_tokens: 1024,
-                temperature: 0.5
+                max_tokens: modelConfig.maxTokens,
+                temperature: modelConfig.temperature
             }
         }));
 

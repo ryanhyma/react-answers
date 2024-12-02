@@ -1,5 +1,6 @@
 // api/chatgpt.js
 import OpenAI from 'openai';
+import { getModelConfig } from '../config/ai-models';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,14 +10,16 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { message, systemPrompt, conversationHistory } = req.body;
-
-      const timeoutDuration = 60000; // 60 seconds
+      
+      const modelConfig = getModelConfig('openai');
+      const timeoutDuration = modelConfig.timeoutMs;
+      
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Request timed out')), timeoutDuration);
       });
 
       const apiCall = openai.chat.completions.create({
-        model: "gpt-4o",
+        model: modelConfig.name,
         messages: [
           { role: "system", content: systemPrompt },
           ...conversationHistory.map(msg => ({
@@ -25,14 +28,11 @@ export default async function handler(req, res) {
           })),
           { role: "user", content: message }
         ],
-        max_tokens: 1024,
-        temperature: 0.5
+        max_tokens: modelConfig.maxTokens,
+        temperature: modelConfig.temperature
       });
 
-      const response = await Promise.race([
-        apiCall,
-        timeoutPromise
-      ]);
+      const response = await Promise.race([apiCall, timeoutPromise]);
 
       console.log(`Token usage for request: ${response.usage.total_tokens} tokens`);
       // TODO: Log token usage to database when implementing response storage
@@ -40,7 +40,8 @@ export default async function handler(req, res) {
 
       res.status(200).json({ 
         content: response.choices[0].message.content,
-        usage: response.usage
+        usage: response.usage,
+        model: modelConfig.name
       });
     } catch (error) {
       console.error('Error calling ChatGPT API:', {
