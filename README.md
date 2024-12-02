@@ -61,8 +61,12 @@ References:
 
 #### 1. Context service 
 The context service would select the question topic/dept area using EITHER the referral URL - e.g. the page the user triggered the AI from - OR an AI model as a judge system. 
-- Currently the department is parsed from the URL passed as a parameter to the application in the usePageParam hook, or from the url entered in the Referring URL field in the Options expand/collape section of the chat interface (this is temporary because there are no AI buttons on any live web pages that can pass a url parameter yet) or from the department selector component (DepartmentSelectorTesting.js) in the chat interface (also temporary but needed for testing of context service design). Both the department and the url are passed to the SystemPrompt builder (systemPrompt.js) so they can be used to load the context files for that topic/dept and also passed to the answer service.
-TODO: redesign systemPrompt.js to use department to select appropriate context files for the small set of departments to enable testing of scenario and instruction files specific to each department
+- Currently the department is parsed from the URL passed as a parameter to the application in the usePageParam hook, or from the url entered in the Referring URL field in the Options expand/collape section of the chat interface or from a button in the Options expand/collapse section of the chat interface. 
+-The buttons and input field are a temporary testing phase solution because there are no AI buttons on any live web pages that can pass a url parameter yet.  The buttons are from the department selector component (DepartmentSelectorTesting.js) in the chat interface (also temporary but needed for testing of context service design). Both the department and the url are passed to the SystemPrompt builder (systemPrompt.js) so they can be used to load the context files for that topic/dept and also passed to the answer service.
+- SystemPrompt.js is updated to load department-specific scenarios and updates if the department is provided. We initialize departmentContent with the general SCENARIOS
+- When loading department-specific context:  
+- If the department content fails to load, we still have the general scenarios as a fallback
+- This ensures we always have the general scenarios as a base, with department-specific scenarios added when available.
 - Risk of using referral url is that it may not be accurate (e.g. they're on the CRA account page but they asked about EI claims) or relevant to the question (e.g. they're on the CRA account page but they asked about IRCC passport services).
 -Model as a judge uses a small light AI model to evaluate the question to determine the topic area of the question. Then that microservice would pass the topic to the answer service.
 -Input: Menu structure without urls and list of departments/agencies from department page

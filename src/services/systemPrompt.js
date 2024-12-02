@@ -2,20 +2,56 @@ import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS_EN } from './systemPrompt/citationInstructions-en.js';
 import { CITATION_INSTRUCTIONS_FR } from './systemPrompt/citationInstructions-fr.js';
-import { CRA_UPDATES } from './systemPrompt/context-cra/cra-updates.js';
-import { CRA_SCENARIOS } from './systemPrompt/context-cra/cra-scenarios.js';
-import { ESDC_UPDATES } from './systemPrompt/context-esdc/esdc-updates.js';
-import { ESDC_SCENARIOS } from './systemPrompt/context-esdc/esdc-scenarios.js';
 import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
 import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
+
+// Create a map of department-specific content imports
+const departmentModules = {
+  cra: {
+    updates: () => import('./systemPrompt/context-cra/cra-updates.js').then(m => m.CRA_UPDATES),
+    scenarios: () => import('./systemPrompt/context-cra/cra-scenarios.js').then(m => m.CRA_SCENARIOS)
+  },
+  esdc: {
+    updates: () => import('./systemPrompt/context-esdc/esdc-updates.js').then(m => m.ESDC_UPDATES),
+    scenarios: () => import('./systemPrompt/context-esdc/esdc-scenarios.js').then(m => m.ESDC_SCENARIOS)
+  },
+  isc: {
+    updates: () => import('./systemPrompt/context-isc/isc-updates.js').then(m => m.ISC_UPDATES),
+    scenarios: () => import('./systemPrompt/context-isc/isc-scenarios.js').then(m => m.ISC_SCENARIOS)
+  }
+  // Add more departments as needed
+};
 
 async function loadSystemPrompt(language = 'en', department = '') {
   console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, department: ${department}`);
 
   try {
-    // Validate imports
-    if (!CRA_UPDATES || !CRA_SCENARIOS || !menuStructure_EN || !menuStructure_FR) {
+    // Validate base imports
+    if (!menuStructure_EN || !menuStructure_FR) {
       throw new Error('Required imports are undefined');
+    }
+
+    // Always start with general scenarios as the base
+    let departmentContent = { updates: '', scenarios: SCENARIOS };
+    
+    // Load department-specific content if available and append to general scenarios
+    if (department && departmentModules[department]) {
+      try {
+        const [updates, scenarios] = await Promise.all([
+          departmentModules[department].updates(),
+          departmentModules[department].scenarios()
+        ]);
+        
+        departmentContent = {
+          updates,
+          // Always include general scenarios, then add department-specific ones
+          scenarios: `${SCENARIOS}\n\n${scenarios}`
+        };
+        
+        console.log(`🏢 Loaded specialized content for ${department.toUpperCase()}: ${language.toUpperCase()}`);
+      } catch (error) {
+        console.warn(`Failed to load specialized content for ${department}, using defaults`, error);
+      }
     }
 
     // Select language-specific content
@@ -25,34 +61,9 @@ async function loadSystemPrompt(language = 'en', department = '') {
     const citationInstructions = language === 'fr' ? CITATION_INSTRUCTIONS_FR : CITATION_INSTRUCTIONS_EN;
     console.log(`📝 Loaded citation instructions: ${language.toUpperCase()}`);
 
-    // Select department-specific content
-    const departmentUpdates = department === 'cra'
-      ? CRA_UPDATES
-      : department === 'esdc'
-        ? ESDC_UPDATES
-        : '';
-    if (department && (department === 'cra' || department === 'esdc')) {
-      console.log(`🏢 Loaded ${department.toUpperCase()} updates: ${language.toUpperCase()}`);
-    }
-
-    const departmentScenarios = department === 'cra'
-      ? CRA_SCENARIOS
-      : department === 'esdc'
-        ? ESDC_SCENARIOS
-        : '';
-    if (department && (department === 'cra' || department === 'esdc')) {
-      console.log(`📋 Loaded ${department.toUpperCase()} scenarios: ${language.toUpperCase()}`);
-    }
-
-    // Always load general scenarios AND department scenarios if available
-    const scenarios = departmentScenarios 
-      ? `${SCENARIOS}\n\n${departmentScenarios}`
-      : SCENARIOS;
-    console.log(`🎯 Loaded general scenarios and ${departmentScenarios ? 'department-specific' : 'no department'} scenarios: ${language.toUpperCase()}`);
-
     // Update the department context to use the updates
     const departmentContext = department 
-      ? `## Updated Information\n${departmentUpdates}`
+      ? `## Updated Information\n${departmentContent.updates}`
       : '';
 
     // Add current date information
@@ -78,7 +89,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
 
       ${menuStructure}
 
-      ${scenarios}
+      ${departmentContent.scenarios}
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
