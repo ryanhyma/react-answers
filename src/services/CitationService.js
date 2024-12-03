@@ -1,6 +1,4 @@
 import ClaudeService from './ClaudeService.js';
-import loadSystemPrompt from './systemPrompt.js';
-import { getModelConfig } from '../../config/ai-models.js';
 
 const CitationService = {
   findCitation: async (params) => {
@@ -10,14 +8,10 @@ const CitationService = {
       department,
       referringUrl,
       originalCitationUrl,
-      lang = 'en',
-      model = 'claude-3-5-haiku-20241022'
+      lang = 'en'
     } = params;
 
     try {
-      // Get model config dynamically
-      const modelConfig = getModelConfig('anthropic', model);
-
       // Construct message for citation model
       const message = `
 <citation-request>
@@ -31,31 +25,31 @@ ${originalCitationUrl ? `Original Citation: ${originalCitationUrl}` : ''}
       // Add evaluation tag to skip conversation history
       const messageWithEval = `<evaluation>${message}</evaluation>`;
 
-      // Use Claude service with configured model
-      const response = await ClaudeService.sendMessage(
+      // Let ClaudeService handle the system prompt
+      const response = await ClaudeService.sendCitationMessage(
         messageWithEval, 
         [], 
         lang,
-        modelConfig.name
+        department
       );
 
-      // Parse response to extract citation and confidence
+      // Parse response to extract citation and header
       const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-      const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
-
+      const citationHeaderRegex = /<citation-head>(.*?)<\/citation-head>/;
+      
       const urlMatch = response.match(citationUrlRegex);
-      const confidenceMatch = response.match(confidenceRatingRegex);
+      const headerMatch = response.match(citationHeaderRegex);
 
       return {
-        citationUrl: urlMatch ? urlMatch[1] : null,
-        confidenceRating: confidenceMatch ? confidenceMatch[1] : '0.1',
+        citationUrl: urlMatch ? urlMatch[1].trim() : null,
+        citationHeader: headerMatch ? headerMatch[1].trim() : null,
         originalResponse: response
       };
     } catch (error) {
       console.error('Error in CitationService:', error);
       return {
         citationUrl: null,
-        confidenceRating: '0.1',
+        citationHeader: null,
         originalResponse: null
       };
     }

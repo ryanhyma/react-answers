@@ -6,10 +6,10 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
-      const { message, systemPrompt, conversationHistory, model } = req.body;
+      const { message, systemPrompt, conversationHistory, service = 'chat' } = req.body;
       
-      // Get model config based on provided model name or fall back to default
-      const modelConfig = getModelConfig('anthropic', model);
+      // Get model config based on service type (chat or citation)
+      const modelConfig = getModelConfig('anthropic', service);
       const anthropic = new Anthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
         headers: {
@@ -18,6 +18,7 @@ export default async function handler(req, res) {
       });
 
       // More detailed logging
+      console.log('Service Type:', service);
       console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
       console.log('Current Message:', message);
       console.log('System Prompt Length:', systemPrompt?.length);
@@ -50,7 +51,8 @@ export default async function handler(req, res) {
         content: response.content[0].text.substring(0, 100) + '...',
         role: response.role,
         usage: response.usage,
-        model: modelConfig.name
+        model: modelConfig.name,
+        service: service
       });
       
       res.status(200).json({ content: response.content[0].text });

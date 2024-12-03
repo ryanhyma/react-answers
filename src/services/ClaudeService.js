@@ -1,15 +1,16 @@
 // src/ClaudeService.js
 
 import loadSystemPrompt from './systemPrompt.js';
+import buildCitationSystemPrompt from './citationSystemPromptBuilder.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/claude'  // Vercel serverless function
   : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
-  sendMessage: async (message, conversationHistory = [], lang = 'en', modelName = null) => {
+  sendMessage: async (message, conversationHistory = [], lang = 'en') => {
     try {
-      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()} with model ${modelName || 'default'}`);
+      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
       
       // Extract department from message if present
       const departmentMatch = message.match(/<department>(.*?)<\/department>/);
@@ -24,7 +25,7 @@ const ClaudeService = {
         message,
         conversationHistory: finalHistory,
         systemPromptLength: SYSTEM_PROMPT.length,
-        model: modelName
+        service: 'chat'
       });
 
       const response = await fetch(API_URL, {
@@ -36,7 +37,51 @@ const ClaudeService = {
           message,
           conversationHistory: finalHistory,
           systemPrompt: SYSTEM_PROMPT,
-          model: modelName
+          service: 'chat'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Claude API error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      return data.content;
+    } catch (error) {
+      console.error('Error calling Claude API:', error);
+      throw error;
+    }
+  },
+  sendCitationMessage: async (message, conversationHistory = [], lang = 'en', department = '') => {
+    try {
+      console.log(`🤖 Claude Citation Service: Processing message in ${lang.toUpperCase()}`);
+      
+      // Load the citation system prompt
+      const systemPrompt = await buildCitationSystemPrompt(lang, department);
+      
+      // Only change: check for evaluation and use empty array if true
+      const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
+
+      console.log('Sending to Claude API:', {
+        message,
+        conversationHistory: finalHistory,
+        systemPromptLength: systemPrompt.length,
+        service: 'citation'
+      });
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          conversationHistory: finalHistory,
+          systemPrompt,
+          service: 'citation'
         }),
       });
 
