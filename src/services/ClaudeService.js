@@ -7,9 +7,9 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api/claude';  // Local development server endpoint
 
 const ClaudeService = {
-  sendMessage: async (message, conversationHistory = [], lang = 'en') => {
+  sendMessage: async (message, conversationHistory = [], lang = 'en', modelName = null) => {
     try {
-      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
+      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()} with model ${modelName || 'default'}`);
       
       // Extract department from message if present
       const departmentMatch = message.match(/<department>(.*?)<\/department>/);
@@ -23,7 +23,8 @@ const ClaudeService = {
       console.log('Sending to Claude API:', {
         message,
         conversationHistory: finalHistory,
-        systemPromptLength: SYSTEM_PROMPT.length
+        systemPromptLength: SYSTEM_PROMPT.length,
+        model: modelName
       });
 
       const response = await fetch(API_URL, {
@@ -33,8 +34,9 @@ const ClaudeService = {
         },
         body: JSON.stringify({
           message,
-          conversationHistory: finalHistory,  // Use the conditional history
+          conversationHistory: finalHistory,
           systemPrompt: SYSTEM_PROMPT,
+          model: modelName
         }),
       });
 

@@ -2,20 +2,21 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getModelConfig } from '../../config/ai-models';
 
-const modelConfig = getModelConfig('anthropic');
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  headers: {
-    'anthropic-beta': modelConfig.beta.promptCaching
-  }
-});
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
-      const { message, systemPrompt, conversationHistory } = req.body;
+      const { message, systemPrompt, conversationHistory, model } = req.body;
       
+      // Get model config based on provided model name or fall back to default
+      const modelConfig = getModelConfig('anthropic', model);
+      const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        headers: {
+          'anthropic-beta': modelConfig.beta.promptCaching
+        }
+      });
+
       // More detailed logging
       console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
       console.log('Current Message:', message);

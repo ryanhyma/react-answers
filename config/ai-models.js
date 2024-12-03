@@ -28,6 +28,15 @@ const AI_MODELS = {
           promptCaching: 'prompt-caching-2024-07-31',
           messageBatches: 'message-batches-2024-09-24'
         }
+      },
+      'claude-3-5-haiku-20241022': {
+        maxTokens: 512,
+        temperature: 0.3,
+        knowledgeCutoff: '2024-04',
+        beta: {
+          promptCaching: 'prompt-caching-2024-07-31',
+          messageBatches: 'message-batches-2024-09-24'
+        }
       }
     }
   },
