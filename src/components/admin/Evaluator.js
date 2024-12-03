@@ -11,6 +11,7 @@ import ChatGPTService from '../../services/ChatGPTService';
 import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
+import '../../styles/App.css';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
@@ -562,19 +563,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 
                 {error ? (
                     <>
-                        <GcdsText style={{ color: 'red' }}>{error}</GcdsText>
+                        <GcdsText className="error-text">{error}</GcdsText>
                         <button 
                             onClick={handleReconnect}
-                            className="secondary-button"
-                            style={{
-                                marginTop: '10px',
-                                padding: '8px 16px',
-                                backgroundColor: '#26374a',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
+                            className="secondary-button force-style-button"
                         >
                             Reconnect
                         </button>
@@ -595,16 +587,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 </GcdsText>
                                 <button 
                                     onClick={handleCancel}
-                                    className="secondary-button"
-                                    style={{
-                                        marginTop: '10px',
-                                        padding: '8px 16px',
-                                        backgroundColor: '#dc3545',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
+                                    className="secondary-button force-style-button"
                                 >
                                     Cancel Batch
                                 </button>
@@ -656,8 +639,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL. Admin code is required to enable file upload (temporary fix for testing).</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
-                        <div className="admin-code-input" style={{ marginBottom: '20px' }}>
-                            <label htmlFor="adminCode" style={{ display: 'block', marginBottom: '10px' }}>
+                        <div className="admin-code-input mrgn-bttm-20">
+                            <label htmlFor="adminCode mrgn-bttm-10 display-block">
                                 Enter Admin Code to enable file upload:
                             </label>
                             <input
@@ -665,15 +648,15 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 id="adminCode"
                                 value={adminCode}
                                 onChange={handleAdminCodeChange}
-                                style={{ marginBottom: '10px' }}
+                                className="mrgn-bttm-10"
                             />
                         </div>
 
-                        <div className="ai-toggle" style={{ marginBottom: '20px' }}>
-                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <legend style={{ marginRight: '10px' }}>AI Service:</legend>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                        <div className="ai-toggle">
+                            <fieldset className="ai-toggle_fieldset">
+                                <div className="ai-toggle_container">
+                                    <legend className="ai-toggle_legend">AI Service:</legend>
+                                    <div className="ai-toggle_option">
                                         <input
                                             type="radio"
                                             id="claude"
@@ -681,11 +664,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="claude"
                                             checked={selectedAI === 'claude'}
                                             onChange={handleAIToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="claude" style={{ marginRight: '15px' }}>Anthropic Claude 3.5 Sonnet</label>
+                                        <label class="mrgn-rght-15" htmlFor="claude">Anthropic Claude 3.5 Sonnet</label>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div class="flex-center">
                                         <input
                                             type="radio"
                                             id="chatgpt"
@@ -693,7 +676,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="chatgpt"
                                             checked={selectedAI === 'chatgpt'}
                                             onChange={handleAIToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
                                     </div>
@@ -701,11 +684,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </fieldset>
                         </div>
 
-                        <div className="language-toggle" style={{ marginBottom: '20px' }}>
-                            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <legend style={{ marginRight: '10px' }}>Evaluation Language:</legend>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                        <div className="language-toggle mrgn-bttm-20">
+                            <fieldset class="ai-toggle_fieldset">
+                                <div class="flex-center">
+                                    <legend class="ai-toggle_legend">Evaluation Language:</legend>
+                                    <div class="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
                                             id="english"
@@ -713,11 +696,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="en"
                                             checked={selectedLanguage === 'en'}
                                             onChange={handleLanguageToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="english" style={{ marginRight: '15px' }}>English</label>
+                                        <label class="mrgn-rght-15" htmlFor="english">English</label>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div class="flex-center">
                                         <input
                                             type="radio"
                                             id="french"
@@ -725,7 +708,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             value="fr"
                                             checked={selectedLanguage === 'fr'}
                                             onChange={handleLanguageToggle}
-                                            style={{ marginRight: '5px' }}
+                                            className="ai-toggle_radio-input"
                                         />
                                         <label htmlFor="french">French</label>
                                     </div>
@@ -733,14 +716,14 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </fieldset>
                         </div>
 
-                        <div className="batch-toggle" style={{ marginBottom: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div className="batch-toggle mrgn-bttm-20">
+                            <div class="flex-center">
                                 <input
                                     type="checkbox"
                                     id="batchProcessing"
                                     checked={useBatchProcessing}
                                     onChange={handleBatchToggle}
-                                    style={{ marginRight: '5px' }}
+                                    className="mrgn-rght-15"
                                 />
                                 <label htmlFor="batchProcessing">
                                     Use batch processing (recommended for large files)
@@ -748,8 +731,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             </div>
                         </div>
 
-                        <div className="file-input-container" style={{ marginBottom: '20px' }}>
-                            <label htmlFor="csvFile" style={{ display: 'block', marginBottom: '10px' }}>
+                        <div className="file-input-container mrgn-bttm-20">
+                            <label htmlFor="csvFile mrgn-bttm-10">
                                 Select feedback CSV file:
                             </label>
                             <input
@@ -757,7 +740,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 id="csvFile"
                                 accept=".csv"
                                 onChange={handleFileChange}
-                                style={{ marginBottom: '10px' }}
+                                className="mrgn-bttm-10 display-block"
                             />
                             {file && (
                                 <div>Selected file: {file.name}</div>
@@ -765,7 +748,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         {error && (
-                            <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+                            <div className="error-message mrgn-bttm-10 red">
                                 {error}
                             </div>
                         )}
@@ -773,15 +756,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         {file && !fileUploaded && (
                             <button 
                                 type="submit"
-                                className="primary-button"
-                                style={{
-                                    padding: '8px 16px',
-                                    backgroundColor: '#26374a',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
+                                className="primary-button force-style-button"
                                 disabled={adminCode !== correctAdminCode}
                             >
                                 Upload File
@@ -816,16 +791,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 {!processing ? (
                                     <button 
                                         onClick={handleProcessFile}
-                                        className="secondary-button"
-                                        style={{
-                                            marginTop: '10px',
-                                            padding: '8px 16px',
-                                            backgroundColor: '#26374a',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer'
-                                        }}
+                                        className="secondary-button force-style-button"
                                     >
                                         Start Processing
                                     </button>

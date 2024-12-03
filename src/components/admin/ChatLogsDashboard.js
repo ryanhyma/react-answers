@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
+import '../../styles/App.css';
 
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
@@ -167,8 +168,7 @@ const ChatLogsDashboard = () => {
         <GcdsButton 
           onClick={fetchLogs}
           disabled={loading}
-          className="me-400 hydrated"
-          style={{ marginTop: '1rem' }}
+          className="me-400 hydrated mrgn-tp-1r"
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
@@ -178,8 +178,7 @@ const ChatLogsDashboard = () => {
             <GcdsButton 
               onClick={downloadJSON}
               disabled={loading}
-              className="me-400 hydrated"
-              style={{ marginTop: '1rem' }}
+              className="me-400 hydrated mrgn-tp-1r"
             >
               Download JSON
             </GcdsButton>
@@ -187,8 +186,7 @@ const ChatLogsDashboard = () => {
             <GcdsButton 
               onClick={downloadCSV}
               disabled={loading}
-              className="me-400 hydrated"
-              style={{ marginTop: '1rem' }}
+              className="me-400 hydrated mrgn-tp-1r"
             >
               Download CSV
             </GcdsButton>
