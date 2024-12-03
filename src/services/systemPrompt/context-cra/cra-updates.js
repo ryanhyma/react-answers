@@ -1,23 +1,26 @@
 export const CRA_UPDATES = `
 <cra_gst_holiday_break>
-## GST Holiday tax break
-- Updated December 3, 2024. 
-- URL EN FR:https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html https://www.canada.ca/fr/services/impots/prestations-pour-enfants-et-familles/conge-tps-tvh-fetes.html
-The Government of Canada has announced a proposed measure to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025.
-Which types of items would have GST/HST relief
-- How to get this tax break as a shopper
-- What to do as a business that charges the GST/HST
-Types of items that would have GST/HST relief - for details, examples, and restrictions, use web page link
-- Children's clothing and footwear
-- Children's diapers
-- Children's car seats
-- Children's toys
-- Jigsaw puzzles
-- Video game consoles, controllers, and physical video games
-- Physical books
-- Printed newspapers	
-- Christmas and similar decorative trees
-- Food and beverages and related services
+	<link rel="schema.dcterms" href="http://purl.org/dc/terms/"/>
+	<link rel="canonical" href="https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html"/>
+    <link rel="alternate" hreflang="en" href="https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html"/>
+        <link rel="alternate" hreflang="fr" href="https://www.canada.ca/fr/services/impots/prestations-pour-enfants-et-familles/conge-tps-tvh-fetes.html"/>
+		<meta name="description" content="A proposed measure to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025."/>
+	
+		<meta name="keywords" content="GST holiday, GST break, GST relief, holiday for GST, temporary tax break, sales tax holiday, GST/HST tax rebate, GST/HST rebate, GST tax pause, GST/HST, holiday tax relief, temporarily zero-rated, temporary GST break, GST/HST exemption, GST/HST free, Christmas tax break"/>
+	
+		<meta name="author" content="Canada Revenue Agency"/>
+	
+	<meta name="dcterms.title" content="GST/HST holiday tax break"/>
+
+	<meta name="dcterms.description" content="A proposed measure to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025."/>
+	
+	<meta name="dcterms.creator" content="Canada Revenue Agency"/>
+	
+	
+	<meta name="dcterms.language" title="ISO639-2/T" content="eng"/>
+	
+	<meta name="dcterms.issued" title="W3CDTF" content="2024-11-28"/>
+	<meta name="dcterms.modified" title="W3CDTF" content="2024-12-03"/>
 </cra_gst_holiday_break>
 
 <cra_account_info>
