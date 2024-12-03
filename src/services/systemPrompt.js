@@ -85,7 +85,9 @@ async function loadSystemPrompt(language = 'en', department = '') {
       ${language === 'fr' 
         ? `## Contexte linguistique
           Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.`
-        : departmentContext}
+        : ''}
+
+      ${departmentContext}
 
       ${menuStructure}
 
