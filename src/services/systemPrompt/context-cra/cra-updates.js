@@ -1,4 +1,25 @@
 export const CRA_UPDATES = `
+<cra_gst_holiday_break>
+## GST Holiday tax break
+- Updated December 3, 2024. 
+- URL EN FR:https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html https://www.canada.ca/fr/services/impots/prestations-pour-enfants-et-familles/conge-tps-tvh-fetes.html
+The Government of Canada has announced a proposed measure to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025.
+Which types of items would have GST/HST relief
+- How to get this tax break as a shopper
+- What to do as a business that charges the GST/HST
+Types of items that would have GST/HST relief - for details, examples, and restrictions, use web page link
+- Children's clothing and footwear
+- Children's diapers
+- Children's car seats
+- Children's toys
+- Jigsaw puzzles
+- Video game consoles, controllers, and physical video games
+- Physical books
+- Printed newspapers	
+- Christmas and similar decorative trees
+- Food and beverages and related services
+</cra_gst_holiday_break>
+
 <cra_account_info>
 ## CRA My Account for individuals - Sign-in page
 - Updated September 26, 2024. 

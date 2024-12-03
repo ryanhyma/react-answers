@@ -98,7 +98,7 @@ Output:logs and evaluation data?
 #### 6. Evaluation service
 Input: questions and correct citation and answers from evaluation  file
 Output: answers and citations from current system and selected model and model version - send to scoring AI service 
-References: https://platform.openai.com/docs/guides/evals and https://github.com/anthropics/evals
+References: https://platform.openai.com/docs/guides/evals and https://github.com/anthropics/evals and https://www.giskard.ai/glossary/llm-evaluation
 
 ### Privacy Protection
 - PII (Personally Identifiable Information) safeguards:
