@@ -1,7 +1,6 @@
 // src/ClaudeService.js
 
 import loadSystemPrompt from './systemPrompt.js';
-import buildCitationSystemPrompt from './citationSystemPromptBuilder.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/claude'  // Vercel serverless function
@@ -24,8 +23,7 @@ const ClaudeService = {
       console.log('Sending to Claude API:', {
         message,
         conversationHistory: finalHistory,
-        systemPromptLength: SYSTEM_PROMPT.length,
-        service: 'chat'
+        systemPromptLength: SYSTEM_PROMPT.length
       });
 
       const response = await fetch(API_URL, {
@@ -35,53 +33,8 @@ const ClaudeService = {
         },
         body: JSON.stringify({
           message,
-          conversationHistory: finalHistory,
+          conversationHistory: finalHistory,  // Use the conditional history
           systemPrompt: SYSTEM_PROMPT,
-          service: 'chat'
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Claude API error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      return data.content;
-    } catch (error) {
-      console.error('Error calling Claude API:', error);
-      throw error;
-    }
-  },
-  sendCitationMessage: async (message, conversationHistory = [], lang = 'en', department = '') => {
-    try {
-      console.log(`🤖 Claude Citation Service: Processing message in ${lang.toUpperCase()}`);
-      
-      // Load the citation system prompt
-      const systemPrompt = await buildCitationSystemPrompt(lang, department);
-      
-      // Only change: check for evaluation and use empty array if true
-      const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
-
-      console.log('Sending to Claude API:', {
-        message,
-        conversationHistory: finalHistory,
-        systemPromptLength: systemPrompt.length,
-        service: 'citation'
-      });
-
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          conversationHistory: finalHistory,
-          systemPrompt,
-          service: 'citation'
         }),
       });
 
