@@ -11,6 +11,7 @@ import { urlValidator } from '../../utils/urlValidator.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting';
+import CitationService from '../../services/CitationService.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -367,10 +368,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
         
-        // Create a new message ID before adding the message
+        // Create a new message ID before adding the message - important do not remove 
         const newMessageId = messageIdCounter.current++;
         
-        // Validate URL if present
+
+        // Continue with existing validation and logging code...
         let finalCitationUrl, confidenceRating;
         if (originalCitationUrl) {
           const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);

@@ -2,21 +2,23 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getModelConfig } from '../../config/ai-models';
 
-const modelConfig = getModelConfig('anthropic');
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  headers: {
-    'anthropic-beta': modelConfig.beta.promptCaching
-  }
-});
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
-      const { message, systemPrompt, conversationHistory } = req.body;
+      const { message, systemPrompt, conversationHistory, service = 'chat' } = req.body;
       
+      // Get model config based on service type (chat or citation)
+      const modelConfig = getModelConfig('anthropic', service);
+      const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        headers: {
+          'anthropic-beta': modelConfig.beta.promptCaching
+        }
+      });
+
       // More detailed logging
+      console.log('Service Type:', service);
       console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
       console.log('Current Message:', message);
       console.log('System Prompt Length:', systemPrompt?.length);
@@ -49,7 +51,8 @@ export default async function handler(req, res) {
         content: response.content[0].text.substring(0, 100) + '...',
         role: response.role,
         usage: response.usage,
-        model: modelConfig.name
+        model: modelConfig.name,
+        service: service
       });
       
       res.status(200).json({ content: response.content[0].text });
