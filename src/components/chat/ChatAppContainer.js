@@ -7,7 +7,7 @@ import FeedbackComponent from './FeedbackComponent.js';
 import LoggingService from '../../services/LoggingService.js';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
-import { urlValidator } from '../../utils/urlValidator.js';
+import { urlToSearch } from '../../utils/urlToSearch.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting';
@@ -373,7 +373,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         // Validate URL if present
         let finalCitationUrl, confidenceRating;
         if (originalCitationUrl) {
-          const validationResult = await urlValidator.validateAndCheckUrl(originalCitationUrl, lang, t);
+          const validationResult = await urlToSearch.validateAndCheckUrl(
+            originalCitationUrl, 
+            lang, 
+            redactedText,  // Changed from userMessage to redactedText
+            selectedDepartment,
+            t
+          );
           
           // Store validation result in checkedCitations using the new message ID
           setCheckedCitations(prev => ({
@@ -634,8 +640,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             </div>
 
             {/* Add department selector here with label */}
-            <div class="mrgn-bttm-10">
-              <label class="display-block mrgn-bttm-4">Referred from:</label>
+            <div className="mrgn-bttm-10">
+              <label className="display-block mrgn-bttm-4">Referred from:</label>
               <DepartmentSelectorTesting
                 selectedDepartment={selectedDepartment}
                 onDepartmentChange={handleDepartmentChange}
@@ -643,7 +649,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
               />
             </div>
 
-            <div class="mrgn-bttm-10">
+            <div className="mrgn-bttm-10">
               <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
               <input
                 id="referring-url"
