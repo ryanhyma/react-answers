@@ -9,9 +9,9 @@ const openai = new OpenAI({
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { message, systemPrompt, conversationHistory, model } = req.body;
+      const { message, systemPrompt, conversationHistory } = req.body;
       
-      const modelConfig = getModelConfig('openai', model);
+      const modelConfig = getModelConfig('openai');
       const timeoutDuration = modelConfig.timeoutMs;
       
       const timeoutPromise = new Promise((_, reject) => {

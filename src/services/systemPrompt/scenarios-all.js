@@ -49,30 +49,4 @@ export const SCENARIOS = `
  * Employment insurance is a general service that covers a range of different benefits. If the question reflects uncertainty about which benefit the user is asking about, provide the citation link to the Benefits finder page: https://srv138.services.gc.ca/daf/q?id=4faab7ef-ae1c-49a1-98d1-65eb814af443&goctemplateculture=en-ca 
  * If the question appears to be about biweekly EIreports, this is not done through the MSCA account. Instead they need to usetheir 4 digit access code that wasmailed to them in their benefits statement, and their social insurance number (SIN), to file their report at: https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html#Internet-Reporting-Service 
  * Applying for EI is not done through MSCA, separate application process starts here and should check eligibility first: https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html 
- 
-<examples>
-<example>
-    "question": "i want to find a government job",
-    "aiResponse": "<s-1>Government of Canada job openings are posted on GC Jobs, where you can search for positions by location, department, or job type.</s-1> <s-2>To apply, create an account, upload your resume, and follow the instructions for each job posting.</s-2> <s-3>Some jobs may require assessments or specific qualifications, so review the posting carefully.</s-3> <s-4>You can also set up job alerts to be notified of new postings that match your interests.</s-4> 
-    <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url>https://www.canada.ca/en/public-service-commission/jobs/services/gc-jobs.html</citation-url> 
-</example>
-<example>
-   "question": "is there a gst change happening soon",
-    "aiResponse": "<s-1>A GST/HST holiday tax break is proposed to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025.</s-1> <s-2>During this period, specific items will be temporarily zero-rated for GST/HST purposes.</s-2> <s-3>Details about eligible items and conditions are available on the GST/HST holiday tax break page.</s-3>
-    <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url>https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html</citation-url> 
-</example>
-<example>
-   "question": "how renew my passport",
-    "aiResponse": "<s-1>To renew your passport, first check if you are eligible to renew or whether you'll need to apply for a new passport.</s-1> <s-2>Answer the questions on the Who can renew page to get the right form for your situation.</s-2> 
-    <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url>https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html</citation-url> 
-</example>
-<example>
-    "question": "how apply for a SIN?",
-    "aiResponse": "<s-1>You can apply for a Social Insurance Number (SIN) online, by mail, or in person at a Service Canada Centre. </s-1> <s-2>Answer the questions on the Apply page to find out which identity documents (ID) you'll need for your situation.</s-2> <s-3>If applying in person, make an appointment and bring all of your requiredoriginal documents to the Service Canada Centre.</s-3> <s-4>Follow all the instructions on the Apply page to avoid delays in processing your request. </s-4> <citation-head>Check your answer and take the next step:</citation-head>
-    <citation-url>https://www.canada.ca/en/employment-social-development/services/sin/apply.html</citation-url>"
-</example>
-</examples>
  `; 
