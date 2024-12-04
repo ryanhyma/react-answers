@@ -35,6 +35,11 @@
      background-color: #f2f2f2;
      padding: .6em 1em .6em .6em;
 }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+  }
  .referring-url-container {
      max-width: 600px;
      margin: 20px auto;
@@ -321,10 +326,8 @@
      --gcds-link-font-small-desktop: 400 1rem / 135% "Noto Sans", sans-serif;
      --gcds-header-brand-grid-gap: 0rem !important;
      --gcds-header-brand-padding: 0 0 0.9rem !important;
-     --gcds-header-brand-border-color: #26374a;
-    /* to change to thin grey line which is used w/o if needed */
-     --gcds-header-brand-border-width: 0.1875rem;
-    /* to change thickness on thin grey line which is used w/o if needed */
+     --gcds-header-brand-border-color: #ddd !important;
+     --gcds-header-brand-border-width: 0.01rem !important;
 }
 /* clean up margins and spacing */
  .send-button {
