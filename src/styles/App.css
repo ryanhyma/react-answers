@@ -341,7 +341,7 @@
      margin: 0;
 }
 
-/* Chat app container styles */
+/* Chat app container styles - this is still a hot mess to clean up, just getting the styles out of inline */
 .ai-toggle {
     margin-bottom: 10px;
     }
@@ -415,6 +415,10 @@
     margin-bottom: 10px;
 }
 
+.mrgn-bttm-4 {
+    margin-bottom: 4px;
+}
+
 .display-block {
     display: block;
 }
@@ -442,4 +446,12 @@
     padding: '1rem'; 
     margin-bottom: '1rem';
     border-radius: '4px';
+}
+
+.chat-border {
+    width: '100%';
+    padding: '8px';
+    marginTop: '4px';
+    border: '1px solid #ccc';
+    borderRadius: '4px';
 }
