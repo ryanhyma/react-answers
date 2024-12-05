@@ -62,13 +62,11 @@ const cohere = new CohereClient({
 
 app.post('/api/claude', async (req, res) => {
   console.log('Received request to /api/claude');
-  console.log('Request body:', req.body);
+  // console.log('Request body:', req.body);
   try {
     const { message, systemPrompt, conversationHistory } = req.body;
     
     // Log conversation details
-    console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
-    console.log('Current Message:', message);
     console.log('System Prompt Length:', systemPrompt?.length);
 
     // Convert conversation history to Claude's format and add current message
@@ -84,7 +82,7 @@ app.post('/api/claude', async (req, res) => {
     console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
 
     const response = await anthropic.beta.promptCaching.messages.create({
-      model: "claude-3-5-sonnet-20240620",
+      model: "claude-3-5-sonnet-20241022",
       system: [{
         type: "text",
         text: systemPrompt,
@@ -104,11 +102,10 @@ app.post('/api/claude', async (req, res) => {
 //use this for local development of chatGPT
 app.post('/api/chatgpt', async (req, res) => {
   console.log('Received request to /api/chatgpt');
-  console.log('Request body:', req.body);
   try {
     const { message, systemPrompt } = req.body;
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-2024-11-20",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

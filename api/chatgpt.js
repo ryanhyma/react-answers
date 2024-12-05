@@ -12,6 +12,7 @@ export default async function handler(req, res) {
       const { message, systemPrompt, conversationHistory } = req.body;
       
       const modelConfig = getModelConfig('openai');
+      console.log('Using OpenAI model:', modelConfig);
       const timeoutDuration = modelConfig.timeoutMs;
       
       const timeoutPromise = new Promise((_, reject) => {
