@@ -292,15 +292,18 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         return;
       }
       console.log('department before ContextService: ', selectedDepartment);
-//if no department is selected from the url or the buttons, use the context service to send the question and language to ContextService to use an AI service to derive the topic and department from the question. 
+// use the context service to send the question and language and referring url(if there is oneto ContextService to use an AI service to derive the topic and department from the question. 
 
-      // Set department and topic to use if context service fails
+      // Set department and topic to use even if referringUrl is provided
       let department = selectedDepartment;
       let topic = 'general';
 
-      if (!department) {
         try {
-          const derivedContext = await ContextService.deriveContext(redactedText, lang);
+          const contextMessage = referringUrl 
+            ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
+            : redactedText;
+            
+          const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
           department = derivedContext.department;
           topic = derivedContext.topic;
           console.log('Derived context:', { department, topic });
@@ -310,7 +313,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           department = 'general';
           topic = 'general';
         }
-      }
 
       // Add message to chat history
       addMessage({

@@ -3,7 +3,7 @@ import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 import { departments_EN } from './systemPrompt/departments_EN.js';
 import { departments_FR } from './systemPrompt/departments_Fr.js';
 
-async function loadContextSystemPrompt(language = 'en') {
+async function loadContextSystemPrompt(language = 'en', department = '') {
   try {
     // Validate base imports
     if (!menuStructure_EN || !menuStructure_FR) {
@@ -13,7 +13,7 @@ async function loadContextSystemPrompt(language = 'en') {
     // Select language-specific content
     const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const departmentsList = language === 'fr' ? departments_FR : departments_EN;
-    console.log(`📚 Loaded menu structure: ${language.toUpperCase()}`);
+    console.log(`📚 Loaded menu structure and departments for ${language.toUpperCase()} (${department.toUpperCase()})`);
 
 
     const fullPrompt = `

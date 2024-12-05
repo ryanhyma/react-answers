@@ -7,11 +7,11 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api/haiku';  // Local development server endpoint for Haiku
 
 const ContextService = {
-  sendMessage: async (message, lang = 'en') => {
+  sendMessage: async (message, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Haiku Service: Processing message in ${lang.toUpperCase()}`);
       
-      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
+      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
       
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -39,11 +39,11 @@ const ContextService = {
     }
   },
   
-  deriveContext: async (question, lang = 'en') => {
+  deriveContext: async (question, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       
-      const response = await ContextService.sendMessage(question, lang);
+      const response = await ContextService.sendMessage(question, lang, department);
       
       // Parse the XML-style tags from the response
       const topicMatch = response.match(/<topic>(.*?)<\/topic>/);
