@@ -10,11 +10,11 @@ const DepartmentSelectorTesting = ({
   
   const departments = [
     { code: '', label: { en: 'None/Home', fr: 'Aucun/Accueil' } },
-    { code: 'cra', label: { en: 'CRA', fr: 'ARC' } },
-    { code: 'esdc', label: { en: 'ESDC', fr: 'EDSC' } },
-    { code: 'ircc', label: { en: 'IRCC', fr: 'IRCC' } },
-    { code: 'isc', label: { en: 'ISC', fr: 'SAC' } },
-    { code: 'pspc', label: { en: 'PSPC', fr: 'SPAC' } }
+    { code: 'CRA', label: { en: 'CRA', fr: 'ARC' } },
+    { code: 'ESDC', label: { en: 'ESDC', fr: 'EDSC' } },
+    { code: 'IRCC', label: { en: 'IRCC', fr: 'IRCC' } },
+    { code: 'ISC', label: { en: 'ISC', fr: 'SAC' } },
+    { code: 'PSPC', label: { en: 'PSPC', fr: 'SPAC' } }
   ];
 
   return (

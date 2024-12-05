@@ -3,37 +3,37 @@ import { useSearchParams } from 'react-router-dom';
 // Simplified mappings for most common departments
 export const DEPARTMENT_MAPPINGS = {
   'revenue-agency': {
-    code: 'cra',
+    code: 'CRA',
     fr: 'agence-revenu',
     en: 'revenue-agency',
     domains: ['canada.ca']
   },
   'immigration-refugees-citizenship': {
-    code: 'ircc',
+    code: 'IRCC',
     fr: 'immigration-refugies-citoyennete',
     en: 'immigration-refugees-citizenship',
     domains: ['canada.ca', 'ircc.canada.ca']
   },
   'employment-social-development': {
-    code: 'esdc',
+    code: 'ESDC',
     fr: 'emploi-developpement-social',
     en: 'employment-social-development',
     domains: ['canada.ca']
   },
   'indigenous-services': {
-    code: 'isc',
+    code: 'ISC',
     fr: 'services-autochtones',
     en: 'indigenous-services',
-    domains: ['canada.ca', 'sac-isc.gc.ca']  // Handle both domain patterns
+    domains: ['canada.ca', 'sac-isc.gc.ca']
   },
   'public-services-procurement': {
-    code: 'pspc',
+    code: 'PSPC',
     fr: 'services-publics-approvisionnement',
     en: 'public-services-procurement',
     domains: ['canada.ca']
   },
   'treasury-board-secretariat': {
-    code: 'pspc',
+    code: 'PSPC',
     fr: 'secretariat-conseil-tresor',
     en: 'treasury-board-secretariat',
     domains: ['canada.ca', 'tbs-sct.canada.ca']
@@ -44,17 +44,17 @@ const THEME_MAPPINGS = {
   'taxes': {
     fr: 'impots',
     en: 'taxes',
-    department: 'cra'
+    department: 'CRA'
   },
   'benefits': {
     fr: 'prestations',
     en: 'benefits',
-    department: 'esdc'
+    department: 'ESDC'
   },
   'publicservice': {
     fr: 'fonctionpublique',
     en: 'publicservice',
-    department: 'pspc'
+    department: 'PSPC'
   }
   // Add more theme mappings as needed
 };
@@ -63,7 +63,7 @@ export function usePageContext() {
   const [searchParams] = useSearchParams();
   
   const rawRef = searchParams.get('ref') || '';
-  console.log('usePageContext - raw ref:', rawRef);
+  // console.log('usePageContext - raw ref:', rawRef);
   
   try {
     // TODO: Handle malformed URLs where some slashes are not properly encoded as %2F
@@ -71,10 +71,10 @@ export function usePageContext() {
     // Example of malformed: https%3A%2F%2Fwww.canada.ca%2Fen/immigration-refugees-citizenship%2Fservices/canadian-passports.html
     
     const fixedRef = rawRef.replace(/\//g, '%2F');
-    console.log('usePageContext - fixed ref:', fixedRef);
+    // console.log('usePageContext - fixed ref:', fixedRef);
     
     const decodedRef = decodeURIComponent(fixedRef);
-    console.log('usePageContext - decoded:', decodedRef);
+    // console.log('usePageContext - decoded:', decodedRef);
     
     const urlObj = new URL(decodedRef);
     
@@ -90,9 +90,9 @@ export function usePageContext() {
     
     // First check specific domains
     if (urlObj.hostname === 'ircc.canada.ca') {
-      department = 'ircc';
+      department = 'IRCC';
     } else if (urlObj.hostname === 'sac-isc.gc.ca' || urlObj.hostname.includes('sac-isc.gc.ca')) {
-      department = 'isc';
+      department = 'ISC';
     }
     
     // If no domain match, check for theme-based matches
