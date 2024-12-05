@@ -43,13 +43,19 @@ class URLToSearch {
     
     switch(department?.toLowerCase()) {
       case 'isc':
-        searchUrl = `https://www.canada.ca/${lang}/indigenous-services-canada/search.html?q=${encodedQuestion}&wb-srch-sub=`;
+        searchUrl = lang === 'en' 
+          ? `https://www.canada.ca/${lang}/indigenous-services-canada/search.html?q=${encodedQuestion}&wb-srch-sub=`
+          : `https://www.canada.ca/${lang}/services-autochtones-canada/rechercher.html?q=${encodedQuestion}&wb-srch-sub=`;
         break;
       case 'cra':
-        searchUrl = `https://www.canada.ca/${lang}/revenue-agency/search.html?q=${encodedQuestion}&wb-srch-sub=`;
+        searchUrl = lang === 'en'
+          ? `https://www.canada.ca/${lang}/revenue-agency/search.html?q=${encodedQuestion}&wb-srch-sub=`
+          : `https://www.canada.ca/${lang}/agence-revenu/rechercher.html?q=${encodedQuestion}&wb-srch-sub=`;
         break;
       case 'ircc':
-        searchUrl = `https://www.canada.ca/${lang}/services/immigration-citizenship/search.html?q=${encodedQuestion}&wb-srch-sub=`;
+        searchUrl = lang === 'en'
+          ? `https://www.canada.ca/${lang}/services/immigration-citizenship/search.html?q=${encodedQuestion}&wb-srch-sub=`
+          : `https://www.canada.ca/${lang}/services/immigration-citoyennete/rechercher.html?q=${encodedQuestion}&wb-srch-sub=`;
         break;
       default:
         searchUrl = `https://www.canada.ca/${lang}/sr/srb.html?q=${encodedQuestion}&wb-srch-sub=`;
