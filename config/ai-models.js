@@ -9,38 +9,20 @@ const AI_MODELS = {
         timeoutMs: 60000,
         knowledgeCutoff: '2024-11'
       },
-      // 'gpt-4o': {
-      //   maxTokens: 1024,
-      //   temperature: 0.5,
-      //   timeoutMs: 60000,
-      //   knowledgeCutoff: '2024-05'
-      // }
+      'gpt-4o': {
+        maxTokens: 1024,
+        temperature: 0.5,
+        timeoutMs: 60000,
+        knowledgeCutoff: '2024-05'
+      }
     }
   },
   anthropic: {
-    services: {
-      chat: {
-        model: 'claude-3-5-sonnet-20241022',
-        ...models['claude-3-5-sonnet-20241022']
-      },
-      short: {
-        model: 'claude-3-5-haiku-20241022',
-        ...models['claude-3-5-haiku-20241022']
-      }
-    },
+    default: 'claude-3-5-sonnet-20241022',
     models: {
       'claude-3-5-sonnet-20241022': {
         maxTokens: 1024,
         temperature: 0.5,
-        knowledgeCutoff: '2024-04',
-        beta: {
-          promptCaching: 'prompt-caching-2024-07-31',
-          messageBatches: 'message-batches-2024-09-24'
-        }
-      },
-      'claude-3-5-haiku-20241022': {
-        maxTokens: 512,
-        temperature: 0.3,
         knowledgeCutoff: '2024-04',
         beta: {
           promptCaching: 'prompt-caching-2024-07-31',
