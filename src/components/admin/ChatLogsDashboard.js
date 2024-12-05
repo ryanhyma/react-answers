@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
+import AdminCodeInput from './AdminCodeInput';
 
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [adminCode, setAdminCode] = useState('');
+  const correctAdminCode = 'noPII';
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -142,8 +145,19 @@ const ChatLogsDashboard = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleAdminCodeChange = (e) => {
+    setAdminCode(e.target.value);
+  };
+
   return (
     <div className="space-y-6">
+      <AdminCodeInput
+        code={adminCode}
+        onChange={handleAdminCodeChange}
+        correctCode={correctAdminCode}
+        label="Enter Admin Code to view chat logs:"
+      />
+
       <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
           <label 
@@ -167,13 +181,13 @@ const ChatLogsDashboard = () => {
 
         <GcdsButton 
           onClick={fetchLogs}
-          disabled={loading}
+          disabled={loading || adminCode !== correctAdminCode}
           className="me-400 hydrated mrgn-tp-1r"
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
         
-        {logs.length > 0 && (
+        {logs.length > 0 && adminCode === correctAdminCode && (
           <>
             <GcdsButton 
               onClick={downloadJSON}

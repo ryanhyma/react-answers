@@ -12,6 +12,7 @@ import RedactionService from '../../services/RedactionService';
 import { parseEvaluationResponse } from '../../utils/evaluationParser';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 import '../../styles/App.css';
+import AdminCodeInput from './AdminCodeInput';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
@@ -639,21 +640,15 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL. Admin code is required to enable file upload (temporary fix for testing).</GcdsText>
 
                     <form onSubmit={handleUpload} className="mt-400">
-                        <div className="admin-code-input mrgn-bttm-20">
-                            <label htmlFor="adminCode mrgn-bttm-10 display-block">
-                                Enter Admin Code to enable file upload:
-                            </label>
-                            <input
-                                type="text"
-                                id="adminCode"
-                                value={adminCode}
-                                onChange={handleAdminCodeChange}
-                                className="mrgn-bttm-10"
-                            />
-                        </div>
+                        <AdminCodeInput
+                            code={adminCode}
+                            onChange={handleAdminCodeChange}
+                            correctCode={correctAdminCode}
+                            label="Enter Admin Code to enable file upload:"
+                        />
 
                         <div className="ai-toggle">
-                            <fieldset className="ai-toggle_fieldset">
+                                <fieldset className="ai-toggle_fieldset">
                                 <div className="ai-toggle_container">
                                     <legend className="ai-toggle_legend">AI Service:</legend>
                                     <div className="ai-toggle_option">
@@ -666,9 +661,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label class="mrgn-rght-15" htmlFor="claude">Anthropic Claude 3.5 Sonnet</label>
+                                        <label className="mrgn-rght-15" htmlFor="claude">Anthropic Claude 3.5 Sonnet</label>
                                     </div>
-                                    <div class="flex-center">
+                                    <div className="flex-center">
                                         <input
                                             type="radio"
                                             id="chatgpt"
@@ -685,10 +680,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         <div className="language-toggle mrgn-bttm-20">
-                            <fieldset class="ai-toggle_fieldset">
-                                <div class="flex-center">
-                                    <legend class="ai-toggle_legend">Evaluation Language:</legend>
-                                    <div class="flex-center mrgn-rght-15">
+                            <fieldset className="ai-toggle_fieldset">
+                                <div className="flex-center">
+                                    <legend className="ai-toggle_legend">Evaluation Language:</legend>
+                                    <div className="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
                                             id="english"
@@ -698,9 +693,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label class="mrgn-rght-15" htmlFor="english">English</label>
+                                        <label className="mrgn-rght-15" htmlFor="english">English</label>
                                     </div>
-                                    <div class="flex-center">
+                                    <div className="flex-center">
                                         <input
                                             type="radio"
                                             id="french"
@@ -717,7 +712,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         </div>
 
                         <div className="batch-toggle mrgn-bttm-20">
-                            <div class="flex-center">
+                            <div className="flex-center">
                                 <input
                                     type="checkbox"
                                     id="batchProcessing"
