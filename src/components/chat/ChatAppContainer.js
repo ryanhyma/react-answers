@@ -11,6 +11,7 @@ import { urlToSearch } from '../../utils/urlToSearch.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting';
+import ContextService from '../../services/ContextService.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -46,7 +47,6 @@ const parseMessageContent = (text) => {
 const ChatAppContainer = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
   const { url: pageUrl, department: urlDepartment } = usePageContext();
-  console.log('TempChatAppContainer - pageUrl:', pageUrl);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +56,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
-  console.log('TempChatAppContainer - referringUrl state:', referringUrl);
   const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
@@ -292,6 +291,28 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         clearInput();
         return;
       }
+      console.log('department before ContextService: ', selectedDepartment);
+// use the context service to send the question and language and referring url(if there is oneto ContextService to use an AI service to derive the topic and department from the question. 
+
+      // Set department and topic to use even if referringUrl is provided
+      let department = selectedDepartment;
+      let topic = 'general';
+
+        try {
+          const contextMessage = referringUrl 
+            ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
+            : redactedText;
+            
+          const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
+          department = derivedContext.department;
+          topic = derivedContext.topic;
+          console.log('Derived context:', { department, topic });
+        } catch (error) {
+          console.error('Error deriving context:', error);
+          // Fall back to general if context derivation fails
+          department = 'general';
+          topic = 'general';
+        }
 
       // Add message to chat history
       addMessage({
@@ -307,19 +328,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       // Continue with normal AI processing if no profanity/threats
       setIsLoading(true);
       try {
-        // Add referring URL and department to the message if provided
+        // Now create the message with the derived or selected department
         const messageWithUrl = `${redactedText}${
           referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
         }${
-          selectedDepartment ? `\n<department>${selectedDepartment}</department>` : ''
+          department ? `\n<department>${department}</department>` : ''
+        }${
+          topic ? `\n<topic>${topic}</topic>` : ''
         }`;
-
-        // console.log('Full message being sent:', {
-        //   messageWithUrl,
-        //   referringUrl: referringUrl.trim(),
-        //   department: selectedDepartment,
-        //   conversationHistory
-        // });
 
         // Create conversation history
         const conversationHistory = messages.map(msg => ({

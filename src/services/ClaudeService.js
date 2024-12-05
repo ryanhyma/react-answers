@@ -20,11 +20,11 @@ const ClaudeService = {
       // Only change: check for evaluation and use empty array if true
       const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
 
-      console.log('Sending to Claude API:', {
-        message,
-        conversationHistory: finalHistory,
-        systemPromptLength: SYSTEM_PROMPT.length
-      });
+      // console.log('Sending to Claude API:', {
+      //   message,
+      //   conversationHistory: finalHistory,
+      //   systemPromptLength: SYSTEM_PROMPT.length
+      // });
 
       const response = await fetch(API_URL, {
         method: 'POST',

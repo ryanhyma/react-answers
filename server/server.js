@@ -162,5 +162,41 @@ app.post('/api/cohere', async (req, res) => {
   }
 });
 
+app.post('/api/haiku', async (req, res) => {
+  console.log('Received request to /api/haiku');
+  console.log('Request body:', req.body);
+  try {
+    const { message, systemPrompt } = req.body;
+
+    // Log the current message and system prompt length
+    console.log('Current Message:', message);
+    console.log('System Prompt Length:', systemPrompt?.length);
+
+    const messages = [
+      { role: "user", content: message }
+    ];
+
+    // Log the messages being sent to the Haiku model
+    console.log('Messages being sent to Haiku:', JSON.stringify(messages, null, 2));
+
+    const response = await anthropic.beta.promptCaching.messages.create({
+      model: "claude-3-5-haiku-20241022",
+      system: [{
+        type: "text",
+        text: systemPrompt,
+        cache_control: { type: "ephemeral" }
+      }],
+      messages: messages,
+      max_tokens: 1024
+    });
+
+    console.log('Haiku API response received');
+    res.json({ content: response.content[0].text });
+  } catch (error) {
+    console.error('Error calling Haiku API:', error);
+    res.status(500).json({ error: 'Error processing your request' });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

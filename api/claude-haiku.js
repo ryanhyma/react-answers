@@ -2,7 +2,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getModelConfig } from '../config/ai-models';
 
+// Same as your claude.js endpoint, but with this change:
 const modelConfig = getModelConfig('anthropic');
+
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
   headers: {
@@ -14,27 +16,22 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
-      const { message, systemPrompt, conversationHistory } = req.body;
+      const { message, systemPrompt } = req.body;
       
-      // // More detailed logging
-      // console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
+      // More detailed logging
       // console.log('Current Message:', message);
-      // console.log('System Prompt Length:', systemPrompt?.length);
+      console.log('System Prompt Length:', systemPrompt?.length);
 
       if (!process.env.ANTHROPIC_API_KEY) {
         throw new Error('ANTHROPIC_API_KEY is not set');
       }
 
       const messages = [
-        ...conversationHistory.map(msg => ({
-          role: msg.role,
-          content: msg.content
-        })),
         { role: "user", content: message }
       ];
 
       const response = await anthropic.beta.promptCaching.messages.create({
-        model: modelConfig.name,
+        model: "claude-3-5-haiku-20241022", //I'm cheating here to use the Haiku model without adding to the config file 
         system: [{
           type: "text",
           text: systemPrompt,
@@ -45,12 +42,12 @@ export default async function handler(req, res) {
         temperature: modelConfig.temperature
       });
 
-      console.log('Claude Response:', {
-        content: response.content[0].text.substring(0, 100) + '...',
-        role: response.role,
-        usage: response.usage,
-        model: modelConfig.name
-      });
+      // console.log('Claude Response:', {
+      //   content: response.content[0].text.substring(0, 100) + '...',
+      //   role: response.role,
+      //   usage: response.usage,
+      //   model: modelConfig.name
+      // });
       
       res.status(200).json({ content: response.content[0].text });
     } catch (error) {
