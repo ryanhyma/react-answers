@@ -2,7 +2,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getModelConfig } from '../config/ai-models';
 
-const modelConfig = getModelConfig('anthropic');
+const modelConfig = getModelConfig('anthropic', 'chat');
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
   headers: {
