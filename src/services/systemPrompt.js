@@ -1,23 +1,26 @@
 import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
-import { CITATION_INSTRUCTIONS_EN } from './systemPrompt/citationInstructions-en.js';
-import { CITATION_INSTRUCTIONS_FR } from './systemPrompt/citationInstructions-fr.js';
-import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
-import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
+import { CITATION_INSTRUCTIONS } from './systemPrompt/citationInstructions.js';
+// import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
+// import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 
 // Create a map of department-specific content imports
 const departmentModules = {
-  cra: {
+  CRA: {
     updates: () => import('./systemPrompt/context-cra/cra-updates.js').then(m => m.CRA_UPDATES),
     scenarios: () => import('./systemPrompt/context-cra/cra-scenarios.js').then(m => m.CRA_SCENARIOS)
   },
-  esdc: {
+  ESDC: {
     updates: () => import('./systemPrompt/context-esdc/esdc-updates.js').then(m => m.ESDC_UPDATES),
     scenarios: () => import('./systemPrompt/context-esdc/esdc-scenarios.js').then(m => m.ESDC_SCENARIOS)
   },
-  isc: {
+  ISC: {
     updates: () => import('./systemPrompt/context-isc/isc-updates.js').then(m => m.ISC_UPDATES),
     scenarios: () => import('./systemPrompt/context-isc/isc-scenarios.js').then(m => m.ISC_SCENARIOS)
+  },
+  PSPC: {
+    updates: () => import('./systemPrompt/context-pspc/pspc-updates.js').then(m => m.PSPC_UPDATES),
+    scenarios: () => import('./systemPrompt/context-pspc/pspc-scenarios.js').then(m => m.PSPC_SCENARIOS)
   }
   // Add more departments as needed
 };
@@ -26,10 +29,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
   console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, department: ${department}`);
 
   try {
-    // Validate base imports
-    if (!menuStructure_EN || !menuStructure_FR) {
-      throw new Error('Required imports are undefined');
-    }
+
 
     // Always start with general scenarios as the base
     let departmentContent = { updates: '', scenarios: SCENARIOS };
@@ -44,8 +44,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
         
         departmentContent = {
           updates,
-          // Always include general scenarios, then add department-specific ones
-          scenarios: `${SCENARIOS}\n\n${scenarios}`
+          scenarios
         };
         
         console.log(`🏢 Loaded specialized content for ${department.toUpperCase()}: ${language.toUpperCase()}`);
@@ -55,16 +54,19 @@ async function loadSystemPrompt(language = 'en', department = '') {
     }
 
     // Select language-specific content
-    const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
-    console.log(`📚 Loaded menu structure: ${language.toUpperCase()}`);
+    // const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
+    // console.log(`📚 Loaded menu structure: ${language.toUpperCase()}`);
     
-    const citationInstructions = language === 'fr' ? CITATION_INSTRUCTIONS_FR : CITATION_INSTRUCTIONS_EN;
-    console.log(`📝 Loaded citation instructions: ${language.toUpperCase()}`);
+    const citationInstructions = CITATION_INSTRUCTIONS;
 
-    // Update the department context to use the updates
-    const departmentContext = department 
-      ? `## Updated Information\n${departmentContent.updates}`
+    // Update the department context sections
+    const departmentUpdatesSection = department 
+      ? `## Updated pages for this department\n${departmentContent.updates}`
       : '';
+    
+    const departmentScenariosSection = department 
+      ? `## Important scenarios for this department\n${departmentContent.scenarios}`
+      : `## Important general instructions for all departments\n${SCENARIOS}`;
 
     // Add current date information
     const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
@@ -87,11 +89,9 @@ async function loadSystemPrompt(language = 'en', department = '') {
           Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.`
         : ''}
 
-      ${departmentContext}
+      ${departmentUpdatesSection}
 
-      ${menuStructure}
-
-      ${departmentContent.scenarios}
+      ${departmentScenariosSection}
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
