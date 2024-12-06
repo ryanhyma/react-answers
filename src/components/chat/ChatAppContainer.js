@@ -297,16 +297,19 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       // Set department and topic to use even if referringUrl is provided
       let department = selectedDepartment;
       let topic = 'general';
+      let departmentUrl = '';
 
         try {
           const contextMessage = referringUrl 
             ? `${redactedText}\n<referring-url>${referringUrl}</referring-url>`
             : redactedText;
-            
+            // call the context service to derive the topic and department and department url  from the question
+            //TODO determine if we need to only call this for the first message in the conversation
           const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
           department = derivedContext.department;
           topic = derivedContext.topic;
-          console.log('Derived context:', { department, topic });
+          departmentUrl = derivedContext.departmentUrl;
+          console.log('Derived context:', { department, topic, departmentUrl });
         } catch (error) {
           console.error('Error deriving context:', error);
           // Fall back to general if context derivation fails
@@ -335,6 +338,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           department ? `\n<department>${department}</department>` : ''
         }${
           topic ? `\n<topic>${topic}</topic>` : ''
+        }${
+          departmentUrl ? `\n<department-url>${departmentUrl}</department-url>` : ''
         }`;
 
         // Create conversation history
