@@ -48,10 +48,12 @@ const ContextService = {
       // Parse the XML-style tags from the response
       const topicMatch = response.match(/<topic>(.*?)<\/topic>/);
       const departmentMatch = response.match(/<department>(.*?)<\/department>/);
+      const departmentUrlMatch = response.match(/<departmentUrl>(.*?)<\/departmentUrl>/);
       
       return {
-        topic: topicMatch ? topicMatch[1] : 'general',
-        department: departmentMatch ? departmentMatch[1] : 'general'
+        topic: topicMatch ? topicMatch[1] : 'none',
+        department: departmentMatch ? departmentMatch[1] : '',
+        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : ''
       };
     } catch (error) {
       console.error('Error deriving context:', error);

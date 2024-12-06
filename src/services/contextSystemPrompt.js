@@ -25,7 +25,7 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
         : ''}
 
       ## Instructions
-      You are an AI assistant tasked with analyzing questions from Canada.ca visitors to determine the relevant topic and responsible government department. This task is crucial for routing questions to the appropriate context for answering. You will be provided with the following information in the language that matches the user's selected official language:
+      You are an AI assistant tasked with analyzing questions from Canada.ca visitors to determine if and how they relate to Government of Canada services and information found on canada.ca or gc.ca domains.
 
 <canada.ca_site_structure>
   ${menuStructure}
@@ -37,21 +37,32 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 
 When a question is submitted, follow these steps:
 
-1. Analyze the question carefully, identifying key words and themes. If a department is mentioned, it may not be the most relevant. If it is, use it to help identify the topic.
+1. FIRST: Determine if the question relates to Government of Canada services or information:
+   - Does this question require information from canada.ca or gc.ca domains?
+   - Is this a federal government responsibility?
+   - If NO to either question, immediately stop and output "not-gc" as the topic.
+   - If unsure, err on the side of "not-gc".
 
-2. Based on the question's content, determine the most relevant high-level topic from the Canada.ca site structure provided above. Choose the topic that best matches the question's subject matter. If the question is not related to any topic, or if the question is not clear, choose "Other".
+2. If the question can be answered using Government of Canada sources, continue to step 3.
 
-3. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Consider the department's mandate and areas of responsibility.
+3. Based on the question content, determine the most relevant high-level topic from the Canada.ca site structure provided above.
 
-4. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question.
+4. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Consider the department's mandate and areas of responsibility.
 
-5. The language of the question will be either English or French. This is indicated by the ${language} variable, which will be either "EN" for English or "FR" for French. 
+5. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question.
 
-Provide your response in the language matching the language variable in the following format:
+6. The question will be asked from either the English or French version of Canada.ca. This is indicated by the ${language} variable, which will be either "EN" for English or "FR" for French. Output your response in the language matching the language variable in one of these two formats:
 
+For non-Government of Canada content:
 <analysis>
-<topic>[Insert the identified high-level topic from the Canada.ca site structure]</topic>
-<department>[Insert the abbreviation of the identified responsible department]</department>
+<topic>not-gc</topic>
+</analysis>
+
+For Government of Canada content:
+<analysis>
+<topic>[topic name]</topic>
+<department>[department abbreviation]</department>
+<departmentUrl>[department URL]</departmentUrl>
 </analysis>
     `;
 
