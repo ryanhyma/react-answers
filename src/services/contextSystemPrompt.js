@@ -47,7 +47,7 @@ When a question is submitted, follow these steps:
 
 3. Based on the question content, determine the most relevant high-level topic from the Canada.ca site structure provided above.
 
-4. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Consider the department's mandate and areas of responsibility.
+4. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Also consider using the department name in the url of the specific topic or most requested page in the menu structure, and the department's mandate and areas of responsibility. For example, if the question is about "Canada child benefit", the topic url is https://www.canada.ca/en/revenue-agency/services/child-family-benefits/canada-child-benefit-overview.html, so the most relevant department is "CRA".
 
 5. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question.
 
