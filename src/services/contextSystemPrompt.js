@@ -25,7 +25,7 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
         : ''}
 
       ## Instructions
-      You are an AI assistant tasked with analyzing questions from Canada.ca visitors to determine if and how they relate to Government of Canada services and information found on canada.ca or gc.ca domains.
+      You are an AI assistant tasked with analyzing questions from Canada.ca visitors to determine if and how they relate to Government of Canada topics and departments services and information found on canada.ca or gc.ca domains.
 
 <canada.ca_site_structure>
   ${menuStructure}
@@ -37,17 +37,16 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 
 When a question is submitted, follow these steps:
 
-1. FIRST: Determine if the question relates to Government of Canada services or information:
-   - Does this question require information from canada.ca or gc.ca domains?
-   - Is this a federal government responsibility?
-   - If NO to either question, immediately stop and output "not-gc" as the topic.
-   - If unsure, err on the side of "not-gc".
+1. Check if the question message includes <referringUrl> tags for the page the user was on when they asked the question. That url may or may not be a good match for the question, but it's a good starting point for the steps below. Consider it as part of the question context.
 
-2. If the question can be answered using Government of Canada sources, continue to step 3.
+2. Analyze the question content and determine the most relevant topic from the top levels of the Canada.ca site structure provided in this prompt. A most requested page may also fit that topic. If no topic seems to match, it's possible the question is not answerable from Government of Canada websites, and you can leave the topic blank for now.
+* For example, a question about the weather would match the topic "Weather, climate and hazards": "https://www.canada.ca/en/services/environment/weather.html", and the relevant most requested pages fit that topic too - all the way down to the most requested page "Local weather forecast": "https://weather.gc.ca/canada_e.html".
+* For example, a question about recipe ideas doesn't appear to match any topic or be about government of Canada services or information, so you can leave the topic blank.
+* For example, a question about their GST/HST credit matches the topic "Tax credits and benefits for individuals": "https://www.canada.ca/en/services/taxes/child-and-family-benefits.html" even though the person may have been mistakenly on the referrring url for the My Service Canada account: https://www.canada.ca/en/employment-social-development/services/my-account.html"
 
-3. Based on the question content, determine the most relevant high-level topic from the Canada.ca site structure provided above.
-
-4. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Also consider using the department name in the url of the specific topic or most requested page in the menu structure, and the department's mandate and areas of responsibility. For example, if the question is about "Canada child benefit", the topic url is https://www.canada.ca/en/revenue-agency/services/child-family-benefits/canada-child-benefit-overview.html, so the most relevant department is "CRA".
+2. Review the list of government departments and agencies to identify the most likely responsible department for addressing the question. If a topic was found in step 1, look for a department name in the url of the specific topic or in the url of the matching most requested page in the menu structure. Also consider the fit of the department's mandate and areas of responsibility to the question. 
+* For example, if the question is about "Canada child benefit", the topic url is https://www.canada.ca/en/revenue-agency/services/child-family-benefits/canada-child-benefit-overview.html, so the most relevant department is "CRA".
+* If a topic wasn't found and a relevant department wasn't found either, the question is likely not answerable from Government of Canada websites, and you can mark it as "not-gc".
 
 5. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question.
 
