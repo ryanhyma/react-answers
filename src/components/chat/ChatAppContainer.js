@@ -251,9 +251,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         
         // Initial validation checks
         if (inputText.length > MAX_CHAR_LIMIT) {
+          const errorMessageId = messageIdCounter.current++;
           setMessages(prevMessages => [
             ...prevMessages,
             { 
+              id: errorMessageId,
               text: t('homepage.chat.messages.characterLimit'),
               sender: 'system',
               error: true
@@ -262,26 +264,26 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
-        if (turnCount >= MAX_CONVERSATION_TURNS) {
-          return;
-        }
-
-        // Prepare user message and check for blocked content
+        // First validate and redact the message
         const userMessage = inputText.trim();
         const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
         // Check for blocked content
         const hasBlockedContent = redactedText.includes('###');
         if (hasBlockedContent) {
+          const userMessageId = messageIdCounter.current++;
+          const blockedMessageId = messageIdCounter.current++;
           setMessages(prevMessages => [
             ...prevMessages,
             { 
+              id: userMessageId,
               text: redactedText,
               redactedText: redactedText,
               redactedItems: redactedItems,
               sender: 'user'
             },
             { 
+              id: blockedMessageId,
               text: t('homepage.chat.messages.blockedContent'),
               sender: 'system',
               error: true
@@ -291,15 +293,28 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
-        // Add initial thinking message
+        // Now that message is validated and redacted, show formatted message with "Starting to think..."
+        const userMessageId = messageIdCounter.current++;
+        const thinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
           ...prevMessages,
           { 
+            id: userMessageId,
+            text: userMessage,
+            redactedText: redactedText,
+            redactedItems: redactedItems,
+            sender: 'user',
+            ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
+          },
+          { 
+            id: thinkingMessageId,
             text: t('homepage.chat.messages.startingToThink'), 
             sender: 'system', 
             temporary: true 
           }
         ]);
+
+        clearInput();
 
         // Get context only for the first message
         let department = selectedDepartment;
@@ -307,18 +322,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         let topicUrl = '';
         let departmentUrl = '';
 
-        if (!referringUrl && turnCount === 0) {  // Only for first message
+        if (!referringUrl && turnCount === 0) {
           try {
-            // Update message to show deriving context
-            setMessages(prevMessages => [
-              ...prevMessages.filter(m => !m.temporary),
-              { 
-                text: t('homepage.chat.messages.derivingContext'), 
-                sender: 'system', 
-                temporary: true 
-              }
-            ]);
-            // Start context derivation
             const contextMessage = `${redactedText}${
               referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
             }`;
@@ -335,32 +340,19 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           }
         }
 
-        // Add user message after context derivation
-        addMessage({
-          text: userMessage,
-          redactedText: redactedText,
-          redactedItems: redactedItems,
-          sender: 'user',
-          department: department,
-          topic: topic,
-          topicUrl: topicUrl,
-          departmentUrl: departmentUrl,
-          ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-        });
-
-        clearInput();
-
-        // Update thinking message for AI processing
+        // After context service, update thinking message
+        const newThinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
           ...prevMessages.filter(m => !m.temporary),
-          { 
-            text: t('homepage.chat.messages.processingRequest'), 
-            sender: 'system', 
-            temporary: true 
+          {
+            id: newThinkingMessageId,
+            text: t('homepage.chat.messages.thinking'),
+            sender: 'system',
+            temporary: true
           }
         ]);
 
-        // Rest of the existing AI processing code...
+        // Prepare the message with context for AI processing
         const messageWithUrl = `${redactedText}${
           referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
         }${
@@ -373,153 +365,146 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           departmentUrl ? `\n<departmentUrl>${departmentUrl}</departmentUrl>` : ''
         }`;
 
-        // console.log('Final message being sent to AI:', messageWithUrl);
-
-        // Create conversation history
+        // Get conversation history for context
         const conversationHistory = messages
-          .filter(msg => !msg.temporary && !msg.error)
-          .map(msg => {
-            if (msg.sender === 'user') {
-              // For user messages, include all the context that was originally sent
-              const contextEnrichedContent = `${msg.redactedText}${
-                msg.referringUrl ? `\n<referring-url>${msg.referringUrl}</referring-url>` : ''
-              }${
-                msg.department ? `\n<department>${msg.department}</department>` : ''
-              }${
-                msg.topic ? `\n<topic>${msg.topic}</topic>` : ''
-              }${
-                msg.topicUrl ? `\n<topicUrl>${msg.topicUrl}</topicUrl>` : ''
-              }${
-                msg.departmentUrl ? `\n<departmentUrl>${msg.departmentUrl}</departmentUrl>` : ''
-              }`;
-              return {
-                role: 'user',
-                content: contextEnrichedContent
-              };
-            } else if (msg.sender === 'ai') {
-              // For AI responses, preserve the complete response including any tags
-              return {
-                role: 'assistant',
-                content: msg.text,
-                aiService: msg.aiService
-              };
-            } else {
-              // For any other message types (system messages, etc.)
-              return {
-                role: 'system',
-                content: msg.text
-              };
+          .filter(m => !m.temporary)
+          .map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.redactedText || m.text
+          }));
+
+        // Try primary AI service first
+        try {
+          const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
+          
+          // Parse the response for citations
+          const { citationUrl } = parseAIResponse(response, selectedAI);
+          
+          // Validate citation URL if present
+          if (citationUrl) {
+            try {
+              const validatedUrl = await urlToSearch(citationUrl);
+              setCheckedCitations(prev => ({
+                ...prev,
+                [messageIdCounter.current]: {
+                  url: validatedUrl,
+                  fallbackUrl: citationUrl
+                }
+              }));
+            } catch (error) {
+              console.error('Error validating citation URL:', error);
+              setCheckedCitations(prev => ({
+                ...prev,
+                [messageIdCounter.current]: {
+                  fallbackUrl: citationUrl
+                }
+              }));
             }
+          }
+
+          // Add the AI response to messages using addMessage
+          addMessage({
+            text: response,
+            sender: 'ai',
+            aiService: selectedAI
           });
 
-        console.log('Final message being sent to AI:', messageWithUrl);
-
-        let response;
-        let usedAI = selectedAI;
-
-        try {
-          response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
-          // console.log('Raw AI response:', response);
-          
-          // Remove this addMessage call since we'll add it after URL validation
-          // addMessage({
-          //   text: response,
-          //   sender: 'ai',
-          //   aiService: usedAI
-          // });
-          
+          setTurnCount(prev => prev + 1);
           setShowFeedback(true);
+
+          // Log the interaction
+          const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(response, selectedAI);
+          logInteraction(
+            redactedText,
+            response,
+            selectedAI,
+            referringUrl,
+            null, // citation URL will be validated later
+            originalCitationUrl,
+            confidenceRating
+          );
+
         } catch (error) {
           console.error(`Error with ${selectedAI}:`, error);
           
-          // Show "thinking more" message
-          addMessage({
-            text: t('homepage.chat.messages.thinkingMore'),
-            sender: 'system'
-          });
-
-          // Try next service in the failover chain
-          usedAI = getNextAIService(selectedAI);
+          // Try fallback AI service
+          const fallbackAI = getNextAIService(selectedAI);
           try {
-            response = await tryAIService(usedAI, messageWithUrl, conversationHistory, lang);
-            console.log('Raw AI response:', response);
-          } catch (secondError) {
-            console.error(`Error with ${usedAI}:`, secondError);
+            const fallbackResponse = await tryAIService(fallbackAI, messageWithUrl, conversationHistory, lang);
             
-            // Try the final service in the chain
-            usedAI = getNextAIService(usedAI);
-            response = await tryAIService(usedAI, messageWithUrl, conversationHistory, lang);
+            // Add the fallback AI response
+            const fallbackMessageId = messageIdCounter.current++;
+            setMessages(prevMessages => [
+              ...prevMessages.filter(m => !m.temporary),
+              {
+                id: fallbackMessageId,
+                text: fallbackResponse,
+                sender: 'ai',
+                aiService: fallbackAI
+              }
+            ]);
+
+            setTurnCount(prev => prev + 1);
+            setShowFeedback(true);
+
+            // Log the fallback interaction
+            const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
+            logInteraction(
+              redactedText,
+              fallbackResponse,
+              fallbackAI,
+              referringUrl,
+              null,
+              originalCitationUrl,
+              confidenceRating
+            );
+
+          } catch (fallbackError) {
+            console.error(`Error with fallback ${fallbackAI}:`, fallbackError);
+            const errorMessageId = messageIdCounter.current++;
+            setMessages(prevMessages => [
+              ...prevMessages.filter(m => !m.temporary),
+              {
+                id: errorMessageId,
+                text: t('homepage.chat.messages.error'),
+                sender: 'system',
+                error: true
+              }
+            ]);
           }
         }
 
-        const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
-        
-        // Create a new message ID before adding the message
-        const newMessageId = messageIdCounter.current++;
-        
-        // Validate URL if present
-        let finalCitationUrl, confidenceRating;
-        if (originalCitationUrl) {
-          const validationResult = await urlToSearch.validateAndCheckUrl(
-            originalCitationUrl, 
-            lang, 
-            redactedText,  // Changed from userMessage to redactedText
-            selectedDepartment,
-            t
-          );
-          
-          // Store validation result in checkedCitations using the new message ID
-          setCheckedCitations(prev => ({
-            ...prev,
-            [newMessageId]: {
-              url: validationResult?.url,
-              fallbackUrl: validationResult?.fallbackUrl,
-              confidenceRating: validationResult?.confidenceRating || '0.1',
-              finalCitationUrl: validationResult?.url || validationResult?.fallbackUrl
-            }
-          }));
-
-          finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
-          confidenceRating = validationResult?.confidenceRating || '0.1';
-        }
-
-        // Always log interaction for all response types (normal, not-gc, pt-muni, question)
-        logInteraction(
-          redactedText,
-          response,
-          usedAI,
-          referringUrl.trim() || undefined,
-          finalCitationUrl,
-          originalCitationUrl,
-          confidenceRating,
-          undefined,
-          undefined
-        );
-
-        // Add message with the new ID
-        setMessages(prev => [...prev, {
-          id: newMessageId,
-          text: response,
-          sender: 'ai',
-          aiService: usedAI,
-          department: department
-        }]);
-        
-        setShowFeedback(true);
-
-        setTurnCount(prevCount => prevCount + 1);
-
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.error('Error in handleSendMessage:', error);
+        const errorMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
-          ...prevMessages,
-          { text: t('homepage.chat.messages.error'), sender: 'system', error: true }
+          ...prevMessages.filter(m => !m.temporary),
+          {
+            id: errorMessageId,
+            text: t('homepage.chat.messages.error'),
+            sender: 'system',
+            error: true
+          }
         ]);
       } finally {
         setIsLoading(false);
       }
     }
-  }, [inputText, referringUrl, turnCount, addMessage, clearInput, t, messages, selectedAI, parseAIResponse, lang, logInteraction, selectedDepartment, isLoading]);
+  }, [
+    inputText,
+    referringUrl,
+    selectedAI,
+    lang,
+    t,
+    clearInput,
+    selectedDepartment,
+    isLoading,
+    logInteraction,
+    messages,
+    parseAIResponse,
+    turnCount,
+    addMessage
+  ]);
 
   useEffect(() => {
     if (pageUrl && !referringUrl) {

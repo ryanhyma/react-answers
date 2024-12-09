@@ -60,21 +60,21 @@ References:
 * https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-5-multi-agent-collaboration/
 
 #### 1. Context service 
-The context service would select the question topic/dept area using EITHER the referral URL - e.g. the page the user triggered the AI from - OR an AI model as a judge system (not yet implemented). 
-- Currently the department is parsed from the URL passed as a parameter to the application in the usePageParam hook, or from the url entered in the Referring URL field in the Options expand/collape section of the chat interface or from a button in the Options expand/collapse section of the chat interface. 
--The buttons and input field are a temporary testing phase solution because there are no AI buttons on any live web pages that can pass a url parameter yet.  The buttons are from the department selector component (DepartmentSelectorTesting.js) in the chat interface (also temporary but needed for testing of context service design). Both the department and the url are passed to the SystemPrompt builder (systemPrompt.js) so they can be used to load the context files for that topic/dept and also passed to the answer service.
-- SystemPrompt.js is updated to load department-specific scenarios and updates if the department is provided. We initialize departmentContent with the general SCENARIOS
-- When loading department-specific context:  
-- If the department content fails to load, we still have the general scenarios as a fallback
-- This ensures we always have the general scenarios as a base, with department-specific scenarios added when available.
-- Risk of using referral url is that it may not be accurate (e.g. they're on the CRA account page but they asked about EI claims) or relevant to the question (e.g. they're on the CRA account page but they asked about IRCC passport services).
--Model as a judge will use a small light AI model to evaluate the question to determine the topic and department area of the question. Then that microservice would pass the topic to the answer service.
-Input:referral url parameter BEFORE the question is asked, or department from department selector component (DepartmentSelectorTesting.js) in the chat interface 
-Output: topic or department context files loaded into system prompt
+The context service uses the user question, the selected language and the referral url if available, to derive the topic and topic url from the [`menu-structure.js`](src/services/systemPrompt/menuStructure_EN.js) files for Canada.ca, and the department and department url from the [`department-structure.js`](src/services/systemPrompt/departments_EN.js) file for Canada.ca. The context service is run from the [`ContextSystem.js`](src/services/contextSystemPrompt.js) file which loads the department and menu structure files and contains the instructions for the selected AI service on how to derive the context from the user question.
+- The [`(src/services/contextService.js)`](src/services/contextService.js) is the first service to be called in the prompt-chaining architecture.
+- The referring URL input field in the Options expand/collapse section of the chat interface is a temporary testing phase solution because there are no AI buttons on any live web pages that can pass a url parameter yet.  
+
+-Context service uses a small light AI model (Anthropic Haiku) to evaluate the question to determine the topic and department area of the question. Then that microservice passes everyting it found, including the topic and department urls to the answer service.
+Output: topic and topic url if found, department and department url if found
 
 #### 2. Answer service
-Input: base system prompt, plus topic or department context name from context service to load the context files for that topic/dept, including top task scenarios, confusions, and examples. Uses selected AI service.
-Output: answer
+Input: user message with topic and department context from context service and referral url (from referral url input field or from query tag on the call of the application). Uses selected AI service.
+Output: answer and citation url if provided (no citation url if the user question is not about Government of Canada services)
+Loading department-specific context:  
+- The scenarios-all.js file is always loaded - it contains the general scenarios that apply to all departments.
+- The department-specific scenarios and updates files are loaded if they exist - they contain scenarios and examples created and managed by the department. They are located in context folders in the [`src/services/systemPrompt/`](src/services/systemPrompt/) folder. For example, the CRA scenarios are at [`src/services/systemPrompt/context-cra/cra-scenarios.js`](src/services/systemPrompt/context-cra/cra-scenarios.js).
+- This ensures we always have the general scenarios as a base, with department-specific scenarios added when available.
+- ContextSystemPrompt and base.js system prompt handle the risks of using referral url  (e.g. they're on the CRA account page but they asked about EI claims) or relevant to the question (e.g. they're on the CRA account page but they asked about IRCC passport services).
 
 #### 3. AI service manager
 Manage API keys, endpoints and batches for each AI service
