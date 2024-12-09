@@ -139,20 +139,14 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
 - Expandable options menu
 
 ### Content Integration
-- Dynamic menu structure from Canada.ca
-- Specialized content for:
-  - Passport services (EN/FR)
-  - IRCC scenarios
-  - CRA account services
-  - Government employment information
-- TODO - add more scenarios per context (theme or topic or department) that are selectively loaded based on user question 
+- TODO: write up 'update' instructions for departments to add structured data for any new pages added since training - or removed since training
 - TODO - add more canada.ca urls to the menu structure to load selectively to improve response quality in French - for example https://www.canada.ca/fr/agence-revenu.sitemap.xml with https://www.canada.ca/en/revenue-agency.sitemap.xml or even better, have the topic tree per theme
 
 
 ### Development
 - Local development using Create React App
 - Environment variables prefixed with `REACT_APP_` for local development
-- GitHub repo for version control 
+- GitHub repo for version control will move to CDS repo soon
 
 ### Production
 - Deployed on Vercel
@@ -161,8 +155,8 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
 - deploys to Vercel from Github (any change to main triggers deploy)
 
 ## 📈 Evaluation & Testing
-- UserFeel study 1 - October 2024 (4 participants) - participants solve 
-- UserFeel study 2 - November 2024 (8 participants)
+- UserFeel study 1 - October 2024 (4 participants EN/1 FR) - participants solve 
+- UserFeel study 2 - November 2024 (8 participants EN)
 - Evaluation process improvements:
   - Feedback file import capability
   - Response parsing optimization

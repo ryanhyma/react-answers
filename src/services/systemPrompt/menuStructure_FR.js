@@ -45,6 +45,8 @@ export const menuStructure_FR = {
       "Trouver réponse à ses questions dans le Centre d'aide": "https://ircc.canada.ca/francais/centre-aide/index-en-vedette-can.asp",
       "Vérifier l'état de votre demande de passeport": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/verifier-demande-passeports-documents-voyage.html",
       "Obtenir un service de passeport urgent ou express": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/passeport-urgent-express.html",
+      "Comment renouveler un passeport au Canada": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouvellement-passeport-adulte.html",
+      "Réserver un rendez-vous pour la collecte de biométriques - Lettre d'instruction biométrique Application Number": "https://eservices.canada.ca/fr/reservation/"
     }
   },
   "Voyage et tourisme": {
@@ -407,7 +409,8 @@ export const menuStructure_FR = {
     mostRequested: {
       "Taux de rémunération": "https://www.canada.ca/fr/secretariat-conseil-tresor/sujets/remuneration.html#taux",
       "Travail hybride": "https://www.canada.ca/fr/gouvernement/fonctionpublique/modernisation/travail-hybride.html",
-      "Négociations collectives": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/conventions-collectives/negociations-collectives.html"
+      "Négociations collectives": "https://www.canada.ca/fr/secretariat-conseil-tresor/services/conventions-collectives/negociations-collectives.html",
+      "Système et services de paye": "https://www.canada.ca/fr/services-publics-approvisionnement/services/paye-pension/administration-paye.html"
     }
   },
   "Autochtones": {

@@ -36,8 +36,6 @@ export const menuStructure_EN = {
       "Refugees and asylum": "https://www.canada.ca/en/immigration-refugees-citizenship/services/refugees.html",
       "Enforcement and violations": "https://www.canada.ca/en/services/immigration-citizenship/enforcement-violations.html",
       "Canadian passports and travel documents": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html",
-      "Find a passport service location": "https://ircc.canada.ca/english/passport/map/map.asp",
-      "Book a biometrics collection appointment -Biometric Instruction Letter Application Number": "https://eservices.canada.ca/en/reservation/",
       "Get a permanent residence card": "https://www.canada.ca/en/immigration-refugees-citizenship/services/new-immigrants/pr-card.html"
     },
     mostRequested: {
@@ -47,8 +45,11 @@ export const menuStructure_EN = {
       "Find an application form": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides.html",
       "Pay your fees": "https://ircc.canada.ca/english/information/fees/index.asp",
       "Find out if you need an eTA or a visa to visit Canada": "https://ircc.canada.ca/english/visit/visas.asp",
+      "Book a biometrics collection appointment -Biometric Instruction Letter Application Number": "https://eservices.canada.ca/en/reservation/",
       "Check your passport application status": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/check-passport-travel-document-application.html",
-      "Get urgent or express passport service": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/urgent-emergency-passport.html"
+      "Get urgent or express passport service": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/urgent-emergency-passport.html",
+      "Find a passport service location": "https://ircc.canada.ca/english/passport/map/map.asp",
+      "Renew a passport in Canada": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport.html"
     }
   },
   "Travel and tourism": {
@@ -362,6 +363,7 @@ export const menuStructure_EN = {
       "Government priorities": "https://www.canada.ca/en/government/system/priorities.html",
       "Treaties, laws and regulations": "https://www.canada.ca/en/government/system/laws.html",
       "Working for the Government of Canada": "https://www.canada.ca/en/government/publicservice.html",
+      "Pay, pension and benefits for the public service, military and RCMP": "https://www.canada.ca/en/government/publicservice/pay.html",
       "Government-wide reporting on spending and operations": "https://www.canada.ca/en/government/system/government-wide-reporting-spending-operations.html",
       "Open Government": "https://open.canada.ca/en",
       "Doing business with government": "https://www.canada.ca/en/services/business/doing-business.html",
@@ -378,7 +380,8 @@ export const menuStructure_EN = {
       "Ministers": "https://www.canada.ca/en/government/ministers.html",
       "Proactive disclosure": "https://open.canada.ca/en/proactive-disclosure",
       "Access to information": "https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy.html",
-      "Legislation before Parliament": "https://www.parl.ca/legisinfo/en/legislation-at-a-glance"
+      "Legislation before Parliament": "https://www.parl.ca/legisinfo/en/legislation-at-a-glance",
+      "Pay system and services": "https://www.canada.ca/en/public-services-procurement/services/pay-pension/pay-administration.html"
     }
   },
   "Working for the government": {

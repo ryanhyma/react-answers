@@ -239,11 +239,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     }
   };
 
-  const addMessage = useCallback((messageData) => {
-    const messageId = messageIdCounter.current++;
-    setMessages(prev => [...prev, { ...messageData, id: messageId }]);
-  }, []);
-
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '' && !isLoading) {
       try {
@@ -375,51 +370,61 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         // Try primary AI service first
         try {
+          const usedAI = selectedAI;
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
           
           // Parse the response for citations
-          const { citationUrl } = parseAIResponse(response, selectedAI);
+          const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
           
-          // Validate citation URL if present
-          if (citationUrl) {
-            try {
-              const validatedUrl = await urlToSearch(citationUrl);
-              setCheckedCitations(prev => ({
-                ...prev,
-                [messageIdCounter.current]: {
-                  url: validatedUrl,
-                  fallbackUrl: citationUrl
-                }
-              }));
-            } catch (error) {
-              console.error('Error validating citation URL:', error);
-              setCheckedCitations(prev => ({
-                ...prev,
-                [messageIdCounter.current]: {
-                  fallbackUrl: citationUrl
-                }
-              }));
-            }
+          // Generate new message ID early
+          const newMessageId = messageIdCounter.current++;
+          
+          // Validate URL if present
+          let finalCitationUrl, confidenceRating;
+          if (originalCitationUrl) {
+            const validationResult = await urlToSearch.validateAndCheckUrl(
+              originalCitationUrl, 
+              lang, 
+              redactedText,
+              selectedDepartment,
+              t
+            );  
+
+            // Store validation result in checkedCitations
+            setCheckedCitations(prev => ({
+              ...prev,
+              [newMessageId]: {
+                url: validationResult?.url,
+                fallbackUrl: validationResult?.fallbackUrl,
+                confidenceRating: validationResult?.confidenceRating || '0.1',
+                finalCitationUrl: validationResult?.url || validationResult?.fallbackUrl
+              }
+            }));
+
+            finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
+            confidenceRating = validationResult?.confidenceRating || '0.1';
           }
 
           // Add the AI response to messages using addMessage
-          addMessage({
+          // Add message with the new ID
+          setMessages(prev => [...prev, {
+            id: newMessageId,
             text: response,
             sender: 'ai',
-            aiService: selectedAI
-          });
+            aiService: usedAI,
+            department: department
+          }]);
 
           setTurnCount(prev => prev + 1);
           setShowFeedback(true);
 
-          // Log the interaction
-          const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(response, selectedAI);
+          // Log the interaction with the validated URL
           logInteraction(
             redactedText,
             response,
-            selectedAI,
-            referringUrl,
-            null, // citation URL will be validated later
+            usedAI,
+            referringUrl.trim() || undefined,
+            finalCitationUrl,
             originalCitationUrl,
             confidenceRating
           );
@@ -502,8 +507,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     logInteraction,
     messages,
     parseAIResponse,
-    turnCount,
-    addMessage
+    turnCount
   ]);
 
   useEffect(() => {
