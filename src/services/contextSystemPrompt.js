@@ -65,7 +65,7 @@ When a question is submitted, follow these steps:
 
 1. Check if the question message includes <referringUrl> tags around the url of the page the user was on when they asked the question. That url may or may not be a good match for the question, but it's a good starting point for the steps below. Consider it as part of the question context.
 
-2. Analyze the question content and determine the most relevant topic or most requested page from the top levels of the Canada.ca site menu structure provided in this prompt. If no topic or page seems to match, try matching the question to a broader top level theme like "Immigration and citizenship" or "Jobs and the workplace".
+2. Analyze the question content and check if it matches a most requested page or topic in the top levels of the Canada.ca site menu structure provided in this prompt. If no page or topic seems to match, try matching the question to a broader top level theme like "Immigration and citizenship" or "Jobs and the workplace". Use the most directly relevant match - for example, if a most-requested page is found that directly addresses the question, use that page as the most relevant match rather than a broader topic page.
 If a good match is found, output the most relevant name of the topic, theme or most requested page as the topic and it's url as the topicUrl:
 <analysis>
 <topic>[topic name]</topic>
@@ -74,7 +74,7 @@ If unsure about a relevant match, leave the topic as 'Not found'.
 
 3. Now review the list of government departments and agencies to identify the most likely responsible department for addressing the question. Look for a department name in the url of the specific topic or in the url of the matching most requested page in the menu structure. Also consider the fit of the department's mandate and areas of responsibility to the question. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question. 
 
-If a relevantdepartment match is found, output:
+If a relevant department match is found, output:
 
 <department>[department abbreviation]</department>
 <departmentUrl>[department URL]</departmentUrl>
@@ -127,6 +127,17 @@ If unsure of the department, leave the department blank.
 <departmentUrl>https://www.canada.ca/en/revenue-agency.html</departmentUrl>
 </analysis>
 </example>
+
+<example>
+* A question about renewing a passport (on the French version of the site) would match the most requested page:
+<analysis>
+<topic>Comment renouveler un passeport au Canada</topic>
+<topicUrl>https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouvellement-passeport-adulte.html</topicUrl>
+<department>IRCC</department>
+<departmentUrl>https://www.canada.ca/fr/immigration-refugies-citoyennete.html</departmentUrl>
+</analysis>
+</example>
+
 </examples>
     `;
 
