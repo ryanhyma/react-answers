@@ -51,7 +51,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('chatgpt');
+  const [selectedAI, setSelectedAI] = useState('claude');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
@@ -60,6 +60,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
   const messageIdCounter = useRef(0);
+  const [displayStatus, setDisplayStatus] = useState('startingToThink');
+  const [currentDepartment, setCurrentDepartment] = useState('');
+  const [currentTopic, setCurrentTopic] = useState('');
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -239,11 +242,17 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     }
   };
 
+  const addMessage = useCallback((messageData) => {
+    const messageId = messageIdCounter.current++;
+    setMessages(prev => [...prev, { ...messageData, id: messageId }]);
+  }, []);
+
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '' && !isLoading) {
       try {
         setIsLoading(true);
-        
+        let usedAI = selectedAI;
+
         // Initial validation checks
         if (inputText.length > MAX_CHAR_LIMIT) {
           const errorMessageId = messageIdCounter.current++;
@@ -288,9 +297,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
+  setDisplayStatus('startingToThink');        
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
-        const thinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
           ...prevMessages,
           { 
@@ -300,12 +309,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             redactedItems: redactedItems,
             sender: 'user',
             ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-          },
-          { 
-            id: thinkingMessageId,
-            text: t('homepage.chat.messages.startingToThink'), 
-            sender: 'system', 
-            temporary: true 
           }
         ]);
 
@@ -327,14 +330,23 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             topic = derivedContext.topic;
             topicUrl = derivedContext.topicUrl;
             departmentUrl = derivedContext.departmentUrl;
+            setCurrentDepartment(derivedContext.department);
+            setCurrentTopic(derivedContext.topic);
             console.log('Derived context:', { department, topic, topicUrl, departmentUrl });
           } catch (error) {
             console.error('Error deriving context:', error);
             department = '';
             topic = '';
+            setCurrentDepartment('');
+            setCurrentTopic('');
           }
         }
 
+        if (department && topic) {
+          setDisplayStatus('thinkingWithContext');
+        } else {
+          setDisplayStatus('thinking');
+        }
         // After context service, update thinking message
         const newThinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
@@ -370,7 +382,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         // Try primary AI service first
         try {
-          const usedAI = selectedAI;
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
           
           // Parse the response for citations
@@ -451,6 +462,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
             setTurnCount(prev => prev + 1);
             setShowFeedback(true);
+            setDisplayStatus('thinkingMore');
 
             // Log the fallback interaction
             const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
@@ -646,7 +658,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             )}
           </div>
         ))}
-        {isLoading && <div key="loading" className="message ai">{t('homepage.chat.messages.thinking')}</div>}
+        {isLoading && (
+          <div key="loading" className="message ai">
+            {displayStatus === 'thinkingWithContext' ? 
+              `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
+              t(`homepage.chat.messages.${displayStatus}`)
+            }
+          </div>
+        )}
         {turnCount >= MAX_CONVERSATION_TURNS && (
           <div key="limit-reached" className="message ai">
             <div className="limit-reached-message">
