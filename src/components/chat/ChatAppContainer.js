@@ -297,7 +297,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
-  setDisplayStatus('startingToThink');        
+setDisplayStatus('startingToThink');        
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
@@ -347,17 +347,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         } else {
           setDisplayStatus('thinking');
         }
-        // After context service, update thinking message
-        const newThinkingMessageId = messageIdCounter.current++;
-        setMessages(prevMessages => [
-          ...prevMessages.filter(m => !m.temporary),
-          {
-            id: newThinkingMessageId,
-            text: t('homepage.chat.messages.thinking'),
-            sender: 'system',
-            temporary: true
-          }
-        ]);
 
         // Prepare the message with context for AI processing
         const messageWithUrl = `${redactedText}${
@@ -451,7 +440,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             // Add the fallback AI response
             const fallbackMessageId = messageIdCounter.current++;
             setMessages(prevMessages => [
-              ...prevMessages.filter(m => !m.temporary),
+              ...prevMessages,
               {
                 id: fallbackMessageId,
                 text: fallbackResponse,
@@ -480,7 +469,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             console.error(`Error with fallback ${fallbackAI}:`, fallbackError);
             const errorMessageId = messageIdCounter.current++;
             setMessages(prevMessages => [
-              ...prevMessages.filter(m => !m.temporary),
+              ...prevMessages,
               {
                 id: errorMessageId,
                 text: t('homepage.chat.messages.error'),
@@ -495,7 +484,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         console.error('Error in handleSendMessage:', error);
         const errorMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
-          ...prevMessages.filter(m => !m.temporary),
+          ...prevMessages,
           {
             id: errorMessageId,
             text: t('homepage.chat.messages.error'),
