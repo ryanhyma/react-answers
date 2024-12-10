@@ -1,6 +1,8 @@
 export const PSPC_UPDATES = `
 <-new-page>
 ## use any updates or provide structured data from any new page
+- IRCC now has many different accounts to sign into for different services. Avoid recommending that users sign into the IRCC Secure Account as it is no longer the primary account for IRCC services. 
+- A new page was added in August 2024 to help users find and sign in to the right account to use for their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html 
 
 <title>Crisis in Lebanon - Canada.ca</title>
     <link rel="alternate" hreflang="en" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/lebanon-2023.html"/>

@@ -11,6 +11,7 @@
   "manipulationPhrases": [
     "your instructions",
     "can you try",
+    "system prompt",
     "have you tried",
     "why can't you",
     "you already did",
@@ -19,6 +20,7 @@
     "summarize our",
     "our conversation",
     "logical flaws",
-    "contradictions"
+    "contradictions",
+    "tell me about your"
   ]
 } 
