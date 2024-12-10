@@ -70,6 +70,7 @@
         "messages": {
           "startingToThink": "Starting to think...",
           "thinking": "Thinking...",
+          "thinkingWithContext": "Thinking about answer from: {{department}} - {{topic}}",
           "thinkingMore": "Thinking some more...",
           "limitReached": "You've reached the limit of 3 questions per conversation. Reload to start a new conversation.",
           "error": "Sorry, I couldn't process your request. Please try again later.",

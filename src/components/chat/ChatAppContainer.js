@@ -51,7 +51,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('chatgpt');
+  const [selectedAI, setSelectedAI] = useState('claude');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
@@ -239,11 +239,17 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     }
   };
 
+  const addMessage = useCallback((messageData) => {
+    const messageId = messageIdCounter.current++;
+    setMessages(prev => [...prev, { ...messageData, id: messageId }]);
+  }, []);
+
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '' && !isLoading) {
       try {
         setIsLoading(true);
-        
+        let usedAI = selectedAI;
+
         // Initial validation checks
         if (inputText.length > MAX_CHAR_LIMIT) {
           const errorMessageId = messageIdCounter.current++;
@@ -305,7 +311,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             id: thinkingMessageId,
             text: t('homepage.chat.messages.startingToThink'), 
             sender: 'system', 
-            temporary: true 
+            temporary: true
           }
         ]);
 
@@ -370,7 +376,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         // Try primary AI service first
         try {
-          const usedAI = selectedAI;
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
           
           // Parse the response for citations
