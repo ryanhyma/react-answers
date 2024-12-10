@@ -242,11 +242,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     }
   };
 
-  const addMessage = useCallback((messageData) => {
-    const messageId = messageIdCounter.current++;
-    setMessages(prev => [...prev, { ...messageData, id: messageId }]);
-  }, []);
-
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '' && !isLoading) {
       try {
