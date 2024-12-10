@@ -60,6 +60,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [turnCount, setTurnCount] = useState(0);
   const MAX_CHAR_LIMIT = 400;
   const messageIdCounter = useRef(0);
+  const [displayStatus, setDisplayStatus] = useState('startingToThink');
+  const [currentDepartment, setCurrentDepartment] = useState('');
+  const [currentTopic, setCurrentTopic] = useState('');
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -294,9 +297,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
+  setDisplayStatus('startingToThink');        
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
-        const thinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
           ...prevMessages,
           { 
@@ -306,12 +309,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             redactedItems: redactedItems,
             sender: 'user',
             ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-          },
-          { 
-            id: thinkingMessageId,
-            text: t('homepage.chat.messages.startingToThink'), 
-            sender: 'system', 
-            temporary: true
           }
         ]);
 
@@ -333,14 +330,23 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             topic = derivedContext.topic;
             topicUrl = derivedContext.topicUrl;
             departmentUrl = derivedContext.departmentUrl;
+            setCurrentDepartment(derivedContext.department);
+            setCurrentTopic(derivedContext.topic);
             console.log('Derived context:', { department, topic, topicUrl, departmentUrl });
           } catch (error) {
             console.error('Error deriving context:', error);
             department = '';
             topic = '';
+            setCurrentDepartment('');
+            setCurrentTopic('');
           }
         }
 
+        if (department && topic) {
+          setDisplayStatus('thinkingWithContext');
+        } else {
+          setDisplayStatus('thinking');
+        }
         // After context service, update thinking message
         const newThinkingMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
@@ -456,6 +462,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
             setTurnCount(prev => prev + 1);
             setShowFeedback(true);
+            setDisplayStatus('thinkingMore');
 
             // Log the fallback interaction
             const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
@@ -651,7 +658,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             )}
           </div>
         ))}
-        {isLoading && <div key="loading" className="message ai">{t('homepage.chat.messages.thinking')}</div>}
+        {isLoading && (
+          <div key="loading" className="message ai">
+            {displayStatus === 'thinkingWithContext' ? 
+              `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
+              t(`homepage.chat.messages.${displayStatus}`)
+            }
+          </div>
+        )}
         {turnCount >= MAX_CONVERSATION_TURNS && (
           <div key="limit-reached" className="message ai">
             <div className="limit-reached-message">

@@ -70,7 +70,7 @@
         "messages": {
           "startingToThink": "Début de la réflexion...",
           "thinking": "En réflexion...",
-          "thinkingWithContext": "Réflexion sur la réponse de : {{department}} - {{topic}}",
+          "thinkingWithContext": "Réflexion sur la réponse de",
           "thinkingMore": "En réflexion prolongée...",
           "limitReached": "Votre limite de 3 questions par conversation a été atteinte. Actualisez la page pour commencer une nouvelle conversation.",
           "error": "Désolé, le service n'est pas disponible. Veuillez réessayer plus tard.",
