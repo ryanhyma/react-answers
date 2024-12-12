@@ -57,6 +57,11 @@ async function loadSystemPrompt(language = 'en', department = '') {
     
     const citationInstructions = CITATION_INSTRUCTIONS;
 
+    // Inform LLM about the current page language
+    const languageContext = language === 'fr' 
+      ? "The user is asking the question on a French Government of Canada page."
+      : "The user is asking their question on an English Government of Canada page.";
+
     // Update the department context sections
     const departmentUpdatesSection = department 
       ? `## Updated pages for this department\n${departmentContent.updates}`
@@ -77,15 +82,14 @@ async function loadSystemPrompt(language = 'en', department = '') {
     const fullPrompt = `
       ${BASE_SYSTEM_PROMPT}
 
+      ## Language Context
+      ${languageContext}
+
       ## Current Date
       Today is ${currentDate}.
 
       ${citationInstructions}
 
-      ${language === 'fr' 
-        ? `## Contexte linguistique
-          Vous répondez aux visiteurs francophones de Canada.ca. Utilisez le français normatif canadien, et non le français européen. Les Canadiens s'attendent à un service en français de qualité égale au service en anglais, conformément à la Loi sur les langues officielles. Respectez la terminologie gouvernementale canadienne-française officielle.`
-        : ''}
 
       ${departmentUpdatesSection}
 
