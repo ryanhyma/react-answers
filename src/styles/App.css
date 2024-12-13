@@ -95,8 +95,9 @@
      align-self: flex-start;
 }
  .user-message-box {
-     background-color: #e1f5fe;
-     padding: 0.5rem;
+     background-color: #0535D2;
+     color: white;
+     padding: 0.65rem;
      border-radius: 0.5rem;
 }
  .user-message-box.redacted-box {
@@ -111,18 +112,25 @@
      font-style: italic;
 }
  .ai-message-content {
-     background-color: #f1f4f4;
-     padding: 0.5rem;
+     background-color: #fff;
+     border: solid 2px #D9D9D9;
+     padding: 1.25rem;
      border-radius: 0.5rem;
      display: flex;
      flex-direction: column;
      gap: 1em;
+}
+
+.ai-message-content p:first-child {
+    font-weight: 700;
 }
  .ai-paragraph, .ai-list-item {
      margin: 0;
 }
  .ai-sentence {
      margin-bottom: 0.2em;
+     line-height: 1.6em;
+
 }
  .ai-list-item {
      display: flex;
@@ -134,27 +142,44 @@
      font-weight: bold;
 }
  .citation-container {
-     border: 2px solid #4a3f9f;
-     border-radius: 4px;
-     padding: 10px;
-     margin-top: 1em;
+     border-top: 2px solid #D9D9D9;
+     background-color: #F5F5F5;
+     text-align: center;
+     margin: .5em -0.75em -0.75em -0.75em;
+     padding: 1em 2em;
+
 }
+
+@media (min-width: 992px) {
+    .citation-container {
+        margin: .25em -1em -1em -1em;
+        padding: 1em 5em;
+    }
+}
+
  .citation-head {
      font-weight: bold;
-     margin-bottom: 0.5rem;
+     margin-bottom: 0.5rem !important;
 }
  .citation-link {
      font-size: 0.9em;
      word-break: break-all;
+     margin-bottom: .5em !important;
 }
+
+/* .citation-container p {
+    margin-bottom: .5em !important;
+} */
  .citation-link a {
      color: #0066cc;
      text-decoration: underline;
+         margin-bottom: .5em !important;
 }
  .confidence-rating {
      font-style: italic;
      color: #666;
      margin-top: 0.5rem;
+     margin-bottom: 0em !important;
 }
  .follow-up-prompt {
      margin-top: 1rem;
@@ -195,7 +220,7 @@
          padding: 0.5rem 0;
     }
      .user-message-box, .ai-message-content {
-         padding: 0.5rem;
+         padding: 0.75rem;
     }
      .main-input-container {
          flex-direction: column;
@@ -331,7 +356,7 @@
 }
 /* clean up margins and spacing */
  .send-button {
-     margin-bottom: 36px;
+     margin-bottom: 40px;
 }
  gcds-container {
      margin-bottom: 40px !important;
