@@ -98,7 +98,7 @@ const ChatInterface = ({
       </div>
 
       {turnCount < MAX_CONVERSATION_TURNS && (
-        <div className="input-area mt-400">
+        <div className="input-area mt-200">
           <div className="input-button-wrapper">
             <GcdsTextarea
               key={textareaKey}
