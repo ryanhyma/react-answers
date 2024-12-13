@@ -331,7 +331,7 @@
 }
 /* clean up margins and spacing */
  .send-button {
-     margin-bottom: 16px;
+     margin-bottom: 36px;
 }
  gcds-container {
      margin-bottom: 40px !important;
@@ -457,4 +457,14 @@
     margin-top: 4px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+/* main page styles */
+h2:first-of-type {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+gcds-container:first-of-type {
+    margin-bottom: 0px !important;
 }
