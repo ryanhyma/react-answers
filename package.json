@@ -1,7 +1,7 @@
 {
   "name": "react-answers",
   "version": "0.1.0",
-  "type": "module",
+  "type" : "module",
   "private": true,
   "proxy": "https://api.anthropic.com",
   "dependencies": {
@@ -57,7 +57,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-server": "node server/server.js",
-    "dev": "concurrently \"npm run start-server\" \"npm start\""
+    "dev": "concurrently \"npm run start-server\" \"npm start\"",
+    "lint": "dotenv -e .env eslint src/**/*.{js,jsx}"
   },
   "eslintConfig": {
     "extends": [
@@ -78,9 +79,13 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.25.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.25.4",
     "babel-jest": "^29.7.0",
-    "concurrently": "^9.0.1"
+    "concurrently": "^9.0.1",
+    "dotenv-cli": "^7.4.4",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.2"
   }
 }

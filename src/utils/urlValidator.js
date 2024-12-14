@@ -195,7 +195,7 @@ class URLValidator {
     // console.log('Final best match:', bestMatch);
     return bestMatch;
   }
-};
+}
 
 // Export a singleton instance
 export const urlValidator = new URLValidator();

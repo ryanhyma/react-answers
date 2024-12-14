@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GcdsFieldset } from '@cdssnc/gcds-components-react'
+import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 

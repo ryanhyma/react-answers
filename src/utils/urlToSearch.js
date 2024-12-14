@@ -71,7 +71,7 @@ class URLToSearch {
   };
   }
 
-};
+}
   
 // Export a singleton instance
 export const urlToSearch = new URLToSearch();
