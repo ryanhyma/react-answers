@@ -4,7 +4,6 @@ import { load } from "cheerio";
 import { URL } from "url";
 import fs from "fs";
 
-const fingerprint = JSON.parse(fs.readFileSync('./agents/tools/browser_fingerprint.json', 'utf-8'));
 
 /**
  * Extracts search results from the ISC search results page.

@@ -1,7 +1,7 @@
 // api/chatgpt.js
 import OpenAI from 'openai';
-import { getModelConfig } from '../config/ai-models';
-import { createOpenAIAgent } from '../agents/AgentService';
+import { getModelConfig } from '../config/ai-models.js';
+import { createOpenAIAgent } from '../agents/AgentService.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
