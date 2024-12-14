@@ -1,12 +1,23 @@
 // server/server.js - this is only used for local development NOT for Vercel
-const express = require('express');
-const Anthropic = require('@anthropic-ai/sdk');
-const OpenAI = require('openai');
-const cors = require('cors');
-const path = require('path');
-const mongoose = require('mongoose');
-const { CohereClient } = require('cohere-ai');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+import express from 'express';
+import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
+import cors from 'cors';
+import path from 'path';
+import mongoose from 'mongoose';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import dotenv from 'dotenv';
+import coherePkg from 'cohere-ai';
+import { handler as contextAgentHandler } from '../api/context-agent.js';
+import { handler as claudeAgentHandler } from '../api/claude.js';
+
+const { CohereClient } = coherePkg;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 app.use(cors());
@@ -56,69 +67,18 @@ const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
 });
 
-const cohere = new CohereClient({
-  token: process.env.REACT_APP_COHERE_API_KEY
-});
+const cohere = null;
+//const cohere = new CohereClient({
+//  token: process.env.REACT_APP_COHERE_API_KEY
+//});
 
-app.post('/api/claude', async (req, res) => {
-  console.log('Received request to /api/claude');
-  // console.log('Request body:', req.body);
-  try {
-    const { message, systemPrompt, conversationHistory } = req.body;
-    
-    // Log conversation details
-    console.log('System Prompt Length:', systemPrompt?.length);
 
-    // Convert conversation history to Claude's format and add current message
-    const messages = [
-      ...conversationHistory.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      { role: "user", content: message }
-    ];
 
-    // Log the final messages array being sent to Claude
-    console.log('Messages being sent to Claude:', JSON.stringify(messages, null, 2));
+app.post('/api/claude', claudeAgentHandler);
 
-    const response = await anthropic.beta.promptCaching.messages.create({
-      model: "claude-3-5-sonnet-20241022",
-      system: [{
-        type: "text",
-        text: systemPrompt,
-        cache_control: { type: "ephemeral" }
-      }],
-      messages: messages,
-      max_tokens: 1024
-    });
+// Use the context-agent handler for local development
+app.post('/api/context-agent', contextAgentHandler);
 
-    console.log('Claude API response received');
-    res.json({ content: response.content[0].text });
-  } catch (error) {
-    console.error('Error calling Claude API:', error);
-    res.status(500).json({ error: 'Error processing your request' });
-  }
-});
-//use this for local development of chatGPT
-app.post('/api/chatgpt', async (req, res) => {
-  console.log('Received request to /api/chatgpt');
-  try {
-    const { message, systemPrompt } = req.body;
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-2024-11-20",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: message }
-      ],
-      max_tokens: 1024,
-    });
-    console.log('ChatGPT API response received');
-    res.json({ content: response.choices[0].message.content });
-  } catch (error) {
-    console.error('Error calling ChatGPT API:', error);
-    res.status(500).json({ error: 'Error processing your request' });
-  }
-});
 
 // server.js - update the Cohere endpoint
 app.post('/api/cohere', async (req, res) => {
