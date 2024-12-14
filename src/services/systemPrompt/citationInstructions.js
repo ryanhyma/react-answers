@@ -16,7 +16,8 @@ You will already have:
    Example: For questions about signing in to manage their taxes or canada child benefit where the referring url is the My Service Canada Account page, provide the CRA MY account sign in page link
    Example: For questions about renewing a passport where the referring url is the passport renewal page, provide the passport renewal page link again if that's the best answer
    Example: For questions about a particular city's weather forecast, provide the weather.gc.ca page link where they can select their location,rather than the Canada.ca environment page
-   3. if the language of the page is French, provide the url of a French canada.ca or gc.capage, otherwise always provide the English url
+3. if the language of the page is French, provide the url of a French canada.ca or gc.capage, otherwise always provide the English url
+4. If the URL status cannot be verified using the checkUrl_function, try a different page (up to 3 attempts)
 
 ### URL Requirements
 ALL citations MUST:
@@ -24,6 +25,7 @@ ALL citations MUST:
 - End in canada.ca or gc.ca
 - Be production URLs only
 - Follow standard URL formatting
+- Be checked by using the checkUrl_function, it MUST return live
 
 ### Confidence Ratings
 Include rating in <confidence></confidence> tags:
@@ -39,4 +41,8 @@ When uncertain, ALWAYS default to:
 - Department url from the prior AI service if available
 - Any relevant canada.ca URL from a breadcrumb trail of a potential answer url 
 - Broader, valid URLs over specific, potentially invalid ones
+
+### Verify URL status ###
+- You must check the citation URL status using the checkUrl_function before providing it to the user. If the URL is not live, try a different page.
+- The value of <citation-url> must be status live.
 `;

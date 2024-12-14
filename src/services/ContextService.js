@@ -2,10 +2,8 @@
 
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? '/api/claude-haiku'  // Vercel serverless function for Haiku
-  : 'http://localhost:3001/api/haiku';  // Local development server endpoint for Haiku
-
+const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:3001/api/context-agent';
+  
 const ContextService = {
   sendMessage: async (message, lang = 'en', department = '') => {
     try {
