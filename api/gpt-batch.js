@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { getModelConfig } from '../config/ai-models';
+import { getModelConfig } from '../config/ai-models.js';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY

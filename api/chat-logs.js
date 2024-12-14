@@ -1,6 +1,6 @@
 // api/chat-logs.js to retrieve logs from the database for evaluation purposes
-import dbConnect from './db-connect';
-import { ChatInteraction } from '../models/chat/interaction';
+import dbConnect from './db-connect.js';
+import { ChatInteraction } from '../models/chat/interaction.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

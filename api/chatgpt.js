@@ -42,8 +42,8 @@ export default async function handler(req, res) {
         const lastMessage = answer.messages[answer.messages.length - 1]?.content;
         console.log('Claude Response:', {
           content:lastMessage,
-          role: answer.messages[answer.messages.length - 1]?.role,
-          usage: answer.messages[answer.messages.length - 1]?.usage,
+          role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
+          usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
           model: modelConfig.name
         });
         res.json({ content: lastMessage });

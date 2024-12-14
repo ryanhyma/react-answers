@@ -11,7 +11,7 @@ const anthropic = new Anthropic({
   }
 });
 
-export const handler = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('Claude API request received');
