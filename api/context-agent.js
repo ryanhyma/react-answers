@@ -1,6 +1,6 @@
 import { createContextAgent } from '../agents/AgentService.js';
 
-export const handler = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'POST') {
     console.log('Received request to /api/context-agent');
     console.log('Request body:', req.body);
