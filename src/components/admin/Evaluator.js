@@ -5,14 +5,14 @@ import {
     GcdsHeading,
     GcdsText
 } from '@cdssnc/gcds-components-react';
-import LoggingService from '../../services/LoggingService';
-import ClaudeService from '../../services/ClaudeService';
-import ChatGPTService from '../../services/ChatGPTService';
-import RedactionService from '../../services/RedactionService';
-import { parseEvaluationResponse } from '../../utils/evaluationParser';
+import LoggingService from '../../services/LoggingService.js';
+import ClaudeService from '../../services/ClaudeService.js';
+import ChatGPTService from '../../services/ChatGPTService.js';
+import RedactionService from '../../services/RedactionService.js';
+import { parseEvaluationResponse } from '../../utils/evaluationParser.js';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 import '../../styles/App.css';
-import AdminCodeInput from './AdminCodeInput';
+import AdminCodeInput from './AdminCodeInput.js';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   

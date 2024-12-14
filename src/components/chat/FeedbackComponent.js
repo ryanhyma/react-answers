@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ExpertRatingComponent from './ExpertRatingComponent';
+import ExpertRatingComponent from './ExpertRatingComponent.js';
 import '../../styles/App.css';
-import { useTranslations } from '../../hooks/useTranslations';
+import { useTranslations } from '../../hooks/useTranslations.js';
 
 const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
   const { t } = useTranslations(lang);

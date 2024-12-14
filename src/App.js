@@ -2,8 +2,8 @@
 /* eslint-disable import/no-unused-modules */
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import AdminPage from './pages/AdminPage';
+import HomePage from './pages/HomePage.js';
+import AdminPage from './pages/AdminPage.js';
 import { GcdsHeader, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsFooter } from '@cdssnc/gcds-components-react';
 import './styles/App.css';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
-import Evaluator from '../components/admin/Evaluator';
-import ChatLogsDashboard from '../components/admin/ChatLogsDashboard';
+import Evaluator from '../components/admin/Evaluator.js';
+import ChatLogsDashboard from '../components/admin/ChatLogsDashboard.js';
 
 const AdminPage = ({ lang = 'en' }) => {
   // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page 

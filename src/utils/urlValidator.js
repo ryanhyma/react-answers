@@ -1,6 +1,6 @@
-import { menuStructure_EN } from '../services/systemPrompt/menuStructure_EN';
-import { menuStructure_FR } from '../services/systemPrompt/menuStructure_FR';
-import checkCitationUrl from './urlChecker';
+import { menuStructure_EN } from '../services/systemPrompt/menuStructure_EN.js';
+import { menuStructure_FR } from '../services/systemPrompt/menuStructure_FR.js';
+import checkCitationUrl from './urlChecker.js';
 
 /**
  * URLValidator class provides methods to validate and verify URLs for Canada.ca domains

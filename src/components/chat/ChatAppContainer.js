@@ -9,7 +9,7 @@ import { urlToSearch } from '../../utils/urlToSearch.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ContextService from '../../services/ContextService.js';
-import ChatInterface from './ChatInterface';
+import ChatInterface from './ChatInterface.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
