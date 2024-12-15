@@ -58,7 +58,7 @@ const AppContent = () => {
       </main>
 
       <GcdsFooter 
-        display='full'
+        display='compact'
         lang={currentLang}
       />
     </>
