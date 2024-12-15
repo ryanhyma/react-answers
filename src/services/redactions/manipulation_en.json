@@ -11,6 +11,7 @@
   "manipulationPhrases": [
     "your instructions",
     "can you try",
+    "system prompt",
     "have you tried",
     "why can't you",
     "you already did",
@@ -20,14 +21,6 @@
     "our conversation",
     "logical flaws",
     "contradictions",
-    "tell me about your",
-    "system prompt",
-    "Claude",
-    "GPT",
-    "LLM",
-    "AI",
-    "chatbot",
-    "chat history",
-    "clear the chat history"
+    "tell me about your"
   ]
 } 
