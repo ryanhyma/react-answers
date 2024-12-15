@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       const messages = [
         {
           role: "system",
-          content: systemPrompt,
+          content: systemPrompt+" Use the contextSearch_function to help determine the context of the user's question.",
         },
         {
           role: "user",

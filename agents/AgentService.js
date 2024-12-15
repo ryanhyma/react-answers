@@ -5,7 +5,7 @@ import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
 import canadaCASearch from './tools/canadaCaSearch.js';
-import contextCanadaCASearch from './tools/contextCanadaCASearch.js';
+import contextSearchTool from './tools/contextSearch.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
@@ -61,7 +61,7 @@ const createClaudeAgent = async () => {
 };
 
 const createContextAgent = async () => {
-  const tools = []; // disabled until we get search API
+  const tools = [contextSearchTool]; 
   const haiku = new ChatAnthropic({
     apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
     modelName: "claude-3-5-haiku-20241022",

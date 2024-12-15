@@ -1,7 +1,7 @@
 {
   "name": "react-answers",
   "version": "0.1.0",
-  "type" : "module",
+  "type": "module",
   "private": true,
   "proxy": "https://api.anthropic.com",
   "dependencies": {
@@ -25,7 +25,9 @@
     "cohere-ai": "^2.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "duck-duck-scrape": "^2.2.6",
     "express": "^4.21.1",
+    "googleapis": "^144.0.0",
     "install": "^0.13.0",
     "langchain": "^0.3.7",
     "lucide-react": "^0.454.0",

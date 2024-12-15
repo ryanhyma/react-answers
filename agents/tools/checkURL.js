@@ -4,22 +4,18 @@ import { Agent } from 'https';
 
 const checkUrlStatus = async (url) => {
     const httpsAgent = new Agent({ rejectUnauthorized: false });
-    
+
+
+
     try {
-        const response = await axios.head(url, { httpsAgent, maxRedirects: 10 });
+        const response = await axios.get(url, { httpsAgent, maxRedirects: 10 });
         console.log(response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`);
         return response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`;
-    } catch (headError) {
-        console.warn(`HEAD request failed for URL: ${url}. Trying GET request. Details: ${headError.message}`);
-        try {
-            const response = await axios.get(url, { httpsAgent, maxRedirects: 10 });
-            console.log(response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`);
-            return response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`;
-        } catch (getError) {
-            console.error(`Error checking URL with GET request: ${url}. Details: ${getError.message}`);
-            return `URL is dead (do not use): ${url}`;
-        }
+    } catch (getError) {
+        console.error(`Error checking URL with GET request: ${url}. Details: ${getError.message}`);
+        return `URL is dead (do not use): ${url}`;
     }
+
 };
 
 const checkUrlStatusTool = tool(

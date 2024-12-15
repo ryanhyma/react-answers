@@ -9,8 +9,9 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
 import coherePkg from 'cohere-ai';
-import { handler as contextAgentHandler } from '../api/context-agent.js';
-import { handler as claudeAgentHandler } from '../api/claude.js';
+
+import contextAgentHandler from '../api/context-agent.js'
+import claudeAgentHandler from '../api/claude.js';
 
 const { CohereClient } = coherePkg;
 
