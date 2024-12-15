@@ -133,7 +133,30 @@ const ChatInterface = ({
                     />
                     <label htmlFor="claude">{t('homepage.chat.options.aiSelection.claude')}</label>
                   </div>
-                  {/* Repeat for chatgpt and cohere options */}
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="chatgpt"
+                      name="ai-selection"
+                      value="chatgpt"
+                      checked={selectedAI === 'chatgpt'}
+                      onChange={handleAIToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="chatgpt">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  </div>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="cohere"
+                      name="ai-selection"
+                      value="cohere"
+                      checked={selectedAI === 'cohere'}
+                      onChange={handleAIToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  </div>
                 </div>
               </fieldset>
             </div>

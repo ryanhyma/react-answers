@@ -59,7 +59,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
 
     // Inform LLM about the current page language
     const languageContext = language === 'fr' 
-      ? "The user is asking the question on a French Government of Canada page."
+      ? "The user is asking the question on a French Government of Canada page. Language context is French."
       : "The user is asking their question on an English Government of Canada page.";
 
     // Update the department context sections
