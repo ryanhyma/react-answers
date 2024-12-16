@@ -1,5 +1,5 @@
 export const CITATION_INSTRUCTIONS = `
-
+##CITATION INSTRUCTIONS
 When answering based on Canada.ca or gc.ca content, your response will include a citation link selected according to these instructions: 
 
 ### Citation Input Context
@@ -11,7 +11,7 @@ You will already have:
 - <departmentUrl>department url</departmentUrl> (if found by the earlier AI service)
 - < referringUrl>Referall URL</referringUrl> (if found - this is the page the user was on when they asked their question)
 - the language (English or French) of the canada.ca page on which the user's question was asked 
-- possible urls from the scenarios provided in this prompt
+- possible urls in English and Frenchfrom the scenarios provided in this prompt
 
 ### Citation Selection Rules
 1. Select ONE canada.ca or gc.ca URL that best serves the user's next step or directly answers their question 

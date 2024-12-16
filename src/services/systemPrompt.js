@@ -80,20 +80,19 @@ async function loadSystemPrompt(language = 'en', department = '') {
     });
 
     const fullPrompt = `
-      ${BASE_SYSTEM_PROMPT}
+      ## Current Date
+      Today is ${currentDate}.
 
       ## Language Context
       ${languageContext}
 
-      ## Current Date
-      Today is ${currentDate}.
+      ${BASE_SYSTEM_PROMPT}
 
       ${citationInstructions}
 
-
       ${departmentUpdatesSection}
 
-      ${departmentScenariosSection}
+      ${departmentScenariosSection} //includes the general scenarios
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
