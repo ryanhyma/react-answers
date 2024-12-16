@@ -11,6 +11,10 @@ const ChatLogsDashboard = () => {
   const correctAdminCode = 'noPII';
 
   const fetchLogs = async () => {
+    if (adminCode !== correctAdminCode) {
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch('/api/chat-logs?days=' + timeRange);
