@@ -61,6 +61,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [displayStatus, setDisplayStatus] = useState('startingToThink');
   const [currentDepartment, setCurrentDepartment] = useState('');
   const [currentTopic, setCurrentTopic] = useState('');
+  const [currentSearchResults, setCurrentSearchResults] = useState('');
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -290,7 +291,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
-setDisplayStatus('startingToThink');        
+      setDisplayStatus('startingToThink');        
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
@@ -312,6 +313,7 @@ setDisplayStatus('startingToThink');
         let topic = '';
         let topicUrl = '';
         let departmentUrl = '';
+        let searchResults = '';
 
         if (!referringUrl && turnCount === 0) {
           try {
@@ -323,8 +325,10 @@ setDisplayStatus('startingToThink');
             topic = derivedContext.topic;
             topicUrl = derivedContext.topicUrl;
             departmentUrl = derivedContext.departmentUrl;
+            searchResults = derivedContext.searchResults;
             setCurrentDepartment(derivedContext.department);
             setCurrentTopic(derivedContext.topic);
+            setCurrentSearchResults(derivedContext.searchResults);
             console.log('Derived context:', { department, topic, topicUrl, departmentUrl });
           } catch (error) {
             console.error('Error deriving context:', error);
@@ -352,6 +356,8 @@ setDisplayStatus('startingToThink');
           topicUrl ? `\n<topicUrl>${topicUrl}</topicUrl>` : ''
         }${
           departmentUrl ? `\n<departmentUrl>${departmentUrl}</departmentUrl>` : ''
+        }${
+          searchResults ? `\n<searchResults>${searchResults}</searchResults>` : ''
         }`;
 
         // Get conversation history for context
@@ -615,6 +621,7 @@ setDisplayStatus('startingToThink');
       displayStatus={displayStatus}
       currentDepartment={currentDepartment}
       currentTopic={currentTopic}
+      currentSearchResults={currentSearchResults}
       MAX_CONVERSATION_TURNS={MAX_CONVERSATION_TURNS}
       t={t}
       lang={lang}
