@@ -38,30 +38,26 @@ const ChatInterface = ({
 
   return (
     <div className="chat-container">
-      <div className="message-list">
-        {messages.map((message) => (
-          <div key={`message-${message.id}`} className={`message ${message.sender}`}>
-            {message.sender === 'user' ? (
-              <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
-                {message.redactedText && (
-                  <>
-                    <p>
-                      {message.redactedText}
-                    </p>
-                    {message.redactedText.includes('XXX') && (
-                      <p className="redacted-preview">
-                        {t('homepage.chat.messages.privacyMessage')}
-                      </p>
-                    )}
-                    {message.redactedText.includes('###') && (
-                      <p className="redacted-preview">
-                        {t('homepage.chat.messages.blockedMessage')}
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
-            ) : (
+    <div className="message-list">
+      {messages.map((message) => (
+        <div key={`message-${message.id}`} className={`message ${message.sender}`}>
+          {message.sender === 'user' ? (
+            <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
+              <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
+                {message.redactedText}
+              </p>
+              {message.redactedItems?.length > 0 && (
+                <>
+                  {message.redactedText.includes('XXX') && (
+                    <p className="redacted-preview">{t('homepage.chat.messages.privacyMessage')}</p>
+                  )}
+                  {message.redactedText.includes('###') && (
+                    <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
               <>
                 {message.error ? (
                   <div className="error-message">{message.text}</div>
