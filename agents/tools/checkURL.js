@@ -8,7 +8,11 @@ const checkUrlStatus = async (url) => {
 
 
     try {
-        const response = await axios.get(url, { httpsAgent, maxRedirects: 10 });
+        const response = await axios.get(url, { 
+            httpsAgent, 
+            maxRedirects: 10,
+            timeout: 5 // Set timeout to 10 seconds
+        });
         console.log(response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`);
         return response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`;
     } catch (getError) {
