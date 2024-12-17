@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       const messages = [
         {
           role: "system",
-          content: systemPrompt + "### YOU MUST CHECK THE citation URL with checkUrl_function ###",
+          content: systemPrompt,
         },
         ...conversationHistory,
         {
