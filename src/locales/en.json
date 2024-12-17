@@ -89,14 +89,18 @@
         "title": "Why wasn't this answer useful?",
         "hint": "Select all that apply",
         "options": {
-          "veryIncorrect": "Answer is very incorrect",
-          "somewhatIncorrect": "Answer is somewhat incorrect",
           "incomplete": "Answer is incomplete",
-          "citationVeryIncorrect": "Citation URL is very incorrect",
-          "citationSomewhatIncorrect": "Citation URL is somewhat incorrect",
-          "betterCitation": "Better citation URL (optional):"
+          "sentence1Incorrect": "Sentence 1 is incorrect",
+          "sentence2Incorrect": "Sentence 2 is incorrect",
+          "sentence3Incorrect": "Sentence 3 is incorrect",
+          "sentence4Incorrect": "Sentence 4 is incorrect",
+          "citationIncorrect": "Citation URL is incorrect",
+          "betterCitation": "Better canada.ca or gc.ca citation URL (optional):"
         },
-        "submit": "Submit feedback"
+        "submit": "Submit feedback",
+        "errors": {
+          "invalidUrl": "Please enter a valid canada.ca or gc.ca URL"
+        }
       }
     }
   }

@@ -3,14 +3,17 @@ import { GcdsFieldset } from '@cdssnc/gcds-components-react'
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations';
 
+// TODO: Only show checkb sentences 2-4 if those sente
+
 const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
   const { t } = useTranslations(lang);
   const [expertFeedback, setExpertFeedback] = useState({
-    veryIncorrect: false,
-    somewhatIncorrect: false,
     incomplete: false,
-    citationVeryIncorrect: false,
-    citationSomewhatIncorrect: false,
+    sentence1Incorrect: false,
+    sentence2Incorrect: false,
+    sentence3Incorrect: false,
+    sentence4Incorrect: false,
+    citationIncorrect: false,
     expertCitationUrl: '',
   });
 
@@ -26,8 +29,24 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    
+    if (expertFeedback.expertCitationUrl && !isValidGovernmentUrl(expertFeedback.expertCitationUrl)) {
+      alert(t('homepage.expertRating.errors.invalidUrl'));
+      return;
+    }
+    
     console.log('Submitting expert feedback:', expertFeedback);
     onSubmit(expertFeedback);
+  };
+
+  const isValidGovernmentUrl = (url) => {
+    try {
+      const urlObject = new URL(url);
+      return urlObject.hostname.includes('canada.ca') || 
+             urlObject.hostname.includes('gc.ca');
+    } catch {
+      return false;
+    }
   };
 
   return (
@@ -38,28 +57,6 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
         fieldsetId="ratings"
         className="mt-400"
       >
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              name="veryIncorrect"
-              checked={expertFeedback.veryIncorrect}
-              onChange={handleCheckboxChange}
-            />
-            {t('homepage.expertRating.options.veryIncorrect')}
-          </label>
-        </div>
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              name="somewhatIncorrect"
-              checked={expertFeedback.somewhatIncorrect}
-              onChange={handleCheckboxChange}
-            />
-            {t('homepage.expertRating.options.somewhatIncorrect')}
-          </label>
-        </div>
         <div>
           <label>
             <input
@@ -75,29 +72,62 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
           <label>
             <input
               type="checkbox"
-              name="citationVeryIncorrect"
-              checked={expertFeedback.citationVeryIncorrect}
+              name="sentence1Incorrect"
+              checked={expertFeedback.sentence1Incorrect}
               onChange={handleCheckboxChange}
             />
-            {t('homepage.expertRating.options.citationVeryIncorrect')}
+            {t('homepage.expertRating.options.sentence1Incorrect')}
           </label>
         </div>
         <div>
           <label>
             <input
               type="checkbox"
-              name="citationSomewhatIncorrect"
-              checked={expertFeedback.citationSomewhatIncorrect}
+              name="sentence2Incorrect"
+              checked={expertFeedback.sentence2Incorrect}
               onChange={handleCheckboxChange}
             />
-            {t('homepage.expertRating.options.citationSomewhatIncorrect')}
+            {t('homepage.expertRating.options.sentence2Incorrect')}
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="sentence3Incorrect"
+              checked={expertFeedback.sentence3Incorrect}
+              onChange={handleCheckboxChange}
+            />
+            {t('homepage.expertRating.options.sentence3Incorrect')}
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="sentence4Incorrect"
+              checked={expertFeedback.sentence4Incorrect}
+              onChange={handleCheckboxChange}
+            />
+            {t('homepage.expertRating.options.sentence4Incorrect')}
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="citationIncorrect"
+              checked={expertFeedback.citationIncorrect}
+              onChange={handleCheckboxChange}
+            />
+            {t('homepage.expertRating.options.citationIncorrect')}
           </label>
         </div>
         <div>
           <label>
             {t('homepage.expertRating.options.betterCitation')}
             <input
-              type="text"
+              type="url"
               name="expertCitationUrl"
               value={expertFeedback.expertCitationUrl}
               onChange={handleInputChange}

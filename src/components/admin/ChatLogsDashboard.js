@@ -49,7 +49,7 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadCSV = () => {
-    // Update columns order with referringUrl after sentences
+    // Update columns to match new expertFeedback structure on 16December
     const columns = [
       'timestamp',
       'redactedQuestion',
@@ -63,11 +63,12 @@ const ChatLogsDashboard = () => {
       'sentence4',
       'referringUrl',
       'feedback',
-      'expertFeedback.veryIncorrect',
-      'expertFeedback.somewhatIncorrect',
       'expertFeedback.incomplete',
-      'expertFeedback.citationVeryIncorrect',
-      'expertFeedback.citationSomewhatIncorrect',
+      'expertFeedback.sentence1Incorrect',
+      'expertFeedback.sentence2Incorrect',
+      'expertFeedback.sentence3Incorrect',
+      'expertFeedback.sentence4Incorrect',
+      'expertFeedback.citationIncorrect',
       'expertFeedback.expertCitationUrl'
     ];
 
