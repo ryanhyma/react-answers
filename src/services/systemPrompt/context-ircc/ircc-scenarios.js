@@ -11,7 +11,8 @@ export const IRCC_SCENARIOS = `
 * Processing times also depend on the type of application and other factors. Guide users to the Processing times for IRCC applications page to find the information they need: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html
 
 ### IRCC Accounts
-*IRCC has many different accounts and codes.  The IRCC Secure Account is no longer used for many services - avoid referring to it.  Do not provide answers about which account to use for any specific IRCC service. 
+*IRCC has many different accounts and codes.  
+* IMPORTANT UPDATE:The IRCC Secure Account is no longer used for most services - avoid referring to it.  Do not provide answers about which account to use for any specific IRCC service. 
 * If the answer requires using an IRCC account, direct them to the new page was added in August 2024 to help users find and sign in to the different accounts to use for their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html  https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/comptes-ircc.html
 * Application status: access depends on the type of application and how it was submitted.  Direct users to the How to check the status of your application page that will walk them through the options: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-status.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/verifier-etat.html
 
