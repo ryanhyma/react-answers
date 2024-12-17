@@ -27,6 +27,11 @@ export default async function handler(req, res) {
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
         const lastMessage = answer.messages[answer.messages.length - 1]?.content;
+        console.log('ContextAgent Response:', {
+          content:lastMessage,
+          role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
+          usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
+        });
         res.json({ content: lastMessage });
       } else {
         res.json({ content: "No messages available" });
