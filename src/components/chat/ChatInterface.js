@@ -35,7 +35,6 @@ const ChatInterface = ({
     return t('homepage.chat.input.initial');
   };
 
-  const privacyMessage = t('homepage.chat.messages.privacy');
 
   return (
     <div className="chat-container">
@@ -44,16 +43,20 @@ const ChatInterface = ({
           <div key={`message-${message.id}`} className={`message ${message.sender}`}>
             {message.sender === 'user' ? (
               <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
-                <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
-                  {message.redactedText}
-                </p>
-                {message.redactedItems?.length > 0 && (
+                {message.redactedText && (
                   <>
+                    <p>
+                      {message.redactedText}
+                    </p>
                     {message.redactedText.includes('XXX') && (
-                      <p className="redacted-preview">{privacyMessage}</p>
+                      <p className="redacted-preview">
+                        {t('homepage.chat.messages.privacyMessage')}
+                      </p>
                     )}
                     {message.redactedText.includes('###') && (
-                      <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
+                      <p className="redacted-preview">
+                        {t('homepage.chat.messages.blockedMessage')}
+                      </p>
                     )}
                   </>
                 )}

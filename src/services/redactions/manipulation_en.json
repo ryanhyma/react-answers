@@ -6,7 +6,12 @@
     "bypass",
     "convince",
     "pretend",
-    "roleplay"
+    "roleplay",
+    "Anthropic",
+    "OpenAI",
+    "Cohere",
+    "Claude",
+    "GPT"
   ],
   "manipulationPhrases": [
     "your instructions",
@@ -21,6 +26,7 @@
     "our conversation",
     "logical flaws",
     "contradictions",
-    "tell me about your"
+    "tell me about your",
+    "system prompt"
   ]
 } 
