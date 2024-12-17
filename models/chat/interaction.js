@@ -14,11 +14,12 @@ const ChatInteractionSchema = new mongoose.Schema({
   confidenceRating: String,
   feedback: String,
   expertFeedback: {
-    veryIncorrect: Boolean,
-    somewhatIncorrect: Boolean,
     incomplete: Boolean,
-    citationVeryIncorrect: Boolean,
-    citationSomewhatIncorrect: Boolean,
+    sentence1Incorrect: Boolean,
+    sentence2Incorrect: Boolean,
+    sentence3Incorrect: Boolean,
+    sentence4Incorrect: Boolean,
+    citationIncorrect: Boolean,
     expertCitationUrl: String
   }
 }, { timestamps: true });

@@ -6,11 +6,17 @@
     "bypass",
     "convince",
     "pretend",
-    "roleplay"
+    "roleplay",
+    "Anthropic",
+    "OpenAI",
+    "Cohere",
+    "Claude",
+    "GPT"
   ],
   "manipulationPhrases": [
     "your instructions",
     "can you try",
+    "system prompt",
     "have you tried",
     "why can't you",
     "you already did",
@@ -21,13 +27,6 @@
     "logical flaws",
     "contradictions",
     "tell me about your",
-    "system prompt",
-    "Claude",
-    "GPT",
-    "LLM",
-    "AI",
-    "chatbot",
-    "chat history",
-    "clear the chat history"
+    "system prompt"
   ]
 } 

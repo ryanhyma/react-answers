@@ -35,30 +35,29 @@ const ChatInterface = ({
     return t('homepage.chat.input.initial');
   };
 
-  const privacyMessage = t('homepage.chat.messages.privacy');
 
   return (
     <div className="chat-container">
-      <div className="message-list">
-        {messages.map((message) => (
-          <div key={`message-${message.id}`} className={`message ${message.sender}`}>
-            {message.sender === 'user' ? (
-              <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
-                <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
-                  {message.redactedText}
-                </p>
-                {message.redactedItems?.length > 0 && (
-                  <>
-                    {message.redactedText.includes('XXX') && (
-                      <p className="redacted-preview">{privacyMessage}</p>
-                    )}
-                    {message.redactedText.includes('###') && (
-                      <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
-                    )}
-                  </>
-                )}
-              </div>
-            ) : (
+    <div className="message-list">
+      {messages.map((message) => (
+        <div key={`message-${message.id}`} className={`message ${message.sender}`}>
+          {message.sender === 'user' ? (
+            <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
+              <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
+                {message.redactedText}
+              </p>
+              {message.redactedItems?.length > 0 && (
+                <>
+                  {message.redactedText.includes('XXX') && (
+                    <p className="redacted-preview">{t('homepage.chat.messages.privacyMessage')}</p>
+                  )}
+                  {message.redactedText.includes('###') && (
+                    <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
               <>
                 {message.error ? (
                   <div className="error-message">{message.text}</div>
@@ -133,7 +132,30 @@ const ChatInterface = ({
                     />
                     <label htmlFor="claude">{t('homepage.chat.options.aiSelection.claude')}</label>
                   </div>
-                  {/* Repeat for chatgpt and cohere options */}
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="chatgpt"
+                      name="ai-selection"
+                      value="chatgpt"
+                      checked={selectedAI === 'chatgpt'}
+                      onChange={handleAIToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="chatgpt">{t('homepage.chat.options.aiSelection.chatgpt')}</label>
+                  </div>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="cohere"
+                      name="ai-selection"
+                      value="cohere"
+                      checked={selectedAI === 'cohere'}
+                      onChange={handleAIToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="cohere">{t('homepage.chat.options.aiSelection.cohere')}</label>
+                  </div>
                 </div>
               </fieldset>
             </div>

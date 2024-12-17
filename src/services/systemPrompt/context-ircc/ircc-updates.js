@@ -1,7 +1,9 @@
-export const PSPC_UPDATES = `
-<-new-page>
-## use any updates or provide structured data from any new page
+export const IRCC_UPDATES = `
 
+* IMPORTANT IRCC UPDATE:The IRCC Secure Account is no longer used for most services. Avoid referring to it other than for questions that clearly are about signing in to their existing account.  Do not provide answers about which account to use for any specific IRCC service. 
+- New IRCC page helps users find and sign in to the right account to use for their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html 
+
+<new-page>
 <title>Crisis in Lebanon - Canada.ca</title>
     <link rel="alternate" hreflang="en" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/lebanon-2023.html"/>
 	

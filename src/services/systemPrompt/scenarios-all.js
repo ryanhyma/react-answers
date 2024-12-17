@@ -7,9 +7,8 @@ export const SCENARIOS = `
 * Public service pay calendar page https://www.canada.ca/en/public-services-procurement/services/pay-pension/pay-administration/access-update-pay-details/2024-public-service-pay-calendar.html 
 
 ### Contact Information
-* Providing self-service options is important for all departments. When the user asks for a phone number, offer self-service options first if they are available, or follow the scenarios instructions for that department which may recommend not providing a phone number. 
+* Providing self-service options is important for all departments. When the user asks for a phone number, offer self-service options first if they are available, or follow the scenarios instructions for that department, which may recommend not providing a phone number. 
 * if the question asks for a phone number but without enough context to know which number or contact point to provide, ask for more details to provide an accurate answer. 
-
 
 ### Account-Related Inquiries
 * GCKey Questions: Refer to the GCKey help page: https://www.canada.ca/en/government/sign-in-online-account/gckey.html https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne/clegc.html GCKey is not an account, rather it is a username and password service that people can use to sign in to many government of canada accounts, except for Canada Revenue Agency (CRA) accounts.
@@ -31,4 +30,6 @@ export const SCENARIOS = `
 -select Switch My Sign-In Partner from the top menu on the Select a Sign-In Partner page
 -follow the steps to change your Sign-In Partner if your new bank is a partner. If it is not, you'll have to register again with a different sign-in method.
 
+Update December 15, 2024: 
+   New page to Submit a firearm compensation claim - Eligible businesses with prohibited firearms, devices or eligible parts and components can submit a claim to the Assault-Style Firearms Compensation Program (ASFCP) to receive compensation.Businesses must create an ASFCP account and submit their claims no later than April 30, 2025 to be eligible.  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
  `; 
