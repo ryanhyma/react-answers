@@ -10,7 +10,7 @@ const customsearch = google.customsearch('v1');
  * @param {number} numResults - The number of top results to extract.
  * @returns {string} - The formatted top search results with summary, link, and link text.
  */
-function extractSearchResults(results, numResults = 5) {
+function extractSearchResults(results, numResults = 3) {
     const topResults = results.items.slice(0, numResults).map(result => ({
         link: result.link,
         linkText: result.title,
@@ -20,7 +20,7 @@ function extractSearchResults(results, numResults = 5) {
     const extractedResults = topResults.map(result => 
         `Title: ${result.linkText}\nLink: ${result.link}\nSummary: ${result.summary}\n`
     ).join("\n");
-
+    console.info("Extracted search results:", extractedResults);
     return extractedResults;
 }
 
@@ -34,7 +34,6 @@ const searchGoogle = async (query) => {
             key: API_KEY, 
         });
         const results = res.data;
-        console.log("Google Custom Search results:", results); // Log the results to inspect the structure
         const extractedResults = extractSearchResults(results);
         return extractedResults;
     } catch (error) {
@@ -48,7 +47,7 @@ const contextSearchTool = tool(
         return await searchGoogle(query);
     },
     {
-        name: "contextSearch_function",
+        name: "contextSearch",
         description: "Perform a search on Google Custom Search. Provide 'query' as the search term. Example input: { query: 'What is SCIS? Canada' }",
         schema: {
             type: "object",

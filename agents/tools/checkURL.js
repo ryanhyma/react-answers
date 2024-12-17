@@ -23,8 +23,8 @@ const checkUrlStatusTool = tool(
         return await checkUrlStatus(input);
     },
     {
-        name: "checkUrl_function",
-        description: "Quickly checks if a URL is live by making a HEAD request. If the HEAD request fails, it falls back to a GET request. Always use this tool to verify the status of a URL. Provide a valid URL as input to check its status. Example input: 'https://example.com'",
+        name: "checkUrl",
+        description: "Always use this tool to verify the status of a URL. Provide a valid URL as input to check its status. Example input: 'https://example.com'",
     }
 );
 

@@ -66,7 +66,7 @@ const downloadWebPageTool = tool(
         return await downloadWebPage(input);
     },
     {
-        name: "downloadWebPage_function",
+        name: "downloadWebPage",
         description: "When information about a URL is needed, use this function to get the web page content. Provide a valid URL as input to download and parse its content. Example input: 'https://example.com'",
     }
 );
