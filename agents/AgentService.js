@@ -65,6 +65,8 @@ const createContextAgent = async () => {
   const haiku = new ChatAnthropic({
     apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
     modelName: "claude-3-5-haiku-20241022",
+    maxTokens: 8192,
+    temperature: 0,
   });
   const agent = await createReactAgent({
     llm: haiku,
