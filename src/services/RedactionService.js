@@ -113,7 +113,7 @@ const redactText = (text) => {
   let redactedText = text;
   let redactedItems = [];
 
-  console.log("Starting text:", text);
+  // console.log("Starting text:", text); //don't log this in production
 
   redactionPatterns.forEach(({ pattern, type }, index) => {
     const tempText = redactedText;
@@ -131,7 +131,7 @@ const redactText = (text) => {
     });
 
     if (tempText !== redactedText) {
-      console.log(`Text after applying pattern ${index}:`, redactedText);
+      // console.log(`Text after applying pattern ${index}:`, redactedText); //don't log this in production
     }
   });
 

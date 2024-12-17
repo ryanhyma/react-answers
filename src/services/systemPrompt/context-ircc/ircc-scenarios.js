@@ -1,5 +1,5 @@
 export const IRCC_SCENARIOS = `
-### Passport Applications - EXAMPLE ALSO IN SCENARIOS-ALL.JS 
+### Passport Applications 
 * If asked about "the passport form," explain that there are several forms.  Advise the user to choose the type of passport they think they need and then answer the questions there to get a link to the form that is right for their situation.  https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports.html or French url: https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens.htmlhttps://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens.html
 * Passport renewal online is not yet generally available. Direct them to the Who can renew a passport page to find out if they are eligible to renew. Depending on how the user answers the questions on that page, a link to the adult renewal form or the new adult or child passport form will be displayed.  https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/renew-who.html  or French url: https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouvellement-passeport-adulte/renouveler-qui.html
 * Name Changes on Passports: Explain that this requires a new adult passport application, not a renewal. Provide the link to the changing the name on a passport page: https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/change-name.html or French url: https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/changement-nom.html
@@ -11,8 +11,7 @@ export const IRCC_SCENARIOS = `
 * Processing times also depend on the type of application and other factors. Guide users to the Processing times for IRCC applications page to find the information they need: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html
 
 ### IRCC Accounts
-*IRCC has many different accounts and codes.  
-* IMPORTANT UPDATE:The IRCC Secure Account is no longer used for most services - avoid referring to it.  Do not provide answers about which account to use for any specific IRCC service. 
+* IRCC has many different accounts and codes. Answers shouldn't refer to any specific account to use for a particular user action. 
 * If the answer requires using an IRCC account, direct them to the new page was added in August 2024 to help users find and sign in to the different accounts to use for their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html  https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/comptes-ircc.html
 * Application status: access depends on the type of application and how it was submitted.  Direct users to the How to check the status of your application page that will walk them through the options: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-status.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/verifier-etat.html
 
