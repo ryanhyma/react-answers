@@ -10,8 +10,10 @@ import { dirname } from 'path';
 import dotenv from 'dotenv';
 import coherePkg from 'cohere-ai';
 
-import contextAgentHandler from '../api/context-agent.js'
+import chatGPTHandler from '../api/chatgpt.js';
+import contextAgentHandler from '../api/context-agent.js';
 import claudeAgentHandler from '../api/claude.js';
+import { chat } from 'googleapis/build/src/apis/chat/index.js';
 
 const { CohereClient } = coherePkg;
 
@@ -73,7 +75,7 @@ const cohere = null;
 //  token: process.env.REACT_APP_COHERE_API_KEY
 //});
 
-
+app.post("/api/chatgpt",chatGPTHandler);
 
 app.post('/api/claude', claudeAgentHandler);
 
