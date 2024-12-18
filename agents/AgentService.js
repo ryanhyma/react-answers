@@ -70,7 +70,8 @@ const createContextAgent = async (agentType) => {
         apiKey: process.env.REACT_APP_OPENAI_API_KEY,
         modelName: 'gpt-3.5-turbo',
         maxTokens: 4096,
-        temperature: 0.7,
+        temperature: 0,
+        timeoutMs: 60000,
       });
       break;
     case 'cohere':
@@ -78,7 +79,8 @@ const createContextAgent = async (agentType) => {
         apiKey: process.env.REACT_APP_COHERE_API_KEY,
         modelName: 'command-xlarge-nightly',
         maxTokens: 4096,
-        temperature: 0.7,
+        temperature: 0,
+        timeoutMs: 60000,
       });
       break;
     case 'claude':
@@ -87,6 +89,7 @@ const createContextAgent = async (agentType) => {
         modelName: 'claude-3-5-haiku-20241022',
         maxTokens: 8192,
         temperature: 0,
+        timeoutMs: 60000,
       });
       break;
     default:
