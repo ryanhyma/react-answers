@@ -5,7 +5,7 @@ import { useTranslations } from '../../hooks/useTranslations.js';
 
 // TODO: Only show checkb sentences 2-4 if those sente
 
-const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
+const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 0 }) => {
   const { t } = useTranslations(lang);
   const [expertFeedback, setExpertFeedback] = useState({
     sentence1Score: null,
@@ -35,8 +35,15 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
       return;
     }
     
-    console.log('Submitting expert feedback:', expertFeedback);
-    onSubmit(expertFeedback);
+    // Calculate total score before submitting
+    const totalScore = computeTotalScore(expertFeedback);
+    const feedbackWithScore = {
+      ...expertFeedback,
+      totalScore
+    };
+    
+    console.log('Submitting expert feedback:', feedbackWithScore);
+    onSubmit(feedbackWithScore);
   };
 
   const isValidGovernmentUrl = (url) => {
@@ -76,24 +83,19 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
-      <GcdsFieldset
-        legend={t('homepage.expertRating.title')}
-        hint={t('homepage.expertRating.hint')}
-        fieldsetId="ratings"
-        className="mt-400"
-      >
+      <GcdsFieldset>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
-          {[1, 2, 3, 4].map((sentenceNum) => (
-            <div key={sentenceNum} className="sentence-rating-group">
-              <h3>{t(`homepage.expertRating.sentence${sentenceNum}`)}</h3>
+          {[...Array(sentenceCount)].map((_, index) => (
+            <div key={index + 1} className="sentence-rating-group">
+              <h3>{t(`homepage.expertRating.sentence${index + 1}`)}</h3>
               <div className="radio-group">
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${sentenceNum}Score`}
+                    name={`sentence${index + 1}Score`}
                     value="100"
-                    checked={expertFeedback[`sentence${sentenceNum}Score`] === 100}
+                    checked={expertFeedback[`sentence${index + 1}Score`] === 100}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.good')} (100)
@@ -101,9 +103,9 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${sentenceNum}Score`}
+                    name={`sentence${index + 1}Score`}
                     value="80"
-                    checked={expertFeedback[`sentence${sentenceNum}Score`] === 80}
+                    checked={expertFeedback[`sentence${index + 1}Score`] === 80}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.needsImprovement')} (80)
@@ -111,9 +113,9 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en' }) => {
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${sentenceNum}Score`}
+                    name={`sentence${index + 1}Score`}
                     value="0"
-                    checked={expertFeedback[`sentence${sentenceNum}Score`] === 0}
+                    checked={expertFeedback[`sentence${index + 1}Score`] === 0}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.incorrect')} (0)

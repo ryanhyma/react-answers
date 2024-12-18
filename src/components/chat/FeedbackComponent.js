@@ -3,7 +3,7 @@ import ExpertRatingComponent from './ExpertRatingComponent.js';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 
-const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
+const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 0 }) => {
   const { t } = useTranslations(lang);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showExpertRating, setShowExpertRating] = useState(false);
@@ -31,7 +31,11 @@ const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
     return <p>{t('homepage.feedback.thankYou')}</p>;
   }
   if (showExpertRating) {
-    return <ExpertRatingComponent onSubmit={handleExpertFeedback} lang={lang} />;
+    return <ExpertRatingComponent 
+      onSubmit={handleExpertFeedback} 
+      lang={lang} 
+      sentenceCount={sentenceCount}
+    />;
   }
   return (
     <div className="feedback-container">
