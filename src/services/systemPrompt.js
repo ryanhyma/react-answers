@@ -19,6 +19,10 @@ const departmentModules = {
   PSPC: {
     updates: () => import('./systemPrompt/context-pspc/pspc-updates.js').then(m => m.PSPC_UPDATES),
     scenarios: () => import('./systemPrompt/context-pspc/pspc-scenarios.js').then(m => m.PSPC_SCENARIOS)
+  },
+  IRCC: {
+    updates: () => import('./systemPrompt/context-ircc/ircc-updates.js').then(m => m.IRCC_UPDATES),
+    scenarios: () => import('./systemPrompt/context-ircc/ircc-scenarios.js').then(m => m.IRCC_SCENARIOS)
   }
   // Add more departments as needed
 };
