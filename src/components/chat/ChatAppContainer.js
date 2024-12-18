@@ -329,7 +329,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             setCurrentDepartment(derivedContext.department);
             setCurrentTopic(derivedContext.topic);
             setCurrentSearchResults(derivedContext.searchResults);
-            console.log('Derived context:', { department, topic, topicUrl, departmentUrl });
+            console.log('Derived context:', { department, topic, topicUrl, departmentUrl, searchResults });
           } catch (error) {
             console.error('Error deriving context:', error);
             department = '';

@@ -60,20 +60,51 @@ const createClaudeAgent = async () => {
   return agent;
 };
 
-const createContextAgent = async () => {
-  const tools = [contextSearchTool]; 
-  const haiku = new ChatAnthropic({
-    apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
-    modelName: "claude-3-5-haiku-20241022",
-    maxTokens: 8192,
-    temperature: 0,
-  });
+const createContextAgent = async (agentType) => {
+  const tools = [contextSearchTool];
+  let llm;
+
+  switch (agentType) {
+    case 'openai':
+      llm = new OpenAI({
+        apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+        modelName: 'gpt-3.5-turbo',
+        maxTokens: 4096,
+        temperature: 0,
+        timeoutMs: 60000,
+      });
+      break;
+    case 'cohere':
+      llm = new CohereClient({
+        apiKey: process.env.REACT_APP_COHERE_API_KEY,
+        modelName: 'command-xlarge-nightly',
+        maxTokens: 4096,
+        temperature: 0,
+        timeoutMs: 60000,
+      });
+      break;
+    case 'claude':
+      llm = new ChatAnthropic({
+        apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
+        modelName: 'claude-3-5-haiku-20241022',
+        maxTokens: 8192,
+        temperature: 0,
+        timeoutMs: 60000,
+      });
+      break;
+    default:
+      throw new Error(`Unknown agent type: ${agentType}`);
+  };
   const agent = await createReactAgent({
-    llm: haiku,
+    llm: llm,
     tools: tools,
   });
   return agent;
-};
+}
+
+
+
+
 
 const createAgents = async () => {
   const openAIAgent = await createOpenAIAgent();
@@ -98,4 +129,4 @@ const getAgent = (agents, selectedAgent) => {
   }
 };
 
-export { createAgents, getAgent, createContextAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent };
+export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createContextAgent };
