@@ -10,7 +10,10 @@ const FeedbackComponent = ({ onFeedback, lang = 'en' }) => {
 
   const handleFeedback = (isPositive) => {
     if (isPositive) {
-      onFeedback(true);
+      const expertFeedback = {
+        totalScore: 100
+      };
+      onFeedback(true, expertFeedback);
       setFeedbackGiven(true);
     } else {
       setShowExpertRating(true);
