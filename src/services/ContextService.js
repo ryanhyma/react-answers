@@ -2,14 +2,12 @@
 
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? '/api/claude-haiku'  // Vercel serverless function for Haiku
-  : 'http://localhost:3001/api/haiku';  // Local development server endpoint for Haiku
-
+const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:3001/api/context-agent';
+  
 const ContextService = {
   sendMessage: async (message, lang = 'en', department = '') => {
     try {
-      console.log(`🤖 Haiku Service: Processing message in ${lang.toUpperCase()}`);
+      console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
       
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
       
@@ -26,7 +24,7 @@ const ContextService = {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Claude Haiku API error response:', errorText);
+        console.error('Context API error response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -34,7 +32,7 @@ const ContextService = {
       
       return data.content;
     } catch (error) {
-      console.error('Error calling Claude Haiku API:', error);
+      console.error('Error calling Context API:', error);
       throw error;
     }
   },
@@ -46,16 +44,20 @@ const ContextService = {
       const response = await ContextService.sendMessage(question, lang, department);
       
       // Parse the XML-style tags from the response
-      const topicMatch = response.match(/<topic>(.*?)<\/topic>/);
-      const topicUrlMatch = response.match(/<topicUrl>(.*?)<\/topicUrl>/);
-      const departmentMatch = response.match(/<department>(.*?)<\/department>/);
-      const departmentUrlMatch = response.match(/<departmentUrl>(.*?)<\/departmentUrl>/);
+      const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
+      const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+      const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
+      const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
+      const searchResultsMatch = response.match(/<searchResults>([\s\S]*?)<\/searchResults>/);
+     
       
       return {
         topic: topicMatch ? topicMatch[1] : 'none',
         topicUrl: topicUrlMatch ? topicUrlMatch[1] : '',
         department: departmentMatch ? departmentMatch[1] : '',
-        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : ''
+        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : '',
+        searchResults: searchResultsMatch ? searchResultsMatch[1] : ''
+
       };
     } catch (error) {
       console.error('Error deriving context:', error);

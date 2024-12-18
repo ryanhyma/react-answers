@@ -1,4 +1,4 @@
-import checkCitationUrl from './urlChecker';
+import checkCitationUrl from './urlChecker.js';
 
 /**
  * URLToSearch class provides methods to validate and verify URLs for Canada.ca domains
@@ -71,7 +71,7 @@ class URLToSearch {
   };
   }
 
-};
+}
   
 // Export a singleton instance
 export const urlToSearch = new URLToSearch();

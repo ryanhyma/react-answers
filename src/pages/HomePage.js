@@ -1,8 +1,8 @@
 // src/pages/HomePage.js
 import React, { useState, useEffect } from 'react';
-import ChatAppContainer from '../components/chat/ChatAppContainer';
+import ChatAppContainer from '../components/chat/ChatAppContainer.js';
 import { GcdsContainer, GcdsDetails, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
-import { useTranslations } from '../hooks/useTranslations';
+import { useTranslations } from '../hooks/useTranslations.js';
 
 // Error Boundary remains the same
 class ErrorBoundary extends React.Component {

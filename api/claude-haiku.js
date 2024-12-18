@@ -1,6 +1,6 @@
 // api/claude.js
 import Anthropic from '@anthropic-ai/sdk';
-import { getModelConfig } from '../config/ai-models';
+import { getModelConfig } from '../config/ai-models.js';
 
 // Same as your claude.js endpoint, but with this change:
 const modelConfig = getModelConfig('anthropic');

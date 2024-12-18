@@ -1,7 +1,7 @@
 import React from 'react';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
-import FeedbackComponent from './FeedbackComponent';
-import DepartmentSelectorTesting from './DepartmentSelectorTesting';
+import FeedbackComponent from './FeedbackComponent.js';
+import DepartmentSelectorTesting from './DepartmentSelectorTesting.js';
 
 const ChatInterface = ({
   messages,

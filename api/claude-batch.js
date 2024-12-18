@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { getModelConfig } from '../../config/ai-models';
+import { getModelConfig } from '../../config/ai-models.js';
 
 const modelConfig = getModelConfig('anthropic');
 const anthropic = new Anthropic({
