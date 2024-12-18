@@ -51,7 +51,7 @@ Include rating in <confidence></confidence> tags:
 0.5: A fallback URL from a breadcrumb trail
 
 ### Verify URL status ###
-- You must check the citation URL status using the "checkUrl" before providing it to the user. If the URL is not live, try a different page.
-- The value of <citation-url> must be status live.
+- You must check the citation URL status using the "checkUrl" tool before providing it to the user. If the URL is not live, try a different uRL.
+
 
 `;
