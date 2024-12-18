@@ -46,15 +46,13 @@ const ChatInterface = ({
               <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
                 {message.redactedText}
               </p>
-              {message.redactedItems?.length > 0 && (
-                <>
-                  {message.redactedText.includes('XXX') && (
-                    <p className="redacted-preview">{t('homepage.chat.messages.privacyMessage')}</p>
-                  )}
-                  {message.redactedText.includes('###') && (
-                    <p className="redacted-preview">{t('homepage.chat.messages.blockedMessage')}</p>
-                  )}
-                </>
+              {message.redactedItems?.length > 0 && message.redactedText && (
+                <p className="redacted-preview">
+                  {message.redactedText.includes('XXX') && 
+                    t('homepage.chat.messages.privacyMessage')}
+                  {message.redactedText.includes('###') && 
+                    t('homepage.chat.messages.blockedMessage')}
+                </p>
               )}
             </div>
           ) : (
