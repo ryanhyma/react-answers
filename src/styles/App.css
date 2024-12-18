@@ -110,6 +110,13 @@
  .redacted-preview {
      margin-top: 10px;
      font-style: italic;
+     color: #3b0202;
+     padding: 5px 0;
+     display: block;
+}
+ .redacted-preview p {
+     margin: 0;
+     padding: 0;
 }
  .ai-message-content {
      background-color: #fff;
@@ -493,3 +500,4 @@ h2:first-of-type {
 gcds-container:first-of-type {
     margin-bottom: 0px !important;
 }
+
