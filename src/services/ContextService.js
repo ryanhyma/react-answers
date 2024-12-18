@@ -1,16 +1,17 @@
-  // src/ContextService.js
+// src/ContextService.js
 
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 
-const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:3001/api/context-agent';
-  
+const PORT = process.env.PORT || 3000; // Use a default value if PORT is not set
+const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:' + PORT + '/api/context-agent';
+
 const ContextService = {
   sendMessage: async (message, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
-      
+
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
-      
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -29,28 +30,28 @@ const ContextService = {
       }
 
       const data = await response.json();
-      
+
       return data.content;
     } catch (error) {
       console.error('Error calling Context API:', error);
       throw error;
     }
   },
-  
+
   deriveContext: async (question, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
-      
+
       const response = await ContextService.sendMessage(question, lang, department);
-      
+
       // Parse the XML-style tags from the response
       const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
       const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
       const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
       const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
       const searchResultsMatch = response.match(/<searchResults>([\s\S]*?)<\/searchResults>/);
-     
-      
+
+
       return {
         topic: topicMatch ? topicMatch[1] : 'none',
         topicUrl: topicUrlMatch ? topicUrlMatch[1] : '',

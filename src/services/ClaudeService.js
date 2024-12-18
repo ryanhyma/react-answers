@@ -2,9 +2,13 @@
 
 import loadSystemPrompt from './systemPrompt.js';
 
+
+const PORT = process.env.PORT || 3000; // Use a default value if PORT is not set
+
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/claude'  // Vercel serverless function
-  : 'http://localhost:3001/api/claude';  // Local development server endpoint
+  : `http://localhost:${PORT}/api/claude`;  // Local development server endpoint
+
 
 const ClaudeService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {

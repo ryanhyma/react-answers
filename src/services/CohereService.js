@@ -4,7 +4,7 @@ import loadSystemPrompt from './systemPrompt.js';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/cohere'  // Vercel serverless function
-  : 'http://localhost:3001/api/cohere';  // Using port 3001
+  : 'http://localhost:'+process.env.PORT+'/api/cohere'; 
 
 const CohereService = {
   sendMessage: async (message, conversationHistory = [], lang = 'en') => {
