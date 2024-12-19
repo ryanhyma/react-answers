@@ -505,10 +505,6 @@ gcds-container:first-of-type {
     border: 1px solid #F3E9E8;
 }
 
-.loading-message {
-/* Styles for the message box */
-}
-
 .loading-animation {
         color: #FFF;
         position: relative;
@@ -545,7 +541,3 @@ gcds-container:first-of-type {
           height: 5em;
         }
       }
-
-.loading-text {
-/* Styles for the loading text */
-}
