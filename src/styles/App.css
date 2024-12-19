@@ -510,7 +510,6 @@ gcds-container:first-of-type {
 }
 
 .loading-animation {
-    .loader {
         color: #FFF;
         position: relative;
         font-size: 11px;
@@ -520,8 +519,8 @@ gcds-container:first-of-type {
         height: 4em;
         animation-delay: -0.16s;
       }
-      .loader:before,
-      .loader:after {
+.loading-animation:before,
+.loading-animation:after {
         content: '';
         position: absolute;
         top: 0;
@@ -531,7 +530,7 @@ gcds-container:first-of-type {
         height: 4em;
         animation: escaleY 1s infinite ease-in-out;
       }
-      .loader:before {
+.loading-animation:before {
         left: -2em;
         animation-delay: -0.32s;
       }
@@ -545,7 +544,7 @@ gcds-container:first-of-type {
           box-shadow: 0 -2em;
           height: 5em;
         }
-      }}
+      }
 
 .loading-text {
 /* Styles for the loading text */
