@@ -10,7 +10,6 @@ import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ContextService from '../../services/ContextService.js';
 import ChatInterface from './ChatInterface.js';
-import FeedbackComponent from './FeedbackComponent.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -39,7 +38,7 @@ const parseMessageContent = (text) => {
     responseType = 'question';
     content = text.replace(/<\/?clarifying-question>/g, '').trim();
   }
-  
+
   return { responseType, content };
 };
 
@@ -63,6 +62,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [currentDepartment, setCurrentDepartment] = useState('');
   const [currentTopic, setCurrentTopic] = useState('');
   const [currentSearchResults, setCurrentSearchResults] = useState('');
+  const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
+  const [currentTopicUrl, setCurrentTopicUrl] = useState('');
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -117,10 +118,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, []);
 
   const logInteraction = useCallback((
-    redactedQuestion, 
-    aiResponse, 
-    aiService, 
-    referringUrl, 
+    redactedQuestion,
+    aiResponse,
+    aiService,
+    referringUrl,
     citationUrl,
     originalCitationUrl,
     confidenceRating,
@@ -142,36 +143,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     };
 
     console.log('Final log entry:', logEntry);
-    
+
     if (process.env.REACT_APP_ENV === 'production') {
       LoggingService.logInteraction(logEntry, false);
     }
   }, []);
-
-  // Move parsedResponses up, before handleFeedback
-  const parsedResponses = useMemo(() => {
-    if (isTyping.current) return {};
-
-    const responses = {};
-    const processedIds = new Set();
-
-    messages.forEach((message) => {
-      if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
-        processedIds.add(message.id);
-        
-        const { responseType, content } = parseMessageContent(message.text);
-        const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
-        
-        responses[message.id] = {
-          responseType,
-          paragraphs,
-          citationHead,
-          aiService: message.aiService
-        };
-      }
-    });
-    return responses;
-  }, [messages, parseAIResponse]);
 
   const handleFeedback = useCallback((isPositive, expertFeedback = null) => {
     const feedback = isPositive ? 'positive' : 'negative';
@@ -180,14 +156,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     // Get the last message (which should be the AI response)
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.sender === 'ai') {
-      // Get the parsed response for this message
-      const parsedResponse = parsedResponses[lastMessage.id];
-      const sentenceCount = parsedResponse ? parsedResponse.paragraphs.reduce((count, paragraph) => {
-        return count + extractSentences(paragraph).length;
-      }, 0) : 0;
-
+      const { text: aiResponse, aiService } = lastMessage;
       // Get original URL from AI response
-      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(lastMessage.text, lastMessage.aiService);
+      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
 
       // Get validated URL from checkedCitations
       const lastIndex = messages.length - 1;
@@ -200,8 +171,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         // Only log if there's feedback
         logInteraction(
           userMessage.redactedText,
-          lastMessage.text,
-          lastMessage.aiService,
+          aiResponse,
+          aiService,
           userMessage.referringUrl,
           finalCitationUrl,
           originalCitationUrl,
@@ -210,11 +181,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           expertFeedback
         );
       }
-
-      // Pass sentenceCount to FeedbackComponent
-      return <FeedbackComponent onFeedback={handleFeedback} lang={lang} sentenceCount={sentenceCount} />;
     }
-  }, [messages, checkedCitations, logInteraction, parseAIResponse, parsedResponses, lang]);
+  }, [messages, checkedCitations, logInteraction, parseAIResponse]);
 
   const handleReferringUrlChange = (e) => {
     const url = e.target.value.trim();
@@ -225,7 +193,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     try {
       const urlObj = new URL(url);
       const pathSegments = urlObj.pathname.split('/').filter(Boolean);
-      
+
       // Find matching department
       let newDepartment = '';
       for (const segment of pathSegments) {
@@ -237,7 +205,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         }
         if (newDepartment) break;
       }
-      
+
       // Update department if found, otherwise keep existing
       if (newDepartment) {
         setSelectedDepartment(newDepartment);
@@ -263,7 +231,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   };
 
   const tryAIService = async (aiType, messageWithUrl, conversationHistory, lang) => {
-    switch(aiType) {
+    switch (aiType) {
       case 'claude':
         return await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
       case 'chatgpt':
@@ -286,7 +254,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           const errorMessageId = messageIdCounter.current++;
           setMessages(prevMessages => [
             ...prevMessages,
-            { 
+            {
               id: errorMessageId,
               text: t('homepage.chat.messages.characterLimit'),
               sender: 'system',
@@ -307,14 +275,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           const blockedMessageId = messageIdCounter.current++;
           setMessages(prevMessages => [
             ...prevMessages,
-            { 
+            {
               id: userMessageId,
               text: redactedText,
               redactedText: redactedText,
               redactedItems: redactedItems,
               sender: 'user'
             },
-            { 
+            {
               id: blockedMessageId,
               text: t('homepage.chat.messages.blockedContent'),
               sender: 'system',
@@ -325,12 +293,12 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           return;
         }
 
-      setDisplayStatus('startingToThink');        
+        setDisplayStatus('startingToThink');
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
         setMessages(prevMessages => [
           ...prevMessages,
-          { 
+          {
             id: userMessageId,
             text: userMessage,
             redactedText: redactedText,
@@ -351,9 +319,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         if (!referringUrl && turnCount === 0) {
           try {
-            const contextMessage = `${redactedText}${
-              referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
-            }`;
+            const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
+              }`;
             const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
             department = derivedContext.department;
             topic = derivedContext.topic;
@@ -363,6 +330,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             setCurrentDepartment(derivedContext.department);
             setCurrentTopic(derivedContext.topic);
             setCurrentSearchResults(derivedContext.searchResults);
+            setCurrentDepartmentUrl(derivedContext.departmentUrl);
+            setCurrentTopicUrl(derivedContext.topicUrl);
             console.log('Derived context:', { department, topic, topicUrl, departmentUrl, searchResults });
           } catch (error) {
             console.error('Error deriving context:', error);
@@ -371,6 +340,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             setCurrentDepartment('');
             setCurrentTopic('');
           }
+        } else {
+          // Load the variables for the context that are saved in the React state
+          department = currentDepartment;
+          topic = currentTopic;
+          topicUrl = currentTopicUrl;
+          departmentUrl = currentDepartmentUrl;
+          searchResults = currentSearchResults;
         }
 
         if (department && topic) {
@@ -380,19 +356,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         }
 
         // Prepare the message with context for AI processing
-        const messageWithUrl = `${redactedText}${
-          referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
-        }${
-          department ? `\n<department>${department}</department>` : ''
-        }${
-          topic ? `\n<topic>${topic}</topic>` : ''
-        }${
-          topicUrl ? `\n<topicUrl>${topicUrl}</topicUrl>` : ''
-        }${
-          departmentUrl ? `\n<departmentUrl>${departmentUrl}</departmentUrl>` : ''
-        }${
-          searchResults ? `\n<searchResults>${searchResults}</searchResults>` : ''
-        }`;
+        const messageWithUrl = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
+          }${department ? `\n<department>${department}</department>` : ''
+          }${topic ? `\n<topic>${topic}</topic>` : ''
+          }${topicUrl ? `\n<topicUrl>${topicUrl}</topicUrl>` : ''
+          }${departmentUrl ? `\n<departmentUrl>${departmentUrl}</departmentUrl>` : ''
+          }${searchResults ? `\n<searchResults>${searchResults}</searchResults>` : ''
+          }`;
 
         // Get conversation history for context
         const conversationHistory = messages
@@ -402,26 +372,26 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             content: m.redactedText || m.text
           }));
 
-        // Try primary AI service first
+        // Try primary AI service first, yes first
         try {
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
-          
+
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
-          
+
           // Generate new message ID early
           const newMessageId = messageIdCounter.current++;
-          
+
           // Validate URL if present
           let finalCitationUrl, confidenceRating;
           if (originalCitationUrl) {
             const validationResult = await urlToSearch.validateAndCheckUrl(
-              originalCitationUrl, 
-              lang, 
+              originalCitationUrl,
+              lang,
               redactedText,
               selectedDepartment,
               t
-            );  
+            );
 
             // Store validation result in checkedCitations
             setCheckedCitations(prev => ({
@@ -464,14 +434,40 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         } catch (error) {
           console.error(`Error with ${selectedAI}:`, error);
-          
+
           // Try fallback AI service
           const fallbackAI = getNextAIService(selectedAI);
           try {
             const fallbackResponse = await tryAIService(fallbackAI, messageWithUrl, conversationHistory, lang);
-            
+
             // Add the fallback AI response
             const fallbackMessageId = messageIdCounter.current++;
+            
+            const { citationUrl: fallbackCitationUrl } = parseAIResponse(fallbackResponse, usedAI);
+
+            let finalCitationUrl;
+            if (fallbackCitationUrl) {
+              const validationResult = await urlToSearch.validateAndCheckUrl(
+                fallbackCitationUrl,
+                lang,
+                redactedText,
+                selectedDepartment,
+                t
+              );
+
+              // Store validation result in checkedCitations
+              setCheckedCitations(prev => ({
+                ...prev,
+                [fallbackMessageId]: {
+                  url: validationResult?.url,
+                  fallbackUrl: validationResult?.fallbackUrl,
+                  confidenceRating: validationResult?.confidenceRating || '0.1',
+                  finalCitationUrl: validationResult?.url || validationResult?.fallbackUrl
+                }
+              }));
+
+            }
+
             setMessages(prevMessages => [
               ...prevMessages,
               {
@@ -548,20 +544,46 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     if (pageUrl && !referringUrl) {
       setReferringUrl(pageUrl);
     }
-    
+
     if (urlDepartment && !selectedDepartment) {
       setSelectedDepartment(urlDepartment);
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
+  // Memoize the parsed responses with better message tracking
+  const parsedResponses = useMemo(() => {
+    if (isTyping.current) return {};
+
+    const responses = {};
+    const processedIds = new Set();
+
+    messages.forEach((message) => {
+      if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
+        processedIds.add(message.id);
+        // console.log(`Parsing message ${message.id}:`, message.text.substring(0, 100) + '...');
+
+        const { responseType, content } = parseMessageContent(message.text);
+        const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
+
+        responses[message.id] = {
+          responseType,
+          paragraphs,
+          citationHead,
+          aiService: message.aiService
+        };
+      }
+    });
+    return responses;
+  }, [messages, parseAIResponse]);
+
   const formatAIResponse = useCallback((text, aiService, messageId) => {
     if (!isTyping.current && messageId !== undefined) {
       // console.log('Formatting message:', messageId);
     }
-    
+
     const parsedResponse = parsedResponses[messageId];
     if (!parsedResponse) return null;
-    
+
     const citationResult = checkedCitations[messageId];
     const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
     const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';

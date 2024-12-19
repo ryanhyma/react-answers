@@ -2,7 +2,7 @@
 
 import loadSystemPrompt from './systemPrompt.js';
 
-const PORT = process.env.PORT || 3000; // Use a default value if PORT is not set
+const PORT = 3001; 
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api/claude'  // Vercel serverless function

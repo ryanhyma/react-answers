@@ -95,8 +95,8 @@
      align-self: flex-start;
 }
  .user-message-box {
-     background-color: #0535D2;
-     color: white;
+     background-color: #F1F2F3;
+     color: #333;
      padding: 0.65rem;
      border-radius: 0.5rem;
 }
@@ -129,7 +129,7 @@
 }
 
 .ai-message-content p:first-child {
-    font-weight: 700;
+    font-weight: 600;
 }
  .ai-paragraph, .ai-list-item {
      margin: 0;
@@ -501,46 +501,18 @@ gcds-container:first-of-type {
     margin-bottom: 0px !important;
 }
 
-.sentence-rating-group,
-.citation-rating-group {
-  margin-bottom: 2rem;
+.loading-container {
+    border: 1px solid #F3E9E8;
 }
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+.loading-message {
+/* Styles for the message box */
 }
 
-.answer-improvement {
-  margin: 2rem 0;
+.loading-animation {
+/* Your loading animation styles */
 }
 
-.answer-improvement textarea {
-  width: 100%;
-  min-height: 100px;
-  margin-top: 0.5rem;
+.loading-text {
+/* Styles for the loading text */
 }
-
-.answer-details,
-.citation-details {
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
-}
-
-.answer-details summary,
-.citation-details summary {
-  cursor: pointer;
-  padding: 0.5rem;
-  font-weight: bold;
-}
-
-.answer-details[open] summary,
-.citation-details[open] summary {
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 1rem;
-}
-
