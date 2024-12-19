@@ -103,7 +103,8 @@
         "submit": "Submit feedback",
         "errors": {
           "invalidUrl": "Please enter a valid canada.ca or gc.ca URL"
-        }
+        },
+        "intro": "Rate the sentences in the answer, or the citation, or both"
       }
     }
   }

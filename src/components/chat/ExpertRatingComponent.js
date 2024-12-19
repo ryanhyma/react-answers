@@ -3,9 +3,9 @@ import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 
-// TODO: Only show checkb sentences 2-4 if those sente
+// TODO: it's defaulting to 1 sentence, until we get the sentence count from the AI response
 
-const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 0 }) => {
+const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => {
   const { t } = useTranslations(lang);
   const [expertFeedback, setExpertFeedback] = useState({
     sentence1Score: null,
@@ -84,18 +84,55 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 0 }) => 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
       <GcdsFieldset>
+        <p>{t('homepage.expertRating.intro')}</p>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
-          {[...Array(sentenceCount)].map((_, index) => (
-            <div key={index + 1} className="sentence-rating-group">
-              <h3>{t(`homepage.expertRating.sentence${index + 1}`)}</h3>
+          {console.log('sentenceCount:', sentenceCount)}
+          <div className="sentence-rating-group">
+            <h3>{t('homepage.expertRating.sentence1')}</h3>
+            <div className="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="sentence1Score"
+                  value="100"
+                  checked={expertFeedback.sentence1Score === 100}
+                  onChange={handleRadioChange}
+                />
+                {t('homepage.expertRating.options.good')} (100)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="sentence1Score"
+                  value="80"
+                  checked={expertFeedback.sentence1Score === 80}
+                  onChange={handleRadioChange}
+                />
+                {t('homepage.expertRating.options.needsImprovement')} (80)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="sentence1Score"
+                  value="0"
+                  checked={expertFeedback.sentence1Score === 0}
+                  onChange={handleRadioChange}
+                />
+                {t('homepage.expertRating.options.incorrect')} (0)
+              </label>
+            </div>
+          </div>
+          {[...Array(Math.max(0, sentenceCount - 1))].map((_, index) => (
+            <div key={index + 2} className="sentence-rating-group">
+              <h3>{t(`homepage.expertRating.sentence${index + 2}`)}</h3>
               <div className="radio-group">
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${index + 1}Score`}
+                    name={`sentence${index + 2}Score`}
                     value="100"
-                    checked={expertFeedback[`sentence${index + 1}Score`] === 100}
+                    checked={expertFeedback[`sentence${index + 2}Score`] === 100}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.good')} (100)
@@ -103,9 +140,9 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 0 }) => 
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${index + 1}Score`}
+                    name={`sentence${index + 2}Score`}
                     value="80"
-                    checked={expertFeedback[`sentence${index + 1}Score`] === 80}
+                    checked={expertFeedback[`sentence${index + 2}Score`] === 80}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.needsImprovement')} (80)
@@ -113,9 +150,9 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 0 }) => 
                 <label>
                   <input
                     type="radio"
-                    name={`sentence${index + 1}Score`}
+                    name={`sentence${index + 2}Score`}
                     value="0"
-                    checked={expertFeedback[`sentence${index + 1}Score`] === 0}
+                    checked={expertFeedback[`sentence${index + 2}Score`] === 0}
                     onChange={handleRadioChange}
                   />
                   {t('homepage.expertRating.options.incorrect')} (0)
