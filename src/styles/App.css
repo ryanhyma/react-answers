@@ -95,8 +95,8 @@
      align-self: flex-start;
 }
  .user-message-box {
-     background-color: #0535D2;
-     color: white;
+     background-color: #F1F2F3;
+     color: #333;
      padding: 0.65rem;
      border-radius: 0.5rem;
 }
@@ -129,7 +129,7 @@
 }
 
 .ai-message-content p:first-child {
-    font-weight: 700;
+    font-weight: 600;
 }
  .ai-paragraph, .ai-list-item {
      margin: 0;
