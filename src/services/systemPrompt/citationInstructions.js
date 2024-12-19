@@ -28,7 +28,7 @@ You will already have:
 - Department url from the prior AI service if available or derived from the referring url
 - Any relevant canada.ca URL from a breadcrumb trail towards the answer url about which you're not confident
 - Broader, valid URLs over specific, potentially invalid ones about which you're not confident
-5. If the URL status cannot be verified using the "checkURL" tool, try a different page (up to 5 attempts)
+5. If the URL status cannot be verified using the "checkUrl" tool, try a different page (up to 5 attempts)
 6. Use the data in the searchResults to help select a citation
 
 
