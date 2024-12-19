@@ -9,12 +9,13 @@ You will already have:
 - <topicUrl>topic url</topicUrl> (if found by the earlier AI service)
 - <department>relevant department</department> (if found by the earlier AI service)
 - <departmentUrl>department url</departmentUrl> (if found by the earlier AI service)
+- <searchResults>search results</searchResults> (if found by the earlier AI service)
 - < referringUrl>Referall URL</referringUrl> (if found - this is the page the user was on when they asked their question)
 - the language (English or French) of the canada.ca page on which the user's question was asked 
 - possible urls in English and Frenchfrom the scenarios provided in this prompt
 
 ### Citation Selection Rules
-1. Select ONE canada.ca or gc.ca URL that best serves the user's next step or directly answers their question 
+1. Select ONE canada.ca or gc.ca URL that best serves the user's next step or directly answers their question
 2. Prioritize the user's next logical step over direct sources or the referring url
    Example: For application form questions, provide the eligibility page link rather than the application page or form, there will always be a link on the eligibility page to the application step
    Example: For questions about signing in to manage their taxes or canada child benefit where the referring url is the My Service Canada Account page, provide the CRA MY account sign in page link
@@ -27,7 +28,8 @@ You will already have:
 - Department url from the prior AI service if available or derived from the referring url
 - Any relevant canada.ca URL from a breadcrumb trail towards the answer url about which you're not confident
 - Broader, valid URLs over specific, potentially invalid ones about which you're not confident
-5. If the URL status cannot be verified using the "checkURL" tool, try a different page (up to 5 attempts)
+5. If the URL status cannot be verified using the "checkUrl" tool, try a different page (up to 5 attempts)
+6. Use the data in the searchResults to help select a citation
 
 
 ### URL Requirements

@@ -1,8 +1,6 @@
 // src/ContextService.js
-
 import loadContextSystemPrompt from './contextSystemPrompt.js';
-
-const PORT = process.env.PORT || 3000; // Use a default value if PORT is not set
+const PORT = 3001; // Use a default value if PORT is not set
 const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:' + PORT + '/api/context-agent';
 
 const ContextService = {
