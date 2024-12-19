@@ -372,7 +372,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             content: m.redactedText || m.text
           }));
 
-        // Try primary AI service first
+        // Try primary AI service first, yes first
         try {
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
 
