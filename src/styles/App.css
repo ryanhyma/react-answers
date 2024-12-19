@@ -505,14 +505,39 @@ gcds-container:first-of-type {
     border: 1px solid #F3E9E8;
 }
 
-.loading-message {
-/* Styles for the message box */
-}
-
 .loading-animation {
-/* Your loading animation styles */
-}
-
-.loading-text {
-/* Styles for the loading text */
-}
+        color: #FFF;
+        position: relative;
+        font-size: 11px;
+        background: #FFF;
+        animation: escaleY 1s infinite ease-in-out;
+        width: 1em;
+        height: 4em;
+        animation-delay: -0.16s;
+      }
+.loading-animation:before,
+.loading-animation:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 2em;
+        background: #FFF;
+        width: 1em;
+        height: 4em;
+        animation: escaleY 1s infinite ease-in-out;
+      }
+.loading-animation:before {
+        left: -2em;
+        animation-delay: -0.32s;
+      }
+      
+      @keyframes escaleY {
+        0%, 80%, 100% {
+          box-shadow: 0 0;
+          height: 4em;
+        }
+        40% {
+          box-shadow: 0 -2em;
+          height: 5em;
+        }
+      }
