@@ -2,6 +2,9 @@ import { BASE_SYSTEM_PROMPT } from './systemPrompt/agenticBase.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS } from './systemPrompt/citationInstructions.js';
 
+const ROLE = `## Role
+You are an AI assistant specializing in Government of Canada information found on Canada.ca and sites with the domain suffix "gc.ca". Your primary function is to help site visitors by providing brief helpful answers to their Government of Canada questions with a citation to help them take the next step of their task and verify the answer.`;
+
 // Create a map of department-specific content imports
 const departmentModules = {
   CRA: {
@@ -84,10 +87,10 @@ async function loadSystemPrompt(language = 'en', department = '') {
     });
 
     const fullPrompt = `
-      ## Current Date
-      Today is ${currentDate}.
+      ${ROLE}
 
-      ## Language Context
+      ## Current Context
+      Today is ${currentDate}.
       ${languageContext}
 
       ${BASE_SYSTEM_PROMPT}
@@ -96,7 +99,7 @@ async function loadSystemPrompt(language = 'en', department = '') {
 
       ${departmentUpdatesSection}
 
-      ${departmentScenariosSection} //includes the general scenarios
+      ${departmentScenariosSection}
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
