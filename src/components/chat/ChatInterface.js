@@ -74,17 +74,15 @@ const ChatInterface = ({
         ))}
         
       {isLoading && (
-        <div className="loading-container">
-          <div key="loading" className="message ai loading-message">
-            <div className="loading-animation"></div>
-            <div className="loading-text">
-              {displayStatus === 'thinkingWithContext' ? 
-                `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
-                t(`homepage.chat.messages.${displayStatus}`)
-              }
-            </div>
-          </div>
-        </div>
+        <div key="loading" className="loading-container">
+          <div className="loading-animation"></div>
+           <div className="loading-text">
+               {displayStatus === 'thinkingWithContext' ? 
+               `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
+               t(`homepage.chat.messages.${displayStatus}`)
+               }
+           </div>
+       </div>
       )}
         
         {turnCount >= MAX_CONVERSATION_TURNS && (
