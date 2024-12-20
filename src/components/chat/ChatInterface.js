@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting.js';
@@ -28,6 +28,37 @@ const ChatInterface = ({
   t,
   lang,
 }) => {
+  useEffect(() => {
+    const textarea = document.querySelector('gcds-textarea');
+    const button = document.querySelector('gcds-button.send-button');
+    
+    // Create temporary hint
+    const placeholderHint = document.createElement('div');
+    placeholderHint.id = 'temp-hint';
+    placeholderHint.innerHTML = 'Hint: Add details. AI can make mistakes, always check your answer.';
+    
+    if (isLoading) {
+      if (textarea) {
+        textarea.style.display = 'none';
+        // Add temporary hint only
+        textarea.parentNode.insertBefore(placeholderHint, textarea);
+      }
+      if (button) button.style.display = 'none';
+    } else {
+      if (textarea) textarea.style.display = 'block';
+      if (button) button.style.display = 'block';
+      // Remove temporary hint
+      const tempHint = document.getElementById('temp-hint');
+      if (tempHint) tempHint.remove();
+    }
+  
+    // Cleanup function
+    return () => {
+      const tempHint = document.getElementById('temp-hint');
+      if (tempHint) tempHint.remove();
+    };
+  }, [isLoading]);
+
   const getLabelForInput = () => {
     if (turnCount >= 1) {
       return t('homepage.chat.input.followUp');
@@ -72,7 +103,7 @@ const ChatInterface = ({
             )}
           </div>
         ))}
-        
+
       {isLoading && (
         <div key="loading" className="loading-container">
           <div className="loading-animation"></div>
