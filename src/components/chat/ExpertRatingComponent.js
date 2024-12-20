@@ -3,7 +3,8 @@ import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 
-// TODO: it's defaulting to 1 sentence, until we get the sentence count from the AI response
+// Shows ratings for a maximum of 4 sentences, and for the citation score
+// if there are somehow 5 sentences, the 5th sentence is ignored _YES THIS IS A HACK
 
 const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => {
   const { t } = useTranslations(lang);
@@ -87,7 +88,6 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
         <p>{t('homepage.expertRating.intro')}</p>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
-          {console.log('sentenceCount:', sentenceCount)}
           <div className="sentence-rating-group">
             <h3>{t('homepage.expertRating.sentence1')}</h3>
             <div className="radio-group">
@@ -123,7 +123,7 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
               </label>
             </div>
           </div>
-          {[...Array(Math.max(0, sentenceCount - 1))].map((_, index) => (
+          {[...Array(Math.min(3, sentenceCount - 1))].map((_, index) => (
             <div key={index + 2} className="sentence-rating-group">
               <h3>{t(`homepage.expertRating.sentence${index + 2}`)}</h3>
               <div className="radio-group">

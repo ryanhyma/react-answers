@@ -579,3 +579,32 @@ gcds-container:first-of-type {
           height: 5em;
         }
       }
+
+/* Add spacing between radio buttons and their labels */
+.radio-group label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 8px;  /* Add space between radio button and text */
+}
+
+/* Make text inputs appear below their labels */
+.expert-rating-container input[type="url"],
+.expert-rating-container input[type="text"],
+.expert-rating-container textarea {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Add spacing between sections */
+.sentence-rating-group,
+.citation-rating-group,
+.answer-improvement {
+  margin-bottom: 20px;
+}

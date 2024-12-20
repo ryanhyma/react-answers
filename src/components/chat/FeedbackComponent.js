@@ -3,7 +3,7 @@ import ExpertRatingComponent from './ExpertRatingComponent.js';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 
-const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 0 }) => {
+const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1 }) => {
   const { t } = useTranslations(lang);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showExpertRating, setShowExpertRating] = useState(false);
