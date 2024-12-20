@@ -62,6 +62,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [currentDepartment, setCurrentDepartment] = useState('');
   const [currentTopic, setCurrentTopic] = useState('');
   const [currentSearchResults, setCurrentSearchResults] = useState('');
+  const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
+  const [currentTopicUrl, setCurrentTopicUrl] = useState('');
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -328,6 +330,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             setCurrentDepartment(derivedContext.department);
             setCurrentTopic(derivedContext.topic);
             setCurrentSearchResults(derivedContext.searchResults);
+            setCurrentDepartmentUrl(derivedContext.departmentUrl);
+            setCurrentTopicUrl(derivedContext.topicUrl);
             console.log('Derived context:', { department, topic, topicUrl, departmentUrl, searchResults });
           } catch (error) {
             console.error('Error deriving context:', error);
@@ -336,6 +340,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             setCurrentDepartment('');
             setCurrentTopic('');
           }
+        } else {
+          // Load the variables for the context that are saved in the React state
+          department = currentDepartment;
+          topic = currentTopic;
+          topicUrl = currentTopicUrl;
+          departmentUrl = currentDepartmentUrl;
+          searchResults = currentSearchResults;
         }
 
         if (department && topic) {
@@ -361,7 +372,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             content: m.redactedText || m.text
           }));
 
-        // Try primary AI service first
+        // Try primary AI service first, yes first
         try {
           const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
 

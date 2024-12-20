@@ -27,6 +27,8 @@ const ChatInterface = ({
   MAX_CONVERSATION_TURNS,
   t,
   lang,
+  parsedResponses,
+  extractSentences,
 }) => {
   useEffect(() => {
     const textarea = document.querySelector('gcds-textarea');
@@ -66,6 +68,14 @@ const ChatInterface = ({
     return t('homepage.chat.input.initial');
   };
 
+  const getLastMessageSentenceCount = () => {
+    const lastAiMessage = messages.filter(m => m.sender === 'ai').pop();
+    if (lastAiMessage && parsedResponses[lastAiMessage.id]) {
+      return parsedResponses[lastAiMessage.id].paragraphs.reduce((count, paragraph) => 
+        count + extractSentences(paragraph).length, 0);
+    }
+    return 1;
+  };
 
   return (
     <div className="chat-container">
@@ -97,7 +107,11 @@ const ChatInterface = ({
                  showFeedback && 
                  !message.error && 
                  !message.text.includes('<clarifying-question>') && (
-                  <FeedbackComponent onFeedback={handleFeedback} lang={lang} />
+                  <FeedbackComponent 
+                    onFeedback={handleFeedback}
+                    lang={lang}
+                    sentenceCount={getLastMessageSentenceCount()}
+                  />
                 )}
               </>
             )}
