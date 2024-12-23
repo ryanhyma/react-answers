@@ -31,12 +31,13 @@ const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1 }) => {
     return <p>{t('homepage.feedback.thankYou')}</p>;
   }
   if (showExpertRating) {
-    return <ExpertRatingComponent 
-      onSubmit={handleExpertFeedback} 
-      lang={lang} 
-      sentenceCount={sentenceCount}
-    />;
-  }
+  return <ExpertRatingComponent 
+    onSubmit={handleExpertFeedback}
+    onClose={() => setShowExpertRating(false)}
+    lang={lang} 
+    sentenceCount={sentenceCount}
+  />;
+}
   return (
     <div className="feedback-container">
       <span className="feedback-text">{t('homepage.feedback.question')} </span>
