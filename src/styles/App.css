@@ -601,6 +601,19 @@ gcds-container:first-of-type {
   border-radius: 4px;
 }
 
+.expert-rating-container {
+    position: relative;
+  }
+  
+  .close-icon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
+  }
+
 /* Add spacing between sections */
 .sentence-rating-group,
 .citation-rating-group,
@@ -670,7 +683,8 @@ details > summary:first-of-type {
 }
 
 .btn-primary-sm:focus, 
-summary:focus {
+summary:focus,
+.close-icon:focus {
     background-color: var(--gcds-details-focus-background);
     border-radius: var(--gcds-details-focus-border-radius);
     box-shadow: var(--gcds-details-focus-box-shadow);
