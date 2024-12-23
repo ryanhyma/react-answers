@@ -85,7 +85,7 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
       <GcdsFieldset>
-        <p>{t('homepage.expertRating.intro')}</p>
+        <h2>{t('homepage.expertRating.intro')}</h2>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
           <div className="sentence-rating-group">
@@ -223,7 +223,7 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
           </div>
         </details>
       </GcdsFieldset>
-      <button type="submit">{t('homepage.expertRating.submit')}</button>
+      <button type="submit" className="btn-primary-sm">{t('homepage.expertRating.submit')}</button>
     </form>
   );
 };
