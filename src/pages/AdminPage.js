@@ -53,7 +53,7 @@ const AdminPage = ({ lang = 'en' }) => {
       </section>
 
       <section id="evaluator" className="mb-600">
-        <h2 className='mt-400 mb-400'>Load and run evaluation (Claude only)</h2>
+        <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
         <Evaluator />
       </section>
 
