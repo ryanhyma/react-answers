@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
+import { X } from 'lucide-react';
+console.log('X component:', X);
 
 // Shows ratings for a maximum of 4 sentences, and for the citation score
 // if there are somehow 5 sentences, the 5th sentence is ignored _YES THIS IS A HACK
 
-const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => {
+const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount = 1 }) => {
   const { t } = useTranslations(lang);
   const [expertFeedback, setExpertFeedback] = useState({
     sentence1Score: null,
@@ -84,8 +86,17 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
+     <X 
+      className="close-icon"
+      onClick={onClose}
+      onKeyDown={(e) => e.key === 'Enter' && onClose()}
+      role="button"
+      tabIndex={0}
+      size={24}
+      aria-label="Close"
+    />
       <GcdsFieldset>
-        <p>{t('homepage.expertRating.intro')}</p>
+        <h2>{t('homepage.expertRating.intro')}</h2>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
           <div className="sentence-rating-group">
@@ -223,7 +234,7 @@ const ExpertRatingComponent = ({ onSubmit, lang = 'en', sentenceCount = 1 }) => 
           </div>
         </details>
       </GcdsFieldset>
-      <button type="submit">{t('homepage.expertRating.submit')}</button>
+      <button type="submit" className="btn-primary-sm">{t('homepage.expertRating.submit')}</button>
     </form>
   );
 };
