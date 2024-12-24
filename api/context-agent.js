@@ -7,7 +7,7 @@ const invokeAgent = async (agentType, systemPrompt, message) => {
     const messages = [
       {
         role: "system",
-        content: systemPrompt + " Use the contextSearch_function to help determine the context of the user's question.",
+        content: systemPrompt,
       },
       {
         role: "user",

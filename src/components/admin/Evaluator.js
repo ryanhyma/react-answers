@@ -9,13 +9,14 @@ import LoggingService from '../../services/LoggingService.js';
 import ClaudeService from '../../services/ClaudeService.js';
 import ChatGPTService from '../../services/ChatGPTService.js';
 import RedactionService from '../../services/RedactionService.js';
+import ContextService from '../../services/ContextService.js';
 import { parseEvaluationResponse } from '../../utils/evaluationParser.js';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
-const POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes (in milliseconds)   
+const POLLING_INTERVAL = 10 * 1000;//10 * 60 * 1000; // 10 minutes (in milliseconds)   
 
 const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [file, setFile] = useState(null);
@@ -44,18 +45,18 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const handleFileChange = (event) => {
         setError(null);
         const uploadedFile = event.target.files[0];
-        
+
         if (!uploadedFile) {
             setFile(null);
             return;
         }
-    
+
         if (!uploadedFile.name.endsWith('.csv')) {
             setError('Please upload a CSV file that you downloaded from the Feedback Viewer');
             setFile(null);
             return;
         }
-    
+
         setFile(uploadedFile);
         setResults(null);
         setProcessedCount(0);
@@ -68,7 +69,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const handleUpload = async (e) => {
         e.preventDefault();
-        
+
         if (!file) {
             setError('Please select a file first');
             return;
@@ -94,24 +95,24 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         const values = [];
         let currentValue = '';
         let withinQuotes = false;
-        
+
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
-            
+
             if (char === '"') {
                 withinQuotes = !withinQuotes;
                 continue;
             }
-            
+
             if (char === ',' && !withinQuotes) {
                 values.push(currentValue.trim());
                 currentValue = '';
                 continue;
             }
-            
+
             currentValue += char;
         }
-        
+
         values.push(currentValue.trim());
         return values;
     };
@@ -121,7 +122,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             const lines = csvText
                 .split(/\r?\n/)
                 .filter(line => isValidLine(line));
-            
+
             const headers = parseCSVLine(lines[0]);
             const problemDetailsIndex = headers.findIndex(h => h.trim() === 'Problem Details');
             const urlIndex = headers.findIndex(h => h.trim() === 'URL');
@@ -159,9 +160,20 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const processEntry = async (entry) => {
         try {
             const { redactedText } = RedactionService.redactText(entry.question);
-            const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
+            let messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
+            const derivedContext = await ContextService.deriveContext(messageWithUrl, selectedLanguage, '');
 
-            const aiResponse = selectedAI === 'claude' 
+            console.log('Derived context:', derivedContext);
+
+            messageWithUrl = `<evaluation>${redactedText}${entry.referringUrl ? `\n<referring-url>${entry.referringUrl}</referring-url><evaluation>` : ''
+                }${derivedContext.department ? `\n<department>${derivedContext.department}</department>` : ''
+                }${derivedContext.topic ? `\n<topic>${derivedContext.topic}</topic>` : ''
+                }${derivedContext.topicUrl ? `\n<topicUrl>${derivedContext.topicUrl}</topicUrl>` : ''
+                }${derivedContext.departmentUrl ? `\n<departmentUrl>${derivedContext.departmentUrl}</departmentUrl>` : ''
+                }${derivedContext.searchResults ? `\n<searchResults>${derivedContext.searchResults}</searchResults>` : ''
+                }`;
+
+            const aiResponse = selectedAI === 'claude'
                 ? await ClaudeService.sendMessage(messageWithUrl)
                 : await ChatGPTService.sendMessage(messageWithUrl);
 
@@ -198,15 +210,15 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const processBatch = async (entries) => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
-            
+
             setProcessing(true);
             setBatchStatus('preparing');
             setError(null);
             setProcessedCount(0);
-            
+
             // Load appropriate system prompt based on selected AI
             const systemPrompt = await loadSystemPrompt(selectedLanguage);
-            
+
             // Format entries for batch processing
             const requests = entries.map((entry, index) => {
                 const { redactedText } = RedactionService.redactText(entry.question);
@@ -219,7 +231,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 requests,
                 systemPrompt
             };
-            
+
             console.log('Sending batch request with:', {
                 requestCount: requests.length,
                 systemPromptLength: systemPrompt.length,
@@ -227,8 +239,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             });
 
             // Select endpoint based on AI service
-            const endpoint = selectedAI === 'claude' ? '/api/claude-batch' : '/api/gpt-batch';
-            
+
+            const API_URL = process.env.NODE_ENV === 'production'
+                ? ''  // Vercel serverless function
+                : `http://localhost:3001`;
+            const endpoint = selectedAI === 'claude' ? API_URL + '/api/claude-batch' : API_URL + '/api/gpt-batch';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 55000); // 55 second timeout
 
@@ -257,7 +272,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
                 const data = await response.json();
                 console.log(`${selectedAI} batch response:`, data);
-                
+
                 if (data.batchId) {
                     console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
                     setBatchId(data.batchId);
@@ -285,11 +300,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const processResults = useCallback(async (results) => {
         console.log(`Starting to process ${results.length} results from batch...`);
         const processingErrors = [];
-        
+
         for (const [index, result] of results.entries()) {
             try {
                 console.log(`Processing result ${index + 1}:`, result);
-                
+
                 // Handle Anthropic batch format
                 if (!result.result?.message?.content) {
                     throw new Error(`No valid response content found in result ${index + 1}`);
@@ -304,7 +319,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 // Extract citation URL and confidence while preserving the original content
                 const citationMatch = content.match(/<citation-url>(.*?)<\/citation-url>/);
                 const confidenceMatch = content.match(/<confidence>(.*?)<\/confidence>/);
-                
+
                 const citationUrl = citationMatch ? citationMatch[1] : null;
                 const confidenceRating = confidenceMatch ? parseFloat(confidenceMatch[1]) : null;
 
@@ -327,7 +342,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 console.log(`Logging entry ${index + 1}:`, logEntry);
                 await LoggingService.logInteraction(logEntry, true);
                 setProcessedCount(prev => prev + 1);
-                
+
             } catch (error) {
                 const errorDetails = {
                     index,
@@ -338,12 +353,12 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 processingErrors.push(errorDetails);
             }
         }
-        
+
         if (processingErrors.length > 0) {
             console.error(`Completed with ${processingErrors.length} errors:`, processingErrors);
             setError(`${processingErrors.length} entries failed to process. Check console for details.`);
         }
-        
+
         console.log('Batch processing complete!');
     }, []);
 
@@ -388,6 +403,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 entriesProcessed: entries.length
             });
 
+            setProcessing(false);
+
         } catch (error) {
             console.error('Process file error:', error);
             setError(error.message);
@@ -397,19 +414,23 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const checkBatchStatus = useCallback(async () => {
         if (!batchId) return;
-        
+
         try {
             console.log(`Checking status for batch ${batchId}...`);
-            const endpoint = selectedAI === 'claude' 
-                ? '/api/claude-batch-status' 
-                : '/api/gpt-batch-status';
-            
+            const API_URL = process.env.NODE_ENV === 'production'
+                ? ''  // Vercel serverless function
+                : `http://localhost:3001`;
+
+            const endpoint = selectedAI === 'claude'
+                ? API_URL + '/api/claude-batch-status'
+                : API_URL + '/api/gpt-batch-status';
+
             const response = await fetch(`${endpoint}?batchId=${batchId}`);
-            
+
             if (!response.ok) {
                 throw new Error(`Status check failed: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             console.log('Status response:', data);
 
@@ -419,14 +440,14 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 if (data.processedCount) {
                     setProcessedCount(data.processedCount);
                 }
-                
+
                 if (data.status === 'ended' && data.results) {
                     setIsPolling(false);
                     const results = data.results.split('\n')
                         .filter(line => line.trim())
                         .map(line => JSON.parse(line));
                     setBatchResults(results);
-                    
+
                     const unprocessedResults = results.slice(processedCount);
                     if (unprocessedResults.length > 0) {
                         await processResults(unprocessedResults);
@@ -446,7 +467,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     await processResults(resultData);
                     setProcessing(false);
                 }
-                
+
                 if (data.status === 'failed') {
                     setIsPolling(false);
                     setError('GPT batch processing failed. Please check the error logs.');
@@ -479,20 +500,24 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const handleCancel = async () => {
         if (!batchId) return;
-        
+
         try {
-            const response = await fetch('/api/claude-batch-cancel', {
+            const API_URL = process.env.NODE_ENV === 'production'
+                ? ''  // Vercel serverless function
+                : `http://localhost:3001`;
+
+            const response = await fetch(API_URL + '/api/claude-batch-cancel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ batchId })
             });
-            
+
             if (!response.ok) {
                 throw new Error('Failed to cancel batch');
             }
-            
+
             setIsPolling(false);
             setBatchStatus('canceling');
         } catch (error) {
@@ -504,22 +529,22 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     useEffect(() => {
         let pollInterval;
         let isActive = true;
-        
+
         if (isPolling && batchId) {
             setPollStartTime(prev => prev || Date.now());
-            
+
             const doPoll = async () => {
                 if (!isActive) return;
 
                 const elapsedTime = Date.now() - pollStartTime;
-                
+
                 if (elapsedTime > MAX_POLLING_DURATION) {
                     console.log('Maximum polling duration reached');
                     setIsPolling(false);
                     setError('Polling timeout reached. Please check batch status manually.');
                     return;
                 }
-                
+
                 try {
                     await checkBatchStatus();
                 } catch (error) {
@@ -531,7 +556,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             doPoll();
             pollInterval = setInterval(doPoll, POLLING_INTERVAL);
         }
-        
+
         return () => {
             isActive = false;
             if (pollInterval) clearInterval(pollInterval);
@@ -540,11 +565,11 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const formatTimestamp = (date) => {
         if (!date) return '';
-        return date.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
             second: '2-digit',
-            hour12: true 
+            hour12: true
         });
     };
 
@@ -556,16 +581,16 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const renderBatchStatus = () => {
         if (!processing || !batchId) return null;
-        
+
         return (
             <div className="processing-status mt-400">
                 <GcdsText>File: {file.name}</GcdsText>
                 <GcdsText>Total entries to process: {totalEntries}</GcdsText>
-                
+
                 {error ? (
                     <>
                         <GcdsText className="error-text">{error}</GcdsText>
-                        <button 
+                        <button
                             onClick={handleReconnect}
                             className="secondary-button force-style-button"
                         >
@@ -576,17 +601,17 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     <>
                         <GcdsText>Batch Status: {batchStatus || 'preparing'}</GcdsText>
                         <GcdsText>Processed: {processedCount} of {totalEntries}</GcdsText>
-                        
+
                         {batchStatus === 'in_progress' && (
                             <>
                                 <GcdsText>
-                                    Checking status every 10 minutes... 
-                                    Large batches may take up to 24 hours to complete. Leave this page open for now. 
+                                    Checking status every 10 minutes...
+                                    Large batches may take up to 24 hours to complete. Leave this page open for now.
                                 </GcdsText>
                                 <GcdsText>
                                     Last checked: {lastCheckTime ? formatTimestamp(lastCheckTime) : 'Not yet checked'}
                                 </GcdsText>
-                                <button 
+                                <button
                                     onClick={handleCancel}
                                     className="secondary-button force-style-button"
                                 >
@@ -648,7 +673,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         />
 
                         <div className="ai-toggle">
-                                <fieldset className="ai-toggle_fieldset">
+                            <fieldset className="ai-toggle_fieldset">
                                 <div className="ai-toggle_container">
                                     <legend className="ai-toggle_legend">AI Service:</legend>
                                     <div className="ai-toggle_option">
@@ -749,7 +774,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         )}
 
                         {file && !fileUploaded && (
-                            <button 
+                            <button
                                 type="submit"
                                 className="primary-button force-style-button"
                                 disabled={adminCode !== correctAdminCode}
@@ -760,8 +785,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
                         {processing && (
                             <div className="mt-4">
-                                <LoadingIndicator 
-                                    status={batchStatus} 
+                                <LoadingIndicator
+                                    status={batchStatus}
                                     processedCount={processedCount}
                                     total={selectedEntries?.length || 0}
                                 />
@@ -784,7 +809,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         {fileUploaded && (
                             <div className="processing-controls">
                                 {!processing ? (
-                                    <button 
+                                    <button
                                         onClick={handleProcessFile}
                                         className="secondary-button force-style-button"
                                     >
@@ -804,7 +829,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 <details>
                                     <summary>View Processing Details</summary>
                                     <pre style={{ whiteSpace: 'pre-wrap' }}>
-                                        {JSON.stringify(batchResults.slice(0, 3), null, 2)}... 
+                                        {JSON.stringify(batchResults.slice(0, 3), null, 2)}...
                                         {batchResults.length > 3 && `\n(${batchResults.length - 3} more results)`}
                                     </pre>
                                 </details>

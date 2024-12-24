@@ -13,6 +13,13 @@ import coherePkg from 'cohere-ai';
 import chatGPTHandler from '../api/chatgpt.js';
 import contextAgentHandler from '../api/context-agent.js';
 import claudeAgentHandler from '../api/claude.js';
+import chatLogsHandler from '../api/chat-logs.js';
+import batchClaudeHandler from '../api/claude-batch.js';
+import batchChatGPTHandler from '../api/gpt-batch.js';
+import batchClaudeCancelHandler from '../api/claude-batch-cancel.js';
+import batchChatGPTCancelHandler from '../api/gpt-batch-cancel.js';
+import batchClaudeStatusHandler from '../api/claude-batch-status.js';
+import batchChatGPTStatusHandler from '../api/gpt-batch-status.js';
 import { chat } from 'googleapis/build/src/apis/chat/index.js';
 
 const { CohereClient } = coherePkg;
@@ -81,6 +88,20 @@ app.post('/api/claude', claudeAgentHandler);
 
 // Use the context-agent handler for local development
 app.post('/api/context-agent', contextAgentHandler);
+
+app.get('/api/chat-logs', chatLogsHandler);
+
+app.post('/api/claude-batch', batchClaudeHandler);
+
+app.post('/api/chatgpt-batch', batchChatGPTHandler);
+
+app.post('/api/claude-batch-cancel', batchClaudeCancelHandler);
+
+app.post('/api/chatgpt-batch-cancel', batchChatGPTCancelHandler);
+
+app.get('/api/claude-batch-status', batchClaudeStatusHandler);
+
+app.get('/api/chatgpt-batch-status', batchChatGPTStatusHandler);
 
 
 // server.js - update the Cohere endpoint
