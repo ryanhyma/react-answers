@@ -1,5 +1,5 @@
-import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
-// import { BASE_SYSTEM_PROMPT } from './systemPrompt/agenticBase.js';
+// import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
+import { BASE_SYSTEM_PROMPT } from './systemPrompt/agenticBase.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS } from './systemPrompt/citationInstructions.js';
 
