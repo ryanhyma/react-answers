@@ -99,18 +99,20 @@
      border-radius: 0.5rem;
 }
  .user-message-box.redacted-box {
-     background-color: #ffff;
-     border: 2px solid #710402;
+     border: 2px solid var(--gcds-color-red-900);
+     padding: 0;
 }
  .redacted-message {
-     color: #3b0202;
+     color: var(--gcds-color-red-900);
+     padding: 1rem;
+     background-color: white;
+     border-radius: 6px;
 }
  .redacted-preview {
-     margin-top: 10px;
-     font-style: italic;
-     color: #3b0202;
-     padding: 5px 0;
+     background-color: var(--gcds-color-red-900);
+     color: white;
      display: block;
+     padding: .75rem;
 }
  .redacted-preview p {
      margin: 0;
@@ -294,13 +296,17 @@
      text-decoration: none;
 }
  .error-message {
-     color: #721c24;
-     background-color: #f8d7da;
-     border: 1px solid #f5c6cb;
+     color: var(--gcds-color-red-900);
+     background-color: var(--gcds-color-red-100);
+     border: 1px solid var(--gcds-color-red-100);
      border-radius: 4px;
-     padding: 10px;
+     padding: 0.75rem;
      margin-bottom: 10px;
 }
+.error-message i {
+    margin-right: 3px;
+}
+
  .limit-reached-message p {
 }
  .limit-reached-message .reload-button {
@@ -352,7 +358,7 @@
      text-decoration: underline;
 }
  .feedback-separator {
-     color: #666;
+     color: #555;
      margin: 0 0.2rem;
 }
  .button-as-link {
