@@ -301,9 +301,7 @@
      padding: 10px;
      margin-bottom: 10px;
 }
- .limit-reached-message {
-     text-align: center;
-     padding: 1rem;
+ .limit-reached-message p {
 }
  .limit-reached-message .reload-button {
      margin-top: 1rem;
@@ -576,7 +574,18 @@ gcds-container:first-of-type {
 #temp-hint {
     margin-top: -20px;
     margin-bottom: 40px;
+    margin-left: 10px;
     font-size: 0.85em;
+}
+
+#temp-hint i {
+    margin-right: 6px;
+    color: var(--gcds-color-blue-850)
+}
+
+#temp-hint p {
+    color: var(--gcds-color-blue-850);
+    font-size: 18px;
 }
 
 /* Add spacing between radio buttons and their labels */
@@ -603,17 +612,28 @@ gcds-container:first-of-type {
 
 .expert-rating-container {
     position: relative;
-  }
-  
-  .close-icon {
+}
+
+.thank-you span {
+    margin-right: 6px;
+    color: var(--gcds-notice-success-text)
+}
+
+.close-icon {
     position: absolute;
     right: 10px;
     top: 10px;
     font-size: 24px;
     cursor: pointer;
     z-index: 1;
-  }
+    }
 
+.thank-you {
+    color: var(--gcds-notice-success-text);
+    font-weight: 500;
+    font-size: 18px;
+    margin: 1em 1em 1em 1em;
+}
 /* Add spacing between sections */
 .sentence-rating-group,
 .citation-rating-group,
@@ -621,6 +641,7 @@ gcds-container:first-of-type {
   margin-bottom: 20px;
 }
 
+/* detail/summary styling */
 details {
     padding-left: 1.1em;
     padding-right: 1.1em;
@@ -663,11 +684,11 @@ details > summary:first-of-type {
     list-style: inside disclosure-closed;
 }
 
-/* buttons & behaviour needed */
+/* buttons behaviour needed */
 .btn-primary-sm {
     margin-top: 10px;
     padding: 6px 12px;
-    background-color: #26374a;
+    background-color: var(--gcds-color-blue-900);
     font-weight: 500;
     color: white;
     border: none;
@@ -678,9 +699,28 @@ details > summary:first-of-type {
     font-family: "Noto Sans"
 }
 
-.btn-primary-sm:hover {
-    background-color: #2B4380;
+.btn-secondary-sm {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: white;
+    font-weight: 500;
+    color: #26374a;
+    border: solid 2px var(--gcds-color-blue-900);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1.55em;
+    font-family: "Noto Sans"
 }
+
+.btn-primary-sm:hover {
+    background-color: var(--gcds-color-blue-900);
+}
+
+.btn-secondary-sm:hover {
+    background-color: var(--gcds-color-blue-100);
+}
+
 
 .btn-primary-sm:focus, 
 summary:focus,
@@ -693,8 +733,3 @@ summary:focus,
     outline-offset: var(--gcds-details-focus-outline-offset);
     text-decoration: none;
 }       
-
-/* input:focus {
-    outline: var(--gcds-details-focus-outline);
-    outline-offset: var(--gcds-details-focus-outline-offset);
-} */
