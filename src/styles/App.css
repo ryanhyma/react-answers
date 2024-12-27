@@ -93,24 +93,26 @@
      align-self: flex-start;
 }
  .user-message-box {
-     background-color: #F1F2F3;
+     background-color: var(	--gcds-color-blue-100);
      color: #333;
      padding: 0.65rem;
      border-radius: 0.5rem;
 }
  .user-message-box.redacted-box {
-     background-color: #ffff;
-     border: 2px solid #710402;
+     border: 2px solid var(--gcds-color-red-900);
+     padding: 0;
 }
  .redacted-message {
-     color: #3b0202;
+     color: var(--gcds-color-red-900);
+     padding: 1rem;
+     background-color: white;
+     border-radius: 6px;
 }
  .redacted-preview {
-     margin-top: 10px;
-     font-style: italic;
-     color: #3b0202;
-     padding: 5px 0;
+     background-color: var(--gcds-color-red-900);
+     color: white;
      display: block;
+     padding: .75rem;
 }
  .redacted-preview p {
      margin: 0;
@@ -226,6 +228,12 @@
      margin-top: 1rem;
      width: 100%;
 }
+
+.input-button-wrapper {
+    border-bottom: 1px solid #D9D9D9;
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+}
  .input-form {
      display: flex;
      flex-direction: column;
@@ -294,20 +302,51 @@
      text-decoration: none;
 }
  .error-message {
-     color: #721c24;
-     background-color: #f8d7da;
-     border: 1px solid #f5c6cb;
+     color: var(--gcds-color-red-900);
+     background-color: var(--gcds-color-red-100);
+     border: 1px solid var(--gcds-color-red-100);
      border-radius: 4px;
-     padding: 10px;
+     padding: 0.75rem;
      margin-bottom: 10px;
 }
- .limit-reached-message {
-     text-align: center;
-     padding: 1rem;
+.error-message i {
+    margin-right: 6px;
 }
- .limit-reached-message .reload-button {
+
+.limit-reached-message {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    white-space: pre-line;
+}
+
+.limit-reached-message .btn-primary {
      margin-top: 1rem;
 }
+
+.limit-reached-message p {
+    border-color: #269abc;
+    border-left: solid 7px;
+    margin-left: 10px;
+    padding: .5em 1em .5em 1em;
+    margin-bottom: 20px;
+    border-image: linear-gradient(to bottom, #269abc 16px, #269abc 16px, transparent 16px, transparent 48px, #269abc 48px, #269abc 48px) 1 100%;
+}
+
+.limit-reached-message p::before {
+    color: #269abc;
+    content: "\f05a";
+}
+
+.limit-reached-message p:before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 1.6em;
+    margin-left: -1.55em;
+    padding: 2px;
+    position: absolute;
+}
+
 /* expert rating */
  .expert-rating-container {
      margin-top: 10px;
@@ -354,7 +393,7 @@
      text-decoration: underline;
 }
  .feedback-separator {
-     color: #666;
+     color: #555;
      margin: 0 0.2rem;
 }
  .button-as-link {
@@ -380,6 +419,8 @@
      --gcds-header-brand-border-color: #ddd !important;
      --gcds-header-brand-border-width: 0.01rem !important;
      --gcds-link-underline-offset: 0.1rem !important;
+     --gcds-label-font-desktop: 600 1.45rem / 120% "Lato", sans-serif !important; /* want this to look like heading intentionally */
+     --gcds-label-font-mobile: 600 1.3rem / 120% "Lato", sans-serif !important;
 }
 
 /* clean up margins and spacing */
@@ -396,6 +437,8 @@ gcds-button.send-button {
      display: block;
      margin: 0;
 }
+
+
 
 /* Chat app container styles - this is still a hot mess to clean up, just getting the styles out of inline */
 .ai-toggle {
@@ -576,7 +619,18 @@ gcds-container:first-of-type {
 #temp-hint {
     margin-top: -20px;
     margin-bottom: 40px;
+    margin-left: 10px;
     font-size: 0.85em;
+}
+
+#temp-hint i {
+    margin-right: 6px;
+    color: var(--gcds-color-blue-850)
+}
+
+#temp-hint p {
+    color: var(--gcds-color-blue-850);
+    font-size: 18px;
 }
 
 /* Add spacing between radio buttons and their labels */
@@ -603,17 +657,28 @@ gcds-container:first-of-type {
 
 .expert-rating-container {
     position: relative;
-  }
-  
-  .close-icon {
+}
+
+.thank-you span {
+    margin-right: 6px;
+    color: var(--gcds-notice-success-text)
+}
+
+.close-icon {
     position: absolute;
     right: 10px;
     top: 10px;
     font-size: 24px;
     cursor: pointer;
     z-index: 1;
-  }
+    }
 
+.thank-you {
+    color: var(--gcds-notice-success-text);
+    font-weight: 500;
+    font-size: 18px;
+    margin: 1em 1em 1em 1em;
+}
 /* Add spacing between sections */
 .sentence-rating-group,
 .citation-rating-group,
@@ -621,6 +686,7 @@ gcds-container:first-of-type {
   margin-bottom: 20px;
 }
 
+/* detail/summary styling */
 details {
     padding-left: 1.1em;
     padding-right: 1.1em;
@@ -663,11 +729,11 @@ details > summary:first-of-type {
     list-style: inside disclosure-closed;
 }
 
-/* buttons & behaviour needed */
+/* buttons behaviour needed */
 .btn-primary-sm {
     margin-top: 10px;
     padding: 6px 12px;
-    background-color: #26374a;
+    background-color: var(--gcds-color-blue-900);
     font-weight: 500;
     color: white;
     border: none;
@@ -678,9 +744,28 @@ details > summary:first-of-type {
     font-family: "Noto Sans"
 }
 
-.btn-primary-sm:hover {
-    background-color: #2B4380;
+.btn-secondary-sm {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: white;
+    font-weight: 500;
+    color: #26374a;
+    border: solid 2px var(--gcds-color-blue-900);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1.55em;
+    font-family: "Noto Sans"
 }
+
+.btn-primary-sm:hover {
+    background-color: var(--gcds-color-blue-900);
+}
+
+.btn-secondary-sm:hover {
+    background-color: var(--gcds-color-blue-100);
+}
+
 
 .btn-primary-sm:focus, 
 summary:focus,
@@ -693,8 +778,3 @@ summary:focus,
     outline-offset: var(--gcds-details-focus-outline-offset);
     text-decoration: none;
 }       
-
-/* input:focus {
-    outline: var(--gcds-details-focus-outline);
-    outline-offset: var(--gcds-details-focus-outline-offset);
-} */

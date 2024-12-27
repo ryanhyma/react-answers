@@ -37,7 +37,7 @@ const ChatInterface = ({
     // Create temporary hint
     const placeholderHint = document.createElement('div');
     placeholderHint.id = 'temp-hint';
-    placeholderHint.innerHTML = 'Hint: Add details. AI can make mistakes, always check your answer.';
+    placeholderHint.innerHTML = '<p><i class="fa-solid fa-wand-magic-sparkles"></i>Hint: Add details. AI can make mistakes, always check your answer.</p>';
     
     if (isLoading) {
       if (textarea) {
@@ -133,8 +133,8 @@ const ChatInterface = ({
         {turnCount >= MAX_CONVERSATION_TURNS && (
           <div key="limit-reached" className="message ai">
             <div className="limit-reached-message">
-              {t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}
-              <GcdsButton onClick={handleReload} className="reload-button">
+              <p>{t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}</p>
+              <GcdsButton onClick={handleReload} className="btn-primary">
                 {t('homepage.chat.buttons.reload')}
               </GcdsButton>
             </div>

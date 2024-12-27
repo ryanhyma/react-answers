@@ -5,6 +5,7 @@ import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
 import '@cdssnc/gcds-components-react/gcds.css';
 import '@cdssnc/gcds-utility/dist/gcds-utility.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import checkDatabaseConnection from './services/database.js';
 
 const renderApp = () => {

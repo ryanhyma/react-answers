@@ -74,7 +74,7 @@
           "thinkingMore": "En réflexion prolongée...",
           "limitReached": "Votre limite de 3 questions par conversation a été atteinte. Actualisez la page pour commencer une nouvelle conversation.",
           "error": "Désolé, le service n'est pas disponible. Veuillez réessayer plus tard.",
-          "blockedContent": "Votre question contenait des mots qui ne sont pas acceptés. Veuillez la reformuler différemment.",
+          "blockedContent": "Votre question contenait des mots qui ne sont pas acceptés.\nVeuillez la reformuler différemment.",
           "blockedMessage": "Votre question n'a pas été envoyée au service d'IA.",
           "privacyMessage": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX."
         },

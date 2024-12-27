@@ -284,7 +284,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             },
             {
               id: blockedMessageId,
-              text: t('homepage.chat.messages.blockedContent'),
+              text: <div dangerouslySetInnerHTML={{ __html: '<i class="fa-solid fa-circle-exclamation"></i>' + t('homepage.chat.messages.blockedContent') }} />,
               sender: 'system',
               error: true
             }
