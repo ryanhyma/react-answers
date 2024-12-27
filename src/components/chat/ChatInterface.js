@@ -83,14 +83,24 @@ const ChatInterface = ({
       {messages.map((message) => (
         <div key={`message-${message.id}`} className={`message ${message.sender}`}>
           {message.sender === 'user' ? (
-            <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
-              <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
+            <div className={`user-message-box ${
+              message.redactedText?.includes('XXX') ? 'privacy-box' :
+              message.redactedText?.includes('###') ? 'redacted-box' : ''
+            }`}>
+              <p className={
+                message.redactedText?.includes('XXX') ? "privacy-message" :
+                message.redactedText?.includes('###') ? "redacted-message" : ""
+              }>
                 {message.redactedText}
               </p>
               {message.redactedItems?.length > 0 && message.redactedText && (
-                <p className="redacted-preview">
-                  {message.redactedText.includes('XXX') && 
-                    t('homepage.chat.messages.privacyMessage')}
+                <p className={
+                  message.redactedText.includes('XXX') ? "privacy-preview" :
+                  message.redactedText.includes('###') ? "redacted-preview" : ""
+                }>
+                  {message.redactedText.includes('XXX') && (
+                  <><i className="fa-solid fa-circle-info"></i> {t('homepage.chat.messages.privacyMessage')}</>
+                )}
                   {message.redactedText.includes('###') && 
                     t('homepage.chat.messages.blockedMessage')}
                 </p>
