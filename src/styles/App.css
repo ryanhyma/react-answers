@@ -313,11 +313,40 @@
     margin-right: 6px;
 }
 
- .limit-reached-message p {
+.limit-reached-message {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    white-space: pre-line;
 }
- .limit-reached-message .reload-button {
+
+.limit-reached-message .btn-primary {
      margin-top: 1rem;
 }
+
+.limit-reached-message p {
+    border-color: #269abc;
+    border-left: solid 7px;
+    margin-left: 10px;
+    padding: .5em 1em .5em 1em;
+    margin-bottom: 20px;
+    border-image: linear-gradient(to bottom, #269abc 16px, #269abc 16px, transparent 16px, transparent 48px, #269abc 48px, #269abc 48px) 1 100%;
+}
+
+.limit-reached-message p::before {
+    color: #269abc;
+    content: "\f05a";
+}
+
+.limit-reached-message p:before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 1.6em;
+    margin-left: -1.55em;
+    padding: 2px;
+    position: absolute;
+}
+
 /* expert rating */
  .expert-rating-container {
      margin-top: 10px;
@@ -390,7 +419,7 @@
      --gcds-header-brand-border-color: #ddd !important;
      --gcds-header-brand-border-width: 0.01rem !important;
      --gcds-link-underline-offset: 0.1rem !important;
-     --gcds-label-font-desktop: 600 1.45rem / 120% "Lato", sans-serif !important;
+     --gcds-label-font-desktop: 600 1.45rem / 120% "Lato", sans-serif !important; /* want this to look like heading intentionally */
      --gcds-label-font-mobile: 600 1.3rem / 120% "Lato", sans-serif !important;
 }
 
