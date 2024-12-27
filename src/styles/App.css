@@ -93,7 +93,7 @@
      align-self: flex-start;
 }
  .user-message-box {
-     background-color: #F1F2F3;
+     background-color: var(	--gcds-color-blue-100);
      color: #333;
      padding: 0.65rem;
      border-radius: 0.5rem;
@@ -228,6 +228,12 @@
      margin-top: 1rem;
      width: 100%;
 }
+
+.input-button-wrapper {
+    border-bottom: 1px solid #D9D9D9;
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+}
  .input-form {
      display: flex;
      flex-direction: column;
@@ -304,7 +310,7 @@
      margin-bottom: 10px;
 }
 .error-message i {
-    margin-right: 3px;
+    margin-right: 6px;
 }
 
  .limit-reached-message p {
@@ -384,6 +390,8 @@
      --gcds-header-brand-border-color: #ddd !important;
      --gcds-header-brand-border-width: 0.01rem !important;
      --gcds-link-underline-offset: 0.1rem !important;
+     --gcds-label-font-desktop: 600 1.45rem / 120% "Lato", sans-serif !important;
+     --gcds-label-font-mobile: 600 1.3rem / 120% "Lato", sans-serif !important;
 }
 
 /* clean up margins and spacing */
@@ -400,6 +408,8 @@ gcds-button.send-button {
      display: block;
      margin: 0;
 }
+
+
 
 /* Chat app container styles - this is still a hot mess to clean up, just getting the styles out of inline */
 .ai-toggle {

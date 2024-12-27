@@ -76,7 +76,7 @@ const HomePage = ({ lang = 'en' }) => {
           </div>
         )}
         <h2 className='mt-400 mb-400'>{t('homepage.subtitle')}</h2>
-        <GcdsText className='mb-400'>
+        <GcdsText className='mb-200'>
           {t('homepage.intro.researchOnly')}
         </GcdsText>
         
