@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting.js';
+import { useTranslations } from '../../hooks/useTranslations.js';
+
+
 
 const ChatInterface = ({
   messages,
@@ -37,7 +40,7 @@ const ChatInterface = ({
     // Create temporary hint
     const placeholderHint = document.createElement('div');
     placeholderHint.id = 'temp-hint';
-    placeholderHint.innerHTML = '<p><i class="fa-solid fa-wand-magic-sparkles"></i>Hint: Add details. AI can make mistakes, always check your answer.</p>';
+    placeholderHint.innerHTML = `<p><i class="fa-solid fa-wand-magic-sparkles"></i>${t('homepage.chat.input.hint')}</p>`;
     
     if (isLoading) {
       if (textarea) {
@@ -59,7 +62,7 @@ const ChatInterface = ({
       const tempHint = document.getElementById('temp-hint');
       if (tempHint) tempHint.remove();
     };
-  }, [isLoading]);
+  }, [isLoading, t]);
 
   const getLabelForInput = () => {
     if (turnCount >= 1) {
