@@ -583,6 +583,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
     const parsedResponse = parsedResponses[messageId];
     if (!parsedResponse) return null;
+    
+        // Clean up any instruction tags from the paragraphs
+    if (parsedResponse.paragraphs) {
+      parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph => 
+        paragraph.replace(/<translated-question>.*?<\/translated-question>/g, '')
+      );
+    }
 
     const citationResult = checkedCitations[messageId];
     const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
