@@ -17,7 +17,10 @@ const ChatLogsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/chat-logs?days=' + timeRange);
+      const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api/chat-logs?days='  // Vercel serverless function
+  : `http://localhost:3001/api/chat-logs?days=`;
+      const response = await fetch(API_URL + timeRange);
       const data = await response.json();
       console.log('API Response:', data);
       

@@ -66,17 +66,17 @@ const createContextAgent = async (agentType) => {
 
   switch (agentType) {
     case 'openai':
-      llm = new OpenAI({
-        apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-        modelName: 'gpt-3.5-turbo',
-        maxTokens: 4096,
+      llm = new ChatOpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+        modelName: 'gpt-4o-mini',
+        maxTokens: 8192,
         temperature: 0,
         timeoutMs: 60000,
       });
       break;
     case 'cohere':
       llm = new CohereClient({
-        apiKey: process.env.REACT_APP_COHERE_API_KEY,
+        apiKey: process.env.COHERE_API_KEY,
         modelName: 'command-xlarge-nightly',
         maxTokens: 4096,
         temperature: 0,
@@ -85,7 +85,7 @@ const createContextAgent = async (agentType) => {
       break;
     case 'claude':
       llm = new ChatAnthropic({
-        apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
+        apiKey: process.env.ANTHROPIC_API_KEY,
         modelName: 'claude-3-5-haiku-20241022',
         maxTokens: 8192,
         temperature: 0,

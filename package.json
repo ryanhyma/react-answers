@@ -5,7 +5,7 @@
   "private": true,
   "proxy": "https://api.anthropic.com",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
+    "@anthropic-ai/sdk": "^0.33.1",
     "@cdssnc/gcds-components": "^0.26.1",
     "@cdssnc/gcds-components-react": "^0.26.1",
     "@cdssnc/gcds-utility": "^1.4.0",
