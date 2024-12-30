@@ -28,7 +28,8 @@ const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1 }) => {
   };
 
   if (feedbackGiven) {
-    return <p>{t('homepage.feedback.thankYou')}</p>;
+    return (
+      <p className="thank-you"><span className="gcds-icon fa fa-solid fa-check-circle"></span>{t('homepage.feedback.thankYou')}</p>);
   }
   if (showExpertRating) {
   return <ExpertRatingComponent 

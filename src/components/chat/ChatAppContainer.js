@@ -284,7 +284,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             },
             {
               id: blockedMessageId,
-              text: t('homepage.chat.messages.blockedContent'),
+              text: <div dangerouslySetInnerHTML={{ __html: '<i class="fa-solid fa-circle-exclamation"></i>' + t('homepage.chat.messages.blockedContent') }} />,
               sender: 'system',
               error: true
             }
@@ -583,6 +583,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
     const parsedResponse = parsedResponses[messageId];
     if (!parsedResponse) return null;
+    
+        // Clean up any instruction tags from the paragraphs
+    if (parsedResponse.paragraphs) {
+      parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph => 
+        paragraph.replace(/<translated-question>.*?<\/translated-question>/g, '')
+      );
+    }
 
     const citationResult = checkedCitations[messageId];
     const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;

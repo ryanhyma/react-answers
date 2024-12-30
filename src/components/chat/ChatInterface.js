@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
 import DepartmentSelectorTesting from './DepartmentSelectorTesting.js';
+import { useTranslations } from '../../hooks/useTranslations.js';
+
+
 
 const ChatInterface = ({
   messages,
@@ -37,7 +40,7 @@ const ChatInterface = ({
     // Create temporary hint
     const placeholderHint = document.createElement('div');
     placeholderHint.id = 'temp-hint';
-    placeholderHint.innerHTML = 'Hint: Add details. AI can make mistakes, always check your answer.';
+    placeholderHint.innerHTML = `<p><i class="fa-solid fa-wand-magic-sparkles"></i>${t('homepage.chat.input.hint')}</p>`;
     
     if (isLoading) {
       if (textarea) {
@@ -59,7 +62,7 @@ const ChatInterface = ({
       const tempHint = document.getElementById('temp-hint');
       if (tempHint) tempHint.remove();
     };
-  }, [isLoading]);
+  }, [isLoading, t]);
 
   const getLabelForInput = () => {
     if (turnCount >= 1) {
@@ -83,14 +86,24 @@ const ChatInterface = ({
       {messages.map((message) => (
         <div key={`message-${message.id}`} className={`message ${message.sender}`}>
           {message.sender === 'user' ? (
-            <div className={`user-message-box ${message.redactedItems?.length > 0 ? 'redacted-box' : ''}`}>
-              <p className={message.redactedItems?.length > 0 ? "redacted-message" : ""}>
+            <div className={`user-message-box ${
+              message.redactedText?.includes('XXX') ? 'privacy-box' :
+              message.redactedText?.includes('###') ? 'redacted-box' : ''
+            }`}>
+              <p className={
+                message.redactedText?.includes('XXX') ? "privacy-message" :
+                message.redactedText?.includes('###') ? "redacted-message" : ""
+              }>
                 {message.redactedText}
               </p>
               {message.redactedItems?.length > 0 && message.redactedText && (
-                <p className="redacted-preview">
-                  {message.redactedText.includes('XXX') && 
-                    t('homepage.chat.messages.privacyMessage')}
+                <p className={
+                  message.redactedText.includes('XXX') ? "privacy-preview" :
+                  message.redactedText.includes('###') ? "redacted-preview" : ""
+                }>
+                  {message.redactedText.includes('XXX') && (
+                  <><i className="fa-solid fa-circle-info"></i> {t('homepage.chat.messages.privacyMessage')}</>
+                )}
                   {message.redactedText.includes('###') && 
                     t('homepage.chat.messages.blockedMessage')}
                 </p>
@@ -133,8 +146,8 @@ const ChatInterface = ({
         {turnCount >= MAX_CONVERSATION_TURNS && (
           <div key="limit-reached" className="message ai">
             <div className="limit-reached-message">
-              {t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}
-              <GcdsButton onClick={handleReload} className="reload-button">
+              <p>{t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}</p>
+              <GcdsButton onClick={handleReload} className="btn-primary">
                 {t('homepage.chat.buttons.reload')}
               </GcdsButton>
             </div>

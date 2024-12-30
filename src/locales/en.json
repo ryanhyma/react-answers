@@ -72,7 +72,7 @@
           "thinking": "Thinking...",
           "thinkingWithContext": "Thinking about answer from",
           "thinkingMore": "Thinking some more...",
-          "limitReached": "You've reached the limit of 3 questions per conversation. Reload to start a new conversation.",
+          "limitReached": "You've reached the limit of 3 questions per conversation.\nReload to start a new conversation.",
           "error": "Sorry, I couldn't process your request. Please try again later.",
           "blockedContent": "Your question used words that aren't accepted. Please try asking it differently.",
           "blockedMessage": "Your question was not sent to the AI service.",
