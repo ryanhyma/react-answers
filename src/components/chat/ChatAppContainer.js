@@ -230,14 +230,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     return failoverOrder[currentAI];
   };
 
-  const tryAIService = async (aiType, messageWithUrl, conversationHistory, lang) => {
+  const tryAIService = async (aiType, message, conversationHistory, lang, context) => {
     switch (aiType) {
       case 'claude':
-        return await ClaudeService.sendMessage(messageWithUrl, conversationHistory, lang);
+        return await ClaudeService.sendMessage(message, conversationHistory, lang, context);
       case 'chatgpt':
-        return await ChatGPTService.sendMessage(messageWithUrl, conversationHistory, lang);
+        return await ChatGPTService.sendMessage(message, conversationHistory, lang, context);
       case 'cohere':
-        return await CohereService.sendMessage(messageWithUrl, conversationHistory, lang);
+        return await CohereService.sendMessage(message, conversationHistory, lang, context);
       default:
         throw new Error('Invalid AI service');
     }
@@ -349,20 +349,15 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           searchResults = currentSearchResults;
         }
 
+        const context = { department, topic, topicUrl, departmentUrl, searchResults };
+
         if (department && topic) {
           setDisplayStatus('thinkingWithContext');
         } else {
           setDisplayStatus('thinking');
         }
 
-        // Prepare the message with context for AI processing
-        const messageWithUrl = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
-          }${department ? `\n<department>${department}</department>` : ''
-          }${topic ? `\n<topic>${topic}</topic>` : ''
-          }${topicUrl ? `\n<topicUrl>${topicUrl}</topicUrl>` : ''
-          }${departmentUrl ? `\n<departmentUrl>${departmentUrl}</departmentUrl>` : ''
-          }${searchResults ? `\n<searchResults>${searchResults}</searchResults>` : ''
-          }`;
+
 
         // Get conversation history for context
         const conversationHistory = messages
@@ -374,7 +369,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         // Try primary AI service first, yes first
         try {
-          const response = await tryAIService(selectedAI, messageWithUrl, conversationHistory, lang);
+          const response = await tryAIService(selectedAI, redactedText, conversationHistory, lang, context);
 
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
@@ -438,11 +433,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           // Try fallback AI service
           const fallbackAI = getNextAIService(selectedAI);
           try {
-            const fallbackResponse = await tryAIService(fallbackAI, messageWithUrl, conversationHistory, lang);
+            const fallbackResponse = await tryAIService(fallbackAI, redactedText, conversationHistory, lang, context);
 
             // Add the fallback AI response
             const fallbackMessageId = messageIdCounter.current++;
-            
+
             const { citationUrl: fallbackCitationUrl } = parseAIResponse(fallbackResponse, usedAI);
 
             let finalCitationUrl;
@@ -583,10 +578,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
     const parsedResponse = parsedResponses[messageId];
     if (!parsedResponse) return null;
-    
-        // Clean up any instruction tags from the paragraphs
+
+    // Clean up any instruction tags from the paragraphs
     if (parsedResponse.paragraphs) {
-      parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph => 
+      parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph =>
         paragraph.replace(/<translated-question>.*?<\/translated-question>/g, '')
       );
     }
