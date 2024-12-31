@@ -371,9 +371,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         try {
           const response = await tryAIService(selectedAI, redactedText, conversationHistory, lang, context);
 
+          console.log(`✅ ${selectedAI} response:`, response);
+    
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
 
+          console.log(`✅ ${selectedAI} citation URL:`, originalCitationUrl);
+    
           // Generate new message ID early
           const newMessageId = messageIdCounter.current++;
 
@@ -387,6 +391,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
               selectedDepartment,
               t
             );
+
+            console.log(`✅ Validated URL:`, validationResult);
+    
 
             // Store validation result in checkedCitations
             setCheckedCitations(prev => ({
