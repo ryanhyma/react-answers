@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     try {
       console.log('Claude API request received');
       const { message, systemPrompt, conversationHistory } = req.body;
+      console.log('Request body:', req.body);
       
       // // More detailed logging
       // console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
