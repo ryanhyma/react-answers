@@ -5,13 +5,13 @@ const AI_MODELS = {
     models: {
       'gpt-4o-2024-11-20': {
         maxTokens: 1024,
-        temperature: 0.5,
+        temperature: 0.0,
         timeoutMs: 60000,
         knowledgeCutoff: '2024-11'
       },
       'gpt-4o': {
         maxTokens: 1024,
-        temperature: 0.5,
+        temperature: 0.0,
         timeoutMs: 60000,
         knowledgeCutoff: '2024-05'
       }
@@ -22,7 +22,7 @@ const AI_MODELS = {
     models: {
       'claude-3-5-sonnet-20241022': {
         maxTokens: 1024,
-        temperature: 0.5,
+        temperature: 0.0,
         knowledgeCutoff: '2024-04',
         beta: {
           promptCaching: 'prompt-caching-2024-07-31',
