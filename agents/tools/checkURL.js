@@ -16,8 +16,8 @@ const checkUrlStatus = async (url) => {
         console.log(response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`);
         return response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`;
     } catch (getError) {
-        console.error(`Error checking URL with GET request: ${url}. Details: ${getError.message}`);
-        return `URL is dead (do not use): ${url}`;
+        console.log(`Error checking URL with GET request: ${url}. Details: ${getError.message}`);
+        return `URL is dead ${url}`;
     }
 
 };
