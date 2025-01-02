@@ -166,7 +166,7 @@ const ChatInterface = ({
               name="textarea-name"
               rows="2"
               hint={t('homepage.chat.input.hint')}
-              onInput={handleInputChange}
+              onGcdsChange={handleInputChange}
               disabled={isLoading}
             />
             <GcdsButton onClick={handleSendMessage} disabled={isLoading} className="send-button">
