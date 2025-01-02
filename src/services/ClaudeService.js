@@ -45,7 +45,7 @@ const ClaudeService = {
       }
 
       const data = await response.json();
-
+      console.log('Claude API response:', data);
       return data.content;
     } catch (error) {
       console.error('Error calling Claude API:', error);

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       const messages = [
         {
           role: "system",
-          content: systemPrompt + " When returning links, verify the link by using the checkURL tool. Always verify the link before downloading. Also, always download the URL to verify the content answers the user question. If you get a 404 or other error, try a different page.",
+          content: systemPrompt,
         },
         ...conversationHistory,
         {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
         const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-        console.log('Claude Response:', {
+        console.log('ChatGPT Response:', {
           content:lastMessage,
           role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
           usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,

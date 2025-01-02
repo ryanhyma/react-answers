@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     try {
       console.log('Claude API request received');
       const { message, systemPrompt, conversationHistory } = req.body;
+      console.log('Request body:', req.body);
       
       // // More detailed logging
       // console.log('Conversation History:', JSON.stringify(conversationHistory, null, 2));
@@ -45,13 +46,16 @@ export default async function handler(req, res) {
       });
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
-        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-        console.log('Claude Response:', {
-          content:lastMessage,
-          role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
-          usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
-          model: modelConfig.name
+        answer.messages.forEach((msg, index) => {
+          console.log(`Claude Response [${index}]:`, {
+            content: msg.content,
+            role: msg.response_metadata.role,
+            usage: msg.response_metadata.usage,
+            model: modelConfig.name
+          });
         });
+        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
+        
         res.json({ content: lastMessage });
       } else {
         res.json({ content: "No messages available" });
