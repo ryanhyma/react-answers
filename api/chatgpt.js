@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       const messages = [
         {
           role: "system",
-          content: systemPrompt + " When returning links, verify the link by using the checkURL tool. Always verify the link before downloading. Also, always download the URL to verify the content answers the user question. If you get a 404 or other error, try a different page.",
+          content: systemPrompt,
         },
         ...conversationHistory,
         {
