@@ -1,19 +1,14 @@
 // api/chatgpt.js
-import OpenAI from 'openai';
-import { getModelConfig } from '../config/ai-models.js';
 import { createOpenAIAgent } from '../agents/AgentService.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
+      console.log('OpenAI API request received');
       const { message, systemPrompt, conversationHistory } = req.body;
-      
-      const modelConfig = getModelConfig('openai');
-      console.log('Using OpenAI model:', modelConfig);
+      console.log('Request body:', req.body);
+
 
       const openAIAgent = await createOpenAIAgent();
 
@@ -34,29 +29,24 @@ export default async function handler(req, res) {
       });
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
-        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-        console.log('ChatGPT Response:', {
-          content:lastMessage,
-          role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
-          usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
-          model: modelConfig.name
+        answer.messages.forEach((msg, index) => {
+          console.log(`OpenAI Response [${index}]:`, {
+            content: msg.content,
+            classType: msg.constructor.name,
+          });
         });
+        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
+
+        if (!lastMessage || lastMessage.trim() === '') {
+          throw new Error('Claude returned nothing in the response');
+        }
         res.json({ content: lastMessage });
       } else {
-        res.json({ content: "No messages available" });
+        throw new Error('Claude returned no messages');
       }
-      
     } catch (error) {
-      console.error('Error calling ChatGPT API:', {
-        message: error.message,
-        name: error.name
-      });
-      
-      const statusCode = error.message === 'Request timed out' ? 504 : 500;
-      res.status(statusCode).json({ 
-        error: 'Error processing your request', 
-        details: error.message 
-      });
+      console.error('Error calling Claude API:', error.message);
+      res.status(500).json({ error: 'Error processing your request', details: error.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);
