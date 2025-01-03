@@ -813,8 +813,8 @@ summary:focus,
 
 .character-warning {
     color: var(--gcds-color-green-700);
-    background-color: var(--gcds-color-green-100);
-    border: 1px solid var(--gcds-color-green-100);
+    /* background-color: var(--gcds-color-green-100);
+    border: 1px solid var(--gcds-color-green-100); */
     font-size: 16px;
     font-weight: 500;
     border-radius: 4px;
@@ -825,8 +825,8 @@ summary:focus,
 
 .character-limit {
     color: var(--gcds-color-red-900);
-    background-color: var(--gcds-color-red-100);
-    border: 1px solid var(--gcds-color-red-100);
+    /* background-color: var(--gcds-color-red-100);
+    border: 1px solid var(--gcds-color-red-100); */
     font-size: 16px;
     font-weight: 500;
     border-radius: 4px;
