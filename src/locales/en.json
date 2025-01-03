@@ -78,7 +78,7 @@
           "blockedMessage": "Your question was not sent to the AI service.",
           "privacyMessage": "To protect your privacy, personal details were removed and replaced with XXX.",
           "characterWarning": "{count} {unit} remaining",
-          "characterLimit": "Your message is too long by {count} {unit}. Please simplify or break up your question.",
+          "characterLimit": "Your message is too long by {count} {unit}. Please make it shorter. You can ask a follow-up question if needed.",
           "character": "character",
           "characters": "characters"
         },
