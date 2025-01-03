@@ -181,7 +181,7 @@ const ChatInterface = ({
           <div className={charCount >= 75 ? "character-limit" : "character-warning"}>
             <i className="fa-solid fa-circle-exclamation"></i>
             {charCount >= 75 ? 
-              ` Your message is too long by ${Math.max(1, charCount - 74)} ${charCount - 74 === 1 ? 'character' : 'characters'}. Please simplify or break up your question.` : 
+              ` Your message is too long by ${Math.max(1, charCount - 74)} ${charCount - 74 === 1 ? 'character' : 'characters'}. Simplify or break up your question.` : 
               ` ${75 - charCount} ${75 - charCount === 1 ? 'character' : 'characters'} remaining`
             }
           </div>
