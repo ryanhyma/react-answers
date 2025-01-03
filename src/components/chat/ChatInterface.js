@@ -181,21 +181,22 @@ const ChatInterface = ({
           <div className={charCount >= 75 ? "character-limit" : "character-warning"}>
             <i className="fa-solid fa-circle-exclamation"></i>
             {charCount >= 75 ? 
-              ` Your message is too long by ${Math.max(1, charCount - 74)} ${charCount - 74 === 1 ? 'character' : 'characters'}. Simplify or break up your question.` : 
-              ` ${75 - charCount} ${75 - charCount === 1 ? 'character' : 'characters'} remaining`
+              t('homepage.chat.messages.characterLimit').replace('{count}', Math.max(1, charCount - 74)).replace('{unit}', charCount - 74 === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters')) :
+              t('homepage.chat.messages.characterWarning').replace('{count}', 75 - charCount).replace('{unit}', 75 - charCount === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters'))
             }
           </div>
           )}
 
- <GcdsButton 
-   onClick={handleSendMessage} 
-   disabled={isLoading || charCount >= 75} 
-   className="send-button"
-   style={{ display: charCount >= 75 ? 'none' : 'block' }}
- >
-   {t('homepage.chat.buttons.send')}
- </GcdsButton>
-</div>
+          <GcdsButton 
+            onClick={handleSendMessage} 
+            disabled={isLoading || charCount >= 75} 
+            className="send-button"
+            style={{ display: charCount >= 75 ? 'none' : 'block' }}
+          >
+            {t('homepage.chat.buttons.send')}
+          </GcdsButton>
+          </div>
+
           <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
             <div className="ai-toggle">
               <fieldset className="ai-toggle_fieldset">
