@@ -7,7 +7,7 @@ const invokeAgent = async (agentType, systemPrompt, message) => {
     const messages = [
       {
         role: "system",
-        content: systemPrompt + " Use the contextSearch_function to help determine the context of the user's question.",
+        content: systemPrompt,
       },
       {
         role: "user",
@@ -40,17 +40,21 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     console.log('Received request to /api/context-agent');
     console.log('Request body:', req.body);
-    const { message, systemPrompt, conversationHistory } = req.body;
+    const { message, systemPrompt, agentType } = req.body;
 
     const agentTypes = ['claude', 'openai', 'cohere'];
 
+    // If agentType is provided in the request, use it as the first agent to try
+    const agentsToTry = agentType ? [agentType, ...agentTypes.filter(agent => agent !== agentType)] : agentTypes;
+
     try {
-      for (const agentType of agentTypes) {
+      for (const agentType of agentsToTry) {
         try {
           const result = await invokeAgent(agentType, systemPrompt, message);
           res.json({ content: result });
           return;
         } catch (error) {
+          console.error(`Error with ${agentType} agent:`, error);
           // Continue to the next agent type
         }
       }

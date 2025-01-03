@@ -1,3 +1,4 @@
+// import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
 import { BASE_SYSTEM_PROMPT } from './systemPrompt/agenticBase.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS } from './systemPrompt/citationInstructions.js';
@@ -30,11 +31,11 @@ const departmentModules = {
   // Add more departments as needed
 };
 
-async function loadSystemPrompt(language = 'en', department = '') {
-  console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, department: ${department}`);
+async function loadSystemPrompt(language = 'en', context) {
+  console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
 
   try {
-
+    const department = context.department;
 
     // Always start with general scenarios as the base
     let departmentContent = { updates: '', scenarios: SCENARIOS };
@@ -86,6 +87,17 @@ async function loadSystemPrompt(language = 'en', department = '') {
       day: 'numeric'
     });
 
+    
+    // add context into systme prompt
+    const contextPrompt = `## Current Context for question ##
+    Department: ${context.department}
+    Topic: ${context.topic}
+    Topic URL: ${context.topicUrl}
+    Department URL: ${context.departmentUrl}
+    Search Results: ${context.searchResults}
+    `;
+    
+
     const fullPrompt = `
       ${ROLE}
 
@@ -94,6 +106,8 @@ async function loadSystemPrompt(language = 'en', department = '') {
       ${languageContext}
 
       ${BASE_SYSTEM_PROMPT}
+
+      ${contextPrompt}
 
       ${citationInstructions}
 

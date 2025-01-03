@@ -7,10 +7,10 @@ const API_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:'+process.env.PORT+'/api/cohere'; 
 
 const CohereService = {
-  sendMessage: async (message, conversationHistory = [], lang = 'en') => {
+  sendMessage: async (message, conversationHistory = [], lang = 'en',context) => {
     try {
       console.log(`🤖🇦 Cohere Service: Processing message`);
-      const SYSTEM_PROMPT = await loadSystemPrompt(lang);
+      const SYSTEM_PROMPT = await loadSystemPrompt(lang,context);
       
       console.log('Sending to Cohere API:', {
         message: message,

@@ -2,23 +2,19 @@
 
 import loadSystemPrompt from './systemPrompt.js';
 
-const PORT = 3001; 
+const PORT = 3001;
 
-const API_URL = process.env.NODE_ENV === 'production' 
+const API_URL = process.env.NODE_ENV === 'production'
   ? '/api/claude'  // Vercel serverless function
   : `http://localhost:${PORT}/api/chatgpt`;  // Local development server endpoint
 
 const ChatGPTService = {
-  sendMessage: async (message, conversationHistory = [], lang = 'en') => {
+  sendMessage: async (message, conversationHistory = [], lang = 'en', context) => {
     try {
       console.log(`🤖 ChatGPT Service: Processing message in ${lang.toUpperCase()}`);
-      
-      // Extract department from message if present
-      const departmentMatch = message.match(/<department>(.*?)<\/department>/);
-      const department = departmentMatch ? departmentMatch[1] : '';
-      
-      const SYSTEM_PROMPT = await loadSystemPrompt(lang, department);
-      
+
+      const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
+
       // Only change: check for evaluation and use empty array if true
       const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
 
