@@ -78,7 +78,7 @@
           "blockedMessage": "Votre question n'a pas été envoyée au service d'IA.",
           "privacyMessage": "Pour protéger votre vie privée, les détails personnels ont été supprimés et remplacés par XXX.",
           "characterWarning": "{count} {unit} restants",
-          "characterLimit": "Votre message est trop long de {count} {unit}. Veuillez être plus bref. Vous pouvez poser une question complémentaire si nécessaire.",
+          "characterLimit": "Votre message est trop long de {count} {unit}. Veuillez simplifier votre question.",
           "character": "caractère",
           "characters": "caractères"
         },
