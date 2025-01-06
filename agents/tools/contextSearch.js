@@ -17,21 +17,21 @@ function extractSearchResults(results, numResults = 3) {
         summary: result.snippet
     }));
 
-    const extractedResults = topResults.map(result => 
+    const extractedResults = topResults.map(result =>
         `Title: ${result.linkText}\nLink: ${result.link}\nSummary: ${result.summary}\n`
     ).join("\n");
     console.info("Extracted search results:", extractedResults);
     return extractedResults;
 }
 
-const searchGoogle = async (query) => {
+const contextSearch = async (query) => {
     const CX = process.env.GOOGLE_SEARCH_ENGINE_ID; // Ensure this is set in your environment variables
     const API_KEY = process.env.GOOGLE_API_KEY; // Ensure this is set in your environment variables
     try {
         const res = await customsearch.cse.list({
             cx: CX,
             q: query,
-            key: API_KEY, 
+            key: API_KEY,
         });
         const results = res.data;
         const extractedResults = extractSearchResults(results);
@@ -44,7 +44,7 @@ const searchGoogle = async (query) => {
 
 const contextSearchTool = tool(
     async ({ query }) => {
-        return await searchGoogle(query);
+        return await contextSearch(query);
     },
     {
         name: "contextSearch",
@@ -62,4 +62,4 @@ const contextSearchTool = tool(
     }
 );
 
-export default contextSearchTool;
+export { contextSearchTool, contextSearch };
