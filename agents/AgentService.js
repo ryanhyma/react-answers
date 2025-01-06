@@ -4,8 +4,6 @@ import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
-import canadaCASearch from './tools/canadaCaSearch.js';
-import contextSearchTool from './tools/contextSearch.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
@@ -61,7 +59,7 @@ const createClaudeAgent = async () => {
 };
 
 const createContextAgent = async (agentType) => {
-  const tools = [contextSearchTool];
+  const tools = [];
   let llm;
 
   switch (agentType) {

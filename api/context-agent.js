@@ -1,19 +1,24 @@
 import { createContextAgent } from '../agents/AgentService.js';
+import {contextSearch} from '../agents/tools/contextSearch.js';
 
 const invokeAgent = async (agentType, systemPrompt, message) => {
   try {
     const contextAgent = await createContextAgent(agentType);
 
+    const searchResults = "<searchResults>" + await contextSearch(message) + "</searchResults>";
+
     const messages = [
       {
         role: "system",
-        content: systemPrompt,
+        content: systemPrompt + searchResults,
       },
       {
         role: "user",
         content: message,
       },
     ];
+
+
 
     const answer = await contextAgent.invoke({
       messages: messages,
@@ -26,7 +31,7 @@ const invokeAgent = async (agentType, systemPrompt, message) => {
         role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
         usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
       });
-      return lastMessage;
+      return lastMessage + searchResults;
     } else {
       return "No messages available";
     }
