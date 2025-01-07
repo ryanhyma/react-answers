@@ -1,7 +1,6 @@
 import React from 'react';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
-import Evaluator from '../components/admin/Evaluator.js';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard.js';
 
 const AdminPage = ({ lang = 'en' }) => {
@@ -36,11 +35,6 @@ const AdminPage = ({ lang = 'en' }) => {
           </li>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#evaluator">Load and run evaluation</GcdsLink>
-            </GcdsText>
-          </li>
-          <li className="mb-400">
-            <GcdsText>
               <GcdsLink href={`/${lang}`}>Use the app</GcdsLink>
             </GcdsText>
           </li>
@@ -50,11 +44,6 @@ const AdminPage = ({ lang = 'en' }) => {
       <section id="chat-logs" className="mb-600">
         <h2 className='mt-400 mb-400'>Chat interaction logs</h2>
         <ChatLogsDashboard />
-      </section>
-
-      <section id="evaluator" className="mb-600">
-        <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
-        <Evaluator />
       </section>
 
       <GcdsDetails detailsTitle="Service Status Control" className="mb-600">

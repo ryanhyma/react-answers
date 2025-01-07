@@ -3,7 +3,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import {
     GcdsContainer,
     GcdsHeading,
-    GcdsText
+    GcdsText,
+    GcdsLis,
 } from '@cdssnc/gcds-components-react';
 import LoggingService from '../../services/LoggingService.js';
 import ClaudeService from '../../services/ClaudeService.js';
@@ -13,7 +14,7 @@ import ContextService from '../../services/ContextService.js';
 import { parseEvaluationResponse } from '../../utils/evaluationParser.js';
 import loadSystemPrompt from '../../services/systemPrompt.js';
 import '../../styles/App.css';
-import AdminCodeInput from './AdminCodeInput.js';
+import AdminCodeInput from '../admin/AdminCodeInput.js';
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 1000;//10 * 60 * 1000; // 10 minutes (in milliseconds)   
@@ -126,6 +127,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             const headers = parseCSVLine(lines[0]);
             const problemDetailsIndex = headers.findIndex(h => h.trim() === 'Problem Details');
             const urlIndex = headers.findIndex(h => h.trim() === 'URL');
+            const contextIndex = headers.findIndex(h => h.trim() === 'Context');
 
             if (problemDetailsIndex === -1) {
                 throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
@@ -137,14 +139,16 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                     const question = values[problemDetailsIndex]?.trim();
                     // Only get URL if the column exists
                     const url = urlIndex !== -1 ? values[urlIndex]?.trim() : '';
+                    const context = contextIndex !== -1 ? values[contextIndex]?.trim() : '';
 
                     if (question) {
-                        console.log('Processing valid entry:', { question, url });
+                        console.log('Processing valid entry:', { question, url, context });
                     }
 
                     return {
                         question: question || '',
-                        referringUrl: url || ''
+                        referringUrl: url || '',
+                        context: context || ''
                     };
                 })
                 .filter(entry => entry.question); // Only filter based on question presence
@@ -200,6 +204,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setUseBatchProcessing(e.target.checked);
     };
 
+    const needsContext = (entries) => {
+        return entries.some(entry => !entry.context);
+    };
+
     // TODO: Batch Processing Improvements Needed
     // - Add timestamp when creating batches
     // - Create new API endpoint /api/process-pending-batches to handle background processing
@@ -216,77 +224,86 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             setError(null);
             setProcessedCount(0);
 
-            // Load appropriate system prompt based on selected AI
-            const systemPrompt = await loadSystemPrompt(selectedLanguage);
+            if (needsContext(entries)) {
+                console.log('Some entries need context. Deriving context batch processing...');
+                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI);
+                console.log('Context batch started: ' + result.batchId);
+            } else {
 
-            // Format entries for batch processing
-            const requests = entries.map((entry, index) => {
-                const { redactedText } = RedactionService.redactText(entry.question);
-                const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
-                console.log(`Entry ${index + 1} formatted:`, messageWithUrl);
-                return messageWithUrl;
-            });
+                
 
-            const payload = {
-                requests,
-                systemPrompt
-            };
+                // Load appropriate system prompt based on selected AI
+                const systemPrompt = await loadSystemPrompt(selectedLanguage);
 
-            console.log('Sending batch request with:', {
-                requestCount: requests.length,
-                systemPromptLength: systemPrompt.length,
-                aiService: selectedAI
-            });
-
-            // Select endpoint based on AI service
-
-            const API_URL = process.env.NODE_ENV === 'production'
-                ? ''  // Vercel serverless function
-                : `http://localhost:3001`;
-            const endpoint = selectedAI === 'claude' ? API_URL + '/api/claude-batch' : API_URL + '/api/gpt-batch';
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 55000); // 55 second timeout
-
-            try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
+                // Format entries for batch processing
+                const requests = entries.map((entry, index) => {
+                    const { redactedText } = RedactionService.redactText(entry.question);
+                    const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
+                    console.log(`Entry ${index + 1} formatted:`, messageWithUrl);
+                    return messageWithUrl;
                 });
 
-                clearTimeout(timeoutId);
+                const payload = {
+                    requests,
+                    systemPrompt
+                };
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    let errorData;
-                    try {
-                        errorData = JSON.parse(errorText);
-                    } catch (e) {
-                        errorData = { error: errorText };
+                console.log('Sending batch request with:', {
+                    requestCount: requests.length,
+                    systemPromptLength: systemPrompt.length,
+                    aiService: selectedAI
+                });
+
+                // Select endpoint based on AI service
+
+                const API_URL = process.env.NODE_ENV === 'production'
+                    ? ''  // Vercel serverless function
+                    : `http://localhost:3001`;
+                const endpoint = selectedAI === 'claude' ? API_URL + '/api/claude-batch' : API_URL + '/api/gpt-batch';
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 55000); // 55 second timeout
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorData;
+                        try {
+                            errorData = JSON.parse(errorText);
+                        } catch (e) {
+                            errorData = { error: errorText };
+                        }
+                        throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
                     }
-                    throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
-                }
 
-                const data = await response.json();
-                console.log(`${selectedAI} batch response:`, data);
+                    const data = await response.json();
+                    console.log(`${selectedAI} batch response:`, data);
 
-                if (data.batchId) {
-                    console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
-                    setBatchId(data.batchId);
-                    setBatchStatus('in_progress');
-                    setIsPolling(true);
-                    setPollStartTime(Date.now());
-                } else {
-                    throw new Error('No batch ID received from API');
+                    if (data.batchId) {
+                        console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
+                        setBatchId(data.batchId);
+                        setBatchStatus('in_progress');
+                        setIsPolling(true);
+                        setPollStartTime(Date.now());
+                    } else {
+                        throw new Error('No batch ID received from API');
+                    }
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        throw new Error('Request timed out while creating batch. The operation may still be processing.');
+                    }
+                    throw error;
                 }
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timed out while creating batch. The operation may still be processing.');
-                }
-                throw error;
             }
         } catch (error) {
             console.error('Error processing batch:', error);
@@ -295,6 +312,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             setBatchStatus(null);
             setIsPolling(false);
         }
+
     };
 
     const processResults = useCallback(async (results) => {
@@ -662,7 +680,12 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             <div className="steps-container">
                 <div className="step">
                     <GcdsHeading tag="h3">Step 1: Select Settings</GcdsHeading>
-                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer, or any CSV file with a column labelled 'Problem Details' with the questions and an optional URL column with a referring URL. Admin code is required to enable file upload (temporary fix for testing).</GcdsText>
+                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer.</GcdsText>
+                    <GcdsText>CSV must contain:</GcdsText>
+                    <ol><li>Problem Details - required</li>
+                        <li>URL - optional </li>
+                        <li>Context - optional - If left blank, the batch will first derive context, if provided it will use the provided context to retrieve answers</li>
+                    </ol>
 
                     <form onSubmit={handleUpload} className="mt-400">
                         <AdminCodeInput

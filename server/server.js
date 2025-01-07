@@ -1,7 +1,5 @@
 // server/server.js - this is only used for local development NOT for Vercel
 import express from 'express';
-import Anthropic from '@anthropic-ai/sdk';
-import OpenAI from 'openai';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
@@ -20,6 +18,11 @@ import batchClaudeCancelHandler from '../api/claude-batch-cancel.js';
 import batchChatGPTCancelHandler from '../api/gpt-batch-cancel.js';
 import batchClaudeStatusHandler from '../api/claude-batch-status.js';
 import batchChatGPTStatusHandler from '../api/gpt-batch-status.js';
+import contextSearchHandler from '../api/context-search.js';
+import claudBatchContextHandler from '../api/claude-batch-context.js';
+import chatGPTBatchContextHandler from '../api/gpt-batch.js';
+import batchListHandler from '../api/batch-list.js';
+import batchStatusHandler from '../api/batch-status.js';
 import { chat } from 'googleapis/build/src/apis/chat/index.js';
 
 const { CohereClient } = coherePkg;
@@ -33,17 +36,8 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Get MongoDB URI based on environment
-const getMongoURI = () => {
-  // In development, use the REACT_APP prefixed version
-  if (process.env.REACT_APP_ENV === 'development') {
-    return process.env.REACT_APP_MONGODB_URI;
-  }
-  // In production (Vercel), use the non-prefixed version
-  return process.env.MONGODB_URI;
-};
 
-mongoose.connect(getMongoURI())
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('MongoDB connected successfully');
     console.log(`Running in ${process.env.REACT_APP_ENV || 'production'} mode`);
@@ -61,21 +55,14 @@ app.use((req, res, next) => {
 // Environment-aware logging
 if (process.env.REACT_APP_ENV === 'development') {
   console.log('Development environment variables:');
-  console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_ANTHROPIC_API_KEY:', process.env.REACT_APP_ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_COHERE_API_KEY:', process.env.REACT_APP_COHERE_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_MONGODB_URI:', process.env.REACT_APP_MONGODB_URI ? 'Set' : 'Not Set');
+  console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not Set');
+  console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
+  console.log('COHERE_API_KEY:', process.env.COHERE_API_KEY ? 'Set' : 'Not Set');
+  console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not Set');
 } else {
   console.log('Running in production mode');
 }
 
-const anthropic = new Anthropic({
-  apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
-});
-
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-});
 
 const cohere = null;
 //const cohere = new CohereClient({
@@ -102,6 +89,16 @@ app.post('/api/chatgpt-batch-cancel', batchChatGPTCancelHandler);
 app.get('/api/claude-batch-status', batchClaudeStatusHandler);
 
 app.get('/api/chatgpt-batch-status', batchChatGPTStatusHandler);
+
+app.post('/api/context-search', contextSearchHandler);
+
+app.post('/api/claude-batch-context', claudBatchContextHandler);
+
+app.post('/api/chatgpt-batch-context', chatGPTBatchContextHandler);
+
+app.get('/api/batch-list',batchListHandler);
+
+app.get('/api/batch-status',batchStatusHandler);
 
 
 // server.js - update the Cohere endpoint
