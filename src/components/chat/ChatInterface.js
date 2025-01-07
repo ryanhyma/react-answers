@@ -178,20 +178,20 @@ const ChatInterface = ({
           />
           
           {charCount >= 65 && (
-          <div className={charCount >= 75 ? "character-limit" : "character-warning"}>
-            <i className="fa-solid fa-circle-exclamation"></i>
-            {charCount >= 75 ? 
-              t('homepage.chat.messages.characterLimit').replace('{count}', Math.max(1, charCount - 74)).replace('{unit}', charCount - 74 === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters')) :
-              t('homepage.chat.messages.characterWarning').replace('{count}', 75 - charCount).replace('{unit}', 75 - charCount === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters'))
-            }
+          <div className={charCount > 75 ? "character-limit" : "character-warning"}>
+          <i className="fa-solid fa-circle-exclamation"></i>
+          {charCount > 75 ? 
+            t('homepage.chat.messages.characterLimit').replace('{count}', Math.max(1, charCount - 75)).replace('{unit}', charCount - 75 === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters')) :
+            t('homepage.chat.messages.characterWarning').replace('{count}', 75 - charCount).replace('{unit}', 75 - charCount === 1 ? t('homepage.chat.messages.character') : t('homepage.chat.messages.characters'))
+          }
           </div>
           )}
 
           <GcdsButton 
             onClick={handleSendMessage} 
-            disabled={isLoading || charCount >= 75} 
+            disabled={isLoading || charCount > 75} 
             className="send-button"
-            style={{ display: charCount >= 75 ? 'none' : 'block' }}
+            style={{ display: charCount > 75 ? 'none' : 'block' }}
           >
             {t('homepage.chat.buttons.send')}
           </GcdsButton>
