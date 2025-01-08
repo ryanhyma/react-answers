@@ -3,6 +3,7 @@ import React from 'react';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
+import getApiUrl from '../utils/apiToUrl.js';
 
 
 const EvaluationPage = ({ lang = 'en' }) => {
@@ -14,12 +15,52 @@ const EvaluationPage = ({ lang = 'en' }) => {
 
   const handleDownloadClick = (batchId) => {
     console.log('Button clicked for batch:', batchId);
-    // Implement your action logic here
+    const fetchBatchAndDownloadCSV = async (batchId) => {
+      try {
+        const response = await fetch(getApiUrl(`batch-retrieve?batchId=${batchId}`));
+        const batch = await response.json();
+
+        if (batch && batch.entries) {
+          const csvContent = [
+            ['entry_id', 'question', 'url', 'topic', 'topicUrl', 'department', 'departmentUrl', 'searchResults', 'context_model', 'context_tokens', 'answer', 'answer_model', 'answer_tokens'],
+            ...batch.entries.map(entry => [
+              entry.entry_id,
+              entry.question,
+              entry.url,
+              entry.topic,
+              entry.topicUrl,
+              entry.department,
+              entry.departmentUrl,
+              entry.searchResults,
+              entry.context_model,
+              entry.context_tokens,
+              entry.answer,
+              entry.answer_model,
+              entry.answer_tokens
+            ])
+          ].map(e => e.join(",")).join("\n");
+
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", `batch_${batchId}.csv`);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Error fetching batch or creating CSV:', error);
+      }
+    };
+
+    fetchBatchAndDownloadCSV(batchId);
   };
 
-  const handleCompleteClick = (batchId) => {
+  const handleCompleteClick = async (batchId) => {
     console.log('Button clicked to complete batch:', batchId);
-    // Implement your action logic here
+    const response = await fetch(getApiUrl("batch-process-results?batchId=" + batchId));
   };
 
   const handleStatusToggle = () => {
@@ -33,6 +74,8 @@ const EvaluationPage = ({ lang = 'en' }) => {
   const handleStatusUpdate = () => {
     // Implement status update logic here
   };
+
+
 
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
@@ -65,18 +108,18 @@ const EvaluationPage = ({ lang = 'en' }) => {
 
       <section id="running-evaluation" className="mb-600">
         <h2 className='mt-400 mb-400'>Running Batches</h2>
-        <BatchList 
-        buttonLabel="Complete"
-        buttonAction={handleCompleteClick}
-        batchStatus="completed" />
+        <BatchList
+          buttonLabel="Complete"
+          buttonAction={handleCompleteClick}
+          batchStatus="completed" />
       </section>
 
       <section id="processed-evaluation" className="mb-600">
         <h2 className='mt-400 mb-400'>Processed Batches</h2>
-        <BatchList 
-        buttonLabel="Complete"
-        buttonAction={handleDownloadClick}
-        batchStatus="processed" />
+        <BatchList
+          buttonLabel="Download"
+          buttonAction={handleDownloadClick}
+          batchStatus="processed" />
       </section>
 
     </GcdsContainer>

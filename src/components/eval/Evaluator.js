@@ -315,70 +315,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     };
 
-    const processResults = useCallback(async (results) => {
-        console.log(`Starting to process ${results.length} results from batch...`);
-        const processingErrors = [];
-
-        for (const [index, result] of results.entries()) {
-            try {
-                console.log(`Processing result ${index + 1}:`, result);
-
-                // Handle Anthropic batch format
-                if (!result.result?.message?.content) {
-                    throw new Error(`No valid response content found in result ${index + 1}`);
-                }
-
-                // Get the full response content with all tags intact
-                const content = result.result.message.content[0]?.text;
-                if (!content) {
-                    throw new Error('Missing response text content');
-                }
-
-                // Extract citation URL and confidence while preserving the original content
-                const citationMatch = content.match(/<citation-url>(.*?)<\/citation-url>/);
-                const confidenceMatch = content.match(/<confidence>(.*?)<\/confidence>/);
-
-                const citationUrl = citationMatch ? citationMatch[1] : null;
-                const confidenceRating = confidenceMatch ? parseFloat(confidenceMatch[1]) : null;
-
-                if (!citationUrl || !confidenceRating) {
-                    throw new Error('Missing citation URL or confidence rating');
-                }
-
-                // Get the original question from the input
-                const originalQuestion = result.input?.messages?.[0]?.content || '';
-
-                const logEntry = {
-                    redactedQuestion: originalQuestion,
-                    aiResponse: content,  // Keeping full response with all tags
-                    aiService: 'claude',
-                    referringUrl: citationUrl,
-                    citationUrl,
-                    confidenceRating
-                };
-
-                console.log(`Logging entry ${index + 1}:`, logEntry);
-                await LoggingService.logInteraction(logEntry, true);
-                setProcessedCount(prev => prev + 1);
-
-            } catch (error) {
-                const errorDetails = {
-                    index,
-                    error: error.message,
-                    result: JSON.stringify(result)
-                };
-                console.error('Error processing result:', errorDetails);
-                processingErrors.push(errorDetails);
-            }
-        }
-
-        if (processingErrors.length > 0) {
-            console.error(`Completed with ${processingErrors.length} errors:`, processingErrors);
-            setError(`${processingErrors.length} entries failed to process. Check console for details.`);
-        }
-
-        console.log('Batch processing complete!');
-    }, []);
+    
 
     const handleProcessFile = async () => {
         if (!file) return;
@@ -415,13 +352,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 }
             }
 
-            setResults({
-                fileName: file.name,
-                size: file.size,
-                entriesProcessed: entries.length
-            });
-
-            setProcessing(false);
+            setBatchStatus('started');
 
         } catch (error) {
             console.error('Process file error:', error);
@@ -430,91 +361,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-    const checkBatchStatus = useCallback(async () => {
-        if (!batchId) return;
-
-        try {
-            console.log(`Checking status for batch ${batchId}...`);
-            const API_URL = process.env.NODE_ENV === 'production'
-                ? ''  // Vercel serverless function
-                : `http://localhost:3001`;
-
-            const endpoint = selectedAI === 'claude'
-                ? API_URL + '/api/claude-batch-status'
-                : API_URL + '/api/gpt-batch-status';
-
-            const response = await fetch(`${endpoint}?batchId=${batchId}`);
-
-            if (!response.ok) {
-                throw new Error(`Status check failed: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log('Status response:', data);
-
-            if (selectedAI === 'claude') {
-                // Existing Claude batch handling
-                setBatchStatus(data.status);
-                if (data.processedCount) {
-                    setProcessedCount(data.processedCount);
-                }
-
-                if (data.status === 'ended' && data.results) {
-                    setIsPolling(false);
-                    const results = data.results.split('\n')
-                        .filter(line => line.trim())
-                        .map(line => JSON.parse(line));
-                    setBatchResults(results);
-
-                    const unprocessedResults = results.slice(processedCount);
-                    if (unprocessedResults.length > 0) {
-                        await processResults(unprocessedResults);
-                    }
-                    setProcessing(false);
-                }
-            } else {
-                // GPT batch handling
-                setBatchStatus(data.status);
-                setLastCheckTime(new Date());
-
-                if (data.status === 'completed' && data.output_file_id) {
-                    setIsPolling(false);
-                    const results = await fetch(`/api/gpt-batch-results?fileId=${data.output_file_id}`);
-                    const resultData = await results.json();
-                    setBatchResults(resultData);
-                    await processResults(resultData);
-                    setProcessing(false);
-                }
-
-                if (data.status === 'failed') {
-                    setIsPolling(false);
-                    setError('GPT batch processing failed. Please check the error logs.');
-                    setProcessing(false);
-                }
-            }
-        } catch (error) {
-            console.error('Error checking batch status:', error);
-            setPollingErrors(prev => prev + 1);
-            if (pollingErrors > 5) {
-                setIsPolling(false);
-                setError('Lost connection to server. The batch is still processing - please refresh the page to reconnect.');
-            }
-        }
-    }, [batchId, processResults, processedCount, pollingErrors, selectedAI]);
-
-    // // Add function to fetch GPT batch results HAS TO BE FIXED EVENTUALLY
-    // const fetchGPTBatchResults = async (outputFileId) => {
-    //     try {
-    //         const response = await fetch(`/api/gpt-batch-results?fileId=${outputFileId}`);
-    //         if (!response.ok) {
-    //             throw new Error('Failed to fetch batch results');
-    //         }
-    //         return await response.json();
-    //     } catch (error) {
-    //         console.error('Error fetching GPT batch results:', error);
-    //         throw error;
-    //     }
-    // };
+    
 
     const handleCancel = async () => {
         if (!batchId) return;
@@ -544,42 +391,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-    useEffect(() => {
-        let pollInterval;
-        let isActive = true;
-
-        if (isPolling && batchId) {
-            setPollStartTime(prev => prev || Date.now());
-
-            const doPoll = async () => {
-                if (!isActive) return;
-
-                const elapsedTime = Date.now() - pollStartTime;
-
-                if (elapsedTime > MAX_POLLING_DURATION) {
-                    console.log('Maximum polling duration reached');
-                    setIsPolling(false);
-                    setError('Polling timeout reached. Please check batch status manually.');
-                    return;
-                }
-
-                try {
-                    await checkBatchStatus();
-                } catch (error) {
-                    console.error('Polling error:', error);
-                    // Don't stop polling on error, will retry on next interval
-                }
-            };
-
-            doPoll();
-            pollInterval = setInterval(doPoll, POLLING_INTERVAL);
-        }
-
-        return () => {
-            isActive = false;
-            if (pollInterval) clearInterval(pollInterval);
-        };
-    }, [isPolling, batchId, pollStartTime, checkBatchStatus]);
+   
 
     const formatTimestamp = (date) => {
         if (!date) return '';
@@ -659,8 +471,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                 <div className="text-sm text-gray-600">
                     {status === 'preparing' && 'Creating batch...'}
-                    {status === 'in_progress' && `Processing ${processedCount} of ${total} entries...`}
-                    {status === 'validating' && 'Validating results...'}
+                    {status === 'started' && 'Batch started...'}
+                    
                 </div>
             </div>
         );

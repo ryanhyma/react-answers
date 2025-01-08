@@ -16,35 +16,34 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
         }
     };
 
-    useEffect(() => {
-        const fetchStatuses = async () => {
-            try {
-                const statusPromises = batches.map(batch => fetchStatus(batch.batchId, batch.provider));
-                const statusResults = await Promise.all(statusPromises);
-                const updatedBatches = batches.map(batch => {
-                    const statusResult = statusResults.find(status => status.batchId === batch.batchId);
-                    return { ...batch, status: statusResult ? statusResult.status : 'Unknown' };
-                });
-                setBatches(updatedBatches);
-            } catch (error) {
-                console.error('Error fetching statuses:', error);
-            }
-        };
+    const fetchStatuses = async (batches) => {
+        try {
+            const statusPromises = batches.map(batch => {
+                if (!batch.status) {
+                    return fetchStatus(batch.batchId, batch.provider);
+                } else {
+                    return Promise.resolve({ batchId: batch.batchId, status: batch.status });
+                }
+            });
+            const statusResults = await Promise.all(statusPromises);
+            const updatedBatches = batches.map(batch => {
+                const statusResult = statusResults.find(status => status.batchId === batch.batchId);
+                return { ...batch, status: statusResult ? statusResult.status : 'Unknown' };
+            });
+            return updatedBatches;
+        } catch (error) {
+            console.error('Error fetching statuses:', error);
+        }
+    };
 
-        fetchStatuses();
-        const intervalId = setInterval(fetchStatuses, 30000); // Poll every 10 seconds
-
-        // Cleanup interval on component unmount
-        return () => clearInterval(intervalId);
-
-    }, []);
-
+    
     useEffect(() => {
         const fetchBatches = async () => {
             try {
                 const response = await fetch(getApiUrl('batch-list'));
-                const data = await response.json();
-                setBatches(data);
+                let batches = await response.json();
+                batches = await fetchStatuses(batches);
+                setBatches(batches);
             } catch (error) {
                 console.error('Error fetching batches:', error);
             }

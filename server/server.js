@@ -23,6 +23,8 @@ import claudBatchContextHandler from '../api/claude-batch-context.js';
 import chatGPTBatchContextHandler from '../api/gpt-batch.js';
 import batchListHandler from '../api/batch-list.js';
 import batchStatusHandler from '../api/batch-status.js';
+import batchProcessResultsHandler from '../api/batch-process-results.js';
+import batchRetrieveHandler from '../api/batch-retrieve.js';
 import { chat } from 'googleapis/build/src/apis/chat/index.js';
 
 const { CohereClient } = coherePkg;
@@ -99,6 +101,10 @@ app.post('/api/chatgpt-batch-context', chatGPTBatchContextHandler);
 app.get('/api/batch-list',batchListHandler);
 
 app.get('/api/batch-status',batchStatusHandler);
+
+app.get('/api/batch-process-results',batchProcessResultsHandler);
+
+app.get('/api/batch-retrieve', batchRetrieveHandler);
 
 
 // server.js - update the Cohere endpoint

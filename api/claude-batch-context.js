@@ -29,14 +29,14 @@ export default async function handler(req, res) {
 
         const batch = await anthropic.beta.messages.batches.create({
             requests: req.body.requests.map((request, index) => ({
-                custom_id: `eval-${index}`,
-                params: {
-                    model: modelConfig.name,
-                    messages: [{ role: "user", content: request.message }],
-                    max_tokens: modelConfig.maxTokens,
-                    system: request.systemPrompt,
-                    temperature: modelConfig.temperature
-                }
+            custom_id: `eval-${index}`,
+            params: {
+                model: modelConfig.name,
+                messages: [{ role: "user", content: request.message }],
+                max_tokens: modelConfig.maxTokens,
+                system: request.systemPrompt,
+                temperature: modelConfig.temperature
+            }
             }))
         });
 
@@ -46,9 +46,17 @@ export default async function handler(req, res) {
             model: modelConfig.name
         });
 
-        // save the batch id
+        // save the batch id and entries
         await dbConnect();
-        const savedBatch = new Batch({ batchId: batch.id, type: "context", provider: "anthropic" });
+        const savedBatch = new Batch({ 
+            batchId: batch.id, 
+            type: "context", 
+            provider: "anthropic",
+            entries: req.body.requests.map((request, index) => ({
+            entry_id: `eval-${index}`,
+            question: request.message
+            }))
+        });
         await savedBatch.save();
 
         console.log('Batch saved:', savedBatch);
