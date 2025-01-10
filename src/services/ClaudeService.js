@@ -1,41 +1,44 @@
 // src/ClaudeService.js
 
 import loadSystemPrompt from './systemPrompt.js';
+import {getApiUrl} from '../utils/apiToUrl.js';
 
 
-const PORT = 3001; // Use a default value if PORT is not set
-
-const API_URL = process.env.NODE_ENV === 'production'
-  ? '/api/claude'  // Vercel serverless function
-  : `http://localhost:${PORT}/api/claude`;  // Local development server endpoint
 
 
 const ClaudeService = {
+
+  prepareMessage: async (message, conversationHistory = [], lang = 'en', context) => {
+    console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
+
+    const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
+
+    // Only change: check for evaluation and use empty array if true
+    const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
+
+    console.log('Sending to Claude API:', {
+      message,
+      conversationHistory: finalHistory,
+      systemPromptLength: SYSTEM_PROMPT.length
+    });
+
+    return {
+      message,
+      conversationHistory: finalHistory,  // Use the conditional history
+      systemPrompt: SYSTEM_PROMPT,
+    };
+  },
+
   sendMessage: async (message, conversationHistory = [], lang = 'en', context) => {
     try {
-      console.log(`🤖 Claude Service: Processing message in ${lang.toUpperCase()}`);
+      const messagePayload = await ClaudeService.prepareMessage(message, conversationHistory, lang, context);
 
-      const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
-
-      // Only change: check for evaluation and use empty array if true
-      const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
-
-      console.log('Sending to Claude API:', {
-        message,
-        conversationHistory: finalHistory,
-        systemPromptLength: SYSTEM_PROMPT.length
-      });
-
-      const response = await fetch(API_URL, {
+      const response = await fetch(getApiUrl('claude'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message,
-          conversationHistory: finalHistory,  // Use the conditional history
-          systemPrompt: SYSTEM_PROMPT,
-        }),
+        body: messagePayload,
       });
 
       if (!response.ok) {
@@ -52,25 +55,23 @@ const ClaudeService = {
       throw error;
     }
   },
-  sendBatchMessages: async (requests) => {
+  sendBatchMessages: async (entries, lang) => {
     try {
-      const SYSTEM_PROMPT = await loadSystemPrompt();
-
-      // Format the requests to match the expected server format
-      const formattedRequests = requests.map(request => ({
-        message: request.params.messages[0].content,
-        conversationHistory: [],  // Empty for evaluation requests
-        systemPrompt: SYSTEM_PROMPT
+      console.log(`🤖 Claude Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+      const batchEntries = await Promise.all(entries.map(async (entry) => {
+        const messagePayload = await ClaudeService.prepareMessage(entry.question, [], lang, entry);
+        messagePayload.entry = entry;
+        return messagePayload;
       }));
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(getApiUrl('claude-batch'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           batch: true,
-          requests: formattedRequests
+          requests: batchEntries
         })
       });
 
@@ -84,7 +85,7 @@ const ClaudeService = {
       throw error;
     }
   },
-  getBatchStatus: async (batchId) => {
+  /*getBatchStatus: async (batchId) => {
     const response = await fetch(`${API_URL}/status/${batchId}`);
 
     if (!response.ok) {
@@ -104,7 +105,7 @@ const ClaudeService = {
     return text.split('\n')
       .filter(line => line.trim())
       .map(line => JSON.parse(line));
-  }
+  }*/
 };
 
 export default ClaudeService;

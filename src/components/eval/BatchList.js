@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GcdsGrid, GcdsGridCol, GcdsButton } from '@cdssnc/gcds-components-react';
-import getApiUrl from '../../utils/apiToUrl.js';
+import {getApiUrl} from '../../utils/apiToUrl.js';
 
 const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
     const [batches, setBatches] = useState([]);
@@ -36,7 +36,7 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
         }
     };
 
-    
+
     useEffect(() => {
         const fetchBatches = async () => {
             try {
@@ -68,7 +68,7 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
             <p><strong>Status</strong></p>
             <p><strong>Actions</strong></p>
             {batches
-                .filter(batch => batch.status === batchStatus)
+                .filter(batch => batchStatus.split(',').includes(batch.status))
                 .map(batch => (
                     <React.Fragment key={batch._id}>
                         <p>{batch.batchId}</p>
@@ -77,7 +77,16 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
                         <p>{batch.type}</p>
                         <p>{batch.status}</p>
                         <p>
-                            <GcdsButton onClick={() => buttonAction(batch.batchId)}>{buttonLabel}</GcdsButton>
+                            {batch.status === 'processed' ? (
+                                <>
+                                    <GcdsButton onClick={() => buttonAction(batch.batchId, 'csv')}>CSV</GcdsButton>
+                                    <GcdsButton onClick={() => buttonAction(batch.batchId, 'excel')}>Excel</GcdsButton>
+                                </>
+                            ) : batch.status === 'completed' ? (
+                                <GcdsButton onClick={() => buttonAction(batch.batchId)}>Process</GcdsButton>
+                            ) : (
+                                ""
+                            )}
                         </p>
                     </React.Fragment>
                 ))}

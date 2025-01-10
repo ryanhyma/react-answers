@@ -101,7 +101,8 @@ const ContextService = {
 
       const updatedRequests = requests.map((request, index) => ({
         message: request,
-        systemPrompt: SYSTEM_PROMPT + "<searchResults>" + searchResults[index] + "</searchResults>",
+        systemPrompt: SYSTEM_PROMPT,
+        searchResults: "<searchResults>" + searchResults[index] + "</searchResults>",
       }));
 
       const response = await ContextService.sendBatch(updatedRequests, aiService);

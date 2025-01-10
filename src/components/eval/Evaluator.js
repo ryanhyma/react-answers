@@ -125,9 +125,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 .filter(line => isValidLine(line));
 
             const headers = parseCSVLine(lines[0]);
-            const problemDetailsIndex = headers.findIndex(h => h.trim() === 'Problem Details');
-            const urlIndex = headers.findIndex(h => h.trim() === 'URL');
-            const contextIndex = headers.findIndex(h => h.trim() === 'Context');
+            const problemDetailsIndex = headers.findIndex(h => h.trim().toLowerCase() === 'problem details' || h.trim().toLowerCase() === 'question');
+            const urlIndex = headers.findIndex(h => h.trim().toLowerCase() === 'url');
 
             if (problemDetailsIndex === -1) {
                 throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
@@ -136,22 +135,17 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             const entries = lines.slice(1)
                 .map(line => {
                     const values = parseCSVLine(line);
-                    const question = values[problemDetailsIndex]?.trim();
-                    // Only get URL if the column exists
-                    const url = urlIndex !== -1 ? values[urlIndex]?.trim() : '';
-                    const context = contextIndex !== -1 ? values[contextIndex]?.trim() : '';
+                    const entry = {};
 
-                    if (question) {
-                        console.log('Processing valid entry:', { question, url, context });
-                    }
+                    headers.forEach((header, index) => {
+                        const key = header.trim().toLowerCase() === 'problem details' ? 'question' : header.trim();
+                        entry[key] = values[index]?.trim() || '';
+                    });
 
-                    return {
-                        question: question || '',
-                        referringUrl: url || '',
-                        context: context || ''
-                    };
+                    console.log('Processing entry:', entry);
+                    return entry;
                 })
-                .filter(entry => entry.question); // Only filter based on question presence
+                .filter(entry => entry['question']); // Only filter based on 'question' presence
 
             console.log(`Found ${entries.length} valid entries to process`);
             return entries;
@@ -205,16 +199,10 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     };
 
     const needsContext = (entries) => {
-        return entries.some(entry => !entry.context);
+        return entries.some(entry => !entry.context_output_tokens);
     };
 
-    // TODO: Batch Processing Improvements Needed
-    // - Add timestamp when creating batches
-    // - Create new API endpoint /api/process-pending-batches to handle background processing
-    // - Set up cron job using cron-job.org to periodically check batch status
-    // - Add database table/schema for tracking batch status
-    // - Update UI to show that processing will continue even if user leaves page
-    // See conversation: https://github.com/your-repo/issues/XX
+
     const processBatch = async (entries) => {
         try {
             console.log(`Starting batch processing for ${entries.length} entries...`);
@@ -228,76 +216,22 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 console.log('Some entries need context. Deriving context batch processing...');
                 const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI);
                 console.log('Context batch started: ' + result.batchId);
+                return result;
             } else {
-
-                
-
-                // Load appropriate system prompt based on selected AI
-                const systemPrompt = await loadSystemPrompt(selectedLanguage);
-
-                // Format entries for batch processing
-                const requests = entries.map((entry, index) => {
-                    const { redactedText } = RedactionService.redactText(entry.question);
-                    const messageWithUrl = `<evaluation>${redactedText}\n<referring-url>${entry.referringUrl}</referring-url></evaluation>`;
-                    console.log(`Entry ${index + 1} formatted:`, messageWithUrl);
-                    return messageWithUrl;
-                });
-
-                const payload = {
-                    requests,
-                    systemPrompt
-                };
-
-                console.log('Sending batch request with:', {
-                    requestCount: requests.length,
-                    systemPromptLength: systemPrompt.length,
-                    aiService: selectedAI
-                });
-
-                // Select endpoint based on AI service
-
-                const API_URL = process.env.NODE_ENV === 'production'
-                    ? ''  // Vercel serverless function
-                    : `http://localhost:3001`;
-                const endpoint = selectedAI === 'claude' ? API_URL + '/api/claude-batch' : API_URL + '/api/gpt-batch';
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 55000); // 55 second timeout
-
                 try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(payload),
-                        signal: controller.signal
-                    });
 
-                    clearTimeout(timeoutId);
+                    const aiService = selectedAI === 'claude' ? ClaudeService : ChatGPTService;
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        let errorData;
-                        try {
-                            errorData = JSON.parse(errorText);
-                        } catch (e) {
-                            errorData = { error: errorText };
-                        }
-                        throw new Error(`API error: ${errorData.details || errorData.error || response.statusText}`);
-                    }
+                    const data = await aiService.sendBatchMessages(entries, selectedLanguage);
 
-                    const data = await response.json();
                     console.log(`${selectedAI} batch response:`, data);
 
                     if (data.batchId) {
                         console.log(`Batch created successfully. Batch ID: ${data.batchId}`);
-                        setBatchId(data.batchId);
-                        setBatchStatus('in_progress');
-                        setIsPolling(true);
-                        setPollStartTime(Date.now());
                     } else {
                         throw new Error('No batch ID received from API');
                     }
+                    return data;
                 } catch (error) {
                     if (error.name === 'AbortError') {
                         throw new Error('Request timed out while creating batch. The operation may still be processing.');
@@ -312,10 +246,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             setBatchStatus(null);
             setIsPolling(false);
         }
-
     };
 
-    
+
 
     const handleProcessFile = async () => {
         if (!file) return;
@@ -361,7 +294,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-    
+
 
     const handleCancel = async () => {
         if (!batchId) return;
@@ -391,7 +324,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-   
+
 
     const formatTimestamp = (date) => {
         if (!date) return '';
@@ -472,7 +405,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 <div className="text-sm text-gray-600">
                     {status === 'preparing' && 'Creating batch...'}
                     {status === 'started' && 'Batch started...'}
-                    
+
                 </div>
             </div>
         );

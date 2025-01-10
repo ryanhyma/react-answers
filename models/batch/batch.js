@@ -10,10 +10,20 @@ const EntrySchema = new mongoose.Schema({
   departmentUrl: { type: String, required: false },
   searchResults: { type: String, required: false },
   context_model: { type: String, required: false },
-  context_tokens: { type: String, required: false },
+  context_input_tokens: { type: String, required: false },
+  context_output_tokens: { type: String, required: false },
+  context_cached_creation_input_tokens: { type: String, required: false }, 
+  context_cached_read_input_tokens: { type: String, required: false },
   answer: { type: String, required: false },
+  answer_citation_url: { type: String, required: false },
+  answer_citation_head:   { type: String, required: false },
+  answer_citation_confidence: { type: String, required: false },
   answer_model: { type: String, required: false },
-  answer_tokens: { type: String, required: false },
+  answer_input_tokens: { type: String, required: false },
+  answer_output_tokens: { type: String, required: false },
+  answer_cached_creation_input_tokens: { type: String, required: false },
+  answer_cached_read_input_tokens: { type: String, required: false }
+
 });
 
 const BatchSchema = new mongoose.Schema({

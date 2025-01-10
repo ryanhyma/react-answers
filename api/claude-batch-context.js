@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import dbConnect from './db-connect.js';
 import { getModelConfig } from '../config/ai-models.js';
 import { Batch } from '../models/batch/batch.js';
+import { search } from 'duck-duck-scrape';
 
 const modelConfig = getModelConfig('anthropic', 'claude-3-5-haiku-20241022');
 const anthropic = new Anthropic({
@@ -25,18 +26,16 @@ export default async function handler(req, res) {
             throw new Error('Invalid requests array in payload');
         }
 
-
-
         const batch = await anthropic.beta.messages.batches.create({
             requests: req.body.requests.map((request, index) => ({
-            custom_id: `eval-${index}`,
-            params: {
-                model: modelConfig.name,
-                messages: [{ role: "user", content: request.message }],
-                max_tokens: modelConfig.maxTokens,
-                system: request.systemPrompt,
-                temperature: modelConfig.temperature
-            }
+                custom_id: `eval-${index}`,
+                params: {
+                    model: modelConfig.name,
+                    messages: [{ role: "user", content: request.message }],
+                    max_tokens: modelConfig.maxTokens,
+                    system: request.systemPrompt + request.searchResults,
+                    temperature: modelConfig.temperature
+                }
             }))
         });
 
@@ -48,13 +47,14 @@ export default async function handler(req, res) {
 
         // save the batch id and entries
         await dbConnect();
-        const savedBatch = new Batch({ 
-            batchId: batch.id, 
-            type: "context", 
+        const savedBatch = new Batch({
+            batchId: batch.id,
+            type: "context",
             provider: "anthropic",
             entries: req.body.requests.map((request, index) => ({
-            entry_id: `eval-${index}`,
-            question: request.message
+                entry_id: `eval-${index}`,
+                question: request.message,
+                searchResults: request.searchResults,
             }))
         });
         await savedBatch.save();
