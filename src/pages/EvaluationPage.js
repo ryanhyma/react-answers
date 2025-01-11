@@ -1,10 +1,10 @@
 import React from 'react';
 import * as XLSX from 'xlsx';
 // import { useTranslations } from '../hooks/useTranslations';
-import { GcdsContainer, GcdsText, GcdsLink, GcdsCheckbox, GcdsTextarea, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
+import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
-import {getApiUrl} from '../utils/apiToUrl.js';
+import {getApiUrl,getProviderApiUrl} from '../utils/apiToUrl.js';
 
 
 const EvaluationPage = ({ lang = 'en' }) => {
@@ -18,7 +18,7 @@ const EvaluationPage = ({ lang = 'en' }) => {
     console.log('Button clicked for batch:', batchId);
     const fetchBatchAndDownload = async (batchId, type) => {
       try {
-        const response = await fetch(getApiUrl(`batch-retrieve?batchId=${batchId}`));
+        const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`));
         const batch = await response.json();
 
         if (batch && batch.entries) {
@@ -106,10 +106,11 @@ const EvaluationPage = ({ lang = 'en' }) => {
     fetchBatchAndDownload(batchId, type);
   };
 
-  const handleCompleteClick = async (batchId) => {
+  const handleCompleteClick = async (batchId, provider) => {
     console.log('Button clicked to complete batch:', batchId);
-    const response = await fetch(getApiUrl("batch-process-results?batchId=" + batchId));
+    const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
   };
+  
 
   const handleStatusToggle = () => {
     setStatus({ ...status, isAvailable: !status.isAvailable });

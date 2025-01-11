@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import dbConnect from './db-connect.js';
 import { getModelConfig } from '../config/ai-models.js';
 import { Batch } from '../models/batch/batch.js';
-import { search } from 'duck-duck-scrape';
+
 
 const modelConfig = getModelConfig('anthropic', 'claude-3-5-haiku-20241022');
 const anthropic = new Anthropic({

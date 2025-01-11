@@ -1,21 +1,16 @@
 // src/ContextService.js
 import loadContextSystemPrompt from './contextSystemPrompt.js';
-const PORT = 3001; // Use a default value if PORT is not set
-const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:' + PORT + '/api/context-agent';
-const BATCH_API_URLS = {
-  openai: process.env.NODE_ENV === 'production' ? '/api/openai-batch-context' : 'http://localhost:' + PORT + '/api/openai-batch-context',
-  claude: process.env.NODE_ENV === 'production' ? '/api/claude-batch-context' : 'http://localhost:' + PORT + '/api/claude-batch-context',
-};
-const CONTEXT_SEARCH_URL = process.env.NODE_ENV === 'production' ? '/api/context-search' : 'http://localhost:' + PORT + '/api/context-search';
+import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
+
 
 const ContextService = {
-  sendMessage: async (message, lang = 'en', department = '') => {
+  sendMessage: async (provider, message, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(getProviderApiUrl(provider, "context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +75,7 @@ const ContextService = {
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          const searchResponse = await fetch(CONTEXT_SEARCH_URL, {
+          const searchResponse = await fetch(getApiUrl("context-search"), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -120,7 +115,7 @@ const ContextService = {
 
   sendBatch: async (requests, aiService) => {
     try {
-      const response = await fetch(BATCH_API_URLS[aiService], {
+      const response = await fetch(getProviderApiUrl(aiService,"batch-context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

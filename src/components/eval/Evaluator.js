@@ -4,17 +4,15 @@ import {
     GcdsContainer,
     GcdsHeading,
     GcdsText,
-    GcdsLis,
 } from '@cdssnc/gcds-components-react';
 import LoggingService from '../../services/LoggingService.js';
-import ClaudeService from '../../services/ClaudeService.js';
-import ChatGPTService from '../../services/ChatGPTService.js';
+import MessageService from '../../services/MessageService.js';
 import RedactionService from '../../services/RedactionService.js';
 import ContextService from '../../services/ContextService.js';
 import { parseEvaluationResponse } from '../../utils/evaluationParser.js';
-import loadSystemPrompt from '../../services/systemPrompt.js';
 import '../../styles/App.css';
 import AdminCodeInput from '../admin/AdminCodeInput.js';
+
 
 const MAX_POLLING_DURATION = 24 * 60 * 60 * 1000; // 24 hours (in milliseconds)
 const POLLING_INTERVAL = 10 * 1000;//10 * 60 * 1000; // 10 minutes (in milliseconds)   
@@ -26,7 +24,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [error, setError] = useState(null);
     const [processedCount, setProcessedCount] = useState(0);
     const [totalEntries, setTotalEntries] = useState(0);
-    const [selectedAI, setSelectedAI] = useState('claude');
+    const [selectedAI, setSelectedAI] = useState('anthropic');
     const [fileUploaded, setFileUploaded] = useState(false);
 
     const [useBatchProcessing, setUseBatchProcessing] = useState(true);
@@ -126,7 +124,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
             const headers = parseCSVLine(lines[0]);
             const problemDetailsIndex = headers.findIndex(h => h.trim().toLowerCase() === 'problem details' || h.trim().toLowerCase() === 'question');
-            const urlIndex = headers.findIndex(h => h.trim().toLowerCase() === 'url');
+            
 
             if (problemDetailsIndex === -1) {
                 throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
@@ -171,9 +169,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 }${derivedContext.searchResults ? `\n<searchResults>${derivedContext.searchResults}</searchResults>` : ''
                 }`;
 
-            const aiResponse = selectedAI === 'claude'
-                ? await ClaudeService.sendMessage(messageWithUrl)
-                : await ChatGPTService.sendMessage(messageWithUrl);
+            const aiResponse = await MessageService.sendMessage(selectedAI,messageWithUrl);
+                
 
             const { citationUrl, confidenceRating } = parseEvaluationResponse(aiResponse, selectedAI);
 
@@ -219,10 +216,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                 return result;
             } else {
                 try {
-
-                    const aiService = selectedAI === 'claude' ? ClaudeService : ChatGPTService;
-
-                    const data = await aiService.sendBatchMessages(entries, selectedLanguage);
+                    const data = await MessageService.sendBatchMessages(selectedAI,entries, selectedLanguage);
 
                     console.log(`${selectedAI} batch response:`, data);
 
@@ -286,6 +280,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
             }
 
             setBatchStatus('started');
+            resetForm();
 
         } catch (error) {
             console.error('Process file error:', error);
@@ -294,35 +289,29 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-
-
-    const handleCancel = async () => {
-        if (!batchId) return;
-
-        try {
-            const API_URL = process.env.NODE_ENV === 'production'
-                ? ''  // Vercel serverless function
-                : `http://localhost:3001`;
-
-            const response = await fetch(API_URL + '/api/claude-batch-cancel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ batchId })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to cancel batch');
-            }
-
-            setIsPolling(false);
-            setBatchStatus('canceling');
-        } catch (error) {
-            console.error('Error canceling batch:', error);
-            setError('Failed to cancel batch: ' + error.message);
-        }
+    const resetForm = () => {
+        setFile(null);
+        setProcessing(false);
+        setResults(null);
+        setError(null);
+        setProcessedCount(0);
+        setTotalEntries(0);
+        setSelectedAI('anthropic');
+        setFileUploaded(false);
+        setUseBatchProcessing(true);
+        setBatchId(null);
+        setBatchStatus(null);
+        setBatchResults(null);
+        setIsPolling(false);
+        setPollStartTime(null);
+        setLastCheckTime(null);
+        setPollingErrors(0);
+        setSelectedLanguage('en');
+        setAdminCode('');
+        document.getElementById('csvFile').value = ''; // Reset file input
     };
+
+    
 
 
 
@@ -374,12 +363,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 <GcdsText>
                                     Last checked: {lastCheckTime ? formatTimestamp(lastCheckTime) : 'Not yet checked'}
                                 </GcdsText>
-                                <button
-                                    onClick={handleCancel}
-                                    className="secondary-button force-style-button"
-                                >
-                                    Cancel Batch
-                                </button>
+                               
                             </>
                         )}
                     </>
@@ -449,24 +433,24 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             type="radio"
                                             id="claude"
                                             name="ai-selection"
-                                            value="claude"
-                                            checked={selectedAI === 'claude'}
+                                            value="anthropic"
+                                            checked={selectedAI === 'anthropic'}
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label className="mrgn-rght-15" htmlFor="claude">Anthropic Claude 3.5 Sonnet</label>
+                                        <label className="mrgn-rght-15" htmlFor="claude">Anthropic</label>
                                     </div>
                                     <div className="flex-center">
                                         <input
                                             type="radio"
                                             id="chatgpt"
                                             name="ai-selection"
-                                            value="chatgpt"
-                                            checked={selectedAI === 'chatgpt'}
+                                            value="openai"
+                                            checked={selectedAI === 'openai'}
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="chatgpt">OpenAI ChatGPT 4</label>
+                                        <label htmlFor="chatgpt">OpenAI</label>
                                     </div>
                                 </div>
                             </fieldset>
@@ -558,7 +542,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                     processedCount={processedCount}
                                     total={selectedEntries?.length || 0}
                                 />
-                                {batchStatus === 'preparing' && selectedAI === 'chatgpt' && (
+                                {batchStatus === 'preparing' && selectedAI === 'openai' && (
                                     <div className="text-sm text-gray-500 mt-2">
                                         This may take up to a minute to start...
                                     </div>

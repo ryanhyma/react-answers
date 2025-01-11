@@ -102,19 +102,9 @@ export default async function handler(req, res) {
       if (!batch) {
         throw new Error('Batch not found');
       }
-      const provider = batch.provider;
-      if (!provider) {
-        throw new Error('Provider is required');
-      }
 
-      let result;
-      if (provider === 'anthropic') {
-        result = await handleAnthropic(batch);
-      } else if (provider === 'openai') {
-        result = await handleOpenAI(batch);
-      } else {
-        throw new Error('Unsupported provider');
-      }
+      let result = await handleAnthropic(batch);
+
 
       return res.status(200).json(result);
 

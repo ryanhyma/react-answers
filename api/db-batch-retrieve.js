@@ -1,4 +1,4 @@
-import dbConnect from '../api/db-connect.js';
+import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch/batch.js';
 
 export default async function handler(req, res) {

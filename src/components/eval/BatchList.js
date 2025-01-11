@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { GcdsGrid, GcdsGridCol, GcdsButton } from '@cdssnc/gcds-components-react';
-import {getApiUrl} from '../../utils/apiToUrl.js';
+import { GcdsGrid, GcdsButton } from '@cdssnc/gcds-components-react';
+import {getApiUrl,getProviderApiUrl} from '../../utils/apiToUrl.js';
 
 const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
     const [batches, setBatches] = useState([]);
 
     const fetchStatus = async (batchId, provider) => {
         try {
-            const response = await fetch(getApiUrl(`batch-status?batchId=${batchId}&provider=${provider}`));
+            const response = await fetch(getProviderApiUrl(provider,`batch-status?batchId=${batchId}`));
             const data = await response.json();
             return { batchId, status: data.status };
         } catch (error) {
@@ -40,7 +40,7 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
     useEffect(() => {
         const fetchBatches = async () => {
             try {
-                const response = await fetch(getApiUrl('batch-list'));
+                const response = await fetch(getApiUrl('db-batch-list'));
                 let batches = await response.json();
                 batches = await fetchStatuses(batches);
                 setBatches(batches);
@@ -51,13 +51,20 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
 
         fetchBatches();
 
-        const intervalId = setInterval(fetchBatches, 30000); // Poll every 10 seconds
+        const intervalId = setInterval(fetchBatches, 5000); 
 
         // Cleanup interval on component unmount
         return () => clearInterval(intervalId);
     }, []);
 
 
+
+    const [clickedBatchIds, setClickedBatchIds] = useState([]);
+
+    const handleButtonClick = (batchId, action) => {
+        buttonAction(batchId, action);
+        setClickedBatchIds([...clickedBatchIds, batchId]);
+    };
 
     return (
         <GcdsGrid align-content="center" align-items="center" equal-row-height columnsDesktop="1fr 1fr 1fr 1fr 1fr 1fr" tag='div'>
@@ -77,13 +84,13 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
                         <p>{batch.type}</p>
                         <p>{batch.status}</p>
                         <p>
-                            {batch.status === 'processed' ? (
+                            {batch.status === 'processed' && !clickedBatchIds.includes(batch.batchId) ? (
                                 <>
-                                    <GcdsButton onClick={() => buttonAction(batch.batchId, 'csv')}>CSV</GcdsButton>
-                                    <GcdsButton onClick={() => buttonAction(batch.batchId, 'excel')}>Excel</GcdsButton>
+                                    <GcdsButton onClick={() => handleButtonClick(batch.batchId, 'csv')}>CSV</GcdsButton>
+                                    <GcdsButton onClick={() => handleButtonClick(batch.batchId, 'excel')}>Excel</GcdsButton>
                                 </>
-                            ) : batch.status === 'completed' ? (
-                                <GcdsButton onClick={() => buttonAction(batch.batchId)}>Process</GcdsButton>
+                            ) : batch.status === 'completed' && !clickedBatchIds.includes(batch.batchId) ? (
+                                <GcdsButton onClick={() => handleButtonClick(batch.batchId, batch.provider)}>Process</GcdsButton>
                             ) : (
                                 ""
                             )}
