@@ -7,14 +7,18 @@ const AI_MODELS = {
         maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
-        knowledgeCutoff: '2024-11'
       },
       'gpt-4o': {
         maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
-        knowledgeCutoff: '2024-05'
-      }
+      },
+      'gpt-4o-mini': {
+        maxTokens: 1024,
+        temperature: 0.0,
+        timeoutMs: 60000,
+    }
+
     }
   },
   anthropic: {

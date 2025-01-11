@@ -16,7 +16,7 @@ import anthropicBatchStatusHandler from '../api/anthropic-batch-status.js';
 import openAIBatchStatusHandler from '../api/openai-batch-status.js';
 import contextSearchHandler from '../api/context-search.js';
 import anthropicBatchContextHandler from '../api/anthropic-batch-context.js';
-import openAIBatchContextHandler from '../api/openai-batch.js';
+import openAIBatchContextHandler from '../api/openai-batch-context.js';
 import dbBatchListHandler from '../api/db-batch-list.js';
 import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
 import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
@@ -84,6 +84,8 @@ app.get('/api/openai-batch-status', openAIBatchStatusHandler);
 app.post('/api/context-search', contextSearchHandler);
 
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
+
+app.post('/api/openai-batch-context', openAIBatchContextHandler);
 
 app.post('/api/openai-batch-context', openAIBatchContextHandler);
 
