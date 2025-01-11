@@ -139,12 +139,12 @@ const EvaluationPage = ({ lang = 'en' }) => {
           </li>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#continue-evaluation">Update evaluation from batch</GcdsLink>
+              <GcdsLink href="#running-evaluation">Running batches</GcdsLink>
             </GcdsText>
           </li>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#download-evaluation">Download evalutation results</GcdsLink>
+              <GcdsLink href="#processed-evaluation">Processed Batches</GcdsLink>
             </GcdsText>
           </li>
         </ul>
