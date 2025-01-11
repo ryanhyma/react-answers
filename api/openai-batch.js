@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         const modelConfig = getModelConfig('openai');
 
         const jsonlRequests = requests.map((request, index) => ({
-            custom_id: `request-${index}`,
+            custom_id: `eval-${index}`,
             method: "POST",
             url: "/v1/chat/completions",
             body: {
@@ -71,6 +71,7 @@ export default async function handler(req, res) {
         }
         
         // Define the path for the temporary JSONL file
+        // TODO - Why does this work vs a buffered stream??
         const jsonlFilePath = './temp.jsonl';
 
         // Write the JSONL content to the file

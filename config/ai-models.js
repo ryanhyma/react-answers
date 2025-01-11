@@ -4,13 +4,13 @@ const AI_MODELS = {
     default: 'gpt-4o-2024-11-20',
     models: {
       'gpt-4o-2024-11-20': {
-        maxTokens: 128000,
+        maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
         knowledgeCutoff: '2024-11'
       },
       'gpt-4o': {
-        maxTokens: 128000,
+        maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
         knowledgeCutoff: '2024-05'

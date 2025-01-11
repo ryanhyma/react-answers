@@ -1,23 +1,26 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { Batch } from '../models/batch/batch.js';
+import OpenAI from 'openai';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  headers: {
-    'anthropic-beta': 'message-batches-2024-09-24'
-  }
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
 });
 
-const handleAnthropic = async (batch) => {
+const handleOpenAI = async (batch) => {
   try {
-    const results = await anthropic.beta.messages.batches.results(batch.batchId);
+    const result = await openai.batches.retrieve(batch.batchId);
+    const fileId = result.error_file_id || result.output_file_id;
+    if (!fileId) {
+      throw new Error('No file ID found in the batch result');
+    }
+    const results = await retrieveJsonlAsJson(fileId);
+    
     for await (const result of results) {
       const customId = result.custom_id;
       const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);
       if (entryIndex !== -1) {
         let updatedEntry = null;
         if (batch.type === 'context') {
-          const response = result.result.message.content[0].text;
+          const response = result.response.body.choices[0].message.content;
           const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
           const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
           const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
@@ -31,11 +34,11 @@ const handleAnthropic = async (batch) => {
             topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
             department: departmentMatch ? departmentMatch[1] : null,
             departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null,
-            context_model: result.result.message.model,
-            context_input_tokens: result.result.message.usage.input_tokens,
-            context_output_tokens: result.result.message.usage.output_tokens,
-            context_cached_creation_input_tokens: result.result.message.usage.cache_creation_input_tokens,
-            context_cached_read_input_tokens: result.result.message.usage.cache_read_input_tokens,
+            context_model: result.response.body.model,
+            context_input_tokens: result.response.body.usage.prompt_tokens,
+            context_output_tokens: result.response.body.usage.completion_tokens,
+            context_cached_creation_input_tokens: "",
+            context_cached_read_input_tokens: "",
           };
 
         } else {
@@ -43,11 +46,11 @@ const handleAnthropic = async (batch) => {
           const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
           const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
 
-          const citationHeadMatch = result.result.message.content[0].text.match(citationHeadRegex);
-          const citationUrlMatch = result.result.message.content[0].text.match(citationUrlRegex);
-          const confidenceRatingMatch = result.result.message.content[0].text.match(confidenceRatingRegex);
+          const citationHeadMatch = result.response.body.choices[0].message.content.match(citationHeadRegex);
+          const citationUrlMatch = result.response.body.choices[0].message.content.match(citationUrlRegex);
+          const confidenceRatingMatch = result.response.body.choices[0].message.content.match(confidenceRatingRegex);
 
-          const answer = result.result.message.content[0].text
+          const answer = result.response.body.choices[0].message.content
             .replace(citationHeadRegex, '')
             .replace(citationUrlRegex, '')
             .replace(confidenceRatingRegex, '')
@@ -55,12 +58,12 @@ const handleAnthropic = async (batch) => {
 
           updatedEntry = {
             ...batch.entries[entryIndex].toJSON(),
-            answer_model: result.result.message.model,
+            answer_model: result.response.body.model,
             answer: answer,
-            answer_input_tokens: result.result.message.usage.input_tokens,
-            answer_output_tokens: result.result.message.usage.output_tokens,
-            answer_cached_creation_input_tokens: result.result.message.usage.cache_creation_input_tokens,
-            answer_cached_read_input_tokens: result.result.message.usage.cache_read_input_tokens,
+            answer_input_tokens: result.response.body.usage.prompt_tokens,
+            answer_output_tokens: result.response.body.usage.completion_tokens,
+            answer_cached_creation_input_tokens: "",
+            answer_cached_read_input_tokens: "",
             answer_citation_head: citationHeadMatch ? citationHeadMatch[1] : null,
             answer_citation_url: citationUrlMatch ? citationUrlMatch[1] : null,
             answer_citation_confidence: confidenceRatingMatch ? confidenceRatingMatch[1] : null,
@@ -84,9 +87,39 @@ const handleAnthropic = async (batch) => {
   }
 };
 
-const handleOpenAI = async (batchId) => {
-  return "";
-};
+async function retrieveJsonlAsJson(fileId) {
+  try {
+      // Get the file content as a stream
+      const response = await openai.files.content(fileId);
+      const contentStream = response.body;
+
+      // Collect chunks of the stream
+      const chunks = [];
+      for await (const chunk of contentStream) {
+          chunks.push(chunk);
+      }
+
+      // Combine chunks into a single string
+      const jsonlContent = Buffer.concat(chunks).toString('utf-8');
+
+      // Convert JSONL into an array of JSON objects
+      const jsonArray = jsonlContent
+          .split('\n')                // Split by lines
+          .filter(line => line.trim()) // Remove empty lines
+          .map(line => JSON.parse(line)); // Parse each line as JSON
+
+      console.log('Parsed JSON Array:', jsonArray);
+
+      return jsonArray;
+  } catch (error) {
+      console.error('Error processing JSONL:', error.message);
+      if (error.response?.data) {
+          console.error('Response details:', error.response.data);
+      }
+  }
+}
+
+
 
 
 export default async function handler(req, res) {
@@ -102,7 +135,7 @@ export default async function handler(req, res) {
         throw new Error('Batch not found');
       }
 
-      let result = await handleAnthropic(batch);
+      let result = await handleOpenAI(batch);
 
 
       return res.status(200).json(result);

@@ -19,6 +19,7 @@ import anthropicBatchContextHandler from '../api/anthropic-batch-context.js';
 import openAIBatchContextHandler from '../api/openai-batch.js';
 import dbBatchListHandler from '../api/db-batch-list.js';
 import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
+import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
 import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -91,6 +92,8 @@ app.get('/api/db-batch-list', dbBatchListHandler);
 app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
 
 app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
+
+app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 
