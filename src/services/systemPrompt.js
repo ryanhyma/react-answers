@@ -9,74 +9,81 @@ You are an AI assistant specializing in Government of Canada information found o
 // Create a map of department-specific content imports
 const departmentModules = {
   CRA: {
-    updates: () => import('./systemPrompt/context-cra/cra-updates.js').then(m => m.CRA_UPDATES),
-    scenarios: () => import('./systemPrompt/context-cra/cra-scenarios.js').then(m => m.CRA_SCENARIOS)
+    getContent: async () => {
+      const [{ CRA_UPDATES }, { CRA_SCENARIOS }] = await Promise.all([
+        import('./systemPrompt/context-cra/cra-updates.js'),
+        import('./systemPrompt/context-cra/cra-scenarios.js')
+      ]);
+      return { updates: CRA_UPDATES, scenarios: CRA_SCENARIOS };
+    }
   },
   ESDC: {
-    updates: () => import('./systemPrompt/context-esdc/esdc-updates.js').then(m => m.ESDC_UPDATES),
-    scenarios: () => import('./systemPrompt/context-esdc/esdc-scenarios.js').then(m => m.ESDC_SCENARIOS)
+    getContent: async () => {
+      const [{ ESDC_UPDATES }, { ESDC_SCENARIOS }] = await Promise.all([
+        import('./systemPrompt/context-esdc/esdc-updates.js'),
+        import('./systemPrompt/context-esdc/esdc-scenarios.js')
+      ]);
+      return { updates: ESDC_UPDATES, scenarios: ESDC_SCENARIOS };
+    }
   },
   ISC: {
-    updates: () => import('./systemPrompt/context-isc/isc-updates.js').then(m => m.ISC_UPDATES),
-    scenarios: () => import('./systemPrompt/context-isc/isc-scenarios.js').then(m => m.ISC_SCENARIOS)
+    getContent: async () => {
+      const [{ ISC_UPDATES }, { ISC_SCENARIOS }] = await Promise.all([
+        import('./systemPrompt/context-isc/isc-updates.js'),
+        import('./systemPrompt/context-isc/isc-scenarios.js')
+      ]);
+      return { updates: ISC_UPDATES, scenarios: ISC_SCENARIOS };
+    }
   },
   PSPC: {
-    updates: () => import('./systemPrompt/context-pspc/pspc-updates.js').then(m => m.PSPC_UPDATES),
-    scenarios: () => import('./systemPrompt/context-pspc/pspc-scenarios.js').then(m => m.PSPC_SCENARIOS)
+    getContent: async () => {
+      const [{ PSPC_UPDATES }, { PSPC_SCENARIOS }] = await Promise.all([
+        import('./systemPrompt/context-pspc/pspc-updates.js'),
+        import('./systemPrompt/context-pspc/pspc-scenarios.js')
+      ]);
+      return { updates: PSPC_UPDATES, scenarios: PSPC_SCENARIOS };
+    }
   },
   IRCC: {
-    updates: () => import('./systemPrompt/context-ircc/ircc-updates.js').then(m => m.IRCC_UPDATES),
-    scenarios: () => import('./systemPrompt/context-ircc/ircc-scenarios.js').then(m => m.IRCC_SCENARIOS)
+    getContent: async () => {
+      const [{ IRCC_UPDATES }, { IRCC_SCENARIOS }] = await Promise.all([
+        import('./systemPrompt/context-ircc/ircc-updates.js'),
+        import('./systemPrompt/context-ircc/ircc-scenarios.js')
+      ]);
+      return { updates: IRCC_UPDATES, scenarios: IRCC_SCENARIOS };
+    }
   }
-  // Add more departments as needed
 };
 
 async function loadSystemPrompt(language = 'en', context) {
   console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
 
   try {
-    const department = context.department;
-
-    // Always start with general scenarios as the base
-    let departmentContent = { updates: '', scenarios: SCENARIOS };
+    const { department } = context;
     
-    // Load department-specific content if available and append to general scenarios
-    if (department && departmentModules[department]) {
-      try {
-        const [updates, scenarios] = await Promise.all([
-          departmentModules[department].updates(),
-          departmentModules[department].scenarios()
-        ]);
-        
-        departmentContent = {
-          updates,
-          scenarios
-        };
-        
-        console.log(`🏢 Loaded specialized content for ${department.toUpperCase()}: ${language.toUpperCase()}`);
-      } catch (error) {
-        console.warn(`Failed to load specialized content for ${department}, using defaults`, error);
-      }
-    }
-
-    // Select language-specific content
-    // const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
-    // console.log(`📚 Loaded menu structure: ${language.toUpperCase()}`);
+    // Load department content or use defaults
+    const content = department && departmentModules[department]
+      ? await departmentModules[department].getContent()
+        .catch(error => {
+          console.warn(`Failed to load content for ${department}:`, error);
+          return { updates: '', scenarios: '' };
+        })
+      : { updates: '', scenarios: '' };
     
     const citationInstructions = CITATION_INSTRUCTIONS;
 
     // Inform LLM about the current page language
     const languageContext = language === 'fr' 
-      ? "The user is asking the question on a French Government of Canada page. Language context is French."
-      : "The user is asking their question on an English Government of Canada page.";
+      ? "The user is asking the question on the official French AI Answers page. Language context is French."
+      : "The user is asking their question on the offical English AI Answers page. Language context is English.";
 
     // Update the department context sections
     const departmentUpdatesSection = department 
-      ? `## Updated pages for this department\n${departmentContent.updates}`
+      ? `## Updated pages for this department\n${content.updates}`
       : '';
     
     const departmentScenariosSection = department 
-      ? `## Important scenarios for this department\n${departmentContent.scenarios}`
+      ? `## Important scenarios for this department\n${content.scenarios}`
       : `## Important general instructions for all departments\n${SCENARIOS}`;
 
     // Add current date information
@@ -88,8 +95,8 @@ async function loadSystemPrompt(language = 'en', context) {
     });
 
     
-    // add context into systme prompt
-    const contextPrompt = `## Current Context for question ##
+    // add context from contextService call into systme prompt
+    const contextPrompt = `
     Department: ${context.department}
     Topic: ${context.topic}
     Topic URL: ${context.topicUrl}
@@ -103,17 +110,22 @@ async function loadSystemPrompt(language = 'en', context) {
 
       ## Current Context
       Today is ${currentDate}.
+      ## Language context - official language of the page the user is on
       ${languageContext}
+      
+      ## Tagged context for question from previous AI service##
+     ${contextPrompt}
 
       ${BASE_SYSTEM_PROMPT}
 
-      ${contextPrompt}
+      ## General Instructions for All Departments
+      ${SCENARIOS}
+
+      ${department ? `## Department-Specific Updates\n${content.updates}` : ''}
+
+      ${department ? `## Department-Specific Scenarios\n${content.scenarios}` : ''}
 
       ${citationInstructions}
-
-      ${departmentUpdatesSection}
-
-      ${departmentScenariosSection}
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
