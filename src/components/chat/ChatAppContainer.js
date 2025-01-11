@@ -317,10 +317,12 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         let departmentUrl = '';
         let searchResults = '';
 
-        if (!referringUrl && turnCount === 0) {
+        if (turnCount === 0) {
           try {
-            const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
-              }`;
+            // Always include referring URL in context message if it exists
+            const contextMessage = `${redactedText}${
+              referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
+            }`;
             const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
             department = derivedContext.department;
             topic = derivedContext.topic;
@@ -367,12 +369,16 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             content: m.redactedText || m.text
           }));
 
-        // Try primary AI service first, yes first
-        try {
-          const response = await tryAIService(selectedAI, redactedText, conversationHistory, lang, context);
+        // Create formatted message with referring URL (add this before the first try block)
+        const messageWithReferrer = `${redactedText}${
+          referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
+        }}`;
 
+        // First try block - Primary AI
+        try {
+          const response = await tryAIService(selectedAI, messageWithReferrer, conversationHistory, lang, context);
           console.log(`✅ ${selectedAI} response:`, response);
-    
+          
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
 
@@ -437,11 +443,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         } catch (error) {
           console.error(`Error with ${selectedAI}:`, error);
 
-          // Try fallback AI service
+          // Fallback AI attempt
           const fallbackAI = getNextAIService(selectedAI);
           try {
-            const fallbackResponse = await tryAIService(fallbackAI, redactedText, conversationHistory, lang, context);
-
+            const fallbackResponse = await tryAIService(fallbackAI, messageWithReferrer, conversationHistory, lang, context);
+            
             // Add the fallback AI response
             const fallbackMessageId = messageIdCounter.current++;
 
