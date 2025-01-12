@@ -6,10 +6,10 @@ import { getProviderApiUrl } from '../utils/apiToUrl.js';
 
 
 
-const MessageService = {
+const AnswerService = {
 
     prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context) => {
-        console.log(`🤖 MessageService: Processing message in ${lang.toUpperCase()}`);
+        console.log(`🤖 AnswerService: Processing message in ${lang.toUpperCase()}`);
 
         const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
 
@@ -31,40 +31,40 @@ const MessageService = {
 
     sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context) => {
         try {
-            const messagePayload = await MessageService.prepareMessage(provider, message, conversationHistory, lang, context);
+            const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context);
 
-            const response = await fetch(getProviderApiUrl('claude'), {
+            const response = await fetch(getProviderApiUrl(provider, "message"), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: messagePayload,
+                body: JSON.stringify(messagePayload),
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Claude API error response:', errorText);
+                console.error(provider + ' API error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log('Claude API response:', data);
+            console.log(provider + ' API response:', data);
             return data.content;
         } catch (error) {
             console.error('Error calling ' + provider + ' API:', error);
             throw error;
         }
     },
-    sendBatchMessages: async (provider,entries, lang) => {
+    sendBatchMessages: async (provider, entries, lang) => {
         try {
-            console.log(`🤖 MessageService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+            console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
-                const messagePayload = await MessageService.prepareMessage(provider,entry.question, [], lang, entry);
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry);
                 messagePayload.entry = entry;
                 return messagePayload;
             }));
 
-            const response = await fetch(getProviderApiUrl(provider,'batch'), {
+            const response = await fetch(getProviderApiUrl(provider, 'batch'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,4 +108,4 @@ const MessageService = {
     }*/
 };
 
-export default MessageService;
+export default AnswerService;

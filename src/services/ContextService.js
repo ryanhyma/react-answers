@@ -40,7 +40,7 @@ const ContextService = {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
 
-      const response = await ContextService.sendMessage(question, lang, department);
+      const response = await ContextService.sendMessage(provider, question, lang, department);
 
       // Parse the XML-style tags from the response
       const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);

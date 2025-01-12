@@ -6,9 +6,8 @@ import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
-import openAIHandler from '../api/openai.js';
-import contextAgentHandler from '../api/context-agent.js';
-import anthropicAgentHandler from '../api/anthropic.js';
+import openAIHandler from '../api/openai-message.js';
+import anthropicAgentHandler from '../api/anthropic-message.js';
 import dbChatLogsHandler from '../api/db-chat-logs.js';
 import anthropicBatchHandler from '../api/anthropic-batch.js';
 import openAIBatchHandler from '../api/openai-batch.js';
@@ -23,6 +22,8 @@ import openAIBatchProcessResultsHandler from '../api/openai-batch-process-result
 import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
 import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
 import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
+import anthropicContextAgentHandler from '../api/anthropic-context.js';
+import openAIContextAgentHandler from '../api/openai-context.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -66,12 +67,14 @@ const cohere = null;
 //  token: process.env.REACT_APP_COHERE_API_KEY
 //});
 
-app.post("/api/openai", openAIHandler);
+app.post("/api/openai-message", openAIHandler);
 
-app.post('/api/anthropic', anthropicAgentHandler);
+app.post('/api/anthropic-message', anthropicAgentHandler);
 
 // Use the context-agent handler for local development
-app.post('/api/context-agent', contextAgentHandler);
+app.post('/api/anthropic-context', anthropicContextAgentHandler);
+
+app.post('/api/openai-context', openAIContextAgentHandler);
 
 app.get('/api/db-chat-logs', dbChatLogsHandler);
 
@@ -86,8 +89,6 @@ app.get('/api/openai-batch-status', openAIBatchStatusHandler);
 app.post('/api/context-search', contextSearchHandler);
 
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
-
-
 
 app.get('/api/anthropic-batch-cancel', anthripicBatchCancelHanlder);
 

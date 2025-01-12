@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import ClaudeService from '../../services/ClaudeService.js';
-import ChatGPTService from '../../services/ChatGPTService.js';
-import CohereService from '../../services/CohereService.js';
 import RedactionService from '../../services/RedactionService.js';
 import LoggingService from '../../services/LoggingService.js';
 import '../../styles/App.css';
@@ -10,6 +7,7 @@ import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ContextService from '../../services/ContextService.js';
 import ChatInterface from './ChatInterface.js';
+import MessageService from '../../services/AnswerService.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -49,7 +47,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('claude');
+  const [selectedAI, setSelectedAI] = useState('chatgpt');
   const [showFeedback, setShowFeedback] = useState(false);
   const [checkedCitations, setCheckedCitations] = useState({});
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
@@ -223,25 +221,15 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   // Define the failover order for each AI service
   const getNextAIService = (currentAI) => {
     const failoverOrder = {
-      'claude': 'chatgpt',
-      'chatgpt': 'claude',
-      'cohere': 'claude'
+      // always openai until we add another provider
+      'openai': 'openai',
+
     };
     return failoverOrder[currentAI];
   };
 
-  const tryAIService = async (aiType, message, conversationHistory, lang, context) => {
-    switch (aiType) {
-      case 'claude':
-        return await ClaudeService.sendMessage(message, conversationHistory, lang, context);
-      case 'chatgpt':
-        return await ChatGPTService.sendMessage(message, conversationHistory, lang, context);
-      case 'cohere':
-        return await CohereService.sendMessage(message, conversationHistory, lang, context);
-      default:
-        throw new Error('Invalid AI service');
-    }
-  };
+
+
 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim() !== '' && !isLoading) {
@@ -319,9 +307,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         if (!referringUrl && turnCount === 0) {
           try {
-            const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
-              }`;
-            const derivedContext = await ContextService.deriveContext(selectedAI,contextMessage, lang, department);
+            const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''}`;
+            const derivedContext = await ContextService.deriveContext(selectedAI, contextMessage, lang, department);
             department = derivedContext.department;
             topic = derivedContext.topic;
             topicUrl = derivedContext.topicUrl;
@@ -369,15 +356,15 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
         // Try primary AI service first, yes first
         try {
-          const response = await tryAIService(selectedAI, redactedText, conversationHistory, lang, context);
+          const response = await MessageService.sendMessage(selectedAI, redactedText, conversationHistory, lang, context);
 
           console.log(`✅ ${selectedAI} response:`, response);
-    
+
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
 
           console.log(`✅ ${selectedAI} citation URL:`, originalCitationUrl);
-    
+
           // Generate new message ID early
           const newMessageId = messageIdCounter.current++;
 
@@ -393,7 +380,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             );
 
             console.log(`✅ Validated URL:`, validationResult);
-    
+
 
             // Store validation result in checkedCitations
             setCheckedCitations(prev => ({
@@ -438,9 +425,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           console.error(`Error with ${selectedAI}:`, error);
 
           // Try fallback AI service
+          // TODO - This needs to be refactored to retry a fixe number of times
           const fallbackAI = getNextAIService(selectedAI);
+
           try {
-            const fallbackResponse = await tryAIService(fallbackAI, redactedText, conversationHistory, lang, context);
+            // Try fallback AI service
+            const fallbackResponse = await MessageService.sendMessage(fallbackAI, redactedText, conversationHistory, lang, context);
+
 
             // Add the fallback AI response
             const fallbackMessageId = messageIdCounter.current++;

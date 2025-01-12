@@ -5,7 +5,7 @@ import {
     GcdsHeading,
     GcdsText,
 } from '@cdssnc/gcds-components-react';
-import MessageService from '../../services/MessageService.js';
+import MessageService from '../../services/AnswerService.js';
 import ContextService from '../../services/ContextService.js';
 import '../../styles/App.css';
 import AdminCodeInput from '../admin/AdminCodeInput.js';
