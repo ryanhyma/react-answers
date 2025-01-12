@@ -321,7 +321,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           try {
             const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''
               }`;
-            const derivedContext = await ContextService.deriveContext(contextMessage, lang, department);
+            const derivedContext = await ContextService.deriveContext(selectedAI,contextMessage, lang, department);
             department = derivedContext.department;
             topic = derivedContext.topic;
             topicUrl = derivedContext.topicUrl;

@@ -36,7 +36,7 @@ const ContextService = {
     }
   },
 
-  deriveContext: async (question, lang = 'en', department = '') => {
+  deriveContext: async (provider, question, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
 
