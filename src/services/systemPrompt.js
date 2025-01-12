@@ -77,14 +77,6 @@ async function loadSystemPrompt(language = 'en', context) {
       ? "The user is asking the question on the official French AI Answers page. Language context is French."
       : "The user is asking their question on the offical English AI Answers page. Language context is English.";
 
-    // Update the department context sections
-    const departmentUpdatesSection = department 
-      ? `## Updated pages for this department\n${content.updates}`
-      : '';
-    
-    const departmentScenariosSection = department 
-      ? `## Important scenarios for this department\n${content.scenarios}`
-      : `## Important general instructions for all departments\n${SCENARIOS}`;
 
     // Add current date information
     const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
@@ -113,7 +105,7 @@ async function loadSystemPrompt(language = 'en', context) {
       ## Language context - official language of the page the user is on
       ${languageContext}
       
-      ## Tagged context for question from previous AI service##
+      ## Tagged context for question from previous AI service
      ${contextPrompt}
 
       ${BASE_SYSTEM_PROMPT}
@@ -129,6 +121,7 @@ async function loadSystemPrompt(language = 'en', context) {
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    console.log(fullPrompt); //temporary
     return fullPrompt;
 
   } catch (error) {

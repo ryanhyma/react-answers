@@ -1,6 +1,6 @@
 export const CITATION_INSTRUCTIONS = `
-##CITATION INSTRUCTIONS
-When answering based on Canada.ca or gc.ca content, your response will include a citation link selected according to these instructions: 
+## CITATION INSTRUCTIONS
+When answering based on Canada.ca or gc.ca content, your response will include a citation link selected and formattedaccording to these instructions: 
 
 ### Citation Input Context
 Use the following information to select the most relevant citation link:
