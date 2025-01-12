@@ -8,11 +8,13 @@ import { getProviderApiUrl } from '../utils/apiToUrl.js';
 
 const AnswerService = {
 
-    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context) => {
+    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false) => {
         console.log(`🤖 AnswerService: Processing message in ${lang.toUpperCase()}`);
 
         const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
-
+        if (evaluation) {
+            message = "<evaluation>" + message + "</evaluation>";
+        }
         // Only change: check for evaluation and use empty array if true
         const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
 
@@ -59,7 +61,7 @@ const AnswerService = {
         try {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry);
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry, true);
                 messagePayload.entry = entry;
                 return messagePayload;
             }));

@@ -114,7 +114,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
             const entries = lines.slice(1)
                 .map(line => {
+
                     const values = parseCSVLine(line);
+                    
                     const entry = {};
 
                     headers.forEach((header, index) => {
