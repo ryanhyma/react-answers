@@ -15,8 +15,6 @@ export default async function handler(req, res) {
 
         // Check if the batch is completed and has output
         const isCompleted = batch.status === 'completed';
-        const hasOutput = batch.output_file_id != null;
-
         if (isCompleted) {
             return res.status(200).json({
                 status: "completed",

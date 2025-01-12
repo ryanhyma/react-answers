@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { GcdsGrid, GcdsButton } from '@cdssnc/gcds-components-react';
-import {getApiUrl,getProviderApiUrl} from '../../utils/apiToUrl.js';
+import { createRoot } from 'react-dom/client'; // Import createRoot
+import DataTable from 'datatables.net-react';
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import DT from 'datatables.net-dt';
+import { GcdsButton } from '@cdssnc/gcds-components-react';
+import { getApiUrl, getProviderApiUrl } from '../../utils/apiToUrl.js';
 
-const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
+DataTable.use(DT);
+
+const BatchList = ({ buttonAction, batchStatus }) => {
     const [batches, setBatches] = useState([]);
+    const [searchText, setSearchText] = useState('');
 
+    // Fetch batch status
     const fetchStatus = async (batchId, provider) => {
         try {
-            const response = await fetch(getProviderApiUrl(provider,`batch-status?batchId=${batchId}`));
+            const response = await fetch(getProviderApiUrl(provider, `batch-status?batchId=${batchId}`));
             const data = await response.json();
             return { batchId, status: data.status };
         } catch (error) {
@@ -16,6 +24,7 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
         }
     };
 
+    // Fetch all statuses
     const fetchStatuses = async (batches) => {
         try {
             const statusPromises = batches.map(batch => {
@@ -26,17 +35,16 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
                 }
             });
             const statusResults = await Promise.all(statusPromises);
-            const updatedBatches = batches.map(batch => {
+            return batches.map(batch => {
                 const statusResult = statusResults.find(status => status.batchId === batch.batchId);
                 return { ...batch, status: statusResult ? statusResult.status : 'Unknown' };
             });
-            return updatedBatches;
         } catch (error) {
             console.error('Error fetching statuses:', error);
         }
     };
 
-
+    // Fetch batches
     useEffect(() => {
         const fetchBatches = async () => {
             try {
@@ -51,59 +59,78 @@ const BatchList = ({ buttonLabel, buttonAction, batchStatus }) => {
 
         fetchBatches();
 
-        const intervalId = setInterval(fetchBatches, 5000); 
-
-        // Cleanup interval on component unmount
-        return () => clearInterval(intervalId);
+        const intervalId = setInterval(fetchBatches, 5000); // Poll every 5 seconds
+        return () => clearInterval(intervalId); // Cleanup on unmount
     }, []);
 
-
-
-    const [clickedBatchIds, setClickedBatchIds] = useState([]);
-
-    const handleButtonClick = (batchId, action) => {
-        buttonAction(batchId, action);
-        setClickedBatchIds([...clickedBatchIds, batchId]);
+    // Handle button click
+    const handleButtonClick = (batchId, action,provider) => {
+        buttonAction(batchId, action,provider);
     };
 
-    return (
-        <GcdsGrid align-content="center" align-items="center" equal-row-height columnsDesktop="1fr 1fr 1fr 1fr 1fr 1fr" tag='div'>
-            <p><strong>Batch ID</strong></p>
-            <p><strong>Created Date</strong></p>
-            <p><strong>Provider</strong></p>
-            <p><strong>Type</strong></p>
-            <p><strong>Status</strong></p>
-            <p><strong>Actions</strong></p>
-            {batches
-                .filter(batch => batchStatus.split(',').includes(batch.status))
-                .map(batch => (
-                    <React.Fragment key={batch._id}>
-                        <p>{batch.batchId}</p>
-                        <p>{batch.createdAt}</p>
-                        <p>{batch.provider}</p>
-                        <p>{batch.type}</p>
-                        <p>{batch.status}</p>
-                        <p>
-                            {batch.status === 'processed' && !clickedBatchIds.includes(batch.batchId) ? (
-                                <>
-                                    <GcdsButton onClick={() => handleButtonClick(batch.batchId, 'csv')}>CSV</GcdsButton>
-                                    <GcdsButton onClick={() => handleButtonClick(batch.batchId, 'excel')}>Excel</GcdsButton>
-                                </>
-                            ) : batch.status === 'completed' && !clickedBatchIds.includes(batch.batchId) ? (
-                                <GcdsButton onClick={() => handleButtonClick(batch.batchId, batch.provider)}>Process</GcdsButton>
-                            ) : (
-                                ""
-                            )}
-                        </p>
-                    </React.Fragment>
-                ))}
-        </GcdsGrid>
+    // Filter batches based on batchStatus and search text
+    const filteredBatches = batches.filter(batch =>
+        batchStatus.split(',').includes(batch.status) &&
+        Object.values(batch).some(value =>
+            value?.toString().toLowerCase().includes(searchText.toLowerCase())
+        )
     );
-};
 
-const handleAction = (batchId) => {
-    console.log('Action clicked for batch:', batchId);
-    // Implement your action logic here
+    return (
+        <div>
+            <DataTable
+                data={filteredBatches}
+                columns={[
+                    { title: 'Batch ID', data: 'batchId' },
+                    { title: 'Created Date', data: 'createdAt' },
+                    { title: 'Provider', data: 'provider' },
+                    { title: 'Type', data: 'type' },
+                    { title: 'Status', data: 'status' },
+                    {
+                        title: 'Actions',
+                        data: null, // Data is not directly mapped for actions
+                        defaultContent: '', // Avoid undefined content
+                    },
+                ]}
+                options={{
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    order: [[1, 'desc']], // Order by Created Date (column index 1) descending
+                    createdRow: (row, data) => {
+                        const { batchId, status, provider } = data;
+
+                        // Clear and append custom buttons dynamically
+                        const actionsCell = row.querySelector('td:last-child');
+                        if (status === 'processed') {
+                            actionsCell.innerHTML = '';
+                            const root = createRoot(actionsCell);
+                            root.render(
+                                <>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'csv')}>CSV</GcdsButton>
+                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'excel')}>Excel</GcdsButton>
+                                    </div>
+                                </>
+                            );
+                        } else if (status === 'completed') {
+                            actionsCell.innerHTML = '';
+                            const root = createRoot(actionsCell);
+                            root.render(
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'complete', provider)}>Evaluate</GcdsButton>
+                            );
+                        } else if (status === 'processing') {
+                            actionsCell.innerHTML = '';
+                            const root = createRoot(actionsCell);
+                            root.render(
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'cancel', provider)}>Cancel</GcdsButton>
+                            );
+                        }
+                    },
+                }}
+            />
+        </div>
+    );
 };
 
 export default BatchList;

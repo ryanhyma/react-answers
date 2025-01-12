@@ -21,6 +21,8 @@ import dbBatchListHandler from '../api/db-batch-list.js';
 import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
 import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
 import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
+import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
+import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,7 +87,11 @@ app.post('/api/context-search', contextSearchHandler);
 
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
 
-app.post('/api/openai-batch-context', openAIBatchContextHandler);
+
+
+app.get('/api/anthropic-batch-cancel', anthripicBatchCancelHanlder);
+
+app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
 
 app.post('/api/openai-batch-context', openAIBatchContextHandler);
 
@@ -98,6 +104,8 @@ app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHand
 app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
+
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

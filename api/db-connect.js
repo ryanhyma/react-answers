@@ -5,7 +5,7 @@ let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
-
+// Does this need to called each time??
 async function dbConnect() {
   if (cached.conn) {
     return cached.conn;

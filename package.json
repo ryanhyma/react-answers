@@ -7,7 +7,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.33.1",
     "@cdssnc/gcds-components": "^0.26.1",
-    "@cdssnc/gcds-components-react": "^0.26.1",
+    "@cdssnc/gcds-components-react": "^0.26.3",
     "@cdssnc/gcds-utility": "^1.4.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -25,6 +25,9 @@
     "cheerio": "^1.0.0",
     "cohere-ai": "^2.3.0",
     "cors": "^2.8.5",
+    "datatables.net": "^2.2.1",
+    "datatables.net-dt": "^2.2.1",
+    "datatables.net-react": "^1.0.0",
     "dotenv": "^16.4.5",
     "duck-duck-scrape": "^2.2.6",
     "express": "^4.21.1",

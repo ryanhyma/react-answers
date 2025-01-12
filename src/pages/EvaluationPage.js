@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
 import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
-import {getApiUrl,getProviderApiUrl} from '../utils/apiToUrl.js';
+import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 
 
 const EvaluationPage = ({ lang = 'en' }) => {
@@ -22,9 +22,9 @@ const EvaluationPage = ({ lang = 'en' }) => {
         const batch = await response.json();
 
         if (batch && batch.entries) {
-            const worksheetData = [
-              ['entry_id', 'question', 'url', 'topic', 'topicUrl', 'department', 'departmentUrl', 'searchResults', 'context_model', 'context_input_tokens', 'context_output_tokens', 'context_cached_creation_input_tokens', 'context_cached_read_input_tokens', 'answer', 'answer_citation_url', 'answer_citation_head', 'answer_citation_confidence', 'answer_model', 'answer_input_tokens', 'answer_output_tokens', 'answer_cached_creation_input_tokens', 'answer_cached_read_input_tokens'],
-              ...batch.entries.map(entry => [
+          const worksheetData = [
+            ['entry_id', 'question', 'url', 'topic', 'topicUrl', 'department', 'departmentUrl', 'searchResults', 'context_model', 'context_input_tokens', 'context_output_tokens', 'context_cached_creation_input_tokens', 'context_cached_read_input_tokens', 'answer', 'answer_citation_url', 'answer_citation_head', 'answer_citation_confidence', 'answer_model', 'answer_input_tokens', 'answer_output_tokens', 'answer_cached_creation_input_tokens', 'answer_cached_read_input_tokens'],
+            ...batch.entries.map(entry => [
               entry.entry_id,
               entry.question,
               entry.url,
@@ -47,8 +47,8 @@ const EvaluationPage = ({ lang = 'en' }) => {
               entry.answer_output_tokens,
               entry.answer_cached_creation_input_tokens,
               entry.answer_cached_read_input_tokens
-              ])
-            ];
+            ])
+          ];
 
           if (type === 'excel') {
             const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -106,23 +106,17 @@ const EvaluationPage = ({ lang = 'en' }) => {
     fetchBatchAndDownload(batchId, type);
   };
 
-  const handleCompleteClick = async (batchId, provider) => {
-    console.log('Button clicked to complete batch:', batchId);
-    const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
-  };
-  
-
-  const handleStatusToggle = () => {
-    setStatus({ ...status, isAvailable: !status.isAvailable });
-  };
-
-  const handleMessageChange = (e) => {
-    setStatus({ ...status, message: e.target.value });
+  const handleCompleteCancelClick = async (batchId, action, provider,) => {
+    if (action === 'cancel') {
+      console.log('Button clicked to cancel batch:', batchId);
+      const response = await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
+    } else {
+      console.log('Button clicked to complete batch:', batchId);
+      const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+    }
   };
 
-  const handleStatusUpdate = () => {
-    // Implement status update logic here
-  };
+
 
 
 
@@ -158,12 +152,12 @@ const EvaluationPage = ({ lang = 'en' }) => {
       <section id="running-evaluation" className="mb-600">
         <h2 className='mt-400 mb-400'>Running Batches</h2>
         <BatchList
-          buttonAction={handleCompleteClick}
+          buttonAction={handleCompleteCancelClick}
           batchStatus="processing,completed" />
       </section>
 
       <section id="processed-evaluation" className="mb-600">
-        <h2 className='mt-400 mb-400'>Processed Batches</h2>
+        <h2 className='mt-400 mb-400'>Processed Evaluations</h2>
         <BatchList
           buttonAction={handleDownloadClick}
           batchStatus="processed" />
