@@ -373,6 +373,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         const messageWithReferrer = `${redactedText}${
           referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
         }}`;
+       
 
         // First try block - Primary AI
         try {
@@ -545,7 +546,12 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     logInteraction,
     messages,
     parseAIResponse,
-    turnCount
+    turnCount,
+    currentDepartment,
+    currentDepartmentUrl,
+    currentSearchResults,
+    currentTopic,
+    currentTopicUrl
   ]);
 
   useEffect(() => {
