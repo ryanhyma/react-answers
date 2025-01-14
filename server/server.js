@@ -1,28 +1,29 @@
 // server/server.js - this is only used for local development NOT for Vercel
 import express from 'express';
-import Anthropic from '@anthropic-ai/sdk';
-import OpenAI from 'openai';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
-import coherePkg from 'cohere-ai';
-
-import chatGPTHandler from '../api/chatgpt.js';
-import contextAgentHandler from '../api/context-agent.js';
-import claudeAgentHandler from '../api/claude.js';
-import chatLogsHandler from '../api/chat-logs.js';
-import batchClaudeHandler from '../api/claude-batch.js';
-import batchChatGPTHandler from '../api/gpt-batch.js';
-import batchClaudeCancelHandler from '../api/claude-batch-cancel.js';
-import batchChatGPTCancelHandler from '../api/gpt-batch-cancel.js';
-import batchClaudeStatusHandler from '../api/claude-batch-status.js';
-import batchChatGPTStatusHandler from '../api/gpt-batch-status.js';
-import { chat } from 'googleapis/build/src/apis/chat/index.js';
-
-const { CohereClient } = coherePkg;
+import openAIHandler from '../api/openai-message.js';
+import anthropicAgentHandler from '../api/anthropic-message.js';
+import dbChatLogsHandler from '../api/db-chat-logs.js';
+import anthropicBatchHandler from '../api/anthropic-batch.js';
+import openAIBatchHandler from '../api/openai-batch.js';
+import anthropicBatchStatusHandler from '../api/anthropic-batch-status.js';
+import openAIBatchStatusHandler from '../api/openai-batch-status.js';
+import contextSearchHandler from '../api/context-search.js';
+import anthropicBatchContextHandler from '../api/anthropic-batch-context.js';
+import openAIBatchContextHandler from '../api/openai-batch-context.js';
+import dbBatchListHandler from '../api/db-batch-list.js';
+import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
+import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
+import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
+import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
+import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
+import anthropicContextAgentHandler from '../api/anthropic-context.js';
+import openAIContextAgentHandler from '../api/openai-context.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,17 +34,8 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Get MongoDB URI based on environment
-const getMongoURI = () => {
-  // In development, use the REACT_APP prefixed version
-  if (process.env.REACT_APP_ENV === 'development') {
-    return process.env.REACT_APP_MONGODB_URI;
-  }
-  // In production (Vercel), use the non-prefixed version
-  return process.env.MONGODB_URI;
-};
 
-mongoose.connect(getMongoURI())
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('MongoDB connected successfully');
     console.log(`Running in ${process.env.REACT_APP_ENV || 'production'} mode`);
@@ -61,126 +53,60 @@ app.use((req, res, next) => {
 // Environment-aware logging
 if (process.env.REACT_APP_ENV === 'development') {
   console.log('Development environment variables:');
-  console.log('REACT_APP_OPENAI_API_KEY:', process.env.REACT_APP_OPENAI_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_ANTHROPIC_API_KEY:', process.env.REACT_APP_ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_COHERE_API_KEY:', process.env.REACT_APP_COHERE_API_KEY ? 'Set' : 'Not Set');
-  console.log('REACT_APP_MONGODB_URI:', process.env.REACT_APP_MONGODB_URI ? 'Set' : 'Not Set');
+  console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not Set');
+  console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
+  console.log('COHERE_API_KEY:', process.env.COHERE_API_KEY ? 'Set' : 'Not Set');
+  console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not Set');
 } else {
   console.log('Running in production mode');
 }
 
-const anthropic = new Anthropic({
-  apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
-});
-
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-});
 
 const cohere = null;
 //const cohere = new CohereClient({
 //  token: process.env.REACT_APP_COHERE_API_KEY
 //});
 
-app.post("/api/chatgpt",chatGPTHandler);
+app.post("/api/openai-message", openAIHandler);
 
-app.post('/api/claude', claudeAgentHandler);
+app.post('/api/anthropic-message', anthropicAgentHandler);
 
 // Use the context-agent handler for local development
-app.post('/api/context-agent', contextAgentHandler);
+app.post('/api/anthropic-context', anthropicContextAgentHandler);
 
-app.get('/api/chat-logs', chatLogsHandler);
+app.post('/api/openai-context', openAIContextAgentHandler);
 
-app.post('/api/claude-batch', batchClaudeHandler);
+app.get('/api/db-chat-logs', dbChatLogsHandler);
 
-app.post('/api/chatgpt-batch', batchChatGPTHandler);
+app.post('/api/anthropic-batch', anthropicBatchHandler);
 
-app.post('/api/claude-batch-cancel', batchClaudeCancelHandler);
+app.post('/api/openai-batch', openAIBatchHandler);
 
-app.post('/api/chatgpt-batch-cancel', batchChatGPTCancelHandler);
+app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
 
-app.get('/api/claude-batch-status', batchClaudeStatusHandler);
+app.get('/api/openai-batch-status', openAIBatchStatusHandler);
 
-app.get('/api/chatgpt-batch-status', batchChatGPTStatusHandler);
+app.post('/api/context-search', contextSearchHandler);
+
+app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
+
+app.get('/api/anthropic-batch-cancel', anthripicBatchCancelHanlder);
+
+app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
+
+app.post('/api/openai-batch-context', openAIBatchContextHandler);
+
+app.get('/api/db-batch-list', dbBatchListHandler);
+
+app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
+
+app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
+
+app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
+
+app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 
 
-// server.js - update the Cohere endpoint
-app.post('/api/cohere', async (req, res) => {
-  console.log('Received request to /api/cohere');
-  console.log('Request body:', req.body);
-  try {
-    const { messages } = req.body;
-    
-    // Get the latest message (user's input)
-    const userMessage = messages[messages.length - 1].content;
-    
-    // Format chat history for Cohere
-    const chat_history = messages.slice(0, -1).map(msg => ({
-      role: msg.role.toUpperCase(),
-      message: msg.content
-    }));
-
-    console.log('Calling Cohere with:', {
-      message: userMessage,
-      historyLength: chat_history.length
-    });
-
-    const response = await cohere.chat({
-      model: "command-r-plus-08-2024",
-      message: userMessage,  // The current message
-      chat_history: chat_history,  // Previous messages
-      temperature: 0.5
-    });
-
-    console.log('Cohere API response received');
-    res.json({ content: response.text });
-  } catch (error) {
-    console.error('Error calling Cohere API:', {
-      message: error.message,
-      details: error
-    });
-    res.status(500).json({ 
-      error: 'Error processing your request',
-      details: error.message 
-    });
-  }
-});
-
-app.post('/api/haiku', async (req, res) => {
-  console.log('Received request to /api/haiku');
-  console.log('Request body:', req.body);
-  try {
-    const { message, systemPrompt } = req.body;
-
-    // Log the current message and system prompt length
-    console.log('Current Message:', message);
-    console.log('System Prompt Length:', systemPrompt?.length);
-
-    const messages = [
-      { role: "user", content: message }
-    ];
-
-    // Log the messages being sent to the Haiku model
-    console.log('Messages being sent to Haiku:', JSON.stringify(messages, null, 2));
-
-    const response = await anthropic.beta.promptCaching.messages.create({
-      model: "claude-3-5-haiku-20241022",
-      system: [{
-        type: "text",
-        text: systemPrompt,
-        cache_control: { type: "ephemeral" }
-      }],
-      messages: messages,
-      max_tokens: 1024
-    });
-
-    console.log('Haiku API response received');
-    res.json({ content: response.content[0].text });
-  } catch (error) {
-    console.error('Error calling Haiku API:', error);
-    res.status(500).json({ error: 'Error processing your request' });
-  }
-});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

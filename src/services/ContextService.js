@@ -1,16 +1,16 @@
 // src/ContextService.js
 import loadContextSystemPrompt from './contextSystemPrompt.js';
-const PORT = 3001; // Use a default value if PORT is not set
-const API_URL = process.env.NODE_ENV === 'production' ? '/api/context-agent' : 'http://localhost:' + PORT + '/api/context-agent';
+import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
+
 
 const ContextService = {
-  sendMessage: async (message, lang = 'en', department = '') => {
+  sendMessage: async (provider, message, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(getProviderApiUrl(provider, "context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,11 +36,11 @@ const ContextService = {
     }
   },
 
-  deriveContext: async (question, lang = 'en', department = '') => {
+  deriveContext: async (provider, question, lang = 'en', department = '') => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
 
-      const response = await ContextService.sendMessage(question, lang, department);
+      const response = await ContextService.sendMessage(provider, question, lang, department);
 
       // Parse the XML-style tags from the response
       const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
@@ -60,6 +60,82 @@ const ContextService = {
       };
     } catch (error) {
       console.error('Error deriving context:', error);
+      throw error;
+    }
+  },
+
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
+    try {
+      console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+
+      const requests = entries
+        .filter(entry => !entry.context || entry.context.trim() === '')
+        .map(entry => entry.question);
+      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
+
+      const searchResults = await Promise.all(
+        requests.map(async (request) => {
+          const searchResponse = await fetch(getApiUrl("context-search"), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: request }),
+          });
+
+          if (!searchResponse.ok) {
+            const errorText = await searchResponse.text();
+            console.error('Search API error response:', errorText);
+            throw new Error(`HTTP error! status: ${searchResponse.status}`);
+          }
+
+          const searchData = await searchResponse.json();
+          return searchData.content;
+        })
+      );
+
+      const updatedRequests = requests.map((request, index) => ({
+        message: request,
+        systemPrompt: SYSTEM_PROMPT,
+        searchResults: "<searchResults>" + searchResults[index] + "</searchResults>",
+      }));
+
+      const response = await ContextService.sendBatch(updatedRequests, aiService);
+      return {
+        batchId: response.batchId,
+        batchStatus: response.batchStatus
+      };
+
+    } catch (error) {
+      console.error('Error deriving context batch:', error);
+      throw error;
+    }
+  },
+
+
+  sendBatch: async (requests, aiService) => {
+    try {
+      const response = await fetch(getProviderApiUrl(aiService,"batch-context"), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requests,
+          aiService
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Context API batch error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error calling Context API batch:', error);
       throw error;
     }
   }

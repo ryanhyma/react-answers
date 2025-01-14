@@ -5,7 +5,7 @@ let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
-
+// Does this need to called each time??
 async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
@@ -16,7 +16,7 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferCommands: false,
-      connectTimeoutMS: 10000, // 10 seconds timeout
+      connectTimeoutMS: 30000, // 30 seconds timeout
     };
 
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
