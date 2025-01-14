@@ -5,7 +5,7 @@ const checkDatabaseConnection = async () => {
     }
   
     try {
-      const response = await fetch('/api/check-db');
+      const response = await fetch('/api/db-check');
       if (!response.ok) {
         throw new Error('Database connection failed');
       }
