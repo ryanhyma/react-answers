@@ -1,6 +1,6 @@
 // Common base system prompt content imported into systemPrompt.js
 export const BASE_SYSTEM_PROMPT = `
-
+//NO LONGER USED _ SWITCHED TO AGENTIC BASE SYSTEM PROMPT
 ## Step by step instructions to prepare your response 
 
 1.  Perform the following checks first:
