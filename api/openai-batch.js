@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
 import { Readable } from 'stream';
-import fs from 'fs';
 import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch/batch.js';
 
@@ -11,14 +10,7 @@ const openai = new OpenAI({
 
 const MAX_JSONL_SIZE = 50000000; // Set a size limit for JSONL content
 
-function bufferToStream(buffer) {
-    return new Readable({
-        read() {
-            this.push(buffer);
-            this.push(null); // Signal end of stream
-        }
-    });
-}
+
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -65,31 +57,29 @@ export default async function handler(req, res) {
         // Log the size of the JSONL content
         console.log('Size of JSONL content:', Buffer.byteLength(jsonlContent, 'utf8'), 'bytes');
 
-        // Check if the JSONL content exceeds the size limit
-        if (Buffer.byteLength(jsonlContent, 'utf8') > MAX_JSONL_SIZE) {
-            throw new Error('The JSONL content exceeds the size limit.');
-        }
-        
-        // Define the path for the temporary JSONL file
-        // TODO - Why does this work vs a buffered stream??
-        const jsonlFilePath = './temp.jsonl';
+        const jsonlBuffer = Buffer.from(jsonlContent, 'utf-8');
 
-        // Write the JSONL content to the file
-        fs.writeFileSync(jsonlFilePath, jsonlContent);
+        const jsonlBlob = new Blob([jsonlBuffer], { type: 'application/jsonl' });
 
-        // Create a readable stream from the file
-        const jsonlStream = fs.createReadStream(jsonlFilePath);
+        const formData = new FormData();
+        formData.append('file', jsonlBlob, 'data.jsonl'); // Filename is important
 
-        // Create file for batch
-        const file = await openai.files.create({
-            file: jsonlStream,
-            purpose: 'batch'
+        formData.append('purpose', 'batch');
+
+        const file = await fetch('https://api.openai.com/v1/files', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            },
+            body: formData,
         });
-        console.log('File created with ID:', file.id);
+        const fileData = await file.json();
+        console.log('File created with ID:', fileData.id);
+     
 
         // Create the batch using the file
         const batch = await openai.batches.create({
-            input_file_id: file.id,
+            input_file_id: fileData.id,
             endpoint: "/v1/chat/completions",
             completion_window: "24h"
         });

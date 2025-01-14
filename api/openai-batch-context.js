@@ -53,26 +53,30 @@ export default async function handler(req, res) {
         // Log the size of the JSONL content
         console.log('Size of JSONL content:', Buffer.byteLength(jsonlContent, 'utf8'), 'bytes');
 
-        // Define the path for the temporary JSONL file
-        // TODO - Why does this work vs a buffered stream??
-        const jsonlFilePath = './temp.jsonl';
 
-        // Write the JSONL content to the file
-        fs.writeFileSync(jsonlFilePath, jsonlContent);
+        
+        const jsonlBuffer = Buffer.from(jsonlContent, 'utf-8');
 
-        // Create a readable stream from the file
-        const jsonlStream = fs.createReadStream(jsonlFilePath);
+        const jsonlBlob = new Blob([jsonlBuffer], { type: 'application/jsonl' });
 
-        // Create file for batch
-        const file = await openai.files.create({
-            file: jsonlStream,
-            purpose: 'batch'
+        const formData = new FormData();
+        formData.append('file', jsonlBlob, 'data.jsonl'); // Filename is important
+
+        formData.append('purpose', 'batch');
+        
+        const file = await fetch('https://api.openai.com/v1/files', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            },
+            body: formData,
         });
-        console.log('File created with ID:', file.id);
+        const fileData = await file.json();
+        console.log('File created with ID:', fileData.id);
 
         // Create the batch using the file
         const batch = await openai.batches.create({
-            input_file_id: file.id,
+            input_file_id: fileData.id,
             endpoint: "/v1/chat/completions",
             completion_window: "24h"
         });
