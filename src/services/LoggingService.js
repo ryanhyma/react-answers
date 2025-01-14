@@ -2,7 +2,7 @@ const LoggingService = {
     logInteraction: async (interactionData, isEvaluation = false) => {
       if (process.env.REACT_APP_ENV === 'production') {
         try {
-          const response = await fetch('/api/log-interaction', {
+          const response = await fetch('/api/db-log-interaction', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
