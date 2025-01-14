@@ -353,10 +353,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             role: m.sender === 'user' ? 'user' : 'assistant',
             content: m.redactedText || m.text
           }));
-
+   // Create formatted message with referring URL (add this before the first try block)
+   const messageWithReferrer = `${redactedText}${
+    referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
+  }}`;
         // Try primary AI service first, yes first
         try {
-          const response = await MessageService.sendMessage(selectedAI, redactedText, conversationHistory, lang, context);
+          const response = await MessageService.sendMessage(selectedAI, messageWithReferrer, conversationHistory, lang, context);
 
         // First try block - Primary AI
         try {
@@ -432,7 +435,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
           try {
             // Try fallback AI service
-            const fallbackResponse = await MessageService.sendMessage(fallbackAI, redactedText, conversationHistory, lang, context);
+            const fallbackResponse = await MessageService.sendMessage(fallbackAI, messageWithReferrer, conversationHistory, lang, context);
 
 
             // Add the fallback AI response
