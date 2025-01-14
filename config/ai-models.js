@@ -7,14 +7,18 @@ const AI_MODELS = {
         maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
-        knowledgeCutoff: '2024-11'
       },
       'gpt-4o': {
         maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
-        knowledgeCutoff: '2024-05'
-      }
+      },
+      'gpt-4o-mini': {
+        maxTokens: 1024,
+        temperature: 0.0,
+        timeoutMs: 60000,
+    }
+
     }
   },
   anthropic: {
@@ -28,25 +32,34 @@ const AI_MODELS = {
           promptCaching: 'prompt-caching-2024-07-31',
           messageBatches: 'message-batches-2024-09-24'
         }
+      },
+      'claude-3-5-haiku-20241022': {
+        maxTokens: 8192,
+        temperature: 0.0,
+        timeoutMs: 60000,
+        beta: {
+          promptCaching: 'prompt-caching-2024-07-31',
+          messageBatches: 'message-batches-2024-09-24'
+        },
       }
     }
   },
   //TODO: When cohere is working on Vercel, implement via this config file
-//   cohere: {
-//     default: 'command-r-plus-08-2024',
-//     models: {
-//       'command-r-plus-08-2024': {
-//         maxTokens: 1024,
-//         temperature: 0.5,
-//         knowledgeCutoff: '2024-08'
-//       },
-//       'command-r-plus': {
-//         maxTokens: 1024,
-//         temperature: 0.5,
-//         knowledgeCutoff: '2024-05'
-//       }
-//     }
-//   }
+  //   cohere: {
+  //     default: 'command-r-plus-08-2024',
+  //     models: {
+  //       'command-r-plus-08-2024': {
+  //         maxTokens: 1024,
+  //         temperature: 0.5,
+  //         knowledgeCutoff: '2024-08'
+  //       },
+  //       'command-r-plus': {
+  //         maxTokens: 1024,
+  //         temperature: 0.5,
+  //         knowledgeCutoff: '2024-05'
+  //       }
+  //     }
+  //   }
 };
 
 export const getModelConfig = (provider, modelName = null) => {
@@ -57,7 +70,7 @@ export const getModelConfig = (provider, modelName = null) => {
 
   const selectedModel = modelName || providerConfig.default;
   const modelConfig = providerConfig.models[selectedModel];
-  
+
   if (!modelConfig) {
     throw new Error(`Unknown model ${selectedModel} for provider ${provider}`);
   }

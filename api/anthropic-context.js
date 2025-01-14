@@ -1,6 +1,6 @@
 import { createContextAgent } from '../agents/AgentService.js';
 import {contextSearch} from '../agents/tools/contextSearch.js';
-
+//TODO refactor now that one for each provider
 const invokeAgent = async (agentType, systemPrompt, message) => {
   try {
     const contextAgent = await createContextAgent(agentType);
@@ -43,11 +43,11 @@ const invokeAgent = async (agentType, systemPrompt, message) => {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    console.log('Received request to /api/context-agent');
     console.log('Request body:', req.body);
     const { message, systemPrompt, agentType } = req.body;
 
-    const agentTypes = ['claude', 'openai', 'cohere'];
+    // TODO - Ryan - retry twice, refactor when I have time
+    const agentTypes = ['claude', 'claude'];
 
     // If agentType is provided in the request, use it as the first agent to try
     const agentsToTry = agentType ? [agentType, ...agentTypes.filter(agent => agent !== agentType)] : agentTypes;
