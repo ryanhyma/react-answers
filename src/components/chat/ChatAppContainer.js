@@ -305,7 +305,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         let departmentUrl = '';
         let searchResults = '';
 
-        if (!referringUrl && turnCount === 0) {
+        if (turnCount === 0) {
           try {
             const contextMessage = `${redactedText}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''}`;
             const derivedContext = await ContextService.deriveContext(selectedAI, contextMessage, lang, department);
@@ -353,10 +353,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             role: m.sender === 'user' ? 'user' : 'assistant',
             content: m.redactedText || m.text
           }));
-
+   // Create formatted message with referring URL (add this before the first try block)
+   const messageWithReferrer = `${redactedText}${
+    referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
+  }}`;
         // Try primary AI service first, yes first
         try {
-          const response = await MessageService.sendMessage(selectedAI, redactedText, conversationHistory, lang, context);
+          const response = await MessageService.sendMessage(selectedAI, messageWithReferrer, conversationHistory, lang, context);
 
           console.log(`✅ ${selectedAI} response:`, response);
 
@@ -430,7 +433,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
           try {
             // Try fallback AI service
-            const fallbackResponse = await MessageService.sendMessage(fallbackAI, redactedText, conversationHistory, lang, context);
+            const fallbackResponse = await MessageService.sendMessage(fallbackAI, messageWithReferrer, conversationHistory, lang, context);
 
 
             // Add the fallback AI response
