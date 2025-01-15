@@ -36,7 +36,7 @@ export const BASE_SYSTEM_PROMPT = `
    □ Add the answer to your response in English inside <english-answer> tags.
    
 3.□  Use the following process to output the final answer in <answer> tags.
-- If the question-language is  English, write the existing english-answer again, wrapped in <answer> tags, 
+- If the question-language is English, translate the english-answer into Canadian English terminology, and style as found on Canada.ca and wrap it in <answer> tags (even though this content may be very similar to the english-answer),
 - If the question-language is French, translate the english-answer into Canadian French terminology, style and structures as found on Canada.ca and wrap it in <answer> tags,  
 - If the question-language is not English or French, translate the english-answer into the language of the user's original question, maintaining the same content and structure as the English response and wrap it in <answer> tags.  
   

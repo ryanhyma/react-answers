@@ -24,20 +24,45 @@ const extractSentences = (paragraph) => {
 const parseMessageContent = (text) => {
   let responseType = 'normal';
   let content = text;
+  let preliminaryChecks = null;
+  let englishAnswer = null;
 
-  // Check for and remove tags, storing the response type
-  if (text.includes('<not-gc>')) {
-    responseType = 'not-gc';
-    content = text.replace(/<\/?not-gc>/g, '').trim();
-  } else if (text.includes('<pt-muni>')) {
-    responseType = 'pt-muni';
-    content = text.replace(/<\/?p?-?pt-muni>/g, '').trim();  // Updated regex to catch both <pt-muni> and <p-pt-muni>
-  } else if (text.includes('<clarifying-question>')) {
-    responseType = 'question';
-    content = text.replace(/<\/?clarifying-question>/g, '').trim();
+  // Extract preliminary checks
+  const preliminaryMatch = /<preliminary-checks>(.*?)<\/preliminary-checks>/s.exec(text);
+  if (preliminaryMatch) {
+    preliminaryChecks = preliminaryMatch[1].trim();
+    content = content.replace(/<preliminary-checks>.*?<\/preliminary-checks>/s, '').trim();
   }
 
-  return { responseType, content };
+  // Extract English answer first
+  const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
+  if (englishMatch) {
+    englishAnswer = englishMatch[1].trim();
+    content = content.replace(/<english-answer>.*?<\/english-answer>/s, '').trim();
+  }
+
+  // Extract main answer if it exists, otherwise use englishAnswer
+  const answerMatch = /<answer>(.*?)<\/answer>/s.exec(content);
+  if (answerMatch) {
+    content = answerMatch[1].trim();
+  } else if (englishAnswer) {
+    // If there's no <answer> tag but we have an English answer, use the English answer as content
+    content = englishAnswer;
+  }
+
+  // Check response types
+  if (content.includes('<not-gc>')) {
+    responseType = 'not-gc';
+    content = content.replace(/<\/?not-gc>/g, '').trim();
+  } else if (content.includes('<pt-muni>')) {
+    responseType = 'pt-muni';
+    content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
+  } else if (content.includes('<clarifying-question>')) {
+    responseType = 'question';
+    content = content.replace(/<\/?clarifying-question>/g, '').trim();
+  }
+
+  return { responseType, content, preliminaryChecks, englishAnswer };
 };
 
 const ChatAppContainer = ({ lang = 'en' }) => {
@@ -126,15 +151,19 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     feedback,
     expertFeedback
   ) => {
-    console.log('Logging interaction with referringUrl:', referringUrl);
+    // console.log('Logging interaction with referringUrl:', referringUrl);
 
+    const { preliminaryChecks, englishAnswer } = parseMessageContent(aiResponse);
+    
     const logEntry = {
       redactedQuestion,
-      aiResponse,
-      aiService,
       ...(referringUrl && { referringUrl }),
-      citationUrl,
+      ...(preliminaryChecks && { preliminaryChecks }),
+      aiResponse,
+      ...(englishAnswer && { englishAnswer }),
+      aiService,
       originalCitationUrl,
+      citationUrl,
       ...(confidenceRating && { confidenceRating }),
       ...(feedback !== undefined && { feedback }),
       ...(expertFeedback && { expertFeedback })
@@ -157,6 +186,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       const { text: aiResponse, aiService } = lastMessage;
       // Get original URL from AI response
       const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
+      // Extract preliminaryChecks and englishAnswer
+      const { preliminaryChecks, englishAnswer } = parseMessageContent(aiResponse);
 
       // Get validated URL from checkedCitations
       const lastIndex = messages.length - 1;
@@ -169,11 +200,13 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         // Only log if there's feedback
         logInteraction(
           userMessage.redactedText,
-          aiResponse,
-          aiService,
           userMessage.referringUrl,
-          finalCitationUrl,
+          preliminaryChecks,
+          aiResponse,
+          englishAnswer,
+          aiService,
           originalCitationUrl,
+          finalCitationUrl,
           confidenceRating,
           feedback,
           expertFeedback

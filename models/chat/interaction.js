@@ -6,11 +6,13 @@ const ChatInteractionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  aiResponse: String,
-  aiService: String,
   referringUrl: String,
-  citationUrl: String,
+  preliminaryChecks: String,
+  aiResponse: String,
+  englishAnswer: String,
+  aiService: String,
   originalCitationUrl: String,
+  citationUrl: String,
   confidenceRating: String,
   feedback: String,
   expertFeedback: {
