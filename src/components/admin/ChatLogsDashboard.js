@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
-
+import { getApiUrl } from '../../utils/apiToUrl.js';
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
@@ -17,10 +17,7 @@ const ChatLogsDashboard = () => {
 
     setLoading(true);
     try {
-      const API_URL = process.env.NODE_ENV === 'production' 
-  ? '/api/chat-logs?days='  // Vercel serverless function
-  : `http://localhost:3001/api/db-chat-logs?days=`;
-      const response = await fetch(API_URL + timeRange);
+      const response = await fetch(getApiUrl("db-chat-logs?days=") + timeRange);
       const data = await response.json();
       console.log('API Response:', data);
       
