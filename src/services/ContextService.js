@@ -75,7 +75,7 @@ const ContextService = {
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          const searchResponse = await fetch(getApiUrl("context-search"), {
+          const searchResponse = await fetch(getApiUrl("search-context"), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -1,37 +1,22 @@
+import axios from "axios";
 import { tool } from "@langchain/core/tools";
-import { chromium } from "playwright";
-import { load } from "cheerio";
-import { URL } from "url";
 
 /**
- * Extracts search results from the ISC search results page.
- * @param {string} baseUrl - The base URL used to resolve relative links.
- * @param {object} $ - The Cheerio object of the parsed HTML.
+ * Extracts search results from the Coveo Search API response.
+ * @param {object} results - The Coveo search results object.
  * @param {number} numResults - The number of top results to extract.
  * @returns {string} - The formatted top search results with summary, link, and link text.
  */
-function extractSearchResults(baseUrl, $, numResults = 3) {
+function extractSearchResults(results, numResults = 3) {
     let extractedResults = "";
-    const resultsDiv = $("div.results");
 
-    if (resultsDiv.length) {
-        const sections = resultsDiv.find("section");
+    if (results && results.results) {
+        results.results.slice(0, numResults).forEach((result) => {
+            const link = result.clickUri;
+            const linkText = result.title || "No title available";
+            const summary = result.excerpt || "No summary available";
 
-        sections.slice(0, numResults).each((_, section) => {
-            const titleElement = $(section).find("h3 a.result-link");
-            if (titleElement.length) {
-                let link = titleElement.attr("href");
-                const linkText = titleElement.text().trim();
-
-                // Ensure link is absolute
-                if (link && !link.startsWith("http")) {
-                    link = new URL(link, baseUrl).href;
-                }
-
-                const summary = $(section).find("p").text().trim();
-
-                extractedResults += `Summary: ${summary}\nLink: ${link}\nLink Text: ${linkText}\n\n`;
-            }
+            extractedResults += `Summary: ${summary}\nLink: ${link}\nLink Text: ${linkText}\n\n`;
         });
     }
 
@@ -39,53 +24,65 @@ function extractSearchResults(baseUrl, $, numResults = 3) {
 }
 
 /**
- * Downloads and parses the search results page using Playwright and Cheerio.
- * @param {string} url - The URL to download and parse.
- * @param {string} selectorToWaitFor - The selector to wait for before extracting content.
- * @returns {object} - Cheerio object of the loaded HTML.
+ * @param {string} query - The search query.
+ * @returns {object|null} - The Coveo search results.
  */
-const dynamicDownloadAndParseWebpage = async (url, selectorToWaitFor = "div.results") => {
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
-
+async function contextSearch(query) {
     try {
-        console.log(`Navigating to ${url}...`);
-        await page.goto(url, { waitUntil: "domcontentloaded" });
-        await page.waitForSelector(selectorToWaitFor, { timeout: 30000, polling: 100 });
+        console.log (`Starting search with query: ${query} at endpoint: ${process.env.CANADA_CA_SEARCH_URI}`);
+        const response = await fetch(process.env.CANADA_CA_SEARCH_URI, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${process.env.CANADA_CA_SEARCH_API_KEY}`,
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify({ q: query })
+        });
 
-        // Get the HTML content after dynamic content has loaded
-        const html = await page.content();
-        return load(html);
+        if (!response.ok) {
+            // Try to log the full error response
+            const errorBody = await response.text();
+            console.error("HTTP Error Response:", {
+                status: response.status,
+                statusText: response.statusText,
+                body: errorBody
+            });
+            throw new Error(`HTTP error! Status: ${response.status}, StatusText: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error(`Could not connect to ${url} because: ${error.message}`);
+        // Log the entire error object
+        console.error("Error performing search:", {
+            message: error.message,
+            stack: error.stack,
+            response: error.response || null // Log response if available
+        });
         return null;
-    } finally {
-        await browser.close();
     }
-};
+}
 
 /**
- * canadaCASearch tool to perform a search on the Indigenous Services Canada website.
+ * canadaCASearch tool to perform a search using Coveo.
  */
-const canadaCASearch = tool(
+const contextSearchTool = tool(
     async ({ lang, query }) => {
         try {
-            let iscUrl = "https://www.canada.ca/en/indigenous-services-canada/search.html?q=";
-            if (lang === "fra") {
-                iscUrl = "https://www.canada.ca/fr/services-autochtones-canada/rechercher.html?q=";
-            }
-
             console.log(`Starting search with query: ${query}`);
-            const fullUrl = iscUrl + encodeURIComponent(query);
-            const $ = await dynamicDownloadAndParseWebpage(fullUrl);
 
-            if (!$) {
-                return `Failed to download or parse the search results for query: ${query}`;
+            const results = await contextSearch(
+                query
+            );
+
+            if (!results) {
+                return `Failed to retrieve search results for query: ${query}`;
             }
 
-            const results = extractSearchResults(iscUrl, $);
+            const extractedResults = extractSearchResults(results);
             console.log(`Results returned for query: ${query}`);
-            return results || `No meaningful results extracted for query: ${query}`;
+            return extractedResults || `No meaningful results extracted for query: ${query}`;
         } catch (error) {
             console.error(`Error processing search query: ${query}. Details: ${error.message}`);
             return `An error occurred while processing the search query: ${query}`;
@@ -93,15 +90,10 @@ const canadaCASearch = tool(
     },
     {
         name: "canadaCASearch",
-        description: "Perform a search on the Indigenous Services Canada website. Provide 'lang' ('eng' for English or 'fra' for French) and 'query' as the search term. Example input: { lang: 'eng', query: 'health services' }",
+        description: "Perform a search using Coveo. Provide the 'query' as the search term. Example input: { query: 'health services' }",
         schema: {
             type: "object",
             properties: {
-                lang: {
-                    type: "string",
-                    enum: ["eng", "fra"],
-                    description: "The language of the search ('eng' for English or 'fra' for French).",
-                },
                 query: {
                     type: "string",
                     description: "The search term to query on the Indigenous Services Canada website.",
@@ -112,4 +104,4 @@ const canadaCASearch = tool(
     }
 );
 
-export default canadaCASearch;
+export { contextSearchTool, contextSearch };
