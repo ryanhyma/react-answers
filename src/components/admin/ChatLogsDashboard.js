@@ -3,6 +3,27 @@ import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
 import { getApiUrl } from '../../utils/apiToUrl.js';
+
+const extractSentences = (text) => {
+  const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
+  const sentences = [];
+  let match;
+  
+  while ((match = sentenceRegex.exec(text)) !== null) {
+    const index = parseInt(match[1]) - 1;
+    if (index >= 0 && index < 4) {
+      sentences[index] = match[2].trim();
+    }
+  }
+  
+  // If no sentence tags found, treat entire text as first sentence
+  if (sentences.length === 0 && text) {
+    sentences[0] = text.trim();
+  }
+  
+  return Array(4).fill('').map((_, i) => sentences[i] || '');
+};
+
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
@@ -51,11 +72,14 @@ const ChatLogsDashboard = () => {
   const downloadCSV = () => {
     const columns = [
       'timestamp',
+      'pageLanguage',
+      'questionLanguage',
       'redactedQuestion',
       'aiService',
-      'confidenceRating',
       'citationUrl',
-      'originalCitationUrl',
+      'confidenceRating',
+      'englishAnswer',
+      'answer',
       'sentence1',
       'sentence2',
       'sentence3',
@@ -69,7 +93,8 @@ const ChatLogsDashboard = () => {
       'expertFeedback.sentence4Score',
       'expertFeedback.citationScore',
       'expertFeedback.answerImprovement',
-      'expertFeedback.expertCitationUrl'
+      'expertFeedback.expertCitationUrl',
+      'preliminaryChecks'
     ];
 
     // Create CSV header
@@ -77,57 +102,52 @@ const ChatLogsDashboard = () => {
       return column.includes('.') ? column.split('.')[1] : column;
     }).join(',');
 
-    const extractResponseData = (aiResponse) => {
-      const data = {
-        sentences: {
-          sentence1: '',
-          sentence2: '',
-          sentence3: '',
-          sentence4: ''
-        }
+    const extractLanguages = (preliminaryChecks) => {
+      const result = {
+        pageLanguage: '',
+        questionLanguage: ''
       };
 
-      if (!aiResponse) return data;
+      if (!preliminaryChecks) return result;
 
-      // Extract sentences
-      if (aiResponse.includes('<s-')) {
-        const matches = aiResponse.match(/<s-(\d)>(.*?)<\/s-\1>/g);
-        if (matches) {
-          matches.forEach((match, index) => {
-            if (index < 4) {
-              const content = match.replace(/<\/?s-\d>/g, '').trim();
-              data.sentences[`sentence${index + 1}`] = content;
-            }
-          });
-        }
-      } else {
-        data.sentences.sentence1 = aiResponse.trim();
-      }
+      const pageMatch = /- <page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
+      const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
 
-      return data;
+      if (pageMatch) result.pageLanguage = pageMatch[1].trim();
+      if (questionMatch) result.questionLanguage = questionMatch[1].trim();
+
+      return result;
     };
 
     // Create CSV rows
     const rows = logs.map(log => {
-      const extractedData = extractResponseData(log.aiResponse);
+      console.log('Processing log for CSV:', {
+        preliminaryChecks: log.preliminaryChecks?.substring(0, 100) + '...',
+        languages: extractLanguages(log.preliminaryChecks)
+      });
       
+      // Extract sentences from answer
+      const sentences = extractSentences(log.answer || '');
+      
+      // Extract languages from preliminary checks
+      const languages = extractLanguages(log.preliminaryChecks);
+
       return columns.map(column => {
         let value = '';
-        if (column.includes('.')) {
+        if (column === 'pageLanguage') {
+          value = languages.pageLanguage ?? '';
+        } else if (column === 'questionLanguage') {
+          value = languages.questionLanguage ?? '';
+        } else if (column.includes('.')) {
           const [parent, child] = column.split('.');
-          value = log[parent]?.[child] || '';
+          value = log[parent]?.[child] !== undefined ? (log[parent][child] ?? '') : '';
         } else if (column.startsWith('sentence')) {
-          value = extractedData.sentences[column] || '';
-        } else if (column === 'confidenceRating') {
-          value = log.confidenceRating || '';
-        } else if (column === 'citationUrl') {
-          value = log.citationUrl || '';
-        } else if (column === 'originalCitationUrl') {
-          value = log.originalCitationUrl || '';
+          const index = parseInt(column.charAt(column.length - 1)) - 1;
+          value = sentences[index] ?? '';
         } else {
-          value = log[column] || '';
+          value = log[column] ?? '';
         }
-        const escapedValue = value.toString().replace(/"/g, '""');
+        const escapedValue = (value ?? '').toString().replace(/"/g, '""');
         return `"${escapedValue}"`;
       }).join(',');
     });
