@@ -256,8 +256,8 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         const userMessage = inputText.trim();
         const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
-        // Check for blocked content
-        const hasBlockedContent = redactedText.includes('###');
+        // Check for blocked content (# for profanity/threats/manipulation, XXX for private info)
+        const hasBlockedContent = redactedText.includes('#') || redactedText.includes('XXX');
         if (hasBlockedContent) {
           const userMessageId = messageIdCounter.current++;
           const blockedMessageId = messageIdCounter.current++;
@@ -272,7 +272,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             },
             {
               id: blockedMessageId,
-              text: <div dangerouslySetInnerHTML={{ __html: '<i class="fa-solid fa-circle-exclamation"></i>' + t('homepage.chat.messages.blockedContent') }} />,
+              text: <div dangerouslySetInnerHTML={{ 
+                __html: '<i class="fa-solid fa-circle-exclamation"></i>' + 
+                  (redactedText.includes('XXX') ? t('homepage.chat.messages.privateContent') : t('homepage.chat.messages.blockedContent')) 
+              }} />,
               sender: 'system',
               error: true
             }
