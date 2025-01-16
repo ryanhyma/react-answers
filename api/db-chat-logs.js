@@ -27,20 +27,25 @@ export default async function handler(req, res) {
     // Transform the data to match what the frontend expects
     const transformedLogs = logs.map(log => ({
       timestamp: log.timestamp,
-      redactedQuestion: log.redactedQuestion,
-      aiResponse: log.aiResponse,
       aiService: log.aiService,
+      redactedQuestion: log.redactedQuestion,
       referringUrl: log.referringUrl,
-      citationUrl: log.citationUrl,
+      preliminaryChecks: log.preliminaryChecks,
+      aiResponse: log.aiResponse,
+      englishAnswer: log.englishAnswer,
+      answer: log.answer,
       originalCitationUrl: log.originalCitationUrl,
+      citationUrl: log.citationUrl,
       confidenceRating: log.confidenceRating,
       feedback: log.feedback,
       expertFeedback: log.expertFeedback || {
-        veryIncorrect: false,
-        somewhatIncorrect: false,
-        incomplete: false,
-        citationVeryIncorrect: false,
-        citationSomewhatIncorrect: false,
+        totalScore: null,
+        sentence1Score: null,
+        sentence2Score: null,
+        sentence3Score: null,
+        sentence4Score: null,
+        citationScore: null,
+        answerImprovement: '',
         expertCitationUrl: ''
       }
     }));

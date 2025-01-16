@@ -187,17 +187,20 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     // Parse all components from the AI response
     const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
     
-    // Format expert feedback to match schema if present
-    const formattedExpertFeedback = expertFeedback ? {
-      totalScore: expertFeedback.totalScore || null,
-      sentence1Score: expertFeedback.sentence1Score || null,
-      sentence2Score: expertFeedback.sentence2Score || null,
-      sentence3Score: expertFeedback.sentence3Score || null,
-      sentence4Score: expertFeedback.sentence4Score || null,
-      citationScore: expertFeedback.citationScore || null,
-      answerImprovement: expertFeedback.answerImprovement || '',
-      expertCitationUrl: expertFeedback.expertCitationUrl || ''
-    } : null;
+    // Standardize expert feedback format - only accept new format
+    let formattedExpertFeedback = null;
+    if (expertFeedback) {
+      formattedExpertFeedback = {
+        totalScore: expertFeedback.totalScore || null,
+        sentence1Score: expertFeedback.sentence1Score || null,
+        sentence2Score: expertFeedback.sentence2Score || null,
+        sentence3Score: expertFeedback.sentence3Score || null,
+        sentence4Score: expertFeedback.sentence4Score || null,
+        citationScore: expertFeedback.citationScore || null,
+        answerImprovement: expertFeedback.answerImprovement || '',
+        expertCitationUrl: expertFeedback.expertCitationUrl || ''
+      };
+    }
 
     const logEntry = {
       timestamp: new Date(),
@@ -498,7 +501,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             response,
             finalCitationUrl,
             originalCitationUrl,
-            confidenceRating
+            confidenceRating,
+            null,  // feedback
+            null   // expertFeedback
           );
 
         } catch (error) {
