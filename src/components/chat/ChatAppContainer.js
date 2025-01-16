@@ -22,6 +22,10 @@ const extractSentences = (paragraph) => {
 
 // Move parsing logic outside component
 const parseMessageContent = (text) => {
+  if (!text) {
+    return { responseType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
+  }
+
   let responseType = 'normal';
   let content = text;
   let preliminaryChecks = null;
@@ -141,32 +145,33 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, []);
 
   const logInteraction = useCallback((
-    redactedQuestion,
-    aiResponse,
-    aiService,
-    referringUrl,
-    citationUrl,
-    originalCitationUrl,
-    confidenceRating,
-    feedback,
-    expertFeedback
+    aiService,            // String
+    redactedQuestion,     // String (required)
+    referringUrl,         // String
+    aiResponse,           // String
+    citationUrl,         // String
+    originalCitationUrl,  // String
+    confidenceRating,     // String
+    feedback,            // String
+    expertFeedback       // Object (optional)
   ) => {
-    // console.log('Logging interaction with referringUrl:', referringUrl);
-
-    const { preliminaryChecks, englishAnswer } = parseMessageContent(aiResponse);
+    // Parse all components from the AI response
+    const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
     
     const logEntry = {
-      redactedQuestion,
-      ...(referringUrl && { referringUrl }),
-      ...(preliminaryChecks && { preliminaryChecks }),
-      aiResponse,
-      ...(englishAnswer && { englishAnswer }),
-      aiService,
-      originalCitationUrl,
-      citationUrl,
-      ...(confidenceRating && { confidenceRating }),
-      ...(feedback !== undefined && { feedback }),
-      ...(expertFeedback && { expertFeedback })
+      timestamp: new Date(),    // Schema default
+      aiService,               // Match schema
+      redactedQuestion,        // Match schema (required)
+      referringUrl,            // Match schema
+      preliminaryChecks,       // Match schema
+      aiResponse,              // Match schema
+      englishAnswer,           // Match schema
+      answer: content,         // Match schema
+      originalCitationUrl,     // Match schema
+      citationUrl,            // Match schema
+      confidenceRating,        // Match schema
+      ...(feedback && { feedback }), // Match schema
+      ...(expertFeedback && { expertFeedback }) // Match schema
     };
 
     console.log('Final log entry:', logEntry);
@@ -183,11 +188,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     // Get the last message (which should be the AI response)
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.sender === 'ai') {
-      const { text: aiResponse, aiService } = lastMessage;
+      const { text: aiResponse, aiService: selectedAIService } = lastMessage;
       // Get original URL from AI response
-      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
-      // Extract preliminaryChecks and englishAnswer
-      const { preliminaryChecks, englishAnswer } = parseMessageContent(aiResponse);
+      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, selectedAIService);
+      // Extract preliminaryChecks, englishAnswer, and the displayed answer
+      const { preliminaryChecks, englishAnswer, content: answer } = parseMessageContent(aiResponse);
 
       // Get validated URL from checkedCitations
       const lastIndex = messages.length - 1;
@@ -199,21 +204,19 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       if (userMessage && userMessage.sender === 'user') {
         // Only log if there's feedback
         logInteraction(
+          selectedAIService,
           userMessage.redactedText,
-          userMessage.referringUrl,
-          preliminaryChecks,
+          referringUrl,
           aiResponse,
-          englishAnswer,
-          aiService,
-          originalCitationUrl,
           finalCitationUrl,
+          originalCitationUrl,
           confidenceRating,
           feedback,
           expertFeedback
         );
       }
     }
-  }, [messages, checkedCitations, logInteraction, parseAIResponse]);
+  }, [messages, checkedCitations, logInteraction, parseAIResponse, referringUrl]);
 
   const handleReferringUrlChange = (e) => {
     const url = e.target.value.trim();
@@ -445,10 +448,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
           // Log the interaction with the validated URL
           logInteraction(
+            selectedAI,
             redactedText,
+            referringUrl,
             response,
-            usedAI,
-            referringUrl.trim() || undefined,
             finalCitationUrl,
             originalCitationUrl,
             confidenceRating
@@ -511,11 +514,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             // Log the fallback interaction
             const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
             logInteraction(
-              redactedText,
-              fallbackResponse,
               fallbackAI,
+              redactedText,
               referringUrl,
-              null,
+              fallbackResponse,
+              finalCitationUrl,
               originalCitationUrl,
               confidenceRating
             );

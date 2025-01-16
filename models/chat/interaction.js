@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const ChatInteractionSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
+  aiService: String,
   redactedQuestion: {
     type: String,
     required: true
@@ -10,7 +11,7 @@ const ChatInteractionSchema = new mongoose.Schema({
   preliminaryChecks: String,
   aiResponse: String,
   englishAnswer: String,
-  aiService: String,
+  answer: String,
   originalCitationUrl: String,
   citationUrl: String,
   confidenceRating: String,

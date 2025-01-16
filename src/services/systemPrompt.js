@@ -121,7 +121,7 @@ async function loadSystemPrompt(language = 'en', context) {
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
-    console.log(fullPrompt); //temporary
+    // console.log(fullPrompt); //temporary
     return fullPrompt;
 
   } catch (error) {
