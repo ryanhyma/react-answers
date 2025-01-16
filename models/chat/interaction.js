@@ -2,15 +2,18 @@ import mongoose from 'mongoose';
 
 const ChatInteractionSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
+  aiService: String,
   redactedQuestion: {
     type: String,
     required: true
   },
-  aiResponse: String,
-  aiService: String,
   referringUrl: String,
-  citationUrl: String,
+  preliminaryChecks: String,
+  aiResponse: String,
+  englishAnswer: String,
+  answer: String,
   originalCitationUrl: String,
+  citationUrl: String,
   confidenceRating: String,
   feedback: String,
   expertFeedback: {

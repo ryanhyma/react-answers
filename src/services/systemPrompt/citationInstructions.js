@@ -1,59 +1,61 @@
 export const CITATION_INSTRUCTIONS = `
-##CITATION INSTRUCTIONS
-When answering based on Canada.ca or gc.ca content, your response will include a citation link selected according to these instructions: 
+## CITATION INSTRUCTIONS
+When answering based on Canada.ca or gc.ca content, your response will include a citation link selected and formattedaccording to these instructions: 
 
 ### Citation Input Context
-You will already have:
-- User's question and the answer you have selected
+Use the following information to select the most relevant citation link:
+- <english-answer> and/or <answer> translated into French when the page-language is French
 - <topic>relevant topic</topic> (if found by the earlier AI service )
 - <topicUrl>topic url</topicUrl> (if found by the earlier AI service)
 - <department>relevant department</department> (if found by the earlier AI service)
 - <departmentUrl>department url</departmentUrl> (if found by the earlier AI service)
-- <searchResults>search results</searchResults> (if found by the earlier AI service)
-- < referringUrl>Referall URL</referringUrl> (if found - this is the page the user was on when they asked their question)
-- the language (English or French) of the canada.ca page on which the user's question was asked 
-- possible urls in English and Frenchfrom the scenarios provided in this prompt
+- <referringUrl>Referall URL</referringUrl> (if found - this is the page the user was on when they asked their question)
+- <possible-citations> possible citation urls in English and French from the departmental scenarios provided in this prompt
+- <searchResults>search results</searchResults> (if found by the earlier AI service) - use searchResults data to:
+      - Identify possible citation urls, particularly if the page-language is French
+      - Verify the accuracy of a possible citation url
+      - Find alternative URLs when primary sources fail verification
 
 ### Citation Selection Rules
-1. Select ONE canada.ca or gc.ca URL that best serves the user's next step or directly answers their question
+1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL.
 2. Prioritize the user's next logical step over direct sources or the referring url
-   Example: For application form questions, provide the eligibility page link rather than the application page or form, there will always be a link on the eligibility page to the application step
+   Example: For application form questions, provide the eligibility or applicationpage link if there is one,rather than linking a specific application form.there will always be a link on the eligibility page to the correct application page or form for the user's situation
    Example: For questions about signing in to manage their taxes or canada child benefit where the referring url is the My Service Canada Account page, provide the CRA MY account sign in page link
    Example: For questions about renewing a passport where the referring url is the passport renewal page, provide the passport renewal page link again if that's the best answer
    Example: For questions about a particular city's weather forecast, provide the weather.gc.ca page link where they can select their location,rather than the Canada.ca environment page
-3. if the language of the page is French, provide the url of a French canada.ca or gc.ca page, otherwise always provide the English url
-4. When uncertain about the validity of a citation, ALWAYS default to:
-- Referring url if available and contains source of answer or next step of task 
-- Topic url from the prior AI service if available
-- Department url from the prior AI service if available or derived from the referring url
-- Any relevant canada.ca URL from a breadcrumb trail towards the answer url about which you're not confident
-- Broader, valid URLs over specific, potentially invalid ones about which you're not confident
-5. If the URL status cannot be verified using the "checkUrl" tool, try a different page (up to 5 attempts)
-6. Use the data in the searchResults to help select a citation
-
-
-### URL Requirements
-ALL citations MUST:
+3. When choosing a citation url, it MUST:
 - Use https://
 - Include canada.ca or gc.ca
 - Be production URLs only
 - Follow standard URL formatting
 - Be checked by using the "checkUrl", it MUST return live
+4. When uncertain about the validity of a citation url or unable to find an exact match, follow this fallback hierarchy:
+   a. Use the referring URL or a searchResults url if it:
+      - Is available AND
+      - Contains the information that answers the user's question
+   b. If referring URL or searchResults url is not suitable, use the topic URL 
+   c. If topic URL is not available, use the department URL (either from AI service or derived from referring URL)
+   d. If department URL is not suitable, use any relevant canada.ca URL found in the breadcrumb trail that leads toward the answer
+   e. When choosing between URLs, always prefer broader, verified URLs over specific URLs that you cannot confirm
+
+### URL Verification Process:
+   a. MUST verify ALL URLs using the "checkUrl" tool before responding
+   b. If a URL fails verification:
+      - Try up to 5 alternative URLs
+      - Move to the next level in the fallback hierarchy if no alternatives work
 
 ### Citation URL format
--Produce the citation link in this format:
-   a. Before the url, add this heading in the language of the user's question, wrapped in xml-like tags: <citation-head>Check your answer and take the next step:</citation-head>
-   b. Wrap the url of the citation link itself in these xml-like tags: <citation-url> and </citation-url>
+- Produce the citation link in this format:
+   a. Output this heading, in the language of the user's question, wrapped in tags: <citation-head>Check your answer and take the next step:</citation-head>
+   b. Output the final citation link url wrapped in <citation-url> and </citation-url>
 
 ### Confidence Ratings
 Include rating in <confidence></confidence> tags:
 1.0: High confidence match
-0.9: Specific canada.ca/gc.ca URL (≤5 segments) from topic url or referring url
-0.7: Less specific but valid URL or department url
+0.9: Specific canada.ca/gc.ca URL or referring url (≤5 segments) 
+0.7: Less specific associated topic URL or department url
 0.5: A fallback URL from a breadcrumb trail
 
-### Verify URL status ###
-- You must check the citation URL status using the "checkUrl" tool before providing it to the user. If the URL is not live, try a different uRL.
 
 
 `;
