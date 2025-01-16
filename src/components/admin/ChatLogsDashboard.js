@@ -73,19 +73,18 @@ const ChatLogsDashboard = () => {
     const columns = [
       'timestamp',
       'pageLanguage',
-      'referringUrl',
+      'questionLanguage',
       'redactedQuestion',
       'aiService',
-      'questionLanguage',
       'citationUrl',
       'confidenceRating',
-      'originalCitationUrl',
       'englishAnswer',
       'answer',
       'sentence1',
       'sentence2',
       'sentence3',
       'sentence4',
+      'referringUrl',
       'feedback',
       'expertFeedback.totalScore',
       'expertFeedback.sentence1Score',
@@ -111,8 +110,8 @@ const ChatLogsDashboard = () => {
 
       if (!preliminaryChecks) return result;
 
-      const pageMatch = /<page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
-      const questionMatch = /<question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
+      const pageMatch = /- <page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
+      const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
 
       if (pageMatch) result.pageLanguage = pageMatch[1].trim();
       if (questionMatch) result.questionLanguage = questionMatch[1].trim();
@@ -122,6 +121,11 @@ const ChatLogsDashboard = () => {
 
     // Create CSV rows
     const rows = logs.map(log => {
+      console.log('Processing log for CSV:', {
+        preliminaryChecks: log.preliminaryChecks?.substring(0, 100) + '...',
+        languages: extractLanguages(log.preliminaryChecks)
+      });
+      
       // Extract sentences from answer
       const sentences = extractSentences(log.answer || '');
       
