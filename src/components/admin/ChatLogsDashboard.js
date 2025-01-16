@@ -135,19 +135,19 @@ const ChatLogsDashboard = () => {
       return columns.map(column => {
         let value = '';
         if (column === 'pageLanguage') {
-          value = languages.pageLanguage;
+          value = languages.pageLanguage ?? '';
         } else if (column === 'questionLanguage') {
-          value = languages.questionLanguage;
+          value = languages.questionLanguage ?? '';
         } else if (column.includes('.')) {
           const [parent, child] = column.split('.');
-          value = log[parent]?.[child] !== undefined ? log[parent][child] : '';
+          value = log[parent]?.[child] !== undefined ? (log[parent][child] ?? '') : '';
         } else if (column.startsWith('sentence')) {
           const index = parseInt(column.charAt(column.length - 1)) - 1;
-          value = sentences[index] || '';
+          value = sentences[index] ?? '';
         } else {
-          value = log[column] || '';
+          value = log[column] ?? '';
         }
-        const escapedValue = value.toString().replace(/"/g, '""');
+        const escapedValue = (value ?? '').toString().replace(/"/g, '""');
         return `"${escapedValue}"`;
       }).join(',');
     });
