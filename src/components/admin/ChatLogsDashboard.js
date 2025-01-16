@@ -140,7 +140,7 @@ const ChatLogsDashboard = () => {
           value = languages.questionLanguage;
         } else if (column.includes('.')) {
           const [parent, child] = column.split('.');
-          value = log[parent]?.[child] || '';
+          value = log[parent]?.[child] !== undefined ? log[parent][child] : '';
         } else if (column.startsWith('sentence')) {
           const index = parseInt(column.charAt(column.length - 1)) - 1;
           value = sentences[index] || '';
