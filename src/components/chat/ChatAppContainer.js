@@ -33,11 +33,11 @@ const parseMessageContent = (text) => {
   let citationHead = null;
   let citationUrl = null;
 
-  // Extract preliminary checks
-  const preliminaryMatch = /<preliminary-checks>(.*?)<\/preliminary-checks>/s.exec(text);
+  // Extract preliminary checks - this regex needs to capture multiline content
+  const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
   if (preliminaryMatch) {
     preliminaryChecks = preliminaryMatch[1].trim();
-    content = content.replace(/<preliminary-checks>.*?<\/preliminary-checks>/s, '').trim();
+    content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
   }
 
   // Extract citation information before processing answers
@@ -167,34 +167,52 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     return result;
   }, []);
 
+  // TODO: Refactor logging to update existing logs with feedback instead of creating duplicates
+// Current behavior creates a new log entry when feedback is provided, resulting in duplicate entries
+// Should implement:
+// 1. LoggingService.updateInteraction method
+// 2. Backend API support for updating existing logs
+// 3. Modify handleFeedback to update instead of create
   const logInteraction = useCallback((
-    aiService,            // String
-    redactedQuestion,     // String (required)
-    referringUrl,         // String
-    aiResponse,           // String
-    citationUrl,         // String
-    originalCitationUrl,  // String
-    confidenceRating,     // String
-    feedback,            // String
-    expertFeedback       // Object (optional)
+    aiService,            
+    redactedQuestion,     
+    referringUrl,         
+    aiResponse,           
+    citationUrl,         
+    originalCitationUrl,  
+    confidenceRating,     
+    feedback,            
+    expertFeedback       
   ) => {
     // Parse all components from the AI response
     const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
     
+    // Format expert feedback to match schema if present
+    const formattedExpertFeedback = expertFeedback ? {
+      totalScore: expertFeedback.totalScore || null,
+      sentence1Score: expertFeedback.sentence1Score || null,
+      sentence2Score: expertFeedback.sentence2Score || null,
+      sentence3Score: expertFeedback.sentence3Score || null,
+      sentence4Score: expertFeedback.sentence4Score || null,
+      citationScore: expertFeedback.citationScore || null,
+      answerImprovement: expertFeedback.answerImprovement || '',
+      expertCitationUrl: expertFeedback.expertCitationUrl || ''
+    } : null;
+
     const logEntry = {
-      timestamp: new Date(),    // Schema default
-      aiService,               // Match schema
-      redactedQuestion,        // Match schema (required)
-      referringUrl,            // Match schema
-      preliminaryChecks,       // Match schema
-      aiResponse,              // Match schema
-      englishAnswer,           // Match schema
-      answer: content,         // Match schema
-      originalCitationUrl,     // Match schema
-      citationUrl,            // Match schema
-      confidenceRating,        // Match schema
-      ...(feedback && { feedback }), // Match schema
-      ...(expertFeedback && { expertFeedback }) // Match schema
+      timestamp: new Date(),
+      aiService: aiService || '',
+      redactedQuestion,
+      referringUrl: referringUrl || '',
+      preliminaryChecks: preliminaryChecks || '',
+      aiResponse: aiResponse || '',
+      englishAnswer: englishAnswer || '',
+      answer: content || '',
+      originalCitationUrl: originalCitationUrl || '',
+      citationUrl: citationUrl || '',
+      confidenceRating: confidenceRating || '',
+      ...(feedback && { feedback }),
+      ...(formattedExpertFeedback && { expertFeedback: formattedExpertFeedback })
     };
 
     console.log('Final log entry:', logEntry);
