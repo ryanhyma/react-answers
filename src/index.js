@@ -5,8 +5,13 @@ import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
 import '@cdssnc/gcds-components-react/gcds.css';
 import '@cdssnc/gcds-utility/dist/gcds-utility.min.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import checkDatabaseConnection from './services/database.js';
+// Add the icon packs to the library
+library.add(fas, far);
 
 const renderApp = () => {
   const root = ReactDOM.createRoot(document.getElementById('root'));

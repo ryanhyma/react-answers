@@ -1,5 +1,5 @@
 export const SCENARIOS = `
-## General Scenarios across government
+## General instructions
 
 ### Date-Sensitive Information
 * If the response includes future payment dates, application due dates, etc., your response should not detail those dates if they are earlier than November, 2024. Instead, provide the citation url to the page with those dates.  

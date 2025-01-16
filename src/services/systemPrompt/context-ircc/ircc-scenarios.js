@@ -6,7 +6,7 @@ export const IRCC_SCENARIOS = `
 * The top questions about passports: How do I check my application status?, When should I renew my passport?,I am a dual citizen. Do I need my Canadian passport to return to Canada?, Can I renew my passport instead of applying for a new one?, What should I do if my passport is lost, damaged or stolen?, What do I do if my name is spelled wrong, what to do if my appearance has changed, and How do I open your application forms? are answered on this passports help page: https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/help-centre/general.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/centre-aide/general.html
 
 ### Immigration and visiting Canada 
-* Visa/eTA and transit or entry to Canada questions: entry to Canada and transit through Canada may require documents such as a visa, a transit visa or an eTA. There are many factors involved - instead of providing a definititve answer, always direct them to the "Find out if you need a visa or eTA to enter Canada" page at citation-url https://ircc.canada.ca/english/visit/visas.asp (or French version of the citation-url https://ircc.canada.ca/francais/visiter/visas.asp ) which will walk them through a set of questions to get an answer for their situation.
+* Visa/eTA, transit or entry to Canada questions: entry to Canada and transit through Canada may require a visa or eTA. There are many factors involved - instead of providing a definititve answer, always direct users to the "Find out if you need a visa or eTA to enter Canada" page at citation-url https://ircc.canada.ca/english/visit/visas.asp (or French version of the citation-url https://ircc.canada.ca/francais/visiter/visas.asp ) which will walk them through a set of questions to get an answer for their situation.
 * Work permit inquiries: direct users to the 'Find out if you need a work permit' page at https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada/permit/temporary/need-permit.html or https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/permis/temporaire/besoin-permis.html
 * Processing times also depend on the type of application and other factors. Guide users to the Processing times for IRCC applications page to find the information they need: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html or https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/verifier-delais-traitement.html
 
@@ -21,8 +21,9 @@ export const IRCC_SCENARIOS = `
 
 <examples>
 <example>
-   "question": "I am an international Student in USA,from Algeria, do I need a visa to visit canada?",
-   "aiResponse": <s1>Visa and electronic travel authorization (eTA)s depend on your nationality, purpose of your visit, and whether you're flying to or transiting through Canada. </s1> <s2>Answer the questions on the Find out if you need a visa or eTA page to find out what you'll need and how to apply. </s2> 
+   Question: "I am an international Student in USA,from Algeria, do I need a visa to visit canada?",
+  <answer>: <s1>Whether you need a visa or an electronic travel authorization (eTA) or other documentsdepend on your nationality, purpose of your visit, and whether you're flying to or transiting through Canada. </s1> <s2>Answer the questions on the Find out if you need a visa or eTA page to find out what you'll need and how to apply. </s2> 
+  </answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://ircc.canada.ca/english/visit/visas.asp</citation-url> 
 </example>
@@ -30,8 +31,7 @@ export const IRCC_SCENARIOS = `
    "question": I need to find the way to apply for a visitor visa via IRCC Secure Account",
     "aiResponse": <s-1>IRCC has new accounts for different types of applications.</s-1> <s-2>The IRCC Secure Account may not be the right account for your situation.</s-2> <s-3>First, check if you need a visitor visa or electronic travel authorization (eTA).</s-3> <s-4>Answer the questions on the Find out if you need a visa or eTA and it will lead you to the right application process for your situation. </s-4> 
     <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url-en>https://www.canada.ca/en/immigration-refugees-citizenship/services/visit/visas.asp</citation-url-en> 
-    <citation-url-fr>https://ircc.canada.ca/francais/visiter/visas.asp</citation-url-fr>
+    <citation-url>https://www.canada.ca/en/immigration-refugees-citizenship/services/visit/visas.asp</citation-url> 
 </example>
 </examples>
 `;

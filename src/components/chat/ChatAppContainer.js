@@ -22,22 +22,69 @@ const extractSentences = (paragraph) => {
 
 // Move parsing logic outside component
 const parseMessageContent = (text) => {
-  let responseType = 'normal';
-  let content = text;
-
-  // Check for and remove tags, storing the response type
-  if (text.includes('<not-gc>')) {
-    responseType = 'not-gc';
-    content = text.replace(/<\/?not-gc>/g, '').trim();
-  } else if (text.includes('<pt-muni>')) {
-    responseType = 'pt-muni';
-    content = text.replace(/<\/?p?-?pt-muni>/g, '').trim();  // Updated regex to catch both <pt-muni> and <p-pt-muni>
-  } else if (text.includes('<clarifying-question>')) {
-    responseType = 'question';
-    content = text.replace(/<\/?clarifying-question>/g, '').trim();
+  if (!text) {
+    return { responseType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
   }
 
-  return { responseType, content };
+  let responseType = 'normal';
+  let content = text;
+  let preliminaryChecks = null;
+  let englishAnswer = null;
+  let citationHead = null;
+  let citationUrl = null;
+
+  // Extract preliminary checks
+  const preliminaryMatch = /<preliminary-checks>(.*?)<\/preliminary-checks>/s.exec(text);
+  if (preliminaryMatch) {
+    preliminaryChecks = preliminaryMatch[1].trim();
+    content = content.replace(/<preliminary-checks>.*?<\/preliminary-checks>/s, '').trim();
+  }
+
+  // Extract citation information before processing answers
+  const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
+  const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
+  
+  if (citationHeadMatch) {
+    citationHead = citationHeadMatch[1].trim();
+  }
+  if (citationUrlMatch) {
+    citationUrl = citationUrlMatch[1].trim();
+  }
+
+  // Extract English answer first
+  const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
+  if (englishMatch) {
+    englishAnswer = englishMatch[1].trim();
+    content = englishAnswer;  // Use English answer as content for English questions
+  }
+
+  // Extract main answer if it exists
+  const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
+  if (answerMatch) {
+    content = answerMatch[1].trim();
+  }
+
+  // Check response types
+  if (content.includes('<not-gc>')) {
+    responseType = 'not-gc';
+    content = content.replace(/<\/?not-gc>/g, '').trim();
+  } else if (content.includes('<pt-muni>')) {
+    responseType = 'pt-muni';
+    content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
+  } else if (content.includes('<clarifying-question>')) {
+    responseType = 'question';
+    content = content.replace(/<\/?clarifying-question>/g, '').trim();
+  }
+
+  // Add citation information back to content if it exists
+  if (citationHead) {
+    content += `\n<citation-head>${citationHead}</citation-head>`;
+  }
+  if (citationUrl) {
+    content += `\n<citation-url>${citationUrl}</citation-url>`;
+  }
+
+  return { responseType, content, preliminaryChecks, englishAnswer };
 };
 
 const ChatAppContainer = ({ lang = 'en' }) => {
@@ -86,10 +133,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, []);
 
   const parseAIResponse = useCallback((text, aiService) => {
-    // console.log('Parsing AI response:', text, aiService);
-    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
-    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
+    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
+    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
+    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
 
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
@@ -101,43 +147,54 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       .replace(confidenceRatingRegex, '')
       .trim();
 
-    // Split content into paragraphs, preserving sentence tags
-    const paragraphs = mainContent.split(/\n+/);
+    // Split content into paragraphs, but exclude any remaining citation tags
+    const paragraphs = mainContent
+      .split(/\n+/)
+      .filter(para => 
+        !para.includes('<citation-head>') && 
+        !para.includes('<citation-url>') && 
+        !para.includes('<confidence>')
+      );
 
     const result = {
       paragraphs,
-      citationHead: headMatch ? headMatch[1] : null,
-      citationUrl: urlMatch ? urlMatch[1] : null,
+      citationHead: headMatch ? headMatch[1].trim() : null,
+      citationUrl: urlMatch ? urlMatch[1].trim() : null,
       confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
       aiService
     };
-    // console.log('Parsed AI response:', result);
+
     return result;
   }, []);
 
   const logInteraction = useCallback((
-    redactedQuestion,
-    aiResponse,
-    aiService,
-    referringUrl,
-    citationUrl,
-    originalCitationUrl,
-    confidenceRating,
-    feedback,
-    expertFeedback
+    aiService,            // String
+    redactedQuestion,     // String (required)
+    referringUrl,         // String
+    aiResponse,           // String
+    citationUrl,         // String
+    originalCitationUrl,  // String
+    confidenceRating,     // String
+    feedback,            // String
+    expertFeedback       // Object (optional)
   ) => {
-    console.log('Logging interaction with referringUrl:', referringUrl);
-
+    // Parse all components from the AI response
+    const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
+    
     const logEntry = {
-      redactedQuestion,
-      aiResponse,
-      aiService,
-      ...(referringUrl && { referringUrl }),
-      citationUrl,
-      originalCitationUrl,
-      ...(confidenceRating && { confidenceRating }),
-      ...(feedback !== undefined && { feedback }),
-      ...(expertFeedback && { expertFeedback })
+      timestamp: new Date(),    // Schema default
+      aiService,               // Match schema
+      redactedQuestion,        // Match schema (required)
+      referringUrl,            // Match schema
+      preliminaryChecks,       // Match schema
+      aiResponse,              // Match schema
+      englishAnswer,           // Match schema
+      answer: content,         // Match schema
+      originalCitationUrl,     // Match schema
+      citationUrl,            // Match schema
+      confidenceRating,        // Match schema
+      ...(feedback && { feedback }), // Match schema
+      ...(expertFeedback && { expertFeedback }) // Match schema
     };
 
     console.log('Final log entry:', logEntry);
@@ -154,9 +211,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     // Get the last message (which should be the AI response)
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.sender === 'ai') {
-      const { text: aiResponse, aiService } = lastMessage;
+      const { text: aiResponse, aiService: selectedAIService } = lastMessage;
       // Get original URL from AI response
-      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, aiService);
+      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, selectedAIService);
+      // Extract preliminaryChecks, englishAnswer, and the displayed answer
+      const { preliminaryChecks, englishAnswer, content: answer } = parseMessageContent(aiResponse);
 
       // Get validated URL from checkedCitations
       const lastIndex = messages.length - 1;
@@ -168,10 +227,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       if (userMessage && userMessage.sender === 'user') {
         // Only log if there's feedback
         logInteraction(
+          selectedAIService,
           userMessage.redactedText,
+          referringUrl,
           aiResponse,
-          aiService,
-          userMessage.referringUrl,
           finalCitationUrl,
           originalCitationUrl,
           confidenceRating,
@@ -180,7 +239,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         );
       }
     }
-  }, [messages, checkedCitations, logInteraction, parseAIResponse]);
+  }, [messages, checkedCitations, logInteraction, parseAIResponse, referringUrl]);
 
   const handleReferringUrlChange = (e) => {
     const url = e.target.value.trim();
@@ -345,7 +404,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         }
 
 
-
         // Get conversation history for context
         const conversationHistory = messages
           .filter(m => !m.temporary)
@@ -353,16 +411,14 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             role: m.sender === 'user' ? 'user' : 'assistant',
             content: m.redactedText || m.text
           }));
-   // Create formatted message with referring URL (add this before the first try block)
-   const messageWithReferrer = `${redactedText}${
-    referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
-  }}`;
+        // Create formatted message with referring URL (add this before the first try block)
+        const messageWithReferrer = `${redactedText}${referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''
+          }}`;
         // Try primary AI service first, yes first
         try {
           const response = await MessageService.sendMessage(selectedAI, messageWithReferrer, conversationHistory, lang, context);
 
           console.log(`✅ ${selectedAI} response:`, response);
-
           // Parse the response for citations
           const { citationUrl: originalCitationUrl } = parseAIResponse(response, usedAI);
 
@@ -415,10 +471,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
           // Log the interaction with the validated URL
           logInteraction(
+            selectedAI,
             redactedText,
+            referringUrl,
             response,
-            usedAI,
-            referringUrl.trim() || undefined,
             finalCitationUrl,
             originalCitationUrl,
             confidenceRating
@@ -481,11 +537,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             // Log the fallback interaction
             const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
             logInteraction(
-              redactedText,
-              fallbackResponse,
               fallbackAI,
+              redactedText,
               referringUrl,
-              null,
+              fallbackResponse,
+              finalCitationUrl,
               originalCitationUrl,
               confidenceRating
             );
@@ -533,7 +589,12 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     logInteraction,
     messages,
     parseAIResponse,
-    turnCount
+    turnCount,
+    currentDepartment,
+    currentDepartmentUrl,
+    currentSearchResults,
+    currentTopic,
+    currentTopicUrl
   ]);
 
   useEffect(() => {
