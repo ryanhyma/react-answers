@@ -30,6 +30,8 @@ const parseMessageContent = (text) => {
   let content = text;
   let preliminaryChecks = null;
   let englishAnswer = null;
+  let citationHead = null;
+  let citationUrl = null;
 
   // Extract preliminary checks
   const preliminaryMatch = /<preliminary-checks>(.*?)<\/preliminary-checks>/s.exec(text);
@@ -38,20 +40,28 @@ const parseMessageContent = (text) => {
     content = content.replace(/<preliminary-checks>.*?<\/preliminary-checks>/s, '').trim();
   }
 
+  // Extract citation information before processing answers
+  const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
+  const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
+  
+  if (citationHeadMatch) {
+    citationHead = citationHeadMatch[1].trim();
+  }
+  if (citationUrlMatch) {
+    citationUrl = citationUrlMatch[1].trim();
+  }
+
   // Extract English answer first
   const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
   if (englishMatch) {
     englishAnswer = englishMatch[1].trim();
-    content = content.replace(/<english-answer>.*?<\/english-answer>/s, '').trim();
+    content = englishAnswer;  // Use English answer as content for English questions
   }
 
-  // Extract main answer if it exists, otherwise use englishAnswer
-  const answerMatch = /<answer>(.*?)<\/answer>/s.exec(content);
+  // Extract main answer if it exists
+  const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
   if (answerMatch) {
     content = answerMatch[1].trim();
-  } else if (englishAnswer) {
-    // If there's no <answer> tag but we have an English answer, use the English answer as content
-    content = englishAnswer;
   }
 
   // Check response types
@@ -64,6 +74,14 @@ const parseMessageContent = (text) => {
   } else if (content.includes('<clarifying-question>')) {
     responseType = 'question';
     content = content.replace(/<\/?clarifying-question>/g, '').trim();
+  }
+
+  // Add citation information back to content if it exists
+  if (citationHead) {
+    content += `\n<citation-head>${citationHead}</citation-head>`;
+  }
+  if (citationUrl) {
+    content += `\n<citation-url>${citationUrl}</citation-url>`;
   }
 
   return { responseType, content, preliminaryChecks, englishAnswer };
@@ -115,10 +133,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, []);
 
   const parseAIResponse = useCallback((text, aiService) => {
-    // console.log('Parsing AI response:', text, aiService);
-    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
-    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
+    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
+    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
+    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
 
     const headMatch = text.match(citationHeadRegex);
     const urlMatch = text.match(citationUrlRegex);
@@ -130,17 +147,23 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       .replace(confidenceRatingRegex, '')
       .trim();
 
-    // Split content into paragraphs, preserving sentence tags
-    const paragraphs = mainContent.split(/\n+/);
+    // Split content into paragraphs, but exclude any remaining citation tags
+    const paragraphs = mainContent
+      .split(/\n+/)
+      .filter(para => 
+        !para.includes('<citation-head>') && 
+        !para.includes('<citation-url>') && 
+        !para.includes('<confidence>')
+      );
 
     const result = {
       paragraphs,
-      citationHead: headMatch ? headMatch[1] : null,
-      citationUrl: urlMatch ? urlMatch[1] : null,
+      citationHead: headMatch ? headMatch[1].trim() : null,
+      citationUrl: urlMatch ? urlMatch[1].trim() : null,
       confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
       aiService
     };
-    // console.log('Parsed AI response:', result);
+
     return result;
   }, []);
 
