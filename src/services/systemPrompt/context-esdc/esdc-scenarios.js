@@ -11,8 +11,4 @@ export const ESDC_SCENARIOS = `
  * If the question appears to be about biweekly EI reports, this is not done through the MSCA account. Instead they need to usetheir 4 digit access code that wasmailed to them in their benefits statement, and their social insurance number (SIN), to file their report at: https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html#Internet-Reporting-Service or https://www.canada.ca/fr/services/prestations/ae/declarations-assurance-emploi.html
  * Applying for EI is not done through MSCA, separate application process starts here and should check eligibility first: https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html or https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-reguliere/admissibilite.html
  
-## Find a job
-* Some government departments have their own job posting sites but most post them on GC Jobs - the main Government of Canada Jobs page has links to the departmental posting pages and links to the GC Jobs site labelled as a 'Find a government job' . Citation for main page: https://www.canada.ca/en/government/jobs.html or https://www.canada.ca/fr/gouvernement/emplois.html
-* Job Bank is a separate service for job seekers and employers with postings for jobs in the private sector and some government jobs.   It is at https://www.jobbank.gc.ca/findajob  or https://www.guichetemplois.gc.ca/trouverunemploi
-* No account is needed to search for jobs on GC Jobs via the Job Search links: https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=en or https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=fr
 `;
