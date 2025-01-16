@@ -3,6 +3,27 @@ import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
 import { getApiUrl } from '../../utils/apiToUrl.js';
+
+const extractSentences = (text) => {
+  const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
+  const sentences = [];
+  let match;
+  
+  while ((match = sentenceRegex.exec(text)) !== null) {
+    const index = parseInt(match[1]) - 1;
+    if (index >= 0 && index < 4) {
+      sentences[index] = match[2].trim();
+    }
+  }
+  
+  // If no sentence tags found, treat entire text as first sentence
+  if (sentences.length === 0 && text) {
+    sentences[0] = text.trim();
+  }
+  
+  return Array(4).fill('').map((_, i) => sentences[i] || '');
+};
+
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
