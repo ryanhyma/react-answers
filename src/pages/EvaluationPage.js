@@ -5,7 +5,7 @@ import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react
 import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
-import { ConnectionClosedEvent } from 'mongodb';
+
 
 
 const EvaluationPage = ({ lang = 'en' }) => {
