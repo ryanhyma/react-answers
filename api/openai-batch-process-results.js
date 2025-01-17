@@ -138,7 +138,7 @@ export default async function handler(req, res) {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
-      dbConnect();
+      await dbConnect();
       const batch = await Batch.findOne({ batchId: batchId });
       if (!batch) {
         throw new Error('Batch not found');
