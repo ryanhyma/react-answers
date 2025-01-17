@@ -113,7 +113,8 @@ const EvaluationPage = ({ lang = 'en' }) => {
       const response = await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
     } else {
       console.log('Button clicked to complete batch:', batchId);
-      const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+      const response = await (await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`))).json();
+
       console.log(response.log);
     }
   };
