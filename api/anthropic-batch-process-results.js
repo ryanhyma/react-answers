@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
-      const batch = await Batch.findOne({ batchId: batchId });
+      const batch = await Batch.findOne({ batchId: batchId }).maxTimeMS(90000);;
       if (!batch) {
         throw new Error('Batch not found');
       }
