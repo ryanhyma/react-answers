@@ -29,7 +29,7 @@ export const IRCC_SCENARIOS = `
 </example>
 <example>
    Question: I need to find the way to apply for a visitor visa via IRCC Secure Account",
-    <answer>: <s-1>IRCC has new accounts for different types of applications.</s-1> <s-2>The IRCC Secure Account may not be the right account for your situation.</s-2> <s-3>First, check if you need a visitor visa or electronic travel authorization (eTA).</s-3> <s-4>Answer the questions on the Find out if you need a visa or eTA and it will lead you to the right application process for your situation. </s-4> 
+    <answer>: <s-1>IRCC has new accounts for different types of applications.</s-1> <s-2>The IRCC Secure Account may not be the right account for your situation.</s-2> <s-3>First, check if you need a visitor visa or electronic travel authorization (eTA).</s-3> <s-4>Answer the questions on the Find out if you need a visa or eTA and it will lead you to the right application process for your situation. </s-4> </answer> 
     <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://www.canada.ca/en/immigration-refugees-citizenship/services/visit/visas.asp</citation-url> 
 </example>

@@ -110,22 +110,21 @@ const ChatLogsDashboard = () => {
 
       if (!preliminaryChecks) return result;
 
-      const pageMatch = /- <page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
-      const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
+      try {
+        const pageMatch = /- <page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
+        const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
 
-      if (pageMatch) result.pageLanguage = pageMatch[1].trim();
-      if (questionMatch) result.questionLanguage = questionMatch[1].trim();
+        if (pageMatch) result.pageLanguage = pageMatch[1].trim();
+        if (questionMatch) result.questionLanguage = questionMatch[1].trim();
+      } catch (error) {
+        console.error('Error extracting languages:', error);
+      }
 
       return result;
     };
 
     // Create CSV rows
     const rows = logs.map(log => {
-      console.log('Processing log for CSV:', {
-        preliminaryChecks: log.preliminaryChecks?.substring(0, 100) + '...',
-        languages: extractLanguages(log.preliminaryChecks)
-      });
-      
       // Extract sentences from answer
       const sentences = extractSentences(log.answer || '');
       
@@ -134,19 +133,25 @@ const ChatLogsDashboard = () => {
 
       return columns.map(column => {
         let value = '';
-        if (column === 'pageLanguage') {
-          value = languages.pageLanguage ?? '';
-        } else if (column === 'questionLanguage') {
-          value = languages.questionLanguage ?? '';
-        } else if (column.includes('.')) {
-          const [parent, child] = column.split('.');
-          value = log[parent]?.[child] !== undefined ? (log[parent][child] ?? '') : '';
-        } else if (column.startsWith('sentence')) {
-          const index = parseInt(column.charAt(column.length - 1)) - 1;
-          value = sentences[index] ?? '';
-        } else {
-          value = log[column] ?? '';
+        try {
+          if (column === 'pageLanguage') {
+            value = languages.pageLanguage;
+          } else if (column === 'questionLanguage') {
+            value = languages.questionLanguage;
+          } else if (column.includes('.')) {
+            const [parent, child] = column.split('.');
+            value = log[parent]?.[child];
+          } else if (column.startsWith('sentence')) {
+            const index = parseInt(column.charAt(column.length - 1)) - 1;
+            value = sentences[index];
+          } else {
+            value = log[column];
+          }
+        } catch (error) {
+          console.error(`Error processing column ${column}:`, error);
         }
+        
+        // Handle null/undefined and escape quotes
         const escapedValue = (value ?? '').toString().replace(/"/g, '""');
         return `"${escapedValue}"`;
       }).join(',');

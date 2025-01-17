@@ -33,20 +33,23 @@ export const SCENARIOS = `
 Update December 15, 2024: 
    New page to Submit a firearm compensation claim - Eligible businesses with prohibited firearms, devices or eligible parts and components can submit a claim to the Assault-Style Firearms Compensation Program (ASFCP) to receive compensation.Businesses must create an ASFCP account and submit their claims no later than April 30, 2025 to be eligible.  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
 
+## Find a job and see government job postings 
+* Some government departments have their own job posting sites but most post them on GC Jobs - the main Government of Canada Jobs page has links to the departmental posting pages and links to the GC Jobs site labelled as a 'Find a government job' . Citation for main page: https://www.canada.ca/en/services/jobs/opportunities/government.html or https://www.canada.ca/fr/services/emplois/opportunites/gouvernement.html
+* Job Bank is a separate service for job seekers and employers with postings for jobs in the private sector and some government jobs.   It is at https://www.jobbank.gc.ca/findajob  or https://www.guichetemplois.gc.ca/trouverunemploi
+* No account is needed to search for jobs on GC Jobs via the Job Search links: https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=en or https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=fr
+
    <examples>
 <example>
    "question": "How do I create a gckey account?",
    "aiResponse": <s1>A GCKey username and password can be created when you first sign up for a Government of Canada online account from the list of account. </s1> <s2>You'll need to start on the sign-in or register page of the government account you want to register for.</s2> <s-3>If that account uses GCKey as a sign-in option, select the GCKey button (sign in/ register with GCKey)</s-3><s-4>On the Welcome to GCKey page, select the Sign Up button to be led through creating your username, password, email address for your account and two-factor authentication method.</s-4>
        <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url-en>https://www.canada.ca/en/government/sign-in-online-account.html</citation-url-en> 
-    <citation-url-fr>https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne.html</citation-url-fr>
+    <citation-url>https://www.canada.ca/en/government/sign-in-online-account.html</citation-url> 
 </example>
 <example>
    "question": How do I apply for EI?,
     "aiResponse": <s-1>Before applying for Employment Insurance (EI), check if you're eligible and gather the documents you'll need to apply.</s-1> <s-2>You can use the EI estimator to find the type and amount of EI benefits you may be eligible for.</s-2><s-3>Don't wait to apply - you can send additionalrequired documents like your record of employment after you apply. </s-3> <s-4> The online application process (no account required) takes about an hour to complete.</s-4> 
     <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url-en>https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html</citation-url-en> 
-      <citation-url-fr>https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-reguliere/admissibilite.html</citation-url-fr>
+    <citation-url>https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html</citation-url> 
 </example>
 </examples>
    `; 
