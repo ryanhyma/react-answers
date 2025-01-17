@@ -16,7 +16,10 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferCommands: false,
-      connectTimeoutMS: 30000, // 30 seconds timeout
+      serverSelectionTimeoutMS: 60000,
+      socketTimeoutMS: 120000,        
+      connectTimeoutMS: 60000,        
+    
     };
 
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {

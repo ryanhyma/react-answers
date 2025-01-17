@@ -99,7 +99,7 @@ export default async function handler(req, res) {
         throw new Error('Batch ID is required');
       }
       await dbConnect();
-      const batch = await Batch.findOne({ batchId: batchId }).maxTimeMS(90000);;
+      const batch = await Batch.findOne({ batchId: batchId });
       if (!batch) {
         throw new Error('Batch not found');
       }
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
       console.error('Error checking batch status:', error);
-      return res.status(500).json({ error: 'Error checking batch status', details: error.message });
+      return res.status(500).json({ error: 'Error checking batch status', log: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
