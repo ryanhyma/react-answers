@@ -139,24 +139,32 @@ class RedactionService {
   get privatePatterns() {
     return [
       {
+        pattern: /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
+        description: 'Phone numbers (including international formats and extensions)'
+      },
+      {
+        pattern: /[A-Za-z]\s*\d\s*[A-Za-z]\s*[ -]?\s*\d\s*[A-Za-z]\s*\d/g,
+        description: 'Canadian postal codes (with flexible spacing)'
+      },
+      {
+        pattern: /([a-zA-Z0-9_\-.]+)\s*@([\sa-zA-Z0-9_\-.]+)[.,]([a-zA-Z]{1,5})/g,
+        description: 'Email addresses (with flexible spacing and punctuation)'
+      },
+      {
+        pattern: /\b([A-Za-z]{2}\s*\d{6})\b/g,
+        description: 'Passport Numbers'
+      },
+      {
+        pattern:/(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})/g,
+        description: 'Social Insurance Numbers (with flexible separators)'
+      },
+      {
         pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
         description: 'Name patterns in EN/FR'
       },
       {
-        pattern: /\b(?!19\d{2}\b|20\d{2}\b)\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,
-        description: 'Phone numbers'
-      },
-      {
-        pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
-        description: 'Email addresses'
-      },
-      {
         pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
         description: 'Street addresses'
-      },
-      {
-        pattern: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d\b/gi,
-        description: 'Canadian postal codes'
       },
       {
         pattern: /\b\d{5}(?:-\d{4})?\b/g,
@@ -175,8 +183,8 @@ class RedactionService {
         description: 'IP addresses'
       },
       {
-        pattern: /\b\d{3}[ -.]\d{2}[ -.]\d{4}\b/g,
-        description: 'US Social Security Numbers'
+        pattern: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/g,
+        description: 'Social Insurance Numbers (with flexible separators)'
       },
       {
         pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g,
