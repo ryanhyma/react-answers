@@ -139,24 +139,32 @@ class RedactionService {
   get privatePatterns() {
     return [
       {
-        pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
-        description: 'Name patterns in EN/FR'
-      },
-      {
         pattern: /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
         description: 'Phone numbers (including international formats and extensions)'
+      },
+      {
+        pattern: /[A-Za-z]\s*\d\s*[A-Za-z]\s*[ -]?\s*\d\s*[A-Za-z]\s*\d/g,
+        description: 'Canadian postal codes (with flexible spacing)'
       },
       {
         pattern: /([a-zA-Z0-9_\-.]+)\s*@([\sa-zA-Z0-9_\-.]+)[.,]([a-zA-Z]{1,5})/g,
         description: 'Email addresses (with flexible spacing and punctuation)'
       },
       {
-        pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
-        description: 'Street addresses'
+        pattern: /\b([A-Za-z]{2}\s*\d{6})\b/g,
+        description: 'Passport Numbers'
       },
       {
-        pattern: /[A-Za-z]\s*\d\s*[A-Za-z]\s*[ -]?\s*\d\s*[A-Za-z]\s*\d/g,
-        description: 'Canadian postal codes (with flexible spacing)'
+        pattern:/(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})/g,
+        description: 'Social Insurance Numbers (with flexible separators)'
+      },
+      {
+        pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
+        description: 'Name patterns in EN/FR'
+      },
+      {
+        pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
+        description: 'Street addresses'
       },
       {
         pattern: /\b\d{5}(?:-\d{4})?\b/g,
@@ -177,10 +185,6 @@ class RedactionService {
       {
         pattern: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/g,
         description: 'Social Insurance Numbers (with flexible separators)'
-      },
-      {
-        pattern: /\b([A-Za-z]{2}\s*\d{6})\b/g,
-        description: 'Passport Numbers'
       },
       {
         pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g,
