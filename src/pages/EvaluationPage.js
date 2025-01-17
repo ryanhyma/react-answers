@@ -5,6 +5,7 @@ import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react
 import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
+import { ConnectionClosedEvent } from 'mongodb';
 
 
 const EvaluationPage = ({ lang = 'en' }) => {
@@ -113,6 +114,7 @@ const EvaluationPage = ({ lang = 'en' }) => {
     } else {
       console.log('Button clicked to complete batch:', batchId);
       const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+      console.log(response.log);
     }
   };
 

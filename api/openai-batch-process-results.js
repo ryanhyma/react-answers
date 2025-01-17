@@ -6,19 +6,26 @@ const openai = new OpenAI({
 });
 
 const handleOpenAI = async (batch) => {
+  let logString = '';
   try {
+    logString += 'Starting batch processing...\n';
     const result = await openai.batches.retrieve(batch.batchId);
+    logString += 'Retrieved batch from OpenAI.\n';
+
     const fileId = result.error_file_id || result.output_file_id;
     if (!fileId) {
       throw new Error('No file ID found in the batch result');
     }
+
     const results = await retrieveJsonlAsJson(fileId);
-    
+    logString += `Processed file ID: ${fileId}.\n`;
+
     for await (const result of results) {
       const customId = result.custom_id;
       const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);
       if (entryIndex !== -1) {
         let updatedEntry = null;
+
         if (batch.type === 'context') {
           const response = result.response.body.choices[0].message.content;
           const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
@@ -71,56 +78,56 @@ const handleOpenAI = async (batch) => {
 
         }
         batch.entries[entryIndex] = updatedEntry;
+        logString += `Updated entry for custom ID: ${customId}.\n`;
       }
-
     }
 
     batch.status = 'processed';
     await batch.save();
+    logString += 'Batch processed and saved successfully.\n';
+
     return {
       status: "completed",
+      log: logString
     };
 
   } catch (error) {
+    logString += `Error: ${error.message}\n`;
     console.error('Error checking batch status:', error);
-    return res.status(500).json({ error: 'Error checking batch status', details: error.message });
+    return {
+      status: "error",
+      log: logString
+    };
   }
 };
 
 async function retrieveJsonlAsJson(fileId) {
   try {
-      // Get the file content as a stream
-      const response = await openai.files.content(fileId);
-      const contentStream = response.body;
+    const response = await openai.files.content(fileId);
+    const contentStream = response.body;
 
-      // Collect chunks of the stream
-      const chunks = [];
-      for await (const chunk of contentStream) {
-          chunks.push(chunk);
-      }
+    const chunks = [];
+    for await (const chunk of contentStream) {
+      chunks.push(chunk);
+    }
 
-      // Combine chunks into a single string
-      const jsonlContent = Buffer.concat(chunks).toString('utf-8');
+    const jsonlContent = Buffer.concat(chunks).toString('utf-8');
 
-      // Convert JSONL into an array of JSON objects
-      const jsonArray = jsonlContent
-          .split('\n')                // Split by lines
-          .filter(line => line.trim()) // Remove empty lines
-          .map(line => JSON.parse(line)); // Parse each line as JSON
+    const jsonArray = jsonlContent
+      .split('\n')
+      .filter(line => line.trim())
+      .map(line => JSON.parse(line));
 
-      console.log('Parsed JSON Array:', jsonArray);
-
-      return jsonArray;
+    console.log('Parsed JSON Array:', jsonArray);
+    return jsonArray;
   } catch (error) {
-      console.error('Error processing JSONL:', error.message);
-      if (error.response?.data) {
-          console.error('Response details:', error.response.data);
-      }
+    console.error('Error processing JSONL:', error.message);
+    if (error.response?.data) {
+      console.error('Response details:', error.response.data);
+    }
+    throw error;
   }
 }
-
-
-
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -135,9 +142,7 @@ export default async function handler(req, res) {
         throw new Error('Batch not found');
       }
 
-      let result = await handleOpenAI(batch);
-
-
+      const result = await handleOpenAI(batch);
       return res.status(200).json(result);
 
     } catch (error) {
