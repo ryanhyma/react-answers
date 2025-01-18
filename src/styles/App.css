@@ -820,8 +820,6 @@ summary:focus,
     font-weight: 500;
     border-radius: 4px;
     padding: 0.35rem;
-    margin-bottom: 10px;
-    margin-top: -10px;
 }
 
 .character-limit {
@@ -832,8 +830,6 @@ summary:focus,
     font-weight: 500;
     border-radius: 4px;
     padding: 0.35rem;
-    margin-bottom: 10px;
-    margin-top: -10px;
 }
 
 .character-limit i,
@@ -853,8 +849,7 @@ summary:focus,
   }
   
   form {
-    margin-bottom: 20px;
-    padding-bottom: 60px;
+    padding-bottom: 30px;
     border-bottom: 1px solid #ccc;
   }
 
@@ -865,6 +860,7 @@ summary:focus,
     border: 2px solid #333;
     border-radius: 3px;
     overflow: hidden;
+    margin-bottom: 16px;
   }
   
   /* Style the textarea */
@@ -889,10 +885,10 @@ summary:focus,
     border: none;
     border-radius: 0;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.55em;
     font-family: "Noto Sans";
-    height: 64px;
+    height: 70px;
     align-self: flex-start;
     display: none;
   }
