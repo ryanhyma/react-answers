@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const MAX_CHARS = 400;
 
@@ -197,7 +199,7 @@ const ChatInterface = ({
             <div className="field-container">
               <label htmlFor="message">{getLabelForInput()}</label>
               <span className="hint-text">
-                <i className="fa-solid fa-wand-magic-sparkles"></i>
+              <FontAwesomeIcon icon="wand-magic-sparkles" />&nbsp;
                 {t('homepage.chat.input.hint')}
               </span>
               <div className="form-group">
