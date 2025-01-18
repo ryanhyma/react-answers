@@ -94,7 +94,7 @@ const ChatLogsDashboard = () => {
       'expertFeedback.citationScore',
       'expertFeedback.answerImprovement',
       'expertFeedback.expertCitationUrl',
-      'preliminaryChecks'
+      'context'
     ];
 
     // Create CSV header
@@ -123,6 +123,18 @@ const ChatLogsDashboard = () => {
       return result;
     };
 
+    const extractContext = (preliminaryChecks) => {
+      if (!preliminaryChecks) return '';
+      
+      try {
+        const contextMatch = /<context>(.*?)<\/context>/s.exec(preliminaryChecks);
+        return contextMatch ? contextMatch[1].trim() : '';
+      } catch (error) {
+        console.error('Error extracting context:', error);
+        return '';
+      }
+    };
+
     // Create CSV rows
     const rows = logs.map(log => {
       // Extract sentences from answer
@@ -138,6 +150,8 @@ const ChatLogsDashboard = () => {
             value = languages.pageLanguage;
           } else if (column === 'questionLanguage') {
             value = languages.questionLanguage;
+          } else if (column === 'context') {
+            value = extractContext(log.preliminaryChecks);
           } else if (column.includes('.')) {
             const [parent, child] = column.split('.');
             value = log[parent]?.[child];
