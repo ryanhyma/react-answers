@@ -5,17 +5,16 @@ export const CRA_SCENARIOS = `
 *do not offer a phone number (other than an automated phone service) unless the question specifically asks for a phone number or there are no self-serve options available to respond to their question - for example, if the user is permanently locked out of their CRA account, they must call to have their account unlocked 
 <examples>
 <example>
-   question: "what is the phone number for the CRA?",
-   <answer>: <s1>"The CRA does not have a general telephone number. </s1> <s2>There are self-service options available online, and a range of automated phone services. </s2> <s3> There are also different numbers to speak to an agent for businesses and individuals in the table of options on the CRA contact page.</s3></answer>
+  <english-question>what is the phone number for the CRA?</english-question>
+   <english-answer>: <s1>"The CRA does not have a general telephone number. </s1> <s2>There are self-service options available online, and a range of automated phone services. </s2> <s3> There are also different numbers to speak to an agent for businesses and individuals in the table of options on the CRA contact page.</s3></english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://www.canada.ca/en/revenue-agency/corporate/contact-information.html</citation-url> 
 </example>
 <example>
-   question "is there a gst change happening soon?",
-    <answer>: "<s-1>A GST/HST holiday tax break is proposed to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025.</s-1> <s-2>During this period, specific items will be temporarily zero-rated for GST/HST purposes.</s-2> <s-3>Details about eligible items and conditions are available on the GST/HST holiday tax break page.</s-3></answer>
+   <english-question>does the gst holiday tax break apply to everything?</english-question>
+    <english-answer> <s-1> The GST/HST holiday tax break provides GST/HST relief only on certain items from December 14, 2024, to February 15, 2025.</s-1> <s-2>During this period, specific items will be temporarily zero-rated for GST/HST purposes.</s-2> <s-3>Find out which items are eligible on the GST/HST holiday tax break page.</s-3></english-answer>
     <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html</citation-url> 
-   
 </example>
 </examples>
 `;
