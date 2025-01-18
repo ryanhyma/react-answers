@@ -472,6 +472,7 @@ gcds-button.send-button {
 
 
 /* Chat app container styles - this is still a hot mess to clean up, just getting the styles out of inline */
+
 .ai-toggle {
     margin-bottom: 10px;
     }
@@ -851,6 +852,12 @@ summary:focus,
     margin-bottom: 4px;
   }
   
+  form {
+    margin-bottom: 20px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid #ccc;
+  }
+
   /* Container for the textarea and button */
   .form-group {
     display: flex;
