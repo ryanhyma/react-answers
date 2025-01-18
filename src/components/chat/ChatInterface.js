@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
@@ -33,10 +33,18 @@ const ChatInterface = ({
   extractSentences,
 }) => {
   const [charCount, setCharCount] = useState(0);
+  const textareaRef = useRef(null);
   
   useEffect(() => {
     setCharCount(inputText.length);
   }, [inputText]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      const textarea = document.getElementById('message');
+      if (textarea) textarea.focus();
+    }, 100);
+  }, []);
    
   useEffect(() => {
     const textarea = document.querySelector('#message');
@@ -193,17 +201,18 @@ const ChatInterface = ({
                 {t('homepage.chat.input.hint')}
               </span>
               <div className="form-group">
-                <textarea 
-                  id="message" 
-                  name="message"
-                  key={textareaKey}
-                  value={inputText}
-                  onChange={handleTextareaInput}
-                  onKeyDown={handleKeyPress}
-                  required
-                  disabled={isLoading}
-                  autoFocus
-                />
+              <textarea 
+                ref={textareaRef}
+                id="message" 
+                name="message"
+                key={textareaKey}
+                value={inputText}
+                onChange={handleTextareaInput}
+                onKeyDown={handleKeyPress}
+                required
+                disabled={isLoading}
+                autoFocus
+              />
                 <button 
                   type="submit"
                   onClick={handleSendMessage}
