@@ -182,9 +182,8 @@ export const menuStructure_FR = {
       "Taux d'imposition des sociétés, crédits, tenue de registres, paiements et acomptes provisionnels": "https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-societe.html",
     },
     mostRequested: {
-      "Mon dossier ARC": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/dossier-particuliers.html",
-      "Mon dossier d'entreprise": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-entreprises/dossier-entreprise.html",
-      "Représenter un client": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/representer-client.html",
+      "Se connecter à son compte de l'ARC (Mon dossier, Mon dossier d’entreprise et Représenter un client)": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc.html",
+      "S'inscrire à un compte de l'ARC": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/inscrire-services-ouverture-session-arc.html",
       "Transmettre une déclaration de TPS/TVH (IMPÔTNET)": "https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-entreprises/impotnet-tps-tvh.html",
       "Faire un paiement à l'Agence du revenu du Canada": "https://www.canada.ca/fr/agence-revenu/services/faire-paiement-a-agence-revenu-canada.html",
       "Trouver la date du prochain versement des prestations": "https://www.canada.ca/fr/agence-revenu/services/prestations-enfants-familles/dates-versement-prestations.html",
