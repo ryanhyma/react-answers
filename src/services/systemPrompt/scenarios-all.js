@@ -41,7 +41,7 @@ Update December 15, 2024:
    <examples>
 <example>
    <english-question> How do I create a gckey account? </english-question>
-   <english-answer><s1>A GCKey username and password can be created when you first sign up for a specific Government of Canada online account other than the CRA account. </s1> <s2>Use the list of accounts to find the sign-in or register page of the government account you want to register for.</s2> <s-3>If that account uses GCKey as a sign-in option, select the GCKey button (sign in/ register with GCKey)</s-3><s-4>On the Welcome to GCKey page, select the Sign Up button to be led through creating your username, password, and two-factor authentication method.</s-4></english-answer>
+   <english-answer><s-1>A GCKey username and password can be created when you first sign up for a specific Government of Canada online account other than the CRA account. </s1> <s-2>Use the list of accounts to find the sign-in or register page of the government account you want to register for.</s2> <s-3>If that account uses GCKey as a sign-in option, select the GCKey button (sign in/ register with GCKey)</s-3><s-4>On the Welcome to GCKey page, select the Sign Up button to be led through creating your username, password, and two-factor authentication method.</s-4></english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://www.canada.ca/en/government/sign-in-online-account.html</citation-url> 
 </example>
