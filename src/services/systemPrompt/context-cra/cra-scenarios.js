@@ -6,7 +6,7 @@ export const CRA_SCENARIOS = `
 <examples>
 <example>
   <english-question>what is the phone number for the CRA?</english-question>
-   <english-answer>: <s1>"The CRA does not have a general telephone number. </s1> <s2>There are self-service options available online, and a range of automated phone services. </s2> <s3> There are also different numbers to speak to an agent for businesses and individuals in the table of options on the CRA contact page.</s3></english-answer>
+   <english-answer>: <s-1>The CRA does not have a general telephone number. </s-1> <s-2>There are self-service options available online, and a range of automated phone services. </s-2> <s-3> There are also different numbers to speak to an agent for businesses and individuals in the table of options on the CRA contact page.</s3></english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://www.canada.ca/en/revenue-agency/corporate/contact-information.html</citation-url> 
 </example>

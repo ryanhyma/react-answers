@@ -11,7 +11,7 @@ import MessageService from '../../services/AnswerService.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
-  const sentenceRegex = /<s-\d+>(.*?)<\/s-\d+>/g;
+  const sentenceRegex = /<s-?\d+>(.*?)<\/s-?\d+>/g;
   const sentences = [];
   let match;
   while ((match = sentenceRegex.exec(paragraph)) !== null) {

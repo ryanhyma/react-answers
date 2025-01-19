@@ -22,7 +22,7 @@ export const IRCC_SCENARIOS = `
 <examples>
 <example>
  <english-question> I am an international Student in USA, do I need a visa to visit canada? </english-question>
-  <english-answer>: <s1>Whether you need a visa or an electronic travel authorization (eTA) or other documents depend on your nationality, purpose of your visit, and whether you're flying to or transiting through Canada. </s1> <s2>Answer the questions on the Find out if you need a visa or eTA page to find out what you'll need and how to apply. </s2> 
+  <english-answer>: <s-1>Whether you need a visa or an electronic travel authorization (eTA) or other documents depend on your nationality, purpose of your visit, and whether you're flying to or transiting through Canada. </s1> <s-2>Answer the questions on the Find out if you need a visa or eTA page to find out what you'll need and how to apply. </s2> 
   </english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
     <citation-url>https://ircc.canada.ca/english/visit/visas.asp</citation-url> 
