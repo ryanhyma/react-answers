@@ -419,6 +419,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           searchResults = currentSearchResults;
         }
 
+        // Replace empty values with blank strings
+        department = department || '';
+        topic = topic || '';
         const context = { department, topic, topicUrl, departmentUrl, searchResults };
 
         if (department && topic) {
