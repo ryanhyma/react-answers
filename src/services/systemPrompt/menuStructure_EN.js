@@ -174,8 +174,8 @@ export const menuStructure_EN = {
       "Excise taxes, duties, and levies": "https://www.canada.ca/en/services/taxes/excise-taxes-duties-and-levies.html"
     },
     mostRequested: {
-      "Sign in to your CRA Account (formerly My Account, My Business Account, Represent a Client)": "https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services.html",
-      "Register for a CRA Account (formerly My Account, My Business Account, Represent a Client)": "https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html",
+      "Sign in to your CRA Account (to My Account, My Business Account, Represent a Client)": "https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services.html",
+      "Register for a CRA Account (to My Account, My Business Account, Represent a Client)": "https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html",
       "File a GST/HST return (NETFILE)": "https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-businesses/gst-hst-netfile.html",
       "Make a payment to the Canada Revenue Agency": "https://www.canada.ca/en/revenue-agency/services/make-a-payment-canada-revenue-agency.html",
       "Find the next benefit payment date": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/benefit-payment-dates.html",
