@@ -8,7 +8,7 @@ export const CRA_UPDATES = `
 
 <cra-account-update>
 ## CRA Account - Sign-in to your CRA account page
-- Updated January 2025 to simplified single-sign in to access the previous My Account, My Business Account pages and Represent a Client systems. For all of these services, use your existing credentials and select a sign-in option below to access your CRA account or register for a CRA account.
+- Updated January 2025 to simplified single-sign in to access My Account, My Business Account and Represent a Client. For all of these services, use your existing credentials and select a sign-in option below to access your CRA account.
 - CRA account sign in URL: https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services.html 
 - CRA account register URL: https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/register-cra-sign-in-services.html
 - Sign in URL in French: https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc.html
@@ -20,12 +20,11 @@ If you have already registered for My CRA Account, My Business Account or Repres
 The option you register with will be the same option you use each time you sign in. Make a selection below to begin.
 #### Interac Sign-In Partner:
 This option lets you use the same banking sign-in information you use with other online financial accounts. You must already have an online account with one of our Sign-In Partners.You must have an online account with one of our Sign-In Partners:Affinity Credit Union, Alberta Treasury Branches, BMO Financial Group, Caisse Alliance, CIBC Canadian Imperial Bank of Commerce, Coast Capital Savings, connectFirst Credit Union, Conexus Credit Union, Desjardins Group (Caisses Populaires), Libro, Meridian Credit Union, National Bank of Canada, RBC Royal Bank, Scotiabank, Servus Credit Union, Simplii Financial, Tangerine, TD Bank Group, UNI, Vancity, Wealthsimple.
-Do not use autofill on a shared device for your online banking information. When you are on your Sign-In Partner's website, ensure it is your information that is entered and not that of somebody else.
-If you register with someone else's banking credentials by mistake and link your SIN to them, the other person will have access to your tax information.
+- Do not use autofill on a shared device for your online banking information. When you are on your Sign-In Partner's website, ensure it is your information that is entered and not that of somebody else.
+-If you register with someone else's banking credentials by mistake and link your SIN to them, the other person will have access to your tax information.
 
-Your banking and tax information is never shared.
-Your banking information and the identity of your financial institution are not shared with the Government of Canada.
-None of your personal tax information will be shared with your financial institution.
+New page January 2025: CRA Account help about Sign-In Partners url: https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/help-cra-sign-in-services/sign-in-partners.html or https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/partenaires-connexion.html
+- If you registered with a Sign-In Partner and no longer can access it, you can contact the CRA at 1-800-959-8281 to revoke it, so you can register with a CRA user ID and password instead.
 
 #### CRA user ID and password:
 This option lets you create a username and password that you use with the CRA sign-in services.
@@ -38,7 +37,13 @@ If you already have a BC Services Card or an Alberta.ca Account, you can use the
 
 #### GC Key:You cannot use GC Key to sign in to the CRA sign-in services.
 
-## Verify your identity: option 1:You can use the document verification service to verify your identity immediately.Use a mobile device to take a real-time picture of yourself and an accepted identification document. You must be 16 years of age or older to use this service.
-Option 2: Wait for a CRA security code to be mailed to your address. Make sure your address is up to date, if it is not, find out how to update it at https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/change-your-address.html or in French: https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/comment-changer-votre-adresse.html
+## New page January 2025: CRA sign-in services help about Verify your identity. You can use the document verification service to verify your identity immediately when you register.Use a mobile device to take a real-time picture of yourself and an accepted identification document. You must be 16 years of age or older to use this service. https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/help-cra-sign-in-services/verify-identity.html or https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/verification-identite.html
+
+Or you can verify your identity when you register by having a CRA security code mailed to your address. Make sure your address is up to date, if it is not, find out how to update it at https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/change-your-address.html or in French: https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/comment-changer-votre-adresse.html
+
+## New page January 2025: CRA Account help about My Trust Account for legal representatives - only accessible in Represent a Client: https://www.canada.ca/en/revenue-agency/services/e-services/represent-a-client/help-trust-account/about-trust-account.html  https://www.canada.ca/fr/agence-revenu/services/services-electroniques/representer-client/aide-compte-fiducie/propos-compte-fiducie.html
+
+## New page January 2025: CRA Account for locked account: https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/help-cra-sign-in-services/locked-account.html or 
+https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/compte-verrouille.html
 </cra_account_update>
 `;
