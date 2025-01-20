@@ -34,55 +34,52 @@ const ChatInterface = ({
   extractSentences,
 }) => {
   const [charCount, setCharCount] = useState(0);
+  const [userHasClickedTextarea, setUserHasClickedTextarea] = useState(false);
   const textareaRef = useRef(null);
-  
+
   useEffect(() => {
-    // Ensure initial focus on page load
     const timeoutId = setTimeout(() => {
-      const textarea = document.getElementById('message');
-      if (textarea) {
-        textarea.focus();
+      if (textareaRef.current) {
+        textareaRef.current.focus();
       }
     }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
   
-    const handleCitationFocus = () => {
-      const citationContainer = document.querySelector('.citation-container');
-      const textarea = document.getElementById('message');
-      const chatContainer = document.querySelector('.chat-container');
-  
-      if (citationContainer && textarea && chatContainer) {
-        // Remove focus from textarea when citation appears
-        textarea.blur({ preventScroll: true });
-  
-        // Ensure chat container remains fully in view
-        chatContainer.scrollIntoView({
-          behavior: 'auto',
-          block: 'start'
-        });
+  useEffect(() => {
+    const handleCitationAppearance = () => {
+      if (textareaRef.current && !userHasClickedTextarea) {
+        textareaRef.current.blur();
       }
     };
-  
-    // Set up MutationObserver to track citation container changes
-    const observer = new MutationObserver(handleCitationFocus);
-  
-    // Observe the entire document for changes
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length) {
+          for (const node of mutation.addedNodes) {
+            if (node.classList && node.classList.contains('citation-container')) {
+              handleCitationAppearance();
+              break;
+            }
+          }
+        }
+      }
+    });
+
     observer.observe(document.body, {
       childList: true,
       subtree: true
     });
-  
-    // Cleanup
-    return () => {
-      observer.disconnect();
-      clearTimeout(timeoutId);
-    };
-  }, []);
+
+    return () => observer.disconnect();
+  }, [userHasClickedTextarea]);
   
   useEffect(() => {
     const textarea = document.querySelector('#message');
     const button = document.querySelector('.btn-primary-send');
     
-   // Create loading hint
+    // Create loading hint
     const placeholderHint = document.createElement('div');
     placeholderHint.id = 'temp-hint';
     placeholderHint.innerHTML = `<p><FontAwesomeIcon icon="wand-magic-sparkles" />${t('homepage.chat.input.loadingHint')}</p>`;
@@ -142,6 +139,20 @@ const ChatInterface = ({
       
       event.preventDefault();
       handleSendMessage(event);
+    }
+  };
+
+  const handleTextareaClick = () => {
+    setUserHasClickedTextarea(true);
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
+
+  const handleTextareaBlur = () => {
+    const chatContainer = document.querySelector('.chat-container');
+    if (!chatContainer.contains(document.activeElement)) {
+      setUserHasClickedTextarea(false);
     }
   };
 
@@ -220,7 +231,7 @@ const ChatInterface = ({
               <p>{t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}</p>
               <button 
                 onClick={handleReload} 
-                className="btn-primary-send visible">
+                className="btn-primary-sm visible">
                 {t('homepage.chat.buttons.reload')}
               </button>
             </div>
@@ -247,9 +258,10 @@ const ChatInterface = ({
                   value={inputText}
                   onChange={handleTextareaInput}
                   onKeyDown={handleKeyPress}
+                  onClick={handleTextareaClick}
+                  onBlur={handleTextareaBlur}
                   required
                   disabled={isLoading}
-                  autoFocus
                 />
                 <button 
                   type="submit"
@@ -262,23 +274,23 @@ const ChatInterface = ({
                 </button>
               </div>
                   
-                {charCount >= (MAX_CHARS - 10) && (
-                  <div className={charCount > MAX_CHARS ? "character-limit" : "character-warning"}>
-                    <FontAwesomeIcon icon="circle-exclamation" />&nbsp;
-                    {charCount > MAX_CHARS ? 
-                      t('homepage.chat.messages.characterLimit')
-                        .replace('{count}', Math.max(1, charCount - MAX_CHARS))
-                        .replace('{unit}', charCount - MAX_CHARS === 1 ? 
-                          t('homepage.chat.messages.character') : 
-                          t('homepage.chat.messages.characters')) :
-                      t('homepage.chat.messages.characterWarning')
-                        .replace('{count}', MAX_CHARS - charCount)
-                        .replace('{unit}', MAX_CHARS - charCount === 1 ? 
-                          t('homepage.chat.messages.character') : 
-                          t('homepage.chat.messages.characters'))
-                    }
-                  </div>
-                )}
+              {charCount >= (MAX_CHARS - 10) && (
+                <div className={charCount > MAX_CHARS ? "character-limit" : "character-warning"}>
+                  <FontAwesomeIcon icon="circle-exclamation" />&nbsp;
+                  {charCount > MAX_CHARS ? 
+                    t('homepage.chat.messages.characterLimit')
+                      .replace('{count}', Math.max(1, charCount - MAX_CHARS))
+                      .replace('{unit}', charCount - MAX_CHARS === 1 ? 
+                        t('homepage.chat.messages.character') : 
+                        t('homepage.chat.messages.characters')) :
+                    t('homepage.chat.messages.characterWarning')
+                      .replace('{count}', MAX_CHARS - charCount)
+                      .replace('{unit}', MAX_CHARS - charCount === 1 ? 
+                        t('homepage.chat.messages.character') : 
+                        t('homepage.chat.messages.characters'))
+                  }
+                </div>
+              )}
             </div>
           </form>
         )}
