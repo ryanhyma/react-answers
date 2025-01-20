@@ -65,7 +65,7 @@ const ChatInterface = ({
       if (button) button.style.display = 'none';
     } else {
       if (textarea) textarea.style.display = 'block';
-      if (button) button.classList.add('visible');
+      // if (button) button.classList.add('visible');
       const tempHint = document.getElementById('temp-hint');
       if (tempHint) tempHint.remove();
     }
