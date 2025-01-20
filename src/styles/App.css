@@ -648,19 +648,13 @@ gcds-container:first-of-type {
         }
       }
 
-#temp-hint {
+.loading-hint-text {
     margin-top: -20px;
-    margin-bottom: 40px;
     margin-left: 10px;
     font-size: 0.85em;
 }
 
-#temp-hint i {
-    margin-right: 6px;
-    color: var(--gcds-color-blue-850)
-}
-
-#temp-hint p {
+.loading-hint-text {
     color: var(--gcds-color-blue-850);
     font-size: 18px;
 }
@@ -848,9 +842,10 @@ summary:focus,
     margin-bottom: 4px;
   }
   
-  form {
-    padding-bottom: 30px;
-    border-bottom: 1px solid #ccc;
+.hr {
+    padding-top: 30px;
+    margin-top: 60px;
+    border-top: 1px solid #ccc;
   }
 
   /* Container for the textarea and button */

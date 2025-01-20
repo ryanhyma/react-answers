@@ -292,7 +292,7 @@ const ChatInterface = ({
             </div>
           </form>
         )}
-          <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
+          <GcdsDetails className='hr' detailsTitle={t('homepage.chat.options.title')}>
             <div className="ai-toggle">
               <fieldset className="ai-toggle_fieldset">
                 <div className="ai-toggle_container">
