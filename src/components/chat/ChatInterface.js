@@ -37,11 +37,7 @@ const ChatInterface = ({
   const textareaRef = useRef(null);
   
   useEffect(() => {
-    setCharCount(inputText.length);
-  }, [inputText]);
-  
-  useEffect(() => {
-    // Focus on page load, using a short timeout to ensure DOM is ready
+    // Ensure initial focus on page load
     const timeoutId = setTimeout(() => {
       const textarea = document.getElementById('message');
       if (textarea) {
@@ -49,24 +45,20 @@ const ChatInterface = ({
       }
     }, 100);
   
-    // Cleanup the timeout
-    return () => clearTimeout(timeoutId);
-  }, []); // Empty dependency array ensures this runs only once on mount
-  
-  useEffect(() => {
     const handleCitationFocus = () => {
       const citationContainer = document.querySelector('.citation-container');
-      const chatContainer = document.querySelector('.chat-container');
       const textarea = document.getElementById('message');
+      const chatContainer = document.querySelector('.chat-container');
   
-      if (citationContainer && chatContainer) {
-        // Blur the textarea
-        if (textarea) {
-          textarea.blur();
-        }
-        
-        // Focus on the chat container
-        chatContainer.focus();
+      if (citationContainer && textarea && chatContainer) {
+        // Remove focus from textarea when citation appears
+        textarea.blur({ preventScroll: true });
+  
+        // Ensure chat container remains fully in view
+        chatContainer.scrollIntoView({
+          behavior: 'auto',
+          block: 'start'
+        });
       }
     };
   
@@ -79,15 +71,13 @@ const ChatInterface = ({
       subtree: true
     });
   
-    // Initial check
-    handleCitationFocus();
-  
     // Cleanup
     return () => {
       observer.disconnect();
+      clearTimeout(timeoutId);
     };
   }, []);
-   
+  
   useEffect(() => {
     const textarea = document.querySelector('#message');
     const button = document.querySelector('.btn-primary-send');
