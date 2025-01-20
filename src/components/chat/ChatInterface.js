@@ -231,7 +231,7 @@ const ChatInterface = ({
               <p>{t('homepage.chat.messages.limitReached', { count: MAX_CONVERSATION_TURNS })}</p>
               <button 
                 onClick={handleReload} 
-                className="btn-primary-sm visible">
+                className="btn-primary visible">
                 {t('homepage.chat.buttons.reload')}
               </button>
             </div>
