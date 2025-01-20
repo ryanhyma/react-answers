@@ -49,7 +49,8 @@
         "input": {
           "initial": "Ask a Canada.ca question",
           "followUp": "Ask a follow-on question or reply",
-          "hint": "Hint: Add details. AI can make mistakes, always check your answer."
+          "hint": "Hint: Add details to make your question clear and complete.",
+          "loadingHint": "AI can make mistakes, always check your answer."
         },
         "buttons": {
           "send": "Send",
