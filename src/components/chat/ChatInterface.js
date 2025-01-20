@@ -4,7 +4,6 @@ import FeedbackComponent from './FeedbackComponent.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
 const MAX_CHARS = 400;
 
 const ChatInterface = ({
@@ -40,22 +39,63 @@ const ChatInterface = ({
   useEffect(() => {
     setCharCount(inputText.length);
   }, [inputText]);
-
+  
   useEffect(() => {
-    setTimeout(() => {
+    // Focus on page load, using a short timeout to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
       const textarea = document.getElementById('message');
-      if (textarea) textarea.focus();
+      if (textarea) {
+        textarea.focus();
+      }
     }, 100);
+  
+    // Cleanup the timeout
+    return () => clearTimeout(timeoutId);
+  }, []); // Empty dependency array ensures this runs only once on mount
+  
+  useEffect(() => {
+    const handleCitationFocus = () => {
+      const citationContainer = document.querySelector('.citation-container');
+      const chatContainer = document.querySelector('.chat-container');
+      const textarea = document.getElementById('message');
+  
+      if (citationContainer && chatContainer) {
+        // Blur the textarea
+        if (textarea) {
+          textarea.blur();
+        }
+        
+        // Focus on the chat container
+        chatContainer.focus();
+      }
+    };
+  
+    // Set up MutationObserver to track citation container changes
+    const observer = new MutationObserver(handleCitationFocus);
+  
+    // Observe the entire document for changes
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  
+    // Initial check
+    handleCitationFocus();
+  
+    // Cleanup
+    return () => {
+      observer.disconnect();
+    };
   }, []);
    
   useEffect(() => {
     const textarea = document.querySelector('#message');
     const button = document.querySelector('.btn-primary-send');
     
-    // Create temporary hint
+   // Create loading hint
     const placeholderHint = document.createElement('div');
     placeholderHint.id = 'temp-hint';
-    placeholderHint.innerHTML = `<p><i class="fa-solid fa-wand-magic-sparkles"></i>${t('homepage.chat.input.hint')}</p>`;
+    placeholderHint.innerHTML = `<p><FontAwesomeIcon icon="wand-magic-sparkles" />${t('homepage.chat.input.loadingHint')}</p>`;
     
     if (isLoading) {
       if (textarea) {
@@ -65,11 +105,10 @@ const ChatInterface = ({
       if (button) button.style.display = 'none';
     } else {
       if (textarea) textarea.style.display = 'block';
-      // if (button) button.classList.add('visible');
       const tempHint = document.getElementById('temp-hint');
       if (tempHint) tempHint.remove();
     }
-  
+
     return () => {
       const tempHint = document.getElementById('temp-hint');
       if (tempHint) tempHint.remove();
@@ -117,7 +156,7 @@ const ChatInterface = ({
   };
 
   return (
-    <div className="chat-container">
+    <div className="chat-container" tabIndex="0">
       <div className="message-list">
         {messages.map((message) => (
           <div key={`message-${message.id}`} className={`message ${message.sender}`}>
@@ -138,7 +177,7 @@ const ChatInterface = ({
                     message.redactedText.includes('###') ? "redacted-preview" : ""
                   }>
                     {message.redactedText.includes('XXX') && (
-                      <><i className="fa-solid fa-circle-info"></i> {t('homepage.chat.messages.privacyMessage')}</>
+                      <><FontAwesomeIcon icon="circle-info" /> {t('homepage.chat.messages.privacyMessage')}</>
                     )}
                     {message.redactedText.includes('###') && 
                       t('homepage.chat.messages.blockedMessage')}
@@ -168,15 +207,21 @@ const ChatInterface = ({
         ))}
 
         {isLoading && (
-          <div key="loading" className="loading-container">
-            <div className="loading-animation"></div>
-            <div className="loading-text">
-              {displayStatus === 'thinkingWithContext' ? 
-                `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
-                t(`homepage.chat.messages.${displayStatus}`)
-              }
+          <>
+            <div key="loading" className="loading-container">
+              <div className="loading-animation"></div>
+              <div className="loading-text">
+                {displayStatus === 'thinkingWithContext' ? 
+                  `${t('homepage.chat.messages.thinkingWithContext')}: ${currentDepartment} - ${currentTopic}` :
+                  t(`homepage.chat.messages.${displayStatus}`)
+                }
+              </div>
             </div>
-          </div>
+            <div className="loading-hint-text">
+              <FontAwesomeIcon icon="wand-magic-sparkles" />&nbsp;
+              {t('homepage.chat.input.loadingHint')}
+            </div>
+          </>
         )}
         
         {turnCount >= MAX_CONVERSATION_TURNS && (
@@ -193,28 +238,29 @@ const ChatInterface = ({
         )}
       </div>
 
-      {turnCount < MAX_CONVERSATION_TURNS && (
-        <div className="input-area mt-200">
+    {turnCount < MAX_CONVERSATION_TURNS && (
+      <div className="input-area mt-200">
+        {!isLoading && (
           <form className="mrgn-tp-xl mrgn-bttm-lg">
             <div className="field-container">
               <label htmlFor="message">{getLabelForInput()}</label>
               <span className="hint-text">
-              <FontAwesomeIcon icon="wand-magic-sparkles" />&nbsp;
+                <FontAwesomeIcon icon="wand-magic-sparkles" />&nbsp;
                 {t('homepage.chat.input.hint')}
               </span>
               <div className="form-group">
-              <textarea 
-                ref={textareaRef}
-                id="message" 
-                name="message"
-                key={textareaKey}
-                value={inputText}
-                onChange={handleTextareaInput}
-                onKeyDown={handleKeyPress}
-                required
-                disabled={isLoading}
-                autoFocus
-              />
+                <textarea 
+                  ref={textareaRef}
+                  id="message" 
+                  name="message"
+                  key={textareaKey}
+                  value={inputText}
+                  onChange={handleTextareaInput}
+                  onKeyDown={handleKeyPress}
+                  required
+                  disabled={isLoading}
+                  autoFocus
+                />
                 <button 
                   type="submit"
                   onClick={handleSendMessage}
@@ -222,30 +268,30 @@ const ChatInterface = ({
                   disabled={isLoading || charCount > MAX_CHARS || inputText.trim().length === 0}
                 >
                   <span className="button-text">{t('homepage.chat.buttons.send')}</span>
-                  <i className="button-icon fa-solid fa-arrow-up"></i>
+                  <FontAwesomeIcon className="button-icon" icon="arrow-up" size="md" />
                 </button>
               </div>
-              
-              {charCount >= (MAX_CHARS - 10) && (
-                <div className={charCount > MAX_CHARS ? "character-limit" : "character-warning"}>
-                  <i className="fa-solid fa-circle-exclamation"></i>
-                  {charCount > MAX_CHARS ? 
-                    t('homepage.chat.messages.characterLimit')
-                      .replace('{count}', Math.max(1, charCount - MAX_CHARS))
-                      .replace('{unit}', charCount - MAX_CHARS === 1 ? 
-                        t('homepage.chat.messages.character') : 
-                        t('homepage.chat.messages.characters')) :
-                    t('homepage.chat.messages.characterWarning')
-                      .replace('{count}', MAX_CHARS - charCount)
-                      .replace('{unit}', MAX_CHARS - charCount === 1 ? 
-                        t('homepage.chat.messages.character') : 
-                        t('homepage.chat.messages.characters'))
-                  }
-                </div>
-              )}
+                  
+                {charCount >= (MAX_CHARS - 10) && (
+                  <div className={charCount > MAX_CHARS ? "character-limit" : "character-warning"}>
+                    <FontAwesomeIcon icon="circle-exclamation" />&nbsp;
+                    {charCount > MAX_CHARS ? 
+                      t('homepage.chat.messages.characterLimit')
+                        .replace('{count}', Math.max(1, charCount - MAX_CHARS))
+                        .replace('{unit}', charCount - MAX_CHARS === 1 ? 
+                          t('homepage.chat.messages.character') : 
+                          t('homepage.chat.messages.characters')) :
+                      t('homepage.chat.messages.characterWarning')
+                        .replace('{count}', MAX_CHARS - charCount)
+                        .replace('{unit}', MAX_CHARS - charCount === 1 ? 
+                          t('homepage.chat.messages.character') : 
+                          t('homepage.chat.messages.characters'))
+                    }
+                  </div>
+                )}
             </div>
           </form>
-
+        )}
           <GcdsDetails detailsTitle={t('homepage.chat.options.title')}>
             <div className="ai-toggle">
               <fieldset className="ai-toggle_fieldset">

@@ -935,7 +935,8 @@ summary:focus,
     display: block;
   }
   
-  .field-container:focus-within .hint-text {
+  .field-container:focus-within .hint-text,
+  .field-container:focus-within label {
     color: #0535d2;
   }
   
@@ -955,23 +956,25 @@ summary:focus,
     outline-offset: 0 !important;
   }
   
-  /* Button text and icon styles */
+    /* Button text and icon styles */
   .button-text {
-    display: inline;
+    display: inline !important;
   }
   
-  .button-icon {
-    display: none;
+  .btn-primary-send .button-icon,
+  .btn-primary-send svg.button-icon {
+    display: none !important;
   }
   
   /* Media query for mobile */
   @media screen and (max-width: 600px) {
     .button-text {
-      display: none;
+      display: none !important;
     }
   
-    .button-icon {
-      display: inline;
+    .btn-primary-send .button-icon,
+    .btn-primary-send svg.button-icon {
+      display: inline !important;
     }
   
     .form-group button {

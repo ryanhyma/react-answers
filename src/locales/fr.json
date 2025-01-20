@@ -49,7 +49,8 @@
         "input": {
           "initial": "Posez une question sur Canada.ca",
           "followUp": "Posez une question de suivi ou répondez",
-          "hint": "Conseil : Ajoutez des détails. L'IA peut faire des erreurs, vérifiez toujours la réponse."
+          "hint": "Conseil : Ajoutez des détails. L'IA peut faire des erreurs, vérifiez toujours la réponse.",
+          "loadingHint": "L'IA peut faire des erreurs, vérifiez toujours la réponse."
         },
         "buttons": {
           "send": "Envoyer",
