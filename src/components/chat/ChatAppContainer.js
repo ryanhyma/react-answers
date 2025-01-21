@@ -191,12 +191,12 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     let formattedExpertFeedback = null;
     if (expertFeedback) {
       formattedExpertFeedback = {
-        totalScore: expertFeedback.totalScore || null,
-        sentence1Score: expertFeedback.sentence1Score || null,
-        sentence2Score: expertFeedback.sentence2Score || null,
-        sentence3Score: expertFeedback.sentence3Score || null,
-        sentence4Score: expertFeedback.sentence4Score || null,
-        citationScore: expertFeedback.citationScore || null,
+        totalScore: expertFeedback.totalScore ?? null,
+        sentence1Score: expertFeedback.sentence1Score ?? null,
+        sentence2Score: expertFeedback.sentence2Score ?? null,
+        sentence3Score: expertFeedback.sentence3Score ?? null,
+        sentence4Score: expertFeedback.sentence4Score ?? null,
+        citationScore: expertFeedback.citationScore ?? null,
         answerImprovement: expertFeedback.answerImprovement || '',
         expertCitationUrl: expertFeedback.expertCitationUrl || ''
       };
