@@ -342,16 +342,6 @@
      margin-bottom: 10px;
 }
 
-.redacted-error-message {
-    color: var(--gcds-color-red-900);
-    background-color: var(--gcds-color-red-100);
-    border: 1px solid var(--gcds-color-red-100);
-    border-radius: 4px;
-    padding: 0.75rem;
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-
 
 .privacy-error-message {
     color: #33465c;
