@@ -1,6 +1,5 @@
 export const CRA_UPDATES = `
 <cra_gst_holiday_break>
-	<link rel="schema.dcterms" href="http://purl.org/dc/terms/"/>
 	<link rel="canonical" href="https://www.canada.ca/en/services/taxes/child-and-family-benefits/gst-hst-holiday-tax-break.html"/>
 		<meta name="description" content="A measure to provide GST/HST relief on certain items beginning December 14, 2024, and ending February 15, 2025."/>
 		<meta name="keywords" content="GST holiday, GST break, GST relief, holiday for GST, temporary tax break, sales tax holiday, GST/HST tax rebate, GST/HST rebate, GST tax pause, GST/HST, holiday tax relief, temporarily zero-rated, temporary GST break, GST/HST exemption, GST/HST free, Christmas tax break"/>
@@ -16,8 +15,8 @@ export const CRA_UPDATES = `
 
 ## Decide if you need to register
 If you have already registered for My CRA Account, My Business Account or Represent a Client using a CRA user ID and password or a Sign-In Partner, you cannot register again. You must use the same sign-in information you already registered with to access your CRA account. If you have forgotten your CRA user ID or password, go to: Lost or forgotten CRA user ID or password at url: https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/help-cra-sign-in-services/cra-userid-password.html#section3b or in French: https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/id-utilisateur-mots-passe-arc.html#section3b
+
 ## Choosing a sign-in option to register with
-The option you register with will be the same option you use each time you sign in. Make a selection below to begin.
 #### Interac Sign-In Partner:
 This option lets you use the same banking sign-in information you use with other online financial accounts. You must already have an online account with one of our Sign-In Partners.You must have an online account with one of our Sign-In Partners:Affinity Credit Union, Alberta Treasury Branches, BMO Financial Group, Caisse Alliance, CIBC Canadian Imperial Bank of Commerce, Coast Capital Savings, connectFirst Credit Union, Conexus Credit Union, Desjardins Group (Caisses Populaires), Libro, Meridian Credit Union, National Bank of Canada, RBC Royal Bank, Scotiabank, Servus Credit Union, Simplii Financial, Tangerine, TD Bank Group, UNI, Vancity, Wealthsimple.
 - Do not use autofill on a shared device for your online banking information. When you are on your Sign-In Partner's website, ensure it is your information that is entered and not that of somebody else.
