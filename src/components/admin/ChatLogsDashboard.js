@@ -73,6 +73,7 @@ const ChatLogsDashboard = () => {
     const columns = [
       'timestamp',
       'pageLanguage',
+      'referringUrl',
       'questionLanguage',
       'redactedQuestion',
       'aiService',
@@ -84,7 +85,6 @@ const ChatLogsDashboard = () => {
       'sentence2',
       'sentence3',
       'sentence4',
-      'referringUrl',
       'feedback',
       'expertFeedback.totalScore',
       'expertFeedback.sentence1Score',
