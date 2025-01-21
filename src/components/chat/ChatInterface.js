@@ -188,7 +188,19 @@ const ChatInterface = ({
             ) : (
               <>
                 {message.error ? (
-                  <div className="error-message">{message.text}</div>
+                  <div className={`error-message-box ${
+                    messages[messages.findIndex(m => m.id === message.id) - 1]?.redactedText?.includes('XXX') 
+                      ? 'privacy-error-box' 
+                      : 'error-box'
+                  }`}>
+                    <p className={
+                      messages[messages.findIndex(m => m.id === message.id) - 1]?.redactedText?.includes('XXX')
+                        ? "privacy-error-message" 
+                        : "error-message"
+                    }>
+                      {message.text}
+                    </p>
+                  </div>
                 ) : (
                   formatAIResponse(message.text, message.aiService, message.id)
                 )}

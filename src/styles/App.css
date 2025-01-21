@@ -332,7 +332,8 @@
  .feedback-survey-link:hover {
      text-decoration: none;
 }
- .error-message {
+
+.error-message {
      color: var(--gcds-color-red-900);
      background-color: var(--gcds-color-red-100);
      border: 1px solid var(--gcds-color-red-100);
@@ -340,7 +341,19 @@
      padding: 0.75rem;
      margin-bottom: 10px;
 }
-.error-message i {
+
+
+.privacy-error-message {
+    color: #33465c;
+    background-color: #F7FAFD;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.redacted-error-message i {
     margin-right: 6px;
 }
 
