@@ -222,12 +222,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setProcessing(false);
         setResults(null);
         setError(null);
-        setSelectedAI('anthropic');
         setFileUploaded(false);
         setBatchId(null);
         setBatchStatus(null);
-        setSelectedLanguage('en');
-        setAdminCode('');
         document.getElementById('csvFile').value = ''; // Reset file input
     };
 
