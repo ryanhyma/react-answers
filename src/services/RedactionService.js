@@ -1,7 +1,7 @@
 /**
  * RedactionService.js
  * A service for redacting sensitive information from text content.
- * 
+ *
  * Redaction Types:
  * - Private Information (replaced with 'XXX')
  * - Profanity (replaced with '#' characters)
@@ -52,20 +52,17 @@ class RedactionService {
     try {
       const [responseEn, responseFr] = await Promise.all([
         fetch(profanityListEn),
-        fetch(profanityListFr)
+        fetch(profanityListFr),
       ]);
-      
-      const [textEn, textFr] = await Promise.all([
-        responseEn.text(),
-        responseFr.text()
-      ]);
-      
+
+      const [textEn, textFr] = await Promise.all([responseEn.text(), responseFr.text()]);
+
       const cleanFrenchWords = this.cleanFrenchProfanityList(textFr);
       const cleanEnglishWords = this.cleanEnglishProfanityList(textEn);
-      
+
       const combinedWords = [...cleanEnglishWords, ...cleanFrenchWords];
       console.log('Loaded profanity words:', combinedWords.length, 'words');
-      
+
       return combinedWords;
     } catch (error) {
       console.error('Error loading profanity lists:', error);
@@ -81,13 +78,14 @@ class RedactionService {
   cleanFrenchProfanityList(text) {
     return text
       .split(',')
-      .map(word => word
-        .replace(/[!@,]/g, '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .trim()
+      .map((word) =>
+        word
+          .replace(/[!@,]/g, '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .trim()
       )
-      .filter(word => word.length > 0);
+      .filter((word) => word.length > 0);
   }
 
   /**
@@ -98,8 +96,8 @@ class RedactionService {
   cleanEnglishProfanityList(text) {
     return text
       .split(',')
-      .map(word => word.trim())
-      .filter(word => word.length > 0);
+      .map((word) => word.trim())
+      .filter((word) => word.length > 0);
   }
 
   /**
@@ -107,7 +105,7 @@ class RedactionService {
    */
   async initializeProfanityPattern() {
     const words = await this.loadProfanityLists();
-    const pattern = words.map(word => `\\b${word}\\b`).join('|');
+    const pattern = words.map((word) => `\\b${word}\\b`).join('|');
     this.profanityPattern = new RegExp(`(${pattern})`, 'gi');
   }
 
@@ -119,16 +117,16 @@ class RedactionService {
       ...manipulationEn.suspiciousWords,
       ...manipulationEn.manipulationPhrases,
       ...manipulationFr.suspiciousWords,
-      ...manipulationFr.manipulationPhrases
+      ...manipulationFr.manipulationPhrases,
     ];
 
     const pattern = manipulationWords
-      .map(word => {
+      .map((word) => {
         const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         return `\\b${escaped}\\b`;
       })
       .join('|');
-    
+
     this.manipulationPattern = new RegExp(`(${pattern})`, 'gi');
   }
 
@@ -139,61 +137,63 @@ class RedactionService {
   get privatePatterns() {
     return [
       {
-        pattern: /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
-        description: 'Phone numbers (including international formats and extensions)'
+        pattern:
+          /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
+        description: 'Phone numbers (including international formats and extensions)',
       },
       {
         pattern: /[A-Za-z]\s*\d\s*[A-Za-z]\s*[ -]?\s*\d\s*[A-Za-z]\s*\d/g,
-        description: 'Canadian postal codes (with flexible spacing)'
+        description: 'Canadian postal codes (with flexible spacing)',
       },
       {
         pattern: /([a-zA-Z0-9_\-.]+)\s*@([\sa-zA-Z0-9_\-.]+)[.,]([a-zA-Z]{1,5})/g,
-        description: 'Email addresses (with flexible spacing and punctuation)'
+        description: 'Email addresses (with flexible spacing and punctuation)',
       },
       {
         pattern: /\b([A-Za-z]{2}\s*\d{6})\b/g,
-        description: 'Passport Numbers'
+        description: 'Passport Numbers',
       },
       {
-        pattern:/(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})/g,
-        description: 'Social Insurance Numbers (with flexible separators)'
+        pattern: /(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})/g,
+        description: 'Social Insurance Numbers (with flexible separators)',
       },
       {
         pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
-        description: 'Name patterns in EN/FR'
+        description: 'Name patterns in EN/FR',
       },
       {
-        pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
-        description: 'Street addresses'
+        pattern:
+          /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
+        description: 'Street addresses',
       },
       {
         pattern: /\b\d{5}(?:-\d{4})?\b/g,
-        description: 'US ZIP codes'
+        description: 'US ZIP codes',
       },
       {
         pattern: /\b(apt|bldg|dept|fl|hngr|lot|pier|rm|ste|slip|trlr|unit|#)\.? *\d+[a-z]?\b/gi,
-        description: 'Apartment addresses'
+        description: 'Apartment addresses',
       },
       {
         pattern: /P\.? ?O\.? *Box +\d+/gi,
-        description: 'PO Box'
+        description: 'PO Box',
       },
       {
         pattern: /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi,
-        description: 'IP addresses'
+        description: 'IP addresses',
       },
       {
         pattern: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/g,
-        description: 'Social Insurance Numbers (with flexible separators)'
+        description: 'Social Insurance Numbers (with flexible separators)',
       },
       {
         pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g,
-        description: 'URLs'
+        description: 'URLs',
       },
       {
         pattern: /(?<!\$)(?!\d{4}\b)\b\d{5,}\b/g,
-        description: 'Long number sequences'
-      }
+        description: 'Long number sequences',
+      },
     ].map(({ pattern }) => pattern);
   }
 
@@ -202,9 +202,11 @@ class RedactionService {
    * @returns {RegExp} Regular expression for threats
    */
   get threatPattern() {
-    const englishThreats = 'bomb|gun|knife|sword|kill|murder|suicide|maim|die|anthrax|attack|assassinate|bomb|bombs|bombing|bombed|execution|explosive|explosives|shoot|shoots|shooting|shot|hostage|murder|suicide|kill|killed|killing';
-    const frenchThreats = 'anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie';
-    
+    const englishThreats =
+      'bomb|gun|knife|sword|kill|murder|suicide|maim|die|anthrax|attack|assassinate|bomb|bombs|bombing|bombed|execution|explosive|explosives|shoot|shoots|shooting|shot|hostage|murder|suicide|kill|killed|killing';
+    const frenchThreats =
+      'anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie';
+
     return new RegExp(`\\b(${englishThreats}|${frenchThreats})\\b`, 'gi');
   }
 
@@ -214,19 +216,19 @@ class RedactionService {
    */
   get redactionPatterns() {
     return [
-      ...this.privatePatterns.map(pattern => ({ pattern, type: 'private' })),
-      { 
+      ...this.privatePatterns.map((pattern) => ({ pattern, type: 'private' })),
+      {
         pattern: this.profanityPattern,
-        type: 'profanity'
+        type: 'profanity',
       },
-      { 
+      {
         pattern: this.threatPattern,
-        type: 'threat'
+        type: 'threat',
       },
       {
         pattern: this.manipulationPattern,
-        type: 'manipulation'
-      }
+        type: 'manipulation',
+      },
     ];
   }
 
@@ -251,8 +253,10 @@ class RedactionService {
 
     validPatterns.forEach(({ pattern, type }, index) => {
       // Skip processing if this pattern type has already been redacted
-      if ((type === 'profanity' || type === 'threat' || type === 'manipulation') && 
-          redactedText.includes('XXX')) {
+      if (
+        (type === 'profanity' || type === 'threat' || type === 'manipulation') &&
+        redactedText.includes('XXX')
+      ) {
         return;
       }
 

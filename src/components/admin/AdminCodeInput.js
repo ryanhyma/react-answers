@@ -6,15 +6,9 @@ const AdminCodeInput = ({ code, onChange, correctCode, label }) => {
       <label htmlFor="adminCode" className="mrgn-bttm-10 display-block">
         {label || 'Enter Admin Code to enable access:'}
       </label>
-      <input
-        type="text"
-        id="adminCode"
-        value={code}
-        onChange={onChange}
-        className="mrgn-bttm-10"
-      />
+      <input type="text" id="adminCode" value={code} onChange={onChange} className="mrgn-bttm-10" />
     </div>
   );
 };
 
-export default AdminCodeInput; 
+export default AdminCodeInput;

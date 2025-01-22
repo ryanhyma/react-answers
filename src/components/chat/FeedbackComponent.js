@@ -11,7 +11,7 @@ const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1 }) => {
   const handleFeedback = (isPositive) => {
     if (isPositive) {
       const expertFeedback = {
-        totalScore: 100
+        totalScore: 100,
       };
       onFeedback(true, expertFeedback);
       setFeedbackGiven(true);
@@ -29,32 +29,32 @@ const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1 }) => {
 
   if (feedbackGiven) {
     return (
-      <p className="thank-you"><span className="gcds-icon fa fa-solid fa-check-circle"></span>{t('homepage.feedback.thankYou')}</p>);
+      <p className="thank-you">
+        <span className="gcds-icon fa fa-solid fa-check-circle"></span>
+        {t('homepage.feedback.thankYou')}
+      </p>
+    );
   }
   if (showExpertRating) {
-  return <ExpertRatingComponent 
-    onSubmit={handleExpertFeedback}
-    onClose={() => setShowExpertRating(false)}
-    lang={lang} 
-    sentenceCount={sentenceCount}
-  />;
-}
+    return (
+      <ExpertRatingComponent
+        onSubmit={handleExpertFeedback}
+        onClose={() => setShowExpertRating(false)}
+        lang={lang}
+        sentenceCount={sentenceCount}
+      />
+    );
+  }
   return (
     <div className="feedback-container">
       <span className="feedback-text">{t('homepage.feedback.question')} </span>
-      <button 
-        className="feedback-link button-as-link"
-        onClick={() => handleFeedback(true)}
-      >
+      <button className="feedback-link button-as-link" onClick={() => handleFeedback(true)}>
         {t('homepage.feedback.useful')}
       </button>
       <span className="feedback-separator">·</span>
       <span className="feedback-text">{t('homepage.feedback.or')}</span>
       <span className="feedback-separator">·</span>
-      <button 
-        className="feedback-link button-as-link"
-        onClick={() => handleFeedback(false)}
-      >
+      <button className="feedback-link button-as-link" onClick={() => handleFeedback(false)}>
         {t('homepage.feedback.notUseful')}
       </button>
     </div>

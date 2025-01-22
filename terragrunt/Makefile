@@ -1,22 +1,22 @@
-.PHONY: fmt checkov install lint test fmt-ci lint-ci build install-dev
+.PHONY: fmt checkov install lint test run-dev terraform-fmt 
 
-fmt:
-	terraform fmt -recursive aws &&\
-	terragrunt hclfmt
+terraform-fmt:
+	terragrunt/terraform fmt -recursive aws &&\
+	terragrunt/terragrunt hclfmt
 
 checkov:
-	checkov --directory=aws
+	terragrunt/checkov --directory=aws
 
-build: ;
+run-dev:
+	npm run dev
 
-install: ;
+install:
+	npm install
 
-install-dev: ;
+lint: 
+	npm run lint
 
-lint: ;
-
-lint-ci: ;
+fmt:
+	npm run format
 
 test: ;
-
-fmt-ci: ;

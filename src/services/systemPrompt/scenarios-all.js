@@ -52,4 +52,4 @@ Update December 15, 2024:
     <citation-url>https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html</citation-url> 
 </example>
 </examples>
-   `; 
+   `;
