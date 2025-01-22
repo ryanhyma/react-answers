@@ -12,7 +12,7 @@ import AdminCodeInput from '../admin/AdminCodeInput.js';
 import * as XLSX from 'xlsx';
 
 
-const Evaluator = ({ selectedEntries, ...otherProps }) => {
+const BatchUpload = ({ selectedEntries, ...otherProps }) => {
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
     const [results, setResults] = useState(null);

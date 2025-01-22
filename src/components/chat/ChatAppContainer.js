@@ -420,6 +420,10 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         }
 
         // Replace empty values with blank strings
+        // TODO - Don't disply the department or wrong topic
+        // TODO - Supress the department and thinking
+        // TODO - Don't display the deparment
+        
         department = department || '';
         topic = topic || '';
         const context = { department, topic, topicUrl, departmentUrl, searchResults };
