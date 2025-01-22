@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Batch } from '../models/batch/batch.js';
+import dbConnect from './db-connect.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -97,6 +98,7 @@ export default async function handler(req, res) {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
+      await dbConnect();
       const batch = await Batch.findOne({ batchId: batchId });
       if (!batch) {
         throw new Error('Batch not found');
@@ -109,7 +111,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
       console.error('Error checking batch status:', error);
-      return res.status(500).json({ error: 'Error checking batch status', details: error.message });
+      return res.status(500).json({ error: 'Error checking batch status', log: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
