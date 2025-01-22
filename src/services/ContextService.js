@@ -2,7 +2,6 @@
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
-
 const ContextService = {
   sendMessage: async (provider, message, lang = 'en', department = '') => {
     try {
@@ -10,7 +9,7 @@ const ContextService = {
 
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
 
-      const response = await fetch(getProviderApiUrl(provider, "context"), {
+      const response = await fetch(getProviderApiUrl(provider, 'context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,14 +48,12 @@ const ContextService = {
       const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
       const searchResultsMatch = response.match(/<searchResults>([\s\S]*?)<\/searchResults>/);
 
-
       return {
         topic: topicMatch ? topicMatch[1] : 'none',
         topicUrl: topicUrlMatch ? topicUrlMatch[1] : '',
         department: departmentMatch ? departmentMatch[1] : '',
         departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : '',
-        searchResults: searchResultsMatch ? searchResultsMatch[1] : ''
-
+        searchResults: searchResultsMatch ? searchResultsMatch[1] : '',
       };
     } catch (error) {
       console.error('Error deriving context:', error);
@@ -66,16 +63,18 @@ const ContextService = {
 
   deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
     try {
-      console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+      console.log(
+        `🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`
+      );
 
       const requests = entries
-        .filter(entry => !entry.context || entry.context.trim() === '')
-        .map(entry => entry.question);
+        .filter((entry) => !entry.context || entry.context.trim() === '')
+        .map((entry) => entry.question);
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          const searchResponse = await fetch(getApiUrl("context-search"), {
+          const searchResponse = await fetch(getApiUrl('context-search'), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -97,32 +96,30 @@ const ContextService = {
       const updatedRequests = requests.map((request, index) => ({
         message: request,
         systemPrompt: SYSTEM_PROMPT,
-        searchResults: "<searchResults>" + searchResults[index] + "</searchResults>",
+        searchResults: '<searchResults>' + searchResults[index] + '</searchResults>',
       }));
 
       const response = await ContextService.sendBatch(updatedRequests, aiService);
       return {
         batchId: response.batchId,
-        batchStatus: response.batchStatus
+        batchStatus: response.batchStatus,
       };
-
     } catch (error) {
       console.error('Error deriving context batch:', error);
       throw error;
     }
   },
 
-
   sendBatch: async (requests, aiService) => {
     try {
-      const response = await fetch(getProviderApiUrl(aiService,"batch-context"), {
+      const response = await fetch(getProviderApiUrl(aiService, 'batch-context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           requests,
-          aiService
+          aiService,
         }),
       });
 
@@ -138,7 +135,7 @@ const ContextService = {
       console.error('Error calling Context API batch:', error);
       throw error;
     }
-  }
+  },
 };
 
 export default ContextService;

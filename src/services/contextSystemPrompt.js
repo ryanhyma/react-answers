@@ -8,19 +8,19 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
     // Validate base imports
     if (!menuStructure_EN || !menuStructure_FR) {
       throw new Error('Required imports are undefined');
-    } 
+    }
 
     // Select language-specific content
     const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const departmentsList = language === 'fr' ? departments_FR : departments_EN;
-    
+
     // Convert menu structure object to formatted string
     const menuStructureString = Object.entries(menuStructure)
       .map(([category, data]) => {
         const topics = Object.entries(data.topics || {})
           .map(([name, url]) => `    ${name}: ${url}`)
           .join('\n');
-        
+
         const mostRequested = Object.entries(data.mostRequested || {})
           .map(([name, url]) => `    ${name}: ${url}`)
           .join('\n');
@@ -36,19 +36,21 @@ ${mostRequested}`;
 
     // Convert departments array to formatted string
     const departmentsString = departmentsList
-      .map(dept => `${dept.name} (${dept.abbr || 'No abbreviation'})\n  ${dept.url}`)
+      .map((dept) => `${dept.name} (${dept.abbr || 'No abbreviation'})\n  ${dept.url}`)
       .join('\n\n');
-    
+
     // // Add debug logging
-    // console.log('Menu Structure:', menuStructureString.substring(0, 200) + '...'); 
-    // console.log('Departments String:', departmentsString.substring(0, 200) + '...'); 
+    // console.log('Menu Structure:', menuStructureString.substring(0, 200) + '...');
+    // console.log('Departments String:', departmentsString.substring(0, 200) + '...');
 
     const fullPrompt = `
-      ${language === 'fr' 
-        ? `## Contexte linguistique
+      ${
+        language === 'fr'
+          ? `## Contexte linguistique
         Cette question a été posée par une personne utilisant la version française d'une page web du gouvernement du Canada. 
           .`
-        : ''}
+          : ''
+      }
 
       ## Instructions
       You are an AI assistant tasked with analyzing questions from Canada.ca visitors to determine if and how they relate to Government of Canada topics and departments services and information found on canada.ca or gc.ca domains. You are responsible for identifying the context of the question NOT an answer to the question.
@@ -143,15 +145,16 @@ If unsure of the department, leave the department blank.
 </examples>
     `;
 
-    console.log(`✅ Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    console.log(
+      `✅ Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`
+    );
     return fullPrompt;
-
   } catch (error) {
     console.error('CONTEXT SYSTEM PROMPT ERROR:', {
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
     });
-    return "Default context system prompt";
+    return 'Default context system prompt';
   }
 }
 

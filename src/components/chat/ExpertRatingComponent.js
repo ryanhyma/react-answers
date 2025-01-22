@@ -20,29 +20,32 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
 
   const handleRadioChange = (event) => {
     const { name, value } = event.target;
-    setExpertFeedback(prev => ({ ...prev, [name]: parseInt(value) }));
+    setExpertFeedback((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setExpertFeedback(prev => ({ ...prev, [name]: value }));
+    setExpertFeedback((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    if (expertFeedback.expertCitationUrl && !isValidGovernmentUrl(expertFeedback.expertCitationUrl)) {
+
+    if (
+      expertFeedback.expertCitationUrl &&
+      !isValidGovernmentUrl(expertFeedback.expertCitationUrl)
+    ) {
       alert(t('homepage.expertRating.errors.invalidUrl'));
       return;
     }
-    
+
     // Calculate total score before submitting
     const totalScore = computeTotalScore(expertFeedback);
     const feedbackWithScore = {
       ...expertFeedback,
-      totalScore
+      totalScore,
     };
-    
+
     console.log('Submitting expert feedback:', feedbackWithScore);
     onSubmit(feedbackWithScore);
   };
@@ -50,8 +53,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
   const isValidGovernmentUrl = (url) => {
     try {
       const urlObject = new URL(url);
-      return urlObject.hostname.includes('canada.ca') || 
-             urlObject.hostname.includes('gc.ca');
+      return urlObject.hostname.includes('canada.ca') || urlObject.hostname.includes('gc.ca');
     } catch {
       return false;
     }
@@ -63,33 +65,36 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
       feedback.sentence1Score,
       feedback.sentence2Score,
       feedback.sentence3Score,
-      feedback.sentence4Score
-    ].filter(score => score !== null);
+      feedback.sentence4Score,
+    ].filter((score) => score !== null);
 
     // If no sentences were rated, return 0
     if (sentenceScores.length === 0) return 0;
 
     // Calculate average of sentence scores and multiply by 0.75
-    const sentenceComponent = (sentenceScores.reduce((sum, score) => sum + score, 0) / sentenceScores.length) * 0.75;
-    
+    const sentenceComponent =
+      (sentenceScores.reduce((sum, score) => sum + score, 0) / sentenceScores.length) * 0.75;
+
     // Citation score defaults to 25 (full marks) if not set
     const citationComponent = feedback.citationScore !== null ? feedback.citationScore : 25;
 
     // Simple addition since citation scores are already weighted
     const totalScore = sentenceComponent + citationComponent;
-    
+
     // Round to 2 decimal places
     return Math.round(totalScore * 100) / 100;
   };
 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
-    <i className="fa-solid fa-close close-icon" 
-        onClick={onClose} 
-        onKeyDown={(e) => e.key === 'Enter' && onClose()} 
-        role="button" 
-        tabIndex={0} 
-        aria-label="Close" />
+      <i
+        className="fa-solid fa-close close-icon"
+        onClick={onClose}
+        onKeyDown={(e) => e.key === 'Enter' && onClose()}
+        role="button"
+        tabIndex={0}
+        aria-label="Close"
+      />
       <GcdsFieldset>
         <h2>{t('homepage.expertRating.intro')}</h2>
         <details className="answer-details">
@@ -229,7 +234,9 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
           </div>
         </details>
       </GcdsFieldset>
-      <button type="submit" className="btn-primary-sm">{t('homepage.expertRating.submit')}</button>
+      <button type="submit" className="btn-primary-sm">
+        {t('homepage.expertRating.submit')}
+      </button>
     </form>
   );
 };
