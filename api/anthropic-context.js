@@ -1,5 +1,5 @@
 import { createContextAgent } from '../agents/AgentService.js';
-import {contextSearch} from '../agents/tools/canadaCaSearch.js';
+import {contextSearch} from '../agents/tools/googleContextSearch.js';
 //TODO refactor now that one for each provider
 const invokeAgent = async (agentType, systemPrompt, message) => {
   try {
