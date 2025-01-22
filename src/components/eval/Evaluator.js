@@ -9,6 +9,7 @@ import MessageService from '../../services/AnswerService.js';
 import ContextService from '../../services/ContextService.js';
 import '../../styles/App.css';
 import AdminCodeInput from '../admin/AdminCodeInput.js';
+import * as XLSX from 'xlsx';
 
 
 const Evaluator = ({ selectedEntries, ...otherProps }) => {
@@ -100,30 +101,33 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
     const processCSV = (csvText) => {
         try {
-            const lines = csvText
-                .split(/\r?\n/)
-                .filter(line => isValidLine(line));
+            // Parse the CSV content using XLSX
+            const workbook = XLSX.read(csvText, { type: 'string' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
 
-            const headers = parseCSVLine(lines[0]);
-            const problemDetailsIndex = headers.findIndex(h => h.trim().toLowerCase() === 'problem details' || h.trim().toLowerCase() === 'question');
+            // Convert sheet data to JSON
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
+            // Validate and extract data
+            if (!jsonData.length) {
+                throw new Error('The CSV file is empty or invalid.');
+            }
+
+            const headers = jsonData[0].map(header => header.trim().toLowerCase());
+            const problemDetailsIndex = headers.findIndex(h => h === 'problem details' || h === 'question');
 
             if (problemDetailsIndex === -1) {
                 throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
             }
 
-            const entries = lines.slice(1)
-                .map(line => {
-
-                    const values = parseCSVLine(line);
-                    
+            const entries = jsonData.slice(1)
+                .map(row => {
                     const entry = {};
-
                     headers.forEach((header, index) => {
-                        const key = header.trim().toLowerCase() === 'problem details' ? 'question' : header.trim();
-                        entry[key] = values[index]?.trim() || '';
+                        const key = header === 'problem details' ? 'question' : header;
+                        entry[key] = row[index]?.trim() || '';
                     });
-
                     console.log('Processing entry:', entry);
                     return entry;
                 })
@@ -222,12 +226,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setProcessing(false);
         setResults(null);
         setError(null);
-        setSelectedAI('anthropic');
         setFileUploaded(false);
         setBatchId(null);
         setBatchStatus(null);
-        setSelectedLanguage('en');
-        setAdminCode('');
         document.getElementById('csvFile').value = ''; // Reset file input
     };
 
