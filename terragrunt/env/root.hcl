@@ -5,13 +5,13 @@ locals {
 # DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING
 
 inputs = {
-  product_name                 = "react-answers"
-  account_id                   = "${local.vars.inputs.account_id}"
-  domain                       = "${local.vars.inputs.domain}"
-  env                          = "${local.vars.inputs.env}"
-  region                       = "ca-central-1"
-  billing_code                 = "${local.vars.inputs.cost_center_code}"
-  cbs_satellite_bucket_name    = "cbs-satellite-${local.vars.inputs.account_id}"
+  product_name              = "react-answers"
+  account_id                = "${local.vars.inputs.account_id}"
+  domain                    = "${local.vars.inputs.domain}"
+  env                       = "${local.vars.inputs.env}"
+  region                    = "ca-central-1"
+  billing_code              = "${local.vars.inputs.cost_center_code}"
+  cbs_satellite_bucket_name = "cbs-satellite-${local.vars.inputs.account_id}"
 }
 
 generate "provider" {
