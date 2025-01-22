@@ -1,5 +1,6 @@
 import { Batch } from '../models/batch/batch.js';
 import OpenAI from 'openai';
+import dbConnect from './db-connect.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -126,6 +127,7 @@ export default async function handler(req, res) {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
+      await dbConnect();
       const batch = await Batch.findOne({ batchId });
       if (!batch) {
         throw new Error('Batch not found');
