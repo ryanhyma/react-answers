@@ -7,8 +7,12 @@ const openai = new OpenAI({
 });
 
 const handleOpenAI = async (batch) => {
+  let logString = '';
   try {
+    logString += 'Starting batch processing...\n';
     const result = await openai.batches.retrieve(batch.batchId);
+    logString += 'Retrieved batch from OpenAI.\n';
+
     const fileId = result.error_file_id || result.output_file_id;
     if (!fileId) {
       throw new Error('No file ID found in the batch result');

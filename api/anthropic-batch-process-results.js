@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
       console.error('Error handling request:', error);
-      return res.status(500).json({ error: 'Error handling request', details: error.message });
+      return res.status(500).json({ error: 'Error handling request', log: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
