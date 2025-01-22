@@ -15,10 +15,11 @@ async function dbConnect() {
     const opts = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      bufferCommands: false,           // Disables buffering while waiting for connection
-      connectTimeoutMS: 30000,         // 30 seconds to connect to MongoDB
-      serverSelectionTimeoutMS: 30000, // 30 seconds to select a server
-      socketTimeoutMS: 45000,   
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 60000,
+      socketTimeoutMS: 120000,        
+      connectTimeoutMS: 60000,        
+    
     };
 
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
