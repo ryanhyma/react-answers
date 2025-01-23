@@ -20,7 +20,7 @@ import dbBatchListHandler from '../api/db-batch-list.js';
 import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
 import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
 import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
-import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
+import anthropicBatchCancelHandler from '../api/anthropic-batch-cancel.js';
 import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
 import anthropicContextAgentHandler from '../api/anthropic-context.js';
 import openAIContextAgentHandler from '../api/openai-context.js';
@@ -62,16 +62,11 @@ if (process.env.REACT_APP_ENV === 'development') {
 }
 
 
-const cohere = null;
-//const cohere = new CohereClient({
-//  token: process.env.REACT_APP_COHERE_API_KEY
-//});
 
 app.post("/api/openai-message", openAIHandler);
 
 app.post('/api/anthropic-message', anthropicAgentHandler);
 
-// Use the context-agent handler for local development
 app.post('/api/anthropic-context', anthropicContextAgentHandler);
 
 app.post('/api/openai-context', openAIContextAgentHandler);
@@ -90,7 +85,7 @@ app.post('/api/search-context', contextSearchHandler);
 
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
 
-app.get('/api/anthropic-batch-cancel', anthripicBatchCancelHanlder);
+app.get('/api/anthropic-batch-cancel', anthropicBatchCancelHandler);
 
 app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
 
