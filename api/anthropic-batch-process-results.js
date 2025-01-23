@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Batch } from '../models/batch/batch.js';
+import dbConnect from './db-connect.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -10,12 +11,15 @@ const anthropic = new Anthropic({
 
 const handleAnthropic = async (batch) => {
   try {
-    const results = await anthropic.beta.messages.batches.results(batch.batchId);
-    for await (const result of results) {
+    const resultsStream = await anthropic.beta.messages.batches.results(batch.batchId);
+
+    for await (const result of resultsStream) {
       const customId = result.custom_id;
       const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);
+
       if (entryIndex !== -1) {
         let updatedEntry = null;
+
         if (batch.type === 'context') {
           const response = result.result.message.content[0].text;
           const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
@@ -65,11 +69,14 @@ const handleAnthropic = async (batch) => {
             answer_citation_url: citationUrlMatch ? citationUrlMatch[1] : null,
             answer_citation_confidence: confidenceRatingMatch ? confidenceRatingMatch[1] : null,
           };
-
         }
-        batch.entries[entryIndex] = updatedEntry;
-      }
 
+        // Update the batch entry individually
+        await Batch.updateOne(
+          { batchId: batch.batchId, 'entries.entry_id': customId },
+          { $set: { 'entries.$': updatedEntry } }
+        );
+      }
     }
 
     batch.status = 'processed';
@@ -79,15 +86,10 @@ const handleAnthropic = async (batch) => {
     };
 
   } catch (error) {
-    console.error('Error checking batch status:', error);
-    return res.status(500).json({ error: 'Error checking batch status', details: error.message });
+    console.error('Error processing batch incrementally:', error);
+    throw error;
   }
 };
-
-const handleOpenAI = async (batchId) => {
-  return "";
-};
-
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -97,19 +99,19 @@ export default async function handler(req, res) {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
-      const batch = await Batch.findOne({ batchId: batchId });
+      await dbConnect();
+      const batch = await Batch.findOne({ batchId });
       if (!batch) {
         throw new Error('Batch not found');
       }
 
       let result = await handleAnthropic(batch);
 
-
       return res.status(200).json(result);
 
     } catch (error) {
-      console.error('Error checking batch status:', error);
-      return res.status(500).json({ error: 'Error checking batch status', details: error.message });
+      console.error('Error handling request:', error);
+      return res.status(500).json({ error: 'Error handling request', log: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);

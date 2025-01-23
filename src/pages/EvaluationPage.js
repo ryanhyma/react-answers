@@ -7,12 +7,9 @@ import BatchList from '../components/eval/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 
 
+
 const EvaluationPage = ({ lang = 'en' }) => {
-  // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page 
-  const [status, setStatus] = React.useState({
-    isAvailable: true,
-    message: ''
-  });
+
 
   const handleDownloadClick = (batchId, type) => {
     console.log('Button clicked for batch:', batchId);
@@ -86,8 +83,12 @@ const EvaluationPage = ({ lang = 'en' }) => {
             link.click();
             document.body.removeChild(link);
           } else if (type === 'csv') {
-            const csv = XLSX.utils.sheet_to_csv(XLSX.utils.aoa_to_sheet(worksheetData));
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
+
+            const csvBuffer = XLSX.write(workbook, { bookType: 'csv', type: 'array' });
+            const blob = new Blob([csvBuffer], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
@@ -101,70 +102,71 @@ const EvaluationPage = ({ lang = 'en' }) => {
       } catch (error) {
         console.error('Error fetching batch or creating file:', error);
       }
-    };
-
-    fetchBatchAndDownload(batchId, type);
+    
   };
 
-  const handleCompleteCancelClick = async (batchId, action, provider,) => {
-    if (action === 'cancel') {
-      console.log('Button clicked to cancel batch:', batchId);
-      const response = await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
-    } else {
-      console.log('Button clicked to complete batch:', batchId);
-      const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
-    }
-  };
+  fetchBatchAndDownload(batchId, type);
+};
+
+const handleCompleteCancelClick = async (batchId, action, provider,) => {
+  if (action === 'cancel') {
+    console.log('Button clicked to cancel batch:', batchId);
+    await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
+  } else {
+    console.log('Button clicked to complete batch:', batchId);
+    await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+  }
+};
 
 
 
 
 
-  return (
-    <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-      <h1 className='mb-400'>Evaluation</h1>
-      <nav className="mb-400" aria-label="On this page">
-        <h2 className='mt-400 mb-400'>On this page</h2>
-        <ul>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href="#evaluator">New Evaluation</GcdsLink>
-            </GcdsText>
-          </li>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href="#running-evaluation">Running batches</GcdsLink>
-            </GcdsText>
-          </li>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href="#processed-evaluation">Processed Batches</GcdsLink>
-            </GcdsText>
-          </li>
-        </ul>
-      </nav>
+return (
+  <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
+    <h1 className='mb-400'>Evaluation</h1>
+    <nav className="mb-400" aria-label="On this page">
+      <h2 className='mt-400 mb-400'>On this page</h2>
+      <ul>
+        <li className="mb-400">
+          <GcdsText>
+            <GcdsLink href="#evaluator">New Evaluation</GcdsLink>
+          </GcdsText>
+        </li>
+        <li className="mb-400">
+          <GcdsText>
+            <GcdsLink href="#running-evaluation">Running batches</GcdsLink>
+          </GcdsText>
+        </li>
+        <li className="mb-400">
+          <GcdsText>
+            <GcdsLink href="#processed-evaluation">Processed Batches</GcdsLink>
+          </GcdsText>
+        </li>
+      </ul>
+    </nav>
 
-      <section id="evaluator" className="mb-600">
-        <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
-        <Evaluator />
-      </section>
+    <section id="evaluator" className="mb-600">
+      <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
+      <Evaluator />
+    </section>
 
-      <section id="running-evaluation" className="mb-600">
-        <h2 className='mt-400 mb-400'>Running Batches</h2>
-        <BatchList
-          buttonAction={handleCompleteCancelClick}
-          batchStatus="processing,completed" />
-      </section>
+    <section id="running-evaluation" className="mb-600">
+      <h2 className='mt-400 mb-400'>Running Batches</h2>
+      <BatchList
+        buttonAction={handleCompleteCancelClick}
+        batchStatus="processing,completed" />
+    </section>
 
-      <section id="processed-evaluation" className="mb-600">
-        <h2 className='mt-400 mb-400'>Processed Evaluations</h2>
-        <BatchList
-          buttonAction={handleDownloadClick}
-          batchStatus="processed" />
-      </section>
+    <section id="processed-evaluation" className="mb-600">
+      <h2 className='mt-400 mb-400'>Processed Evaluations</h2>
+      <BatchList
+        buttonAction={handleDownloadClick}
+        batchStatus="processed" />
+    </section>
 
-    </GcdsContainer>
-  );
+  </GcdsContainer>
+);
 };
 
 export default EvaluationPage;
