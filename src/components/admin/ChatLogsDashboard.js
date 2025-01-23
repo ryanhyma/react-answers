@@ -8,20 +8,22 @@ const extractSentences = (text) => {
   const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
   const sentences = [];
   let match;
-  
+
   while ((match = sentenceRegex.exec(text)) !== null) {
     const index = parseInt(match[1]) - 1;
     if (index >= 0 && index < 4) {
       sentences[index] = match[2].trim();
     }
   }
-  
+
   // If no sentence tags found, treat entire text as first sentence
   if (sentences.length === 0 && text) {
     sentences[0] = text.trim();
   }
-  
-  return Array(4).fill('').map((_, i) => sentences[i] || '');
+
+  return Array(4)
+    .fill('')
+    .map((_, i) => sentences[i] || '');
 };
 
 const ChatLogsDashboard = () => {
@@ -38,10 +40,10 @@ const ChatLogsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(getApiUrl("db-chat-logs?days=") + timeRange);
+      const response = await fetch(getApiUrl('db-chat-logs?days=') + timeRange);
       const data = await response.json();
       console.log('API Response:', data);
-      
+
       if (data.success) {
         setLogs(data.logs || []);
       } else {
@@ -56,8 +58,8 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadJSON = () => {
-    const blob = new Blob([JSON.stringify(logs, null, 2)], { 
-      type: 'application/json' 
+    const blob = new Blob([JSON.stringify(logs, null, 2)], {
+      type: 'application/json',
     });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -94,25 +96,29 @@ const ChatLogsDashboard = () => {
       'expertFeedback.citationScore',
       'expertFeedback.answerImprovement',
       'expertFeedback.expertCitationUrl',
-      'context'
+      'context',
     ];
 
     // Create CSV header
-    const header = columns.map(column => {
-      return column.includes('.') ? column.split('.')[1] : column;
-    }).join(',');
+    const header = columns
+      .map((column) => {
+        return column.includes('.') ? column.split('.')[1] : column;
+      })
+      .join(',');
 
     const extractLanguages = (preliminaryChecks) => {
       const result = {
         pageLanguage: '',
-        questionLanguage: ''
+        questionLanguage: '',
       };
 
       if (!preliminaryChecks) return result;
 
       try {
         const pageMatch = /- <page-language>(.*?)<\/page-language>/s.exec(preliminaryChecks);
-        const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks);
+        const questionMatch = /- <question-language>(.*?)<\/question-language>/s.exec(
+          preliminaryChecks
+        );
 
         if (pageMatch) result.pageLanguage = pageMatch[1].trim();
         if (questionMatch) result.questionLanguage = questionMatch[1].trim();
@@ -125,7 +131,7 @@ const ChatLogsDashboard = () => {
 
     const extractContext = (preliminaryChecks) => {
       if (!preliminaryChecks) return '';
-      
+
       try {
         const contextMatch = /<context>(.*?)<\/context>/s.exec(preliminaryChecks);
         return contextMatch ? contextMatch[1].trim() : '';
@@ -136,39 +142,41 @@ const ChatLogsDashboard = () => {
     };
 
     // Create CSV rows
-    const rows = logs.map(log => {
+    const rows = logs.map((log) => {
       // Extract sentences from answer
       const sentences = extractSentences(log.answer || '');
-      
+
       // Extract languages from preliminary checks
       const languages = extractLanguages(log.preliminaryChecks);
 
-      return columns.map(column => {
-        let value = '';
-        try {
-          if (column === 'pageLanguage') {
-            value = languages.pageLanguage;
-          } else if (column === 'questionLanguage') {
-            value = languages.questionLanguage;
-          } else if (column === 'context') {
-            value = extractContext(log.preliminaryChecks);
-          } else if (column.includes('.')) {
-            const [parent, child] = column.split('.');
-            value = log[parent]?.[child];
-          } else if (column.startsWith('sentence')) {
-            const index = parseInt(column.charAt(column.length - 1)) - 1;
-            value = sentences[index];
-          } else {
-            value = log[column];
+      return columns
+        .map((column) => {
+          let value = '';
+          try {
+            if (column === 'pageLanguage') {
+              value = languages.pageLanguage;
+            } else if (column === 'questionLanguage') {
+              value = languages.questionLanguage;
+            } else if (column === 'context') {
+              value = extractContext(log.preliminaryChecks);
+            } else if (column.includes('.')) {
+              const [parent, child] = column.split('.');
+              value = log[parent]?.[child];
+            } else if (column.startsWith('sentence')) {
+              const index = parseInt(column.charAt(column.length - 1)) - 1;
+              value = sentences[index];
+            } else {
+              value = log[column];
+            }
+          } catch (error) {
+            console.error(`Error processing column ${column}:`, error);
           }
-        } catch (error) {
-          console.error(`Error processing column ${column}:`, error);
-        }
-        
-        // Handle null/undefined and escape quotes
-        const escapedValue = (value ?? '').toString().replace(/"/g, '""');
-        return `"${escapedValue}"`;
-      }).join(',');
+
+          // Handle null/undefined and escape quotes
+          const escapedValue = (value ?? '').toString().replace(/"/g, '""');
+          return `"${escapedValue}"`;
+        })
+        .join(',');
     });
 
     // Combine header and rows
@@ -177,7 +185,7 @@ const ChatLogsDashboard = () => {
     // Add UTF-8 BOM and create blob
     const BOM = '\uFEFF';
     const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
-    
+
     // Create and download file
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -204,10 +212,7 @@ const ChatLogsDashboard = () => {
 
       <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
-          <label 
-            htmlFor="timeRange" 
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="timeRange" className="block text-sm font-medium text-gray-700 mb-1">
             Time range
           </label>
           <select
@@ -223,17 +228,17 @@ const ChatLogsDashboard = () => {
           </select>
         </div>
 
-        <GcdsButton 
+        <GcdsButton
           onClick={fetchLogs}
           disabled={loading || adminCode !== correctAdminCode}
           className="me-400 hydrated mrgn-tp-1r"
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
-        
+
         {logs.length > 0 && adminCode === correctAdminCode && (
           <>
-            <GcdsButton 
+            <GcdsButton
               onClick={downloadJSON}
               disabled={loading}
               className="me-400 hydrated mrgn-tp-1r"
@@ -241,7 +246,7 @@ const ChatLogsDashboard = () => {
               Download JSON
             </GcdsButton>
 
-            <GcdsButton 
+            <GcdsButton
               onClick={downloadCSV}
               disabled={loading}
               className="me-400 hydrated mrgn-tp-1r"
@@ -259,18 +264,30 @@ const ChatLogsDashboard = () => {
           </div>
         ) : logs.length > 0 ? (
           <div className="p-4">
-            <p className="mb-4 text-gray-600">Found {logs.length} chat interactions. Download the logs to see the full set and details.</p>
+            <p className="mb-4 text-gray-600">
+              Found {logs.length} chat interactions. Download the logs to see the full set and
+              details.
+            </p>
             <div className="max-h-96 overflow-y-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Date
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       User Query
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Response Length
                     </th>
                   </tr>
@@ -295,7 +312,9 @@ const ChatLogsDashboard = () => {
           </div>
         ) : (
           <div className="p-4">
-            <p className="text-gray-500">Select a time range and click 'Get logs' to view chat history</p>
+            <p className="text-gray-500">
+              Select a time range and click 'Get logs' to view chat history
+            </p>
           </div>
         )}
       </div>

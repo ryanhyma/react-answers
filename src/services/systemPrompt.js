@@ -12,81 +12,82 @@ const departmentModules = {
     getContent: async () => {
       const [{ CRA_UPDATES }, { CRA_SCENARIOS }] = await Promise.all([
         import('./systemPrompt/context-cra/cra-updates.js'),
-        import('./systemPrompt/context-cra/cra-scenarios.js')
+        import('./systemPrompt/context-cra/cra-scenarios.js'),
       ]);
       return { updates: CRA_UPDATES, scenarios: CRA_SCENARIOS };
-    }
+    },
   },
   ESDC: {
     getContent: async () => {
       const [{ ESDC_UPDATES }, { ESDC_SCENARIOS }] = await Promise.all([
         import('./systemPrompt/context-esdc/esdc-updates.js'),
-        import('./systemPrompt/context-esdc/esdc-scenarios.js')
+        import('./systemPrompt/context-esdc/esdc-scenarios.js'),
       ]);
       return { updates: ESDC_UPDATES, scenarios: ESDC_SCENARIOS };
-    }
+    },
   },
   ISC: {
     getContent: async () => {
       const [{ ISC_UPDATES }, { ISC_SCENARIOS }] = await Promise.all([
         import('./systemPrompt/context-isc/isc-updates.js'),
-        import('./systemPrompt/context-isc/isc-scenarios.js')
+        import('./systemPrompt/context-isc/isc-scenarios.js'),
       ]);
       return { updates: ISC_UPDATES, scenarios: ISC_SCENARIOS };
-    }
+    },
   },
   PSPC: {
     getContent: async () => {
       const [{ PSPC_UPDATES }, { PSPC_SCENARIOS }] = await Promise.all([
         import('./systemPrompt/context-pspc/pspc-updates.js'),
-        import('./systemPrompt/context-pspc/pspc-scenarios.js')
+        import('./systemPrompt/context-pspc/pspc-scenarios.js'),
       ]);
       return { updates: PSPC_UPDATES, scenarios: PSPC_SCENARIOS };
-    }
+    },
   },
   IRCC: {
     getContent: async () => {
       const [{ IRCC_UPDATES }, { IRCC_SCENARIOS }] = await Promise.all([
         import('./systemPrompt/context-ircc/ircc-updates.js'),
-        import('./systemPrompt/context-ircc/ircc-scenarios.js')
+        import('./systemPrompt/context-ircc/ircc-scenarios.js'),
       ]);
       return { updates: IRCC_UPDATES, scenarios: IRCC_SCENARIOS };
-    }
-  }
+    },
+  },
 };
 
 async function loadSystemPrompt(language = 'en', context) {
-  console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
+  console.log(
+    `🌐 Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`
+  );
 
   try {
     const { department } = context;
-    
+
     // Load department content or use defaults
-    const content = department && departmentModules[department]
-      ? await departmentModules[department].getContent()
-        .catch(error => {
-          console.warn(`Failed to load content for ${department}:`, error);
-          return { updates: '', scenarios: '' };
-        })
-      : { updates: '', scenarios: '' };
-    
+    const content =
+      department && departmentModules[department]
+        ? await departmentModules[department].getContent().catch((error) => {
+            console.warn(`Failed to load content for ${department}:`, error);
+            return { updates: '', scenarios: '' };
+          })
+        : { updates: '', scenarios: '' };
+
     const citationInstructions = CITATION_INSTRUCTIONS;
 
     // Inform LLM about the current page language
-    const languageContext = language === 'fr' 
-      ? "French.  The question was asked on the official French AI Answers page."
-      : "English.  The question was asked on the official English AI Answers page.";
-
+    const languageContext =
+      language === 'fr'
+        ? 'French.  The question was asked on the official French AI Answers page.'
+        : 'English.  The question was asked on the official English AI Answers page.';
 
     // Add current date information
     const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
 
-    
     // add context from contextService call into systme prompt
     const contextPrompt = `
     Department: ${context.department}
@@ -95,7 +96,6 @@ async function loadSystemPrompt(language = 'en', context) {
     Department URL: ${context.departmentUrl}
     Search Results: ${context.searchResults}
     `;
-    
 
     const fullPrompt = `
       ${ROLE}
@@ -122,14 +122,15 @@ async function loadSystemPrompt(language = 'en', context) {
     Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
-    console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    console.log(
+      `✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`
+    );
     // console.log(fullPrompt); //temporary
     return fullPrompt;
-
   } catch (error) {
     console.error('SYSTEM PROMPT ERROR:', {
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
     });
 
     return BASE_SYSTEM_PROMPT;

@@ -6,12 +6,11 @@ import Evaluator from '../components/eval/Evaluator.js';
 import BatchList from '../components/eval/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 
-
 const EvaluationPage = ({ lang = 'en' }) => {
-  // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page 
+  // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page
   const [status, setStatus] = React.useState({
     isAvailable: true,
-    message: ''
+    message: '',
   });
 
   const handleDownloadClick = (batchId, type) => {
@@ -23,8 +22,31 @@ const EvaluationPage = ({ lang = 'en' }) => {
 
         if (batch && batch.entries) {
           const worksheetData = [
-            ['entry_id', 'question', 'url', 'topic', 'topicUrl', 'department', 'departmentUrl', 'searchResults', 'context_model', 'context_input_tokens', 'context_output_tokens', 'context_cached_creation_input_tokens', 'context_cached_read_input_tokens', 'answer', 'answer_citation_url', 'answer_citation_head', 'answer_citation_confidence', 'answer_model', 'answer_input_tokens', 'answer_output_tokens', 'answer_cached_creation_input_tokens', 'answer_cached_read_input_tokens'],
-            ...batch.entries.map(entry => [
+            [
+              'entry_id',
+              'question',
+              'url',
+              'topic',
+              'topicUrl',
+              'department',
+              'departmentUrl',
+              'searchResults',
+              'context_model',
+              'context_input_tokens',
+              'context_output_tokens',
+              'context_cached_creation_input_tokens',
+              'context_cached_read_input_tokens',
+              'answer',
+              'answer_citation_url',
+              'answer_citation_head',
+              'answer_citation_confidence',
+              'answer_model',
+              'answer_input_tokens',
+              'answer_output_tokens',
+              'answer_cached_creation_input_tokens',
+              'answer_cached_read_input_tokens',
+            ],
+            ...batch.entries.map((entry) => [
               entry.entry_id,
               entry.question,
               entry.url,
@@ -46,8 +68,8 @@ const EvaluationPage = ({ lang = 'en' }) => {
               entry.answer_input_tokens,
               entry.answer_output_tokens,
               entry.answer_cached_creation_input_tokens,
-              entry.answer_cached_read_input_tokens
-            ])
+              entry.answer_cached_read_input_tokens,
+            ]),
           ];
 
           if (type === 'excel') {
@@ -68,7 +90,11 @@ const EvaluationPage = ({ lang = 'en' }) => {
 
             // Adjust column widths
             const colWidths = worksheetData[0].map((_, colIndex) => ({
-              wch: Math.max(...worksheetData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10)))
+              wch: Math.max(
+                ...worksheetData.map((row) =>
+                  row[colIndex] ? row[colIndex].toString().length : 10
+                )
+              ),
             }));
             worksheet['!cols'] = colWidths;
 
@@ -77,10 +103,10 @@ const EvaluationPage = ({ lang = 'en' }) => {
 
             const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
             const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `batch_${batchId}.xlsx`);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `batch_${batchId}.xlsx`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -88,10 +114,10 @@ const EvaluationPage = ({ lang = 'en' }) => {
           } else if (type === 'csv') {
             const csv = XLSX.utils.sheet_to_csv(XLSX.utils.aoa_to_sheet(worksheetData));
             const blob = new Blob([csv], { type: 'text/csv' });
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `batch_${batchId}.csv`);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `batch_${batchId}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -106,25 +132,23 @@ const EvaluationPage = ({ lang = 'en' }) => {
     fetchBatchAndDownload(batchId, type);
   };
 
-  const handleCompleteCancelClick = async (batchId, action, provider,) => {
+  const handleCompleteCancelClick = async (batchId, action, provider) => {
     if (action === 'cancel') {
       console.log('Button clicked to cancel batch:', batchId);
       const response = await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
     } else {
       console.log('Button clicked to complete batch:', batchId);
-      const response = await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+      const response = await fetch(
+        getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`)
+      );
     }
   };
 
-
-
-
-
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-      <h1 className='mb-400'>Evaluation</h1>
+      <h1 className="mb-400">Evaluation</h1>
       <nav className="mb-400" aria-label="On this page">
-        <h2 className='mt-400 mb-400'>On this page</h2>
+        <h2 className="mt-400 mb-400">On this page</h2>
         <ul>
           <li className="mb-400">
             <GcdsText>
@@ -145,24 +169,19 @@ const EvaluationPage = ({ lang = 'en' }) => {
       </nav>
 
       <section id="evaluator" className="mb-600">
-        <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
+        <h2 className="mt-400 mb-400">Load and run evaluation</h2>
         <Evaluator />
       </section>
 
       <section id="running-evaluation" className="mb-600">
-        <h2 className='mt-400 mb-400'>Running Batches</h2>
-        <BatchList
-          buttonAction={handleCompleteCancelClick}
-          batchStatus="processing,completed" />
+        <h2 className="mt-400 mb-400">Running Batches</h2>
+        <BatchList buttonAction={handleCompleteCancelClick} batchStatus="processing,completed" />
       </section>
 
       <section id="processed-evaluation" className="mb-600">
-        <h2 className='mt-400 mb-400'>Processed Evaluations</h2>
-        <BatchList
-          buttonAction={handleDownloadClick}
-          batchStatus="processed" />
+        <h2 className="mt-400 mb-400">Processed Evaluations</h2>
+        <BatchList buttonAction={handleDownloadClick} batchStatus="processed" />
       </section>
-
     </GcdsContainer>
   );
 };

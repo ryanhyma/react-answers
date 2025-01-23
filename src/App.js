@@ -5,7 +5,12 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import EvaluationPage from './pages/EvaluationPage.js';
-import { GcdsHeader, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsFooter } from '@cdssnc/gcds-components-react';
+import {
+  GcdsHeader,
+  GcdsBreadcrumbs,
+  GcdsBreadcrumbsItem,
+  GcdsFooter,
+} from '@cdssnc/gcds-components-react';
 import './styles/App.css';
 
 // Helper function to get alternate language path
@@ -29,20 +34,16 @@ const AppContent = () => {
       <section className="alpha-top">
         <div className="container">
           <small>
-            <span className="alpha-label">Alpha</span>&nbsp;&nbsp; 
-            {currentLang === 'en' ? 'Experimental page - not public.' : 'Page expérimentale - non publique.'}
+            <span className="alpha-label">Alpha</span>&nbsp;&nbsp;
+            {currentLang === 'en'
+              ? 'Experimental page - not public.'
+              : 'Page expérimentale - non publique.'}
           </small>
         </div>
       </section>
-      
-      <GcdsHeader 
-        lang={currentLang}
-        langHref={alternateLangHref}
-        skipToHref="#main-content"
-      >
-        <GcdsBreadcrumbs slot="breadcrumb">
-          {/* Add breadcrumb items as needed */}
-        </GcdsBreadcrumbs>
+
+      <GcdsHeader lang={currentLang} langHref={alternateLangHref} skipToHref="#main-content">
+        <GcdsBreadcrumbs slot="breadcrumb">{/* Add breadcrumb items as needed */}</GcdsBreadcrumbs>
       </GcdsHeader>
 
       <main id="main-content">
@@ -52,7 +53,7 @@ const AppContent = () => {
           <Route path="/en" element={<HomePage lang="en" />} />
           <Route path="/en/admin" element={<AdminPage lang="en" />} />
           <Route path="/en/evaluation" element={<EvaluationPage lang="en" />} />
-          
+
           {/* French routes */}
           <Route path="/fr" element={<HomePage lang="fr" />} />
           <Route path="/fr/admin" element={<AdminPage lang="fr" />} />
@@ -60,10 +61,7 @@ const AppContent = () => {
         </Routes>
       </main>
 
-      <GcdsFooter 
-        display='compact'
-        lang={currentLang}
-      />
+      <GcdsFooter display="compact" lang={currentLang} />
     </>
   );
 };
