@@ -42,6 +42,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Apply
-        working-directory: terraform
+        working-directory: terragrunt
         run: |
           terragrunt apply --terragrunt-non-interactive -auto-approve
