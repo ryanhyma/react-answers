@@ -250,8 +250,9 @@ export const menuStructure_FR = {
       "Visitez le Mémorial virtuel de guerre du Canada": "https://www.veterans.gc.ca/fra/remembrance/memorials/canadian-virtual-war-memorial",
       "Hymnes et symboles du Canada": "https://www.canada.ca/fr/services/culture/identite-canadienne-societe/hymnes-symboles.html",
       "Trouvez une décision du CRTC": "https://crtc.gc.ca/fra/8045/d2018.htm",
-      "Faites des recherches sur votre histoire familiale": "https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/Pages/genealogie-histoire-famille.aspx",
+      "Faites des recherches sur votre histoire familiale (genealogie)": "https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/Pages/genealogie-histoire-famille.aspx",
       "Cherchez des documents de recensement": "https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/recensements/Pages/recensements.aspx",
+      "Recherchez des documents dans les collections de la Bibliothèque et des Archives du Canada": "https://library-archives.canada.ca/fra/collection/Pages/collection.aspx",
       "Lieux et attraits dans la capitale du Canada": "https://www.canada.ca/fr/services/culture/attraits-culturels/attraits-capitale-canada.html",
     }
   },

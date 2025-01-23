@@ -246,8 +246,9 @@ export const menuStructure_EN = {
       "Visit the Canadian Virtual War Memorial": "https://www.veterans.gc.ca/eng/remembrance/memorials/canadian-virtual-war-memorial",
       "Anthems and symbols of Canada": "https://www.canada.ca/en/services/culture/canadian-identity-society/anthems-symbols.html",
       "Find a CRTC decision": "https://crtc.gc.ca/eng/8045/d2018.htm",
-      "Research your family history": "https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/Pages/genealogy-family-history.aspx",
+      "Research your family history (genealogy)": "https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/Pages/genealogy-family-history.aspx",
       "Search census records": "https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/censuses/Pages/censuses.aspx",
+      "Search Library and Archives Canada's collections and research help": "https://library-archives.canada.ca/eng/collection/Pages/collection.aspx",
       "Landmarks and attractions in Canada's capital": "https://www.canada.ca/en/services/culture/cultural-attractions/attractions-canada-capital.html"
     }
   },
