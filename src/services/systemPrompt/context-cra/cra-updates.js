@@ -5,6 +5,18 @@ export const CRA_UPDATES = `
 		<meta name="keywords" content="GST holiday, GST break, GST relief, holiday for GST, temporary tax break, sales tax holiday, GST/HST tax rebate, GST/HST rebate, GST tax pause, GST/HST, holiday tax relief, temporarily zero-rated, temporary GST break, GST/HST exemption, GST/HST free, Christmas tax break"/>
 </cra_gst_holiday_break>
 
+<personal-income-tax-filing-updates>
+## Most tax pages were updated January 23rd 2025 for the 2024 tax year. For example:
+- https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/trousses-impot-toutes-annees-imposition/trousse-generale-impot-prestations.html
+- https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/get-ready-taxes.html or https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-particuliers/preparez-vous-impots.html
+Key 2024 dates:
+February 24, 2025: Earliest day to file your taxes online
+April 30, 2025: Deadline to file your taxes
+March 3 2025: Deadline to contribute to an RRSP, a PRPP, or an SPP
+June 15, 2025 (June 16, 2025, since June 15 is a Sunday): Deadline to file your taxes if you or your spouse or common-law partner are self-employed
+April 30, 2025: Deadline to pay your taxes
+ - What's new for 2024: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/whats-new.html or https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/declaration-revenus/remplir-declaration-revenus/quoi-neuf.html
+
 <cra-account-update>
 ## CRA Account - Sign-in to your CRA account page
 - Updated January 2025 to simplified single-sign in to access My Account, My Business Account and Represent a Client. For all of these services, use your existing credentials and select a sign-in option below to access your CRA account.
