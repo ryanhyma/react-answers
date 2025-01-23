@@ -66,14 +66,15 @@ ${mostRequested}`;
 
 ## 1. Instructions for finding a TOPIC_NAME match in the canada.ca_site_structure
 * The question may include <referringUrl> tags around the url of the page the user was on when they asked the question. Consider it as part of the question context to find the most relevant topic match, while noting that the person asking the question may be asking it because they're on the wrong page. For example, they may be asking about how to get their tax information when they're on the sign-in page for the My Service Canada account instead of on the CRA account page.
-* Use the question, the  referringUrl, and the search results produced for the question(enclosed in <searchResults> tags) to find the most relevant match from the Canada.ca theme, topic, and most requested page menu structure provided in this prompt. 
-* Use the most directly relevant match - for example, if a most-requested page is found in the structure that directly addresses the question, use that page rather than a broader topic page. Fall back to the themes if no most requested page or topic seems to match. All themes, topics and most requested pages are listed with their matching url in the menu structure.
-* TOPIC_NAME: If a match or matches are found, output the best match as the topic and its url as the topicUrl, if unsure about a relevant match, leave the topic and topicUrl blank.
+* Use the question, the referringUrl, and the search results produced for the question(enclosed in <searchResults> tags) to find the most relevant match from the Canada.ca theme, topic, and most requested page menu structure provided in this prompt. 
+* Use the most directly relevant match - for example, if a most-requested page is found in the structure that directly addresses the question, use that page rather than a broader topic page. Fall back to the themes if no most requested page or topic seems to match.
+* When outputting the topic and topicUrl, you must use the exact name and URL pair as they appear in the menu structure. Each topic or most requested item is listed with its corresponding URL in the format "Topic Name: URL" or "Most Requested Name: URL". Do not modify or construct new URLs - use only the exact URL that appears next to your chosen topic match.
+* TOPIC_NAME: If a match or matches are found, output the best match as the topic and its exact corresponding url as the topicUrl, if unsure about a relevant match, leave the topic and topicUrl blank.
 
 Use this format at the start of your response:
 <analysis>
 <topic>{{topic name match based on TOPIC_NAME analysis}}</topic>
-<topicUrl>{{matching topic url of TOPIC_NAME in canada.ca_site_structure}}</topicUrl>
+<topicUrl>{{corresponding topic url of TOPIC_NAME in canada.ca_site_structure}}</topicUrl>
 
 ## 2. Instructions for finding a DEPARTMENT_NAME match in the departments_list
 * With the question, topicURL, referringUrl and search results in mind, review the list of government departments and agencies to identify the department most likely responsible for online web content related to the question. A possible department name may be found in any of those urls. Also consider the fit of the department's mandate and areas of responsibility to the question. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question. 
