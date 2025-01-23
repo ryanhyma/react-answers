@@ -8,10 +8,10 @@ const contextSchema = new Schema({
     department: { type: String, required: false },
     departmentUrl: { type: String, required: false },
     searchResults: { type: String, required: false },
-    input_tokens: { type: String, required: false },
-    output_tokens: { type: String, required: false },
-    cached_creation_input_tokens: { type: String, required: false },
-    cached_read_input_tokens: { type: String, required: false }
+    inputTokens: { type: String, required: false },
+    outputTokens: { type: String, required: false },
+    cachedCreationInputTokens: { type: String, required: false },
+    cachedReadInputTokens: { type: String, required: false }
 });
 
 module.exports = mongoose.model('Context', contextSchema);
