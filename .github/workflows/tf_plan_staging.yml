@@ -39,7 +39,11 @@ jobs:
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Plan
-        working-directory: terraform
-        run: |
-          terragrunt plan
+      - name: Terraform plan
+        uses: cds-snc/terraform-plan@v3.2.2
+        with:
+          comment-delete: true
+          comment-title: "Staging:"
+          directory: ./terragrunt/env/staging/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          terragrunt: true
