@@ -100,7 +100,7 @@ async function loadSystemPrompt(language = 'en', context) {
     const fullPrompt = `
       ${ROLE}
 
-      ## Current Context
+      ## Current date
       Today is ${currentDate}.
       ## Official language context:
       ${languageContext}
