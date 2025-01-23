@@ -44,6 +44,6 @@ jobs:
         with:
           comment-delete: true
           comment-title: "Staging:"
-          directory: ./terragrunt/env/staging/
+          directory: ./terragrunt/env/
           github-token: ${{ secrets.GITHUB_TOKEN }}
           terragrunt: true
