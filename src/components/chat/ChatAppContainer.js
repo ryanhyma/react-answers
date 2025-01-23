@@ -8,6 +8,7 @@ import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js
 import ContextService from '../../services/ContextService.js';
 import ChatInterface from './ChatInterface.js';
 import MessageService from '../../services/AnswerService.js';
+import { getApiUrl } from '../../utils/apiToUrl.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -43,7 +44,7 @@ const parseMessageContent = (text) => {
   // Extract citation information before processing answers
   const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
   const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
-  
+
   if (citationHeadMatch) {
     citationHead = citationHeadMatch[1].trim();
   }
@@ -109,6 +110,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [currentSearchResults, setCurrentSearchResults] = useState('');
   const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
   const [currentTopicUrl, setCurrentTopicUrl] = useState('');
+  const [chatId, setChatId] = useState(null);
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -150,9 +152,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     // Split content into paragraphs, but exclude any remaining citation tags
     const paragraphs = mainContent
       .split(/\n+/)
-      .filter(para => 
-        !para.includes('<citation-head>') && 
-        !para.includes('<citation-url>') && 
+      .filter(para =>
+        !para.includes('<citation-head>') &&
+        !para.includes('<citation-url>') &&
         !para.includes('<confidence>')
       );
 
@@ -168,25 +170,25 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   }, []);
 
   // TODO: Refactor logging to update existing logs with feedback instead of creating duplicates
-// Current behavior creates a new log entry when feedback is provided, resulting in duplicate entries
-// Should implement:
-// 1. LoggingService.updateInteraction method
-// 2. Backend API support for updating existing logs
-// 3. Modify handleFeedback to update instead of create
+  // Current behavior creates a new log entry when feedback is provided, resulting in duplicate entries
+  // Should implement:
+  // 1. LoggingService.updateInteraction method
+  // 2. Backend API support for updating existing logs
+  // 3. Modify handleFeedback to update instead of create
   const logInteraction = useCallback((
-    aiService,            
-    redactedQuestion,     
-    referringUrl,         
-    aiResponse,           
-    citationUrl,         
-    originalCitationUrl,  
-    confidenceRating,     
-    feedback,            
-    expertFeedback       
+    aiService,
+    redactedQuestion,
+    referringUrl,
+    aiResponse,
+    citationUrl,
+    originalCitationUrl,
+    confidenceRating,
+    feedback,
+    expertFeedback
   ) => {
     // Parse all components from the AI response
     const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
-    
+
     // Standardize expert feedback format - only accept new format
     let formattedExpertFeedback = null;
     if (expertFeedback) {
@@ -352,9 +354,9 @@ const ChatAppContainer = ({ lang = 'en' }) => {
             },
             {
               id: blockedMessageId,
-              text: <div dangerouslySetInnerHTML={{ 
-                __html: '<i class="fa-solid fa-circle-exclamation"></i>' + 
-                  (redactedText.includes('XXX') ? t('homepage.chat.messages.privateContent') : t('homepage.chat.messages.blockedContent')) 
+              text: <div dangerouslySetInnerHTML={{
+                __html: '<i class="fa-solid fa-circle-exclamation"></i>' +
+                  (redactedText.includes('XXX') ? t('homepage.chat.messages.privateContent') : t('homepage.chat.messages.blockedContent'))
               }} />,
               sender: 'system',
               error: true
@@ -423,7 +425,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         // TODO - Don't disply the department or wrong topic
         // TODO - Supress the department and thinking
         // TODO - Don't display the deparment
-        
+
         department = department || '';
         topic = topic || '';
         const context = { department, topic, topicUrl, departmentUrl, searchResults };
@@ -726,6 +728,20 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     setSelectedDepartment(department);
   };
 
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const res = await fetch(getApiUrl('/api/db-chat-session'));
+        const data = await res.json();
+        setChatId(data.chatId);
+      } catch (error) {
+        console.error(error);
+        setEetError(true);
+      }
+    }
+    fetchSession();
+  }, []);
+
   return (
     <ChatInterface
       messages={messages}
@@ -757,6 +773,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       extractSentences={extractSentences}
       parsedResponses={parsedResponses}
       checkedCitations={checkedCitations}
+      chatId={chatId}
     />
   );
 };
