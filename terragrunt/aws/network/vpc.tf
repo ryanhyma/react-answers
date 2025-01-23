@@ -6,9 +6,7 @@
 module "react_answers_vpc" {
     source = "github.com/cds-snc/terraform-modules//vpc?ref=v10.2.2"
     name = var.product_name
-
-    # Deploy high availabiltiy mode 
-    high_availability = true
+    billing_tag_value = var.billing_tag_value
 
     # Enables VPC flow logs and blocks ssh and rdp traffic
     enable_flow_log   = true
