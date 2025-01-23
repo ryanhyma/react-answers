@@ -29,6 +29,7 @@ const ChatInterface = ({
   lang,
   parsedResponses,
   extractSentences,
+  chatId
 }) => {
   const [charCount, setCharCount] = useState(0);
   useEffect(() => {
@@ -262,6 +263,9 @@ const ChatInterface = ({
           </GcdsDetails>
         </div>
       )}
+      <div className="chat-id-container">
+        <p>{chatId}</p>
+      </div>
     </div>
   );
 };

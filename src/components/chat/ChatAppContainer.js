@@ -8,6 +8,7 @@ import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js
 import ContextService from '../../services/ContextService.js';
 import ChatInterface from './ChatInterface.js';
 import MessageService from '../../services/AnswerService.js';
+import { getApiUrl } from '../../utils/apiToUrl.js';
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -62,6 +63,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [currentSearchResults, setCurrentSearchResults] = useState('');
   const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
   const [currentTopicUrl, setCurrentTopicUrl] = useState('');
+  const [chatId, setChatId] = useState(null);
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -547,6 +549,20 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       setSelectedDepartment(urlDepartment);
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
+
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const res = await fetch(getApiUrl('db-chat-session'));
+        if (!res.ok) throw new Error('Failed to fetch session');
+        const data = await res.json();
+        setChatId(data.chatId);
+      } catch (error) {
+        console.error('Error fetching chat session:', error);
+      }
+    }
+    fetchSession();
+  }, []);
 
   // Memoize the parsed responses with better message tracking
   const parsedResponses = useMemo(() => {
