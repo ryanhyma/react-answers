@@ -29,13 +29,13 @@ function extractSearchResults(results, numResults = 3) {
  */
 async function contextSearch(query) {
     try {
-        console.log (`Starting search with query: ${query} at endpoint: ${process.env.CANADA_CA_SEARCH_URI}`);
+        console.log(`Starting search with query: ${query} at endpoint: ${process.env.CANADA_CA_SEARCH_URI}`);
         const response = await fetch(process.env.CANADA_CA_SEARCH_URI, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${process.env.CANADA_CA_SEARCH_API_KEY}`,
+                "Authorization": `Bearer ${process.env.CANADA_CA_SEARCH_API_KEY}`,
                 "Content-Type": "application/json",
-                Accept: "application/json"
+                "Accept": "application/json"
             },
             body: JSON.stringify({ q: query })
         });
