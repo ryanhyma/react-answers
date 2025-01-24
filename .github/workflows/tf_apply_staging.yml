@@ -35,7 +35,7 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Configure aws credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@ve3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
         with:
           role-to-assume: arn:aws:iam::992382783569:role/react-answers-apply
           role-session-name: TFApply
