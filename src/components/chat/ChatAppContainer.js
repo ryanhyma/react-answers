@@ -171,10 +171,10 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
         // Add the AI response to messages
         setMessages(prev => [...prev, {
-          id: interaction.answer.answerId,
-          text: interaction.answer.text,
+          id: userMessageId,
+          text: interaction.answer.content,
           sender: 'ai',
-          aiService: interaction.answer.provider,
+          aiService: selectedAI,
           department: interaction.context.department
         }]);
 

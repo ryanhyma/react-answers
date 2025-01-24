@@ -19,7 +19,7 @@ export const PipelineStatus = {
 };
 export const ChatPipelineService = {
 
-    processMessage: async (chatId,userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
+    processMessage: async (chatId, userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
 
         console.log("Starting pipeline with data:", userMessage, lang, department, referringUrl);
         onStatusUpdate(PipelineStatus.REDACTING);
@@ -44,9 +44,13 @@ export const ChatPipelineService = {
             finalCitationUrl,
             answer.citationUrl,
             confidenceRating,
-            context,chatId
+            context, chatId
         );
-        return answer;
+        return {
+            answer: answer,
+            context: context,
+
+        };
 
 
 
