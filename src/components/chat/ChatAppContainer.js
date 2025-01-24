@@ -150,7 +150,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
       const userMessage = inputText.trim();
       try {
-        const interaction = await ChatPipelineService.processMessage(userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        const interaction = await ChatPipelineService.processMessage(chatId,userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
 

@@ -6,9 +6,9 @@ const ChatSchema = new mongoose.Schema({
     interactions: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Interaction'
     }],
-    provider: { type: String, required: true },
+    provider: { type: String, required: false },
     referringUrl: { type: String, required: false }
 
 }, { timestamps: true });
 
-export const Chat = mongoose.models.Chat
+export const Chat = mongoose.models.Chat || mongoose.model('Chat', ChatSchema);

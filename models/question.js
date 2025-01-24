@@ -4,4 +4,4 @@ const questionSchema = new mongoose.Schema({
   redactedQuestion: { type: String, required: true },
 });
 
-export default mongoose.model('Question', questionSchema);
+export const Question = mongoose.models.Question || mongoose.model('Question', questionSchema);

@@ -27,6 +27,7 @@ import openAIContextAgentHandler from '../api/openai-context.js';
 import dbChatSessionHandler from '../api/db-chat-session.js';
 import dbVerifyChatSessionHandler from '../api/db-verify-chat-session.js';
 import dbCheckhandler from '../api/db-check.js';
+import dbPersistInteraction from '../api/db-persist-interaction.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -65,7 +66,7 @@ if (process.env.REACT_APP_ENV === 'development') {
 }
 
 
-
+app.post('/api/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db-chat-session', dbChatSessionHandler);
 
 app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);

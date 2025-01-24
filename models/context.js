@@ -14,4 +14,4 @@ const contextSchema = new Schema({
     cachedReadInputTokens: { type: String, required: false }
 });
 
-module.exports = mongoose.model('Context', contextSchema);
+export const Context = mongoose.models.Context || mongoose.model('Context', contextSchema);

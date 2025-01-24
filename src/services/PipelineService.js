@@ -18,9 +18,9 @@ export const PipelineStatus = {
     ERROR: 'error'
 };
 export const ChatPipelineService = {
-            
-    processMessage: async (userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF,onStatusUpdate) => {
-        
+
+    processMessage: async (chatId,userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
+
         console.log("Starting pipeline with data:", userMessage, lang, department, referringUrl);
         onStatusUpdate(PipelineStatus.REDACTING);
         ChatPipelineService.processRedaction(userMessage);
@@ -30,7 +30,7 @@ export const ChatPipelineService = {
         console.log("Derived context:", context);
         onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
         // TOOD check about evaluation
-        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context,false, referringUrl);
+        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
         console.log("Answer Received:", answer);
 
         onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
@@ -39,23 +39,14 @@ export const ChatPipelineService = {
 
         onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
         // Log the interaction with the validated URL
-        aiService,
-    redactedQuestion,
-    referringUrl,
-    aiResponse,
-    citationUrl,
-    originalCitationUrl,
-    confidenceRating,
-    feedback,
-    expertFeedback, preliminaryChecks, englishAnswer, content, chatId
         DataStoreService.persistInteraction(selectedAI, userMessage, referringUrl,
-            answer.content,
+            answer,
             finalCitationUrl,
             answer.citationUrl,
             confidenceRating,
-            null,  // feedback
-            null   // expertFeedback
+            context,chatId
         );
+        return answer;
 
 
 
@@ -72,12 +63,12 @@ export const ChatPipelineService = {
             );
             console.log(`✅ Validated URL:`, validationResult);
             return validationResult;
-            
+
         }
         return null;
     },
     processRedaction: (userMessage) => {
-       
+
         const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
         // Check for blocked content (# for profanity/threats/manipulation, XXX for private info)

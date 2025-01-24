@@ -1,3 +1,4 @@
+import { UserSquare } from 'lucide-react';
 import { getApiUrl } from '../utils/apiToUrl.js';
 export const DataStoreService = {
   checkDatabaseConnection: async () => {
@@ -24,31 +25,23 @@ export const DataStoreService = {
 
 
   },
-  persistInteraction: async (aiService,
-    redactedQuestion,
-    referringUrl,
-    aiResponse,
-    citationUrl,
+  persistInteraction: async (selectedAI, userMessage, referringUrl,
+    answer,
+    finalCitationUrl,
     originalCitationUrl,
     confidenceRating,
-    preliminaryChecks, 
-    englishAnswer, 
-    content, 
-    chatId
+    context, chatId
   ) => {
     const interaction = {
       chatId: chatId || '',
-      timestamp: new Date(),
-      aiService: aiService || '',
-      redactedQuestion,
+      aiService: selectedAI || '',
+      question: userMessage,
       referringUrl: referringUrl || '',
-      preliminaryChecks: preliminaryChecks || '',
-      aiResponse: aiResponse || '',
-      englishAnswer: englishAnswer || '',
-      answer: content || '',
       originalCitationUrl: originalCitationUrl || '',
-      citationUrl: citationUrl || '',
+      finalCitationUrl: finalCitationUrl || '',
       confidenceRating: confidenceRating || '',
+      ...context,
+      ...answer
     };
 
     try {
@@ -57,10 +50,9 @@ export const DataStoreService = {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...interactionData,
-          timestamp: new Date().toISOString()
-        }),
+        body: JSON.stringify(
+          interaction
+        ),
       });
 
       if (!response.ok) {
@@ -70,7 +62,7 @@ export const DataStoreService = {
       console.log('Interaction logged successfully to database');
     } catch (error) {
       console.log('Development mode: Interaction logged to console', {
-        ...interactionData
+        ...interaction
       });
     }
   },

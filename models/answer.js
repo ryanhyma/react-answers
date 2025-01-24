@@ -8,10 +8,7 @@ const answerSchema = new mongoose.Schema({
   outputTokens: { type: String, required: false },
   cachedCreationInputTokens: { type: String, required: false },
   cachedReadInputTokens: { type: String, required: false },
-  provider: { type: String, required: false },
+  model: { type: String, required: false },
   
 });
-
-const Answer = mongoose.model('Answer', answerSchema);
-
-module.exports = Answer;
+export const Answer = mongoose.models.Answer || mongoose.model('Answer', answerSchema);
