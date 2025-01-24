@@ -47,5 +47,8 @@ jobs:
 
       - name: Apply ecr
         working-directory: terragrunt/env/staging/ecr
-        run: |
-          terragrunt apply --terragrunt-non-interactive -auto-approve
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve
+      
+        - name: Apply hosted zone
+        working-directory: terragrunt/env/staging/hosted_zone
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve
