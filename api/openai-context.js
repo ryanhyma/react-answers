@@ -1,11 +1,11 @@
 import { createContextAgent } from '../agents/AgentService.js';
 import {contextSearch} from '../agents/tools/contextSearch.js';
 
-const invokeAgent = async (agentType, systemPrompt, message) => {
+const invokeAgent = async (agentType, systemPrompt, message, searchResults) => {
   try {
     const contextAgent = await createContextAgent(agentType);
 
-    const searchResults = "<searchResults>" + await contextSearch(message) + "</searchResults>";
+    
 
     const messages = [
       {

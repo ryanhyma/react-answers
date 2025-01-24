@@ -8,7 +8,7 @@ import { getProviderApiUrl } from '../utils/apiToUrl.js';
 
 const AnswerService = {
 
-    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false) => {
+    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false, referringUrl) => {
         console.log(`🤖 AnswerService: Processing message in ${lang.toUpperCase()}`);
 
         const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
@@ -17,24 +17,23 @@ const AnswerService = {
         }
         // Only change: check for evaluation and use empty array if true
         const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
-
+        const messageWithReferrer = `${message}${referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''}`;
         console.log('Sending to ' + provider + ' API:', {
-            message,
+            messageWithReferrer,
             conversationHistory: finalHistory,
             systemPromptLength: SYSTEM_PROMPT.length
         });
 
         return {
-            message,
-            conversationHistory: finalHistory,  // Use the conditional history
+            messageWithReferrer,
+            conversationHistory: finalHistory,
             systemPrompt: SYSTEM_PROMPT,
         };
     },
 
-    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context) => {
+    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, referringUrl) => {
         try {
             const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context);
-
             const response = await fetch(getProviderApiUrl(provider, "message"), {
                 method: 'POST',
                 headers: {
@@ -51,11 +50,45 @@ const AnswerService = {
 
             const data = await response.json();
             console.log(provider + ' API response:', data);
-            return data.content;
+            return AnswerService.parseResponse(data.content)
         } catch (error) {
             console.error('Error calling ' + provider + ' API:', error);
             throw error;
         }
+    },
+    parseResponse: (text) => {
+        const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
+        const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
+        const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
+
+        const headMatch = text.match(citationHeadRegex);
+        const urlMatch = text.match(citationUrlRegex);
+        const confidenceMatch = text.match(confidenceRatingRegex);
+
+        let mainContent = text
+            .replace(citationHeadRegex, '')
+            .replace(citationUrlRegex, '')
+            .replace(confidenceRatingRegex, '')
+            .trim();
+
+        // Split content into paragraphs, but exclude any remaining citation tags
+        const paragraphs = mainContent
+            .split(/\n+/)
+            .filter(para =>
+                !para.includes('<citation-head>') &&
+                !para.includes('<citation-url>') &&
+                !para.includes('<confidence>')
+            );
+
+        const result = {
+            paragraphs,
+            citationHead: headMatch ? headMatch[1].trim() : null,
+            citationUrl: urlMatch ? urlMatch[1].trim() : null,
+            confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
+            aiService
+        };
+
+        return result;
     },
     sendBatchMessages: async (provider, entries, lang) => {
         try {

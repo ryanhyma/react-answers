@@ -3,13 +3,14 @@ import loadContextSystemPrompt from './contextSystemPrompt.js';
 import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
 
+
 const ContextService = {
-  sendMessage: async (provider, message, lang = 'en', department = '') => {
+  sendMessage: async (provider, message, lang = 'en', department = '',referringUrl, searchResults) => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
-      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
-
+      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department) + searchResults;
+      message += (referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : '');
       const response = await fetch(getProviderApiUrl(provider, "context"), {
         method: 'POST',
         headers: {
@@ -35,34 +36,43 @@ const ContextService = {
       throw error;
     }
   },
+  contextSearch: async (message) => {
+    try {
+      const searchResponse = await fetch(getApiUrl("context-search"), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
 
-  deriveContext: async (provider, question, lang = 'en', department = '') => {
+      if (!searchResponse.ok) {
+        const errorText = await searchResponse.text();
+        console.error('Search API error response:', errorText);
+        throw new Error(`HTTP error! status: ${searchResponse.status}`);
+      }
+
+      const searchData = await searchResponse.json();
+      return searchData.content;
+    } catch (error) {
+      console.error('Error searching context:', error);
+      throw error;
+    }
+
+  },
+
+  deriveContext: async (provider, question, lang = 'en', department = '',referringUrl) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
-
-      const response = await ContextService.sendMessage(provider, question, lang, department);
-
-      // Parse the XML-style tags from the response
-      const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
-      const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
-      const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
-      const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
-      const searchResultsMatch = response.match(/<searchResults>([\s\S]*?)<\/searchResults>/);
-
-
-      return {
-        topic: topicMatch ? topicMatch[1] : 'none',
-        topicUrl: topicUrlMatch ? topicUrlMatch[1] : '',
-        department: departmentMatch ? departmentMatch[1] : '',
-        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : '',
-        searchResults: searchResultsMatch ? searchResultsMatch[1] : ''
-
-      };
+      const searchResults = "<searchResults>" + await ContextService.contextSearch(question) + "</searchResults>";
+      console.log('Executed Search:', question);
+      return await ContextService.sendMessage(provider, question, lang, department,referringUrl, searchResults);
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
     }
   },
+
 
   deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
     try {
@@ -75,22 +85,7 @@ const ContextService = {
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          const searchResponse = await fetch(getApiUrl("context-search"), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: request }),
-          });
-
-          if (!searchResponse.ok) {
-            const errorText = await searchResponse.text();
-            console.error('Search API error response:', errorText);
-            throw new Error(`HTTP error! status: ${searchResponse.status}`);
-          }
-
-          const searchData = await searchResponse.json();
-          return searchData.content;
+          return await ContextService.contextSearch(request);
         })
       );
 
@@ -115,7 +110,7 @@ const ContextService = {
 
   sendBatch: async (requests, aiService) => {
     try {
-      const response = await fetch(getProviderApiUrl(aiService,"batch-context"), {
+      const response = await fetch(getProviderApiUrl(aiService, "batch-context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
