@@ -28,6 +28,7 @@ jobs:
       matrix:
         include:
           - module: ecr
+          - module: network
           - module: hosted_zone
     runs-on: ubuntu-latest
     environment: staging
