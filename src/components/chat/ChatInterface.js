@@ -32,6 +32,7 @@ const ChatInterface = ({
   lang,
   parsedResponses,
   extractSentences,
+  chatId,
 }) => {
   const [charCount, setCharCount] = useState(0);
   const [userHasClickedTextarea, setUserHasClickedTextarea] = useState(false);
@@ -301,6 +302,11 @@ const ChatInterface = ({
                         t('homepage.chat.messages.character') : 
                         t('homepage.chat.messages.characters'))
                   }
+                </div>
+              )}
+              {chatId && (
+                <div className="chat-id">
+                  <p>{t('homepage.chat.chatId')}: {chatId}</p>
                 </div>
               )}
             </div>

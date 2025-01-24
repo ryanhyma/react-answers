@@ -1,5 +1,6 @@
 {
     "homepage": {
+      
       "title": "AI Answers",
       "subtitle": "Get answers to your Canada.ca questions.",
       "alpha": {
@@ -46,6 +47,7 @@
         "serviceUnavailable": "AI Answers is unavailable until tomorrow due to reaching daily usage limits. Please check back then."
       },
       "chat": {
+        "chatId" : "Chat ID",
         "input": {
           "initial": "Ask a Canada.ca question",
           "followUp": "Ask a follow-on question or reply",

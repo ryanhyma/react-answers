@@ -419,4 +419,4 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
     );
 };
 
-export default Evaluator;
+export default BatchUpload;

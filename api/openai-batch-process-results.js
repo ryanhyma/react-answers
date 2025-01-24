@@ -1,4 +1,4 @@
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 import OpenAI from 'openai';
 import dbConnect from './db-connect.js';
 

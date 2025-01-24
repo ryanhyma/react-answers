@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import RedactionService from '../../services/RedactionService.js';
-import LoggingService from '../../services/LoggingService.js';
+import DataService from '../../services/DataService.js';
 import '../../styles/App.css';
 import { urlToSearch } from '../../utils/urlToSearch.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
@@ -8,7 +8,7 @@ import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js
 import ContextService from '../../services/ContextService.js';
 import ChatInterface from './ChatInterface.js';
 import MessageService from '../../services/AnswerService.js';
-import { getApiUrl } from '../../utils/apiToUrl.js';
+
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -21,74 +21,10 @@ const extractSentences = (paragraph) => {
   return sentences.length > 0 ? sentences : [paragraph];
 };
 
-// Move parsing logic outside component
-const parseMessageContent = (text) => {
-  if (!text) {
-    return { responseType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
-  }
 
-  let responseType = 'normal';
-  let content = text;
-  let preliminaryChecks = null;
-  let englishAnswer = null;
-  let citationHead = null;
-  let citationUrl = null;
 
-  // Extract preliminary checks - this regex needs to capture multiline content
-  const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
-  if (preliminaryMatch) {
-    preliminaryChecks = preliminaryMatch[1].trim();
-    content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
-  }
 
-  // Extract citation information before processing answers
-  const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
-  const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
-
-  if (citationHeadMatch) {
-    citationHead = citationHeadMatch[1].trim();
-  }
-  if (citationUrlMatch) {
-    citationUrl = citationUrlMatch[1].trim();
-  }
-
-  // Extract English answer first
-  const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
-  if (englishMatch) {
-    englishAnswer = englishMatch[1].trim();
-    content = englishAnswer;  // Use English answer as content for English questions
-  }
-
-  // Extract main answer if it exists
-  const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
-  if (answerMatch) {
-    content = answerMatch[1].trim();
-  }
-
-  // Check response types
-  if (content.includes('<not-gc>')) {
-    responseType = 'not-gc';
-    content = content.replace(/<\/?not-gc>/g, '').trim();
-  } else if (content.includes('<pt-muni>')) {
-    responseType = 'pt-muni';
-    content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
-  } else if (content.includes('<clarifying-question>')) {
-    responseType = 'question';
-    content = content.replace(/<\/?clarifying-question>/g, '').trim();
-  }
-
-  // Add citation information back to content if it exists
-  if (citationHead) {
-    content += `\n<citation-head>${citationHead}</citation-head>`;
-  }
-  if (citationUrl) {
-    content += `\n<citation-url>${citationUrl}</citation-url>`;
-  }
-
-  return { responseType, content, preliminaryChecks, englishAnswer };
-};
-
-const ChatAppContainer = ({ lang = 'en' }) => {
+const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const { t } = useTranslations(lang);
   const { url: pageUrl, department: urlDepartment } = usePageContext();
   const [messages, setMessages] = useState([]);
@@ -110,7 +46,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const [currentSearchResults, setCurrentSearchResults] = useState('');
   const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
   const [currentTopicUrl, setCurrentTopicUrl] = useState('');
-  const [chatId, setChatId] = useState(null);
+
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -175,7 +111,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   // 1. LoggingService.updateInteraction method
   // 2. Backend API support for updating existing logs
   // 3. Modify handleFeedback to update instead of create
-  const logInteraction = useCallback((
+  const persistInteraction = useCallback((
     aiService,
     redactedQuestion,
     referringUrl,
@@ -205,6 +141,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     }
 
     const logEntry = {
+      chatId: chatId || '',
       timestamp: new Date(),
       aiService: aiService || '',
       redactedQuestion,
@@ -220,11 +157,11 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       ...(formattedExpertFeedback && { expertFeedback: formattedExpertFeedback })
     };
 
-    console.log('Final log entry:', logEntry);
 
-    if (process.env.REACT_APP_ENV === 'production') {
-      LoggingService.logInteraction(logEntry, false);
-    }
+
+
+    DataService.persistInteraction(logEntry);
+
   }, []);
 
   const handleFeedback = useCallback((isPositive, expertFeedback = null) => {
@@ -249,7 +186,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
       const userMessage = messages[messages.length - 2];
       if (userMessage && userMessage.sender === 'user') {
         // Only log if there's feedback
-        logInteraction(
+        persistInteraction(
           selectedAIService,
           userMessage.redactedText,
           referringUrl,
@@ -262,7 +199,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
         );
       }
     }
-  }, [messages, checkedCitations, logInteraction, parseAIResponse, referringUrl]);
+  }, [messages, checkedCitations, persistInteraction, parseAIResponse, referringUrl]);
 
   const handleReferringUrlChange = (e) => {
     const url = e.target.value.trim();
@@ -503,7 +440,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
           setShowFeedback(true);
 
           // Log the interaction with the validated URL
-          logInteraction(
+          persistInteraction(
             selectedAI,
             redactedText,
             referringUrl,
@@ -571,7 +508,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
 
             // Log the fallback interaction
             const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(fallbackResponse, fallbackAI);
-            logInteraction(
+            persistInteraction(
               fallbackAI,
               redactedText,
               referringUrl,
@@ -621,7 +558,7 @@ const ChatAppContainer = ({ lang = 'en' }) => {
     clearInput,
     selectedDepartment,
     isLoading,
-    logInteraction,
+    persistInteraction,
     messages,
     parseAIResponse,
     turnCount,
@@ -727,20 +664,6 @@ const ChatAppContainer = ({ lang = 'en' }) => {
   const handleDepartmentChange = (department) => {
     setSelectedDepartment(department);
   };
-
-  useEffect(() => {
-    async function fetchSession() {
-      try {
-        const res = await fetch(getApiUrl('/api/db-chat-session'));
-        const data = await res.json();
-        setChatId(data.chatId);
-      } catch (error) {
-        console.error(error);
-        setEetError(true);
-      }
-    }
-    fetchSession();
-  }, []);
 
   return (
     <ChatInterface

@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getModelConfig } from '../config/ai-models.js';
 import dbConnect from './db-connect.js';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 
 const modelConfig = getModelConfig('anthropic');
 const anthropic = new Anthropic({
@@ -79,4 +79,4 @@ export default async function handler(req, res) {
       details: error.message
     });
   }
-} 
+}

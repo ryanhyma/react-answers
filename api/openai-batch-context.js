@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
 import fs from 'fs';
 import dbConnect from './db-connect.js';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 
 
 const modelConfig = getModelConfig('openai', 'gpt-4o-mini');

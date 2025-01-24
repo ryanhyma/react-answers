@@ -1,6 +1,7 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { Batch } from '../models/batch/batch.js';
-import dbConnect from './db-connect.js';
+import Anthropic from "@anthropic-ai/sdk";
+import { Batch } from "../models/batch.js";
+import dbConnect from "./db-connect.js";
+import {parseContextMessage} from "../shared/responseMessageParser.js"
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -22,10 +23,8 @@ const handleAnthropic = async (batch) => {
 
         if (batch.type === 'context') {
           const response = result.result.message.content[0].text;
-          const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
-          const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
-          const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
-          const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
+          context = parseContextMessage(response);
+          
 
           updatedEntry = {
             question: batch.entries[entryIndex].question,

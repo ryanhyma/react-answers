@@ -24,6 +24,8 @@ import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
 import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
 import anthropicContextAgentHandler from '../api/anthropic-context.js';
 import openAIContextAgentHandler from '../api/openai-context.js';
+import dbChatSessionHandler from '../api/db-chat-session.js';
+import dbVerifyChatSessionHandler from '../api/db-verify-chat-session.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -62,16 +64,15 @@ if (process.env.REACT_APP_ENV === 'development') {
 }
 
 
-const cohere = null;
-//const cohere = new CohereClient({
-//  token: process.env.REACT_APP_COHERE_API_KEY
-//});
 
+app.get('/api/db-chat-session', dbChatSessionHandler);
+
+app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);
 app.post("/api/openai-message", openAIHandler);
 
 app.post('/api/anthropic-message', anthropicAgentHandler);
 
-// Use the context-agent handler for local development
+
 app.post('/api/anthropic-context', anthropicContextAgentHandler);
 
 app.post('/api/openai-context', openAIContextAgentHandler);

@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
 import { Readable } from 'stream';
 import dbConnect from './db-connect.js';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY

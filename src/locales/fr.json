@@ -46,6 +46,7 @@
         "serviceUnavailable": "Réponses IA est indisponible jusqu'à demain en raison de l'atteinte des limites d'utilisation quotidiennes. Veuillez revenir plus tard."
       },
       "chat": {
+        "chatId": "ID de chat",
         "input": {
           "initial": "Posez une question sur Canada.ca",
           "followUp": "Posez une question de suivi ou répondez",

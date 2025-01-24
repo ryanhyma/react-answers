@@ -2,8 +2,8 @@ import React from 'react';
 import * as XLSX from 'xlsx';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
-import Evaluator from '../components/eval/Evaluator.js';
-import BatchList from '../components/eval/BatchList.js';
+import BatchUpload from '../components/batch/BatchUpload.js';
+import BatchList from '../components/batch/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 
 
@@ -148,7 +148,7 @@ return (
 
     <section id="evaluator" className="mb-600">
       <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
-      <Evaluator />
+      <BatchUpload />
     </section>
 
     <section id="running-evaluation" className="mb-600">
