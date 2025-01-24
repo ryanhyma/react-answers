@@ -5,9 +5,9 @@ export const DataStoreService = {
       console.log('Skipping database connection check in development environment');
       return true;
     }
-  
+
     try {
-      const response = await fetch(getApiurl("db-check"));
+      const response = await fetch(getApiUrl("db-check"));
       if (!response.ok) {
         throw new Error('Database connection failed');
       }
@@ -19,8 +19,8 @@ export const DataStoreService = {
       return false;
     }
   },
-  
-  persistInteraction: async (interactionData) => {
+
+  persistInteractionSmall: async (interactionData) => {
 
     try {
       const response = await fetch(getApiUrl('db-log-interaction'), {
@@ -53,10 +53,9 @@ export const DataStoreService = {
     originalCitationUrl,
     confidenceRating,
     feedback,
-    expertFeedback
+    expertFeedback, preliminaryChecks, englishAnswer, content, chatId
   ) => {
-    // Parse all components from the AI response
-    const { preliminaryChecks, englishAnswer, content } = parseMessageContent(aiResponse);
+
 
     // Standardize expert feedback format - only accept new format
     let formattedExpertFeedback = null;
@@ -88,11 +87,11 @@ export const DataStoreService = {
       confidenceRating: confidenceRating || '',
       ...(feedback && { feedback }),
       ...(formattedExpertFeedback && { expertFeedback: formattedExpertFeedback })
-    }
+    };
 
     return logEntry;
   },
-  persistFeedback: async (feedbackData) => {
+  persistFeedback: async (messages,checkedCitations,isPositive,referringUrl,originalCitationUrl, citationUrl, confidenceRating, preliminaryChecks, englishAnswer, content, expertFeedback) => {
     const feedback = isPositive ? 'positive' : 'negative';
     console.log(`User feedback: ${feedback}`, expertFeedback);
 
@@ -101,9 +100,6 @@ export const DataStoreService = {
     if (lastMessage && lastMessage.sender === 'ai') {
       const { text: aiResponse, aiService: selectedAIService } = lastMessage;
       // Get original URL from AI response
-      const { citationUrl: originalCitationUrl, confidenceRating } = parseAIResponse(aiResponse, selectedAIService);
-      // Extract preliminaryChecks, englishAnswer, and the displayed answer
-      const { preliminaryChecks, englishAnswer, content: answer } = parseMessageContent(aiResponse);
 
       // Get validated URL from checkedCitations
       const lastIndex = messages.length - 1;
@@ -114,7 +110,7 @@ export const DataStoreService = {
       const userMessage = messages[messages.length - 2];
       if (userMessage && userMessage.sender === 'user') {
         // Only log if there's feedback
-        persistInteraction(
+        DataStoreService.persistInteraction(
           selectedAIService,
           userMessage.redactedText,
           referringUrl,

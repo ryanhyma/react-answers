@@ -1,7 +1,7 @@
 // src/ClaudeService.js
 
 import loadSystemPrompt from './systemPrompt.js';
-import { getProviderApiUrl } from '../utils/apiToUrl.js';
+import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
 
 
@@ -50,46 +50,13 @@ const AnswerService = {
 
             const data = await response.json();
             console.log(provider + ' API response:', data);
-            return AnswerService.parseResponse(data.content)
+            return AnswerService.parseResponse(data.content);
         } catch (error) {
             console.error('Error calling ' + provider + ' API:', error);
             throw error;
         }
     },
-    parseResponse: (text) => {
-        const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
-        const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
-        const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
-
-        const headMatch = text.match(citationHeadRegex);
-        const urlMatch = text.match(citationUrlRegex);
-        const confidenceMatch = text.match(confidenceRatingRegex);
-
-        let mainContent = text
-            .replace(citationHeadRegex, '')
-            .replace(citationUrlRegex, '')
-            .replace(confidenceRatingRegex, '')
-            .trim();
-
-        // Split content into paragraphs, but exclude any remaining citation tags
-        const paragraphs = mainContent
-            .split(/\n+/)
-            .filter(para =>
-                !para.includes('<citation-head>') &&
-                !para.includes('<citation-url>') &&
-                !para.includes('<confidence>')
-            );
-
-        const result = {
-            paragraphs,
-            citationHead: headMatch ? headMatch[1].trim() : null,
-            citationUrl: urlMatch ? urlMatch[1].trim() : null,
-            confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
-            aiService
-        };
-
-        return result;
-    },
+    
     sendBatchMessages: async (provider, entries, lang) => {
         try {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);

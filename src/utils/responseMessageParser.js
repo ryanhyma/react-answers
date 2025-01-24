@@ -1,16 +1,16 @@
 export const parseContextMessage = (text) => {
-    
-    const topicMatch = test.match(/<topic>([\s\S]*?)<\/topic>/);
-    const topicUrlMatch = test.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
-    const departmentMatch = text.match(/<department>([\s\S]*?)<\/department>/);
-    const departmentUrlMatch = text.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
 
-    return {
-        topic: topicMatch ? topicMatch[1] : null,
-        topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
-        department: departmentMatch ? departmentMatch[1] : null,
-        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null
-    };
+  const topicMatch = test.match(/<topic>([\s\S]*?)<\/topic>/);
+  const topicUrlMatch = test.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+  const departmentMatch = text.match(/<department>([\s\S]*?)<\/department>/);
+  const departmentUrlMatch = text.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
+
+  return {
+    topic: topicMatch ? topicMatch[1] : null,
+    topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
+    department: departmentMatch ? departmentMatch[1] : null,
+    departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null
+  };
 };
 
 export const parseMessageContent = (text) => {
@@ -80,38 +80,99 @@ export const parseMessageContent = (text) => {
 };
 
 
-export const parseAnswerMessage = (aiService,text) => {
-    const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
-    const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
-    const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
+export const parseAnswerMessage = (aiService, text) => {
+  const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
+  const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
+  const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
 
-    const headMatch = text.match(citationHeadRegex);
-    const urlMatch = text.match(citationUrlRegex);
-    const confidenceMatch = text.match(confidenceRatingRegex);
+  const headMatch = text.match(citationHeadRegex);
+  const urlMatch = text.match(citationUrlRegex);
+  const confidenceMatch = text.match(confidenceRatingRegex);
 
-    let mainContent = text
+  let mainContent = text
+    .replace(citationHeadRegex, '')
+    .replace(citationUrlRegex, '')
+    .replace(confidenceRatingRegex, '')
+    .trim();
+
+  const paragraphs = mainContent
+    .split(/\n+/)
+    .filter(para =>
+      !para.includes('<citation-head>') &&
+      !para.includes('<citation-url>') &&
+      !para.includes('<confidence>')
+    );
+
+  const result = {
+    paragraphs,
+    citationHead: headMatch ? headMatch[1].trim() : null,
+    citationUrl: urlMatch ? urlMatch[1].trim() : null,
+    confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
+    aiService
+  };
+
+  return result;
+};
+
+export const parseAIResponse = (text,aiService) => {
+  const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/s;
+  const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/s;
+  const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
+
+  const headMatch = text.match(citationHeadRegex);
+  const urlMatch = text.match(citationUrlRegex);
+  const confidenceMatch = text.match(confidenceRatingRegex);
+
+  let mainContent = text
       .replace(citationHeadRegex, '')
       .replace(citationUrlRegex, '')
       .replace(confidenceRatingRegex, '')
       .trim();
 
-    const paragraphs = mainContent
+  // Split content into paragraphs, but exclude any remaining citation tags
+  const paragraphs = mainContent
       .split(/\n+/)
       .filter(para =>
-        !para.includes('<citation-head>') &&
-        !para.includes('<citation-url>') &&
-        !para.includes('<confidence>')
+          !para.includes('<citation-head>') &&
+          !para.includes('<citation-url>') &&
+          !para.includes('<confidence>')
       );
 
-    const result = {
+  const result = {
       paragraphs,
       citationHead: headMatch ? headMatch[1].trim() : null,
       citationUrl: urlMatch ? urlMatch[1].trim() : null,
       confidenceRating: confidenceMatch ? confidenceMatch[1] : null,
       aiService
-    };
+  };
 
-    return result;
+  return result;
+};
+
+// Memoize the parsed responses with better message tracking
+export const parsedResponses = (isTyping,messages) => {
+  if (isTyping.current) return {};
+
+  const responses = {};
+  const processedIds = new Set();
+
+  messages.forEach((message) => {
+    if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
+      processedIds.add(message.id);
+      // console.log(`Parsing message ${message.id}:`, message.text.substring(0, 100) + '...');
+
+      const { responseType, content } = parseMessageContent(message.text);
+      const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
+
+      responses[message.id] = {
+        responseType,
+        paragraphs,
+        citationHead,
+        aiService: message.aiService
+      };
+    }
+  });
+  return responses;
 };
 
 

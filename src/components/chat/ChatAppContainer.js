@@ -3,7 +3,7 @@ import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ChatInterface from './ChatInterface.js';
-import { parseMessageContent, parseAIResponse } from '../../utils/responseMessageParser.js';
+import { parseMessageContent,parsedResponses } from '../../utils/responseMessageParser.js';
 import { ChatPipelineService, RedactionError } from '../../services/PipelineService.js';
 import { DataStoreService } from '../../services/DataStoreService.js';
 
@@ -257,31 +257,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-  // Memoize the parsed responses with better message tracking
-  const parsedResponses = useMemo(() => {
-    if (isTyping.current) return {};
-
-    const responses = {};
-    const processedIds = new Set();
-
-    messages.forEach((message) => {
-      if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
-        processedIds.add(message.id);
-        // console.log(`Parsing message ${message.id}:`, message.text.substring(0, 100) + '...');
-
-        const { responseType, content } = parseMessageContent(message.text);
-        const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
-
-        responses[message.id] = {
-          responseType,
-          paragraphs,
-          citationHead,
-          aiService: message.aiService
-        };
-      }
-    });
-    return responses;
-  }, [messages, parseAIResponse]);
+  
 
   const formatAIResponse = useCallback((text, aiService, messageId) => {
     if (!isTyping.current && messageId !== undefined) {

@@ -1,4 +1,9 @@
 import { getApiUrl } from '../utils/apiToUrl.js';
+import ContextService from './ContextService.js';
+import AnswerService from './AnswerService.js';
+import { DataStoreService } from './DataStoreService.js';
+import { urlToSearch } from '../utils/urlToSearch.js';
+import RedactionService from './RedactionService.js';
 
 export const PipelineStatus = {
     REDACTING: 'redacting',
@@ -13,28 +18,28 @@ export const PipelineStatus = {
     ERROR: 'error'
 };
 export const ChatPipelineService = {
-    processMessage: async (userMessage, onStatusUpdate, lang, department, referringUrl) => {
-        console.log("Starting pipeline with data:", data);
+    processMessage: async (userMessage, conversationHistory, onStatusUpdate, lang, department, referringUrl, selectedAI, translationF) => {
+        console.log("Starting pipeline with data:", userMessage, lang, department, referringUrl);
         onStatusUpdate(PipelineStatus.REDACTING);
-        processRedaction(userMessage, onStatusUpdate);
+        ChatPipelineService.processRedaction(userMessage, onStatusUpdate);
 
         onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
-        const derivedContext = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
-        console.log("Derived context:", derivedContext);
+        const context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
+        console.log("Derived context:", context);
         onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
-        const response = await MessageService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, referringUrl);
-        console.log("Answer Received:", derivedContext);
+        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, referringUrl);
+        console.log("Answer Received:", answer);
 
         onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
-        await verifyCitation(response.originalCitationUrl, lang, redactedText, selectedDepartment, t);
+        const { finalCitationUrl, confidenceRating } = await ChatPipelineService.verifyCitation(answer.originalCitationUrl, lang, userMessage, department, translationF);
         console.log("Citation validated:");
 
         onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
         // Log the interaction with the validated URL
-        DataService.persistInteraction(selectedAI, redactedText, referringUrl,
-            response,
+        DataStoreService.persistInteraction(selectedAI, userMessage, referringUrl,
+            answer,
             finalCitationUrl,
-            originalCitationUrl,
+            answer.originalCitationUrl,
             confidenceRating,
             null,  // feedback
             null   // expertFeedback
@@ -44,7 +49,7 @@ export const ChatPipelineService = {
 
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {
-        let finalCitationUrl, confidenceRating;
+
         if (originalCitationUrl) {
             const validationResult = await urlToSearch.validateAndCheckUrl(
                 originalCitationUrl,
