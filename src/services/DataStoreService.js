@@ -22,8 +22,37 @@ export const DataStoreService = {
 
   persistInteractionSmall: async (interactionData) => {
 
+
+  },
+  persistInteraction: async (aiService,
+    redactedQuestion,
+    referringUrl,
+    aiResponse,
+    citationUrl,
+    originalCitationUrl,
+    confidenceRating,
+    preliminaryChecks, 
+    englishAnswer, 
+    content, 
+    chatId
+  ) => {
+    const interaction = {
+      chatId: chatId || '',
+      timestamp: new Date(),
+      aiService: aiService || '',
+      redactedQuestion,
+      referringUrl: referringUrl || '',
+      preliminaryChecks: preliminaryChecks || '',
+      aiResponse: aiResponse || '',
+      englishAnswer: englishAnswer || '',
+      answer: content || '',
+      originalCitationUrl: originalCitationUrl || '',
+      citationUrl: citationUrl || '',
+      confidenceRating: confidenceRating || '',
+    };
+
     try {
-      const response = await fetch(getApiUrl('db-log-interaction'), {
+      const response = await fetch(getApiUrl('db-persist-interaction'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,18 +74,7 @@ export const DataStoreService = {
       });
     }
   },
-  persistInteraction: (aiService,
-    redactedQuestion,
-    referringUrl,
-    aiResponse,
-    citationUrl,
-    originalCitationUrl,
-    confidenceRating,
-    feedback,
-    expertFeedback, preliminaryChecks, englishAnswer, content, chatId
-  ) => {
-
-
+  persistFeedback: async (messages, checkedCitations, isPositive, referringUrl, originalCitationUrl, citationUrl, confidenceRating, preliminaryChecks, englishAnswer, content, expertFeedback) => {
     // Standardize expert feedback format - only accept new format
     let formattedExpertFeedback = null;
     if (expertFeedback) {
@@ -72,26 +90,7 @@ export const DataStoreService = {
       };
     }
 
-    const logEntry = {
-      chatId: chatId || '',
-      timestamp: new Date(),
-      aiService: aiService || '',
-      redactedQuestion,
-      referringUrl: referringUrl || '',
-      preliminaryChecks: preliminaryChecks || '',
-      aiResponse: aiResponse || '',
-      englishAnswer: englishAnswer || '',
-      answer: content || '',
-      originalCitationUrl: originalCitationUrl || '',
-      citationUrl: citationUrl || '',
-      confidenceRating: confidenceRating || '',
-      ...(feedback && { feedback }),
-      ...(formattedExpertFeedback && { expertFeedback: formattedExpertFeedback })
-    };
 
-    return logEntry;
-  },
-  persistFeedback: async (messages,checkedCitations,isPositive,referringUrl,originalCitationUrl, citationUrl, confidenceRating, preliminaryChecks, englishAnswer, content, expertFeedback) => {
     const feedback = isPositive ? 'positive' : 'negative';
     console.log(`User feedback: ${feedback}`, expertFeedback);
 

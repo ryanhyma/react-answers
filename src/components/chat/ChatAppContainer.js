@@ -3,7 +3,7 @@ import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ChatInterface from './ChatInterface.js';
-import { parseMessageContent,parsedResponses } from '../../utils/responseMessageParser.js';
+import { parseMessageContent, parsedResponses } from '../../utils/responseMessageParser.js';
 import { ChatPipelineService, RedactionError } from '../../services/PipelineService.js';
 import { DataStoreService } from '../../services/DataStoreService.js';
 
@@ -150,39 +150,39 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
       const userMessage = inputText.trim();
       try {
-        const interaction = ChatPipelineService.processMessage(userMessage, conversationHistory, selectedAI, (status) => {
-          setDisplayStatus(status);
-          // Now that message is validated and redacted, show formatted message with "Starting to think..."
-          const userMessageId = messageIdCounter.current++;
+        const interaction = await ChatPipelineService.processMessage(userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        // Now that message is validated and redacted, show formatted message with "Starting to think..."
+        const userMessageId = messageIdCounter.current++;
 
-          // TODO - Why set redacted messages if nothing was redacted?
-          /*setMessages(prevMessages => [
-            ...prevMessages,
-            {
-              id: userMessageId,
-              text: userMessage,
-              redactedText: answer.redactedText,
-              redactedItems: answer.redactedItems,
-              sender: 'user',
-              ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-            }
-          ]);*/
+        // TODO - Why set redacted messages if nothing was redacted?
+        /*setMessages(prevMessages => [
+          ...prevMessages,
+          {
+            id: userMessageId,
+            text: userMessage,
+            redactedText: answer.redactedText,
+            redactedItems: answer.redactedItems,
+            sender: 'user',
+            ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
+          }
+        ]);*/
 
-          clearInput();
-         
-          // Add the AI response to messages
-          setMessages(prev => [...prev, {
-            id: interaction.answer.answerId,
-            text: interaction.answer.text,
-            sender: 'ai',
-            aiService: interaction.answer.provider,
-            department: interaction.context.department
-          }]);
+        clearInput();
 
-          setTurnCount(prev => prev + 1);
-          setShowFeedback(true);
-          setIsLoading(false);
-        });
+        // Add the AI response to messages
+        setMessages(prev => [...prev, {
+          id: interaction.answer.answerId,
+          text: interaction.answer.text,
+          sender: 'ai',
+          aiService: interaction.answer.provider,
+          department: interaction.context.department
+        }]);
+
+        setTurnCount(prev => prev + 1);
+        setShowFeedback(true);
+        setIsLoading(false);
+
+
       } catch (error) {
         if (error instanceof RedactionError) {
 
@@ -257,7 +257,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-  
+
 
   const formatAIResponse = useCallback((text, aiService, messageId) => {
     if (!isTyping.current && messageId !== undefined) {

@@ -53,7 +53,7 @@ const HomePage = ({ lang = 'en' }) => {
       message: t('homepage.errors.serviceUnavailable'),
     };
     setServiceStatus(status);
-
+    // TODO move to DataStoreService
     async function fetchSession() {
       try {
         const res = await fetch(getApiUrl('db-chat-session'));

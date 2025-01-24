@@ -25,15 +25,15 @@ const AnswerService = {
         });
 
         return {
-            messageWithReferrer,
+            message: messageWithReferrer,
             conversationHistory: finalHistory,
             systemPrompt: SYSTEM_PROMPT,
         };
     },
 
-    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, referringUrl) => {
+    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation, referringUrl) => {
         try {
-            const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context);
+            const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context, evaluation, referringUrl);
             const response = await fetch(getProviderApiUrl(provider, "message"), {
                 method: 'POST',
                 headers: {
@@ -56,7 +56,66 @@ const AnswerService = {
             throw error;
         }
     },
-    
+    parseResponse: (text) => {
+
+        if (!text) {
+            return { responseType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
+        }
+
+        let responseType = 'normal';
+        let content = text;
+        let preliminaryChecks = null;
+        let englishAnswer = null;
+        let citationHead = null;
+        let citationUrl = null;
+
+        // Extract preliminary checks - this regex needs to capture multiline content
+        const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
+        if (preliminaryMatch) {
+            preliminaryChecks = preliminaryMatch[1].trim();
+            content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
+        }
+
+        // Extract citation information before processing answers
+        const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
+        const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
+
+        if (citationHeadMatch) {
+            citationHead = citationHeadMatch[1].trim();
+        }
+        if (citationUrlMatch) {
+            citationUrl = citationUrlMatch[1].trim();
+        }
+
+        // Extract English answer first
+        const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
+        if (englishMatch) {
+            englishAnswer = englishMatch[1].trim();
+            content = englishAnswer;  // Use English answer as content for English questions
+        }
+
+        // Extract main answer if it exists
+        const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
+        if (answerMatch) {
+            content = answerMatch[1].trim();
+        }
+
+        // Check response types
+        if (content.includes('<not-gc>')) {
+            responseType = 'not-gc';
+            content = content.replace(/<\/?not-gc>/g, '').trim();
+        } else if (content.includes('<pt-muni>')) {
+            responseType = 'pt-muni';
+            content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
+        } else if (content.includes('<clarifying-question>')) {
+            responseType = 'question';
+            content = content.replace(/<\/?clarifying-question>/g, '').trim();
+        }
+
+        return { responseType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl };
+
+    },
+
     sendBatchMessages: async (provider, entries, lang) => {
         try {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);

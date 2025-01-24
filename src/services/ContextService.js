@@ -5,7 +5,7 @@ import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
 
 const ContextService = {
-  sendMessage: async (provider, message, lang = 'en', department = '',referringUrl, searchResults) => {
+  sendMessage: async (provider, message, lang = 'en', department = '', referringUrl, searchResults) => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
@@ -61,18 +61,32 @@ const ContextService = {
 
   },
 
-  deriveContext: async (provider, question, lang = 'en', department = '',referringUrl) => {
+  deriveContext: async (provider, question, lang = 'en', department = '', referringUrl) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       const searchResults = "<searchResults>" + await ContextService.contextSearch(question) + "</searchResults>";
       console.log('Executed Search:', question);
-      return await ContextService.sendMessage(provider, question, lang, department,referringUrl, searchResults);
+      let context = ContextService.parseContext(await ContextService.sendMessage(provider, question, lang, department, referringUrl, searchResults));
+      context.searchResults = searchResults;
+      return context;
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
     }
   },
+  parseContext: (text) => {
+    const topicMatch = text.match(/<topic>([\s\S]*?)<\/topic>/);
+    const topicUrlMatch = text.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+    const departmentMatch = text.match(/<department>([\s\S]*?)<\/department>/);
+    const departmentUrlMatch = text.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
 
+    return {
+      topic: topicMatch ? topicMatch[1] : null,
+      topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
+      department: departmentMatch ? departmentMatch[1] : null,
+      departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null
+    };
+  },
 
   deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
     try {

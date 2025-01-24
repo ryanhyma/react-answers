@@ -26,6 +26,7 @@ import anthropicContextAgentHandler from '../api/anthropic-context.js';
 import openAIContextAgentHandler from '../api/openai-context.js';
 import dbChatSessionHandler from '../api/db-chat-session.js';
 import dbVerifyChatSessionHandler from '../api/db-verify-chat-session.js';
+import dbCheckhandler from '../api/db-check.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -106,6 +107,8 @@ app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHand
 app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
+
+app.get('/api/db-check', dbCheckhandler);
 
 
 

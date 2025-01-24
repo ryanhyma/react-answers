@@ -18,28 +18,40 @@ export const PipelineStatus = {
     ERROR: 'error'
 };
 export const ChatPipelineService = {
-    processMessage: async (userMessage, conversationHistory, onStatusUpdate, lang, department, referringUrl, selectedAI, translationF) => {
+            
+    processMessage: async (userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF,onStatusUpdate) => {
+        
         console.log("Starting pipeline with data:", userMessage, lang, department, referringUrl);
         onStatusUpdate(PipelineStatus.REDACTING);
-        ChatPipelineService.processRedaction(userMessage, onStatusUpdate);
+        ChatPipelineService.processRedaction(userMessage);
 
         onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
         const context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
         console.log("Derived context:", context);
         onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
-        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, referringUrl);
+        // TOOD check about evaluation
+        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context,false, referringUrl);
         console.log("Answer Received:", answer);
 
         onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
-        const { finalCitationUrl, confidenceRating } = await ChatPipelineService.verifyCitation(answer.originalCitationUrl, lang, userMessage, department, translationF);
+        const { finalCitationUrl, confidenceRating } = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
         console.log("Citation validated:");
 
         onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
         // Log the interaction with the validated URL
+        aiService,
+    redactedQuestion,
+    referringUrl,
+    aiResponse,
+    citationUrl,
+    originalCitationUrl,
+    confidenceRating,
+    feedback,
+    expertFeedback, preliminaryChecks, englishAnswer, content, chatId
         DataStoreService.persistInteraction(selectedAI, userMessage, referringUrl,
-            answer,
+            answer.content,
             finalCitationUrl,
-            answer.originalCitationUrl,
+            answer.citationUrl,
             confidenceRating,
             null,  // feedback
             null   // expertFeedback
@@ -58,12 +70,14 @@ export const ChatPipelineService = {
                 selectedDepartment,
                 t
             );
-
             console.log(`✅ Validated URL:`, validationResult);
+            return validationResult;
+            
         }
+        return null;
     },
-    processRedaction: (userMessage, onStatusUpdate) => {
-        onStatusUpdate(PipelineStatus.REDACTING);
+    processRedaction: (userMessage) => {
+       
         const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
         // Check for blocked content (# for profanity/threats/manipulation, XXX for private info)
