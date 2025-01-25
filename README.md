@@ -165,49 +165,56 @@ TODO:contributing guidelines and code of conduct for details on how to participa
 ```mermaid
 flowchart TB
     User(["User/Browser"])
-    Redaction["**Redaction Service**<br>- PII Detection<br>- Pattern Matching<br>- Threat Filtering"]
-    Context["**Context Service**<br>- Topic/Dept Detection<br>- Referral URL Analysis"]
-    Answer["**Answer Service**<br>- Question Processing<br>- AI Response Generation"]
-    AIManager["**AI Service Manager**<br>- API Key Management<br>- Service Selection<br>- Failover Handling"]
-    DB["**Database Service**<br>- MongoDB Atlas<br>- Logging<br>- Data Export"]
-    Eval["**Evaluation Service**<br>- Response Scoring<br>- Quality Metrics<br>- Performance Analysis"]
+    
+    subgraph PreProcessing
+        Redaction["**Redaction Service**<br>- PII Detection<br>- Pattern Matching<br>- Threat Filtering"]
+        SearchService["**Search Service**<br>- Coordinates Search Tools<br>- Prepares Context Data"]
+    end
 
-    subgraph Tools
-        SearchTool["**Canada.ca Search Tool**<br>- Website Search<br>- Bilingual Support"]
-        URLChecker["**URL Status Checker**<br>- Link Validation<br>- Redirect Handling"]
-        ContextSearch["**Context Search Tool**<br>- Google Custom Search<br>- Extended Context"]
-        PageDownloader["**Web Page Downloader**<br>- Content Extraction<br>- Link Preservation"]
+    subgraph SearchTools
+        SearchTool["**Canada.ca Search**<br>- Website Search<br>- Bilingual Support"]
+        ContextSearch["**Context Search**<br>- Google Custom Search<br>- Extended Context"]
+    end
+
+    subgraph AI_Services
+        Context["**Context AI Service**<br>- Topic/Dept Detection<br>- Menu Structure Analysis<br>(Haiku/GPT-Mini)"]
+        Answer["**Answer AI Service**<br>- Question Processing<br>- Response Generation<br>(Sonnet/GPT-4)"]
+    end
+
+    subgraph AI_Support_Tools
+        URLChecker["**URL Checker**<br>- Link Validation<br>- Redirect Handling"]
+        PageDownloader["**Page Downloader**<br>- Content Extraction<br>- Link Preservation"]
+    end
+
+    subgraph Infrastructure
+        AIManager["**AI Service Manager**<br>- API Key Management<br>- Service Selection<br>- Failover Handling<br>- Feedback Scoring<br>- Interaction Logging"]
+        DB["**Database Service**<br>- MongoDB Atlas<br>- Logging<br>- Data Export"]
+        Eval["**Evaluation Service**<br>- Response Scoring"]
     end
     
     User -->|Question| Redaction
-    Redaction -->|Sanitized Question| Context
+    Redaction -->|Sanitized Question| SearchService
     
-    Context -->|Search Request| SearchTool
-    SearchTool -->|Search Results| Context
-    Context -->|Topic/Context| Answer
+    SearchService -->|Search Requests| SearchTools
+    SearchTools -->|Search Results| SearchService
+    SearchService -->|Question + Search Results| Context
     
-    Answer -->|Service Request| AIManager
-    Answer -->|URL Validation| URLChecker
-    Answer -->|Page Request| PageDownloader
-    Answer -->|Extended Search| ContextSearch
+    Context -->|Department/Topic Context| Answer
     
-    AIManager -->|AI Response| Answer
+    Answer -.->|Tool Requests| AI_Support_Tools
+    AI_Support_Tools -.->|Tool Results| Answer
     
-    Answer -->|Interaction Data| DB
-    URLChecker -->|URL Status| DB
-    Context -->|Context Data| DB
-    
+    AIManager -->|API Keys & Config| Context
+    AIManager -->|API Keys & Config| Answer
+    AIManager -->|Interaction Data| DB
     DB -->|Historical Data| Eval
-    Answer -->|Response Quality| Eval
     
     subgraph AI_Providers
         Claude["Claude<br>Sonnet/Haiku"]
         GPT["OpenAI<br>GPT-4/Mini"]
     end
     
-    AIManager -->|API Calls| AI_Providers
-
-    classDef toolbox fill:#f9f,stroke:#333,stroke-width:2px
-    class SearchTool,URLChecker,ContextSearch,PageDownloader toolbox
+    Context -->|API Calls| AI_Providers
+    Answer -->|API Calls| AI_Providers
 ```
 
