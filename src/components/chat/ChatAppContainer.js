@@ -3,7 +3,6 @@ import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ChatInterface from './ChatInterface.js';
-import { parseMessageContent, parsedResponses } from '../../utils/responseMessageParser.js';
 import { ChatPipelineService, RedactionError } from '../../services/PipelineService.js';
 import { DataStoreService } from '../../services/DataStoreService.js';
 
@@ -144,7 +143,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         .filter(m => !m.temporary)
         .map(m => ({
           role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.text
+          content: m.interaction.answer.content
         }));
 
 

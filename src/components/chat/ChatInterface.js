@@ -199,7 +199,7 @@ const ChatInterface = ({
                         ? "privacy-error-message" 
                         : "error-message"
                     }>
-                      {message.answer}
+                      {message.text}
                     </p>
                   </div>
                 ) : (
@@ -208,7 +208,7 @@ const ChatInterface = ({
                 {message.id === messages.length - 1 && 
                  showFeedback && 
                  !message.error && 
-                 !message.answer?.content?.includes('<clarifying-question>') && (
+                 (message.interaction.answer.responseType === 'answer') && (
                   <FeedbackComponent 
                     onFeedback={handleFeedback}
                     lang={lang}
