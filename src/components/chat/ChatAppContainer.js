@@ -150,7 +150,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
       const userMessage = inputText.trim();
       try {
-        const interaction = await ChatPipelineService.processMessage(chatId,userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        const interaction = await ChatPipelineService.processMessage(chatId, userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
         // Now that message is validated and redacted, show formatted message with "Starting to think..."
         const userMessageId = messageIdCounter.current++;
 
@@ -172,10 +172,9 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         // Add the AI response to messages
         setMessages(prev => [...prev, {
           id: userMessageId,
-          text: interaction.answer.content,
+          interaction: interaction,
           sender: 'ai',
-          aiService: selectedAI,
-          department: interaction.context.department
+          aiService: selectedAI
         }]);
 
         setTurnCount(prev => prev + 1);
@@ -257,26 +256,42 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
+  // Memoize the parsed responses with better message tracking
+  const parsedResponses = useMemo(() => {
+    if (isTyping.current) return {};
+
+    const responses = {};
+    const processedIds = new Set();
+
+    messages.forEach((message) => {
+      if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
+        processedIds.add(message.id);
+        responses[message.id] = {
+          ...message.interaction.answer,
+          aiService: message.aiService
+        };
+      }
+    });
+    return responses;
+  }, [messages]);
 
 
-  const formatAIResponse = useCallback((text, aiService, messageId) => {
-    if (!isTyping.current && messageId !== undefined) {
-      // console.log('Formatting message:', messageId);
-    }
 
+
+  const formatAIResponse = useCallback((aiService, messageId) => {
     const parsedResponse = parsedResponses[messageId];
     if (!parsedResponse) return null;
 
     // Clean up any instruction tags from the paragraphs
+    // TODO, move to one place of parsing.
     if (parsedResponse.paragraphs) {
       parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph =>
         paragraph.replace(/<translated-question>.*?<\/translated-question>/g, '')
       );
     }
 
-    const citationResult = checkedCitations[messageId];
-    const displayUrl = citationResult?.finalCitationUrl || citationResult?.url || citationResult?.fallbackUrl;
-    const finalConfidenceRating = citationResult ? citationResult.confidenceRating : '0.1';
+    const displayUrl = parsedResponse.citationUrl;
+    const finalConfidenceRating = parsedResponse.confidenceRating ? parsedResponse.confidenceRating : '0.1';
 
     // Find the message to get its department
     const message = messages.find(m => m.id === messageId);

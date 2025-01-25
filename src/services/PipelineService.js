@@ -21,21 +21,21 @@ export const ChatPipelineService = {
 
     processMessage: async (chatId, userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
 
-        console.log("Starting pipeline with data:", userMessage, lang, department, referringUrl);
+        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl);
         onStatusUpdate(PipelineStatus.REDACTING);
         ChatPipelineService.processRedaction(userMessage);
 
         onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
         const context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
-        console.log("Derived context:", context);
+        console.log("➡️ Derived context:", context);
         onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
         // TOOD check about evaluation
         const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
-        console.log("Answer Received:", answer);
+        console.log("➡️ Answer Received:", answer);
 
         onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
         const { finalCitationUrl, confidenceRating } = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
-        console.log("Citation validated:");
+        console.log("➡️ Citation validated:");
 
         onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
         // Log the interaction with the validated URL
@@ -46,10 +46,12 @@ export const ChatPipelineService = {
             confidenceRating,
             context, chatId
         );
+        console.log("➡️ pipeline complete");
         return {
             answer: answer,
             context: context,
-
+            citationUrl: finalCitationUrl,
+            confidenceRating: confidenceRating
         };
 
 
@@ -69,7 +71,7 @@ export const ChatPipelineService = {
             return validationResult;
 
         }
-        return null;
+        return { finalCitationUrl: null, confidenceRating: null };
     },
     processRedaction: (userMessage) => {
 

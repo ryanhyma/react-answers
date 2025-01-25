@@ -175,13 +175,13 @@ const ChatInterface = ({
                 </p>
                 {message.redactedItems?.length > 0 && message.redactedText && (
                   <p className={
-                    message.redactedText.includes('XXX') ? "privacy-preview" :
-                    message.redactedText.includes('###') ? "redacted-preview" : ""
+                    message.redactedText?.includes('XXX') ? "privacy-preview" :
+                    message.redactedText?.includes('###') ? "redacted-preview" : ""
                   }>
-                    {message.redactedText.includes('XXX') && (
+                    {message.redactedText?.includes('XXX') && (
                       <><FontAwesomeIcon icon="circle-info" /> {t('homepage.chat.messages.privacyMessage')}</>
                     )}
-                    {message.redactedText.includes('###') && 
+                    {message.redactedText?.includes('###') && 
                       t('homepage.chat.messages.blockedMessage')}
                   </p>
                 )}
@@ -199,16 +199,16 @@ const ChatInterface = ({
                         ? "privacy-error-message" 
                         : "error-message"
                     }>
-                      {message.text}
+                      {message.answer}
                     </p>
                   </div>
                 ) : (
-                  formatAIResponse(message.text, message.aiService, message.id)
+                  formatAIResponse(message.aiService, message.id)
                 )}
                 {message.id === messages.length - 1 && 
                  showFeedback && 
                  !message.error && 
-                 !message.text.includes('<clarifying-question>') && (
+                 !message.answer?.content?.includes('<clarifying-question>') && (
                   <FeedbackComponent 
                     onFeedback={handleFeedback}
                     lang={lang}

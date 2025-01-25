@@ -68,6 +68,7 @@ const AnswerService = {
         let englishAnswer = null;
         let citationHead = null;
         let citationUrl = null;
+        let confidenceRating = null;
 
         // Extract preliminary checks - this regex needs to capture multiline content
         const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
@@ -111,8 +112,16 @@ const AnswerService = {
             responseType = 'question';
             content = content.replace(/<\/?clarifying-question>/g, '').trim();
         }
+        const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
+        const confidenceMatch = text.match(confidenceRatingRegex);
 
-        return { responseType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl };
+        if (confidenceMatch) {
+            confidenceRating = confidenceMatch[1].trim();
+        }
+
+        const paragraphs = content.split(/\n+/);
+
+        return { responseType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating };
 
     },
 

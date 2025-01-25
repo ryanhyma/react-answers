@@ -149,30 +149,3 @@ export const parseAIResponse = (text,aiService) => {
   return result;
 };
 
-// Memoize the parsed responses with better message tracking
-export const parsedResponses = (isTyping,messages) => {
-  if (isTyping.current) return {};
-
-  const responses = {};
-  const processedIds = new Set();
-
-  messages.forEach((message) => {
-    if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
-      processedIds.add(message.id);
-      // console.log(`Parsing message ${message.id}:`, message.text.substring(0, 100) + '...');
-
-      const { responseType, content } = parseMessageContent(message.text);
-      const { paragraphs, citationHead } = parseAIResponse(content, message.aiService);
-
-      responses[message.id] = {
-        responseType,
-        paragraphs,
-        citationHead,
-        aiService: message.aiService
-      };
-    }
-  });
-  return responses;
-};
-
-
