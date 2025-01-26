@@ -157,12 +157,17 @@ export const menuStructure_FR = {
       "Santé des Autochtones": "https://www.canada.ca/fr/services/sante/sante-autochtones.html",
       "Système et services de santé": "https://www.canada.ca/fr/services/sante/systeme-et-services-sante.html",
       "Science, recherche et données": "https://www.canada.ca/fr/services/sante/science-recherche-et-donnees.html",
+      "Aide médicale à mourir ": "https://www.canada.ca/fr/sante-canada/services/services-avantages-lies-sante/aide-medicale-mourir.html"
     },
     mostRequested: {
       "Guide alimentaire Canada": "https://guide-alimentaire.canada.ca/fr/",
-      "Rappels et avis de sécurité": "https://recalls-rappels.canada.ca/fr",
+      "Rappels et avis de sécurité pour les aliments, les allergènes non déclarés, les produits de santé et les produits de consommation": "https://recalls-rappels.canada.ca/fr",
       "Soutien en santé mentale : Demander de l'aide": "https://www.canada.ca/fr/sante-publique/services/services-sante-mentale/sante-mentale-obtenir-aide.html",
       "Rougeole": "https://www.canada.ca/fr/sante-publique/services/maladies/rougeole.html",
+      "Virus respiratoire syncytial (VRS)": "https://www.canada.ca/fr/sante-publique/services/maladies/virus-respiratoire-syncytial-vrs.html",
+      "Maladie du coronavirus (COVID-19)": "https://www.canada.ca/fr/sante-publique/services/maladies/maladie-coronavirus-covid-19.html",
+      "Régime canadien de soins dentaires": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires.html",
+      "Maladies respiratoires infectieuses : Réduire la propagation grâce à des mesures de protection individuelle": "https://www.canada.ca/fr/sante-publique/services/maladies/maladies-respiratoires-infectieuses-reduire-propagation-protection-individuelle.html"
     }
   },
   "Impôts": {
@@ -293,6 +298,9 @@ export const menuStructure_FR = {
       "Sécurité des sièges d'auto pour enfants": "https://tc.canada.ca/fr/transport-routier/securite-sieges-auto-enfants",
       "Transporter des marchandises dangereuses - Règlements": "https://tc.canada.ca/fr/marchandises-dangereuses/table-matieres",
       "Règlement de l'aviation canadien": "https://tc.canada.ca/fr/services-generaux/lois-reglements/liste-reglements/reglement-aviation-canadien-dors-96-433",
+      "Rappels des véhicules, des pneus et des sièges d’auto pour enfant":"https://tc.canada.ca/fr/transport-routier/defauts-rappels-vehicules-pneus-sieges-auto-enfant/consulter-rappels-vehicules-pneus-sieges-auto-enfant",
+      "Demander ou gérer un permis d’embarcation de plaisance":"https://tc.canada.ca/fr/transport-maritime/permis-immatriculation-batiments/permis-embarcation-plaisance/demander-gerer-permis-embarcation-plaisance/demander-gerer-permis-embarcation-plaisance",
+      "Delivrance des licences de pilotes et personnel de l'aviation":"https://tc.canada.ca/fr/aviation/delivrance-licences-pilotes-personnel"
     }
   },
   "Canada et le monde": {
