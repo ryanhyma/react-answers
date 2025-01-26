@@ -160,7 +160,7 @@ References: https://platform.openai.com/docs/guides/evals and https://github.com
 ## 📝 Contributing
 TODO:contributing guidelines and code of conduct for details on how to participate in this project.
 
-## Microservices prompt-chaining architecture diagram {#architecture-diagram}
+## Microservices and AI tools architecture diagram
 
 ```mermaid
 flowchart TB
