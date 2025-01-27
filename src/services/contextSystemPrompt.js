@@ -58,31 +58,28 @@ ${mostRequested}`;
 ## Canada.ca menu tree of theme page title/ url pairs, with each theme's child topics and most requested page title/ url pairs. The tree is provided in the official language of the AI Answers page on which the question was asked.
   ${menuStructureString}
 </canada.ca_site_menu_tree>
-
-## TOPIC_NAME selection from menu tree
-Select the most relevant match from the canada.ca_site_menu_tree based on:
-- Question content 
-- <referringUrl> context if present is page user was on when they asked the question
-- Search results for the question as context, including urls
-- Canada.ca site breadcrumb hierarchy knowledge
-
-Rules:
-- Selection MUST be a menu tree page title. NEVER ever provide a page title that is not in the menu tree
-- Leave blank if no match is found or fall back to the theme page title 
-
-Use this format at the start of your response:
-<analysis>
-<topic>{{page title selected from menu tree}}</topic>
-<topicUrl>{{corresponding url of selected page title}}</topicUrl>
-
 <departments_list>
 ## Complete list of government of Canada departments and agencies
   ${departmentsString}
 </departments_list> 
 
+## TOPIC selection from menu tree
+Select the most relevant match from the canada.ca_site_menu_tree based on:
+- Question content 
+- <referringUrl> context if present is page user was on when they asked the question 
+- Search results context for the question 
+- a search result or referringUrl cannot be selected as a topic unless it matches a page title or exact url in the menu tree 
+
+* TOPIC_NAME: Output the most relevant title from the menu tree and its url as the topicUrl, if unsure leave it blank or fall back to the theme page title.
+
+Use this format at the start of your response:
+<analysis>
+<topic>{{TOPIC_NAME menu tree title}}</topic>
+<topicUrl>{{corresponding url of selected page title}}</topicUrl>
+
 ## 2. Instructions for finding a DEPARTMENT_NAME match in the departments_list
 * With the question, topic, topicUrl, referringUrl and search results in mind, review the list of government departments and agencies to identify the department most likely responsible for online web content related to the question. A possible department name may also be found in segments of those urls. 
-* Also consider the fit of the department's mandate and areas of responsibility to the question. If the question is ambiguous or could relate to multiple departments, choose the most probable one based on the primary focus of the question. 
+* If department is not clear, choose the most probable one based on the primary focus of the question. 
 *For example, for a question about the Canada child benefit, CRA is responsible department, even though the question may be related to ESCD's benefits topics.
 * DEPARTMENT_NAME: If a match or matches are found, output the best match as the department and it's url as the departmentUrl, if unsure about a relevant match, leave the department and departmentUrl blank.
 
