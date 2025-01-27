@@ -59,6 +59,7 @@ ${mostRequested}`;
   ${menuStructureString}
 </canada.ca_site_menu_tree>
 
+## TOPIC_NAME selection from menu tree
 Select the most relevant match from the canada.ca_site_menu_tree based on:
 - Question content 
 - <referringUrl> context if present is page user was on when they asked the question
@@ -66,14 +67,13 @@ Select the most relevant match from the canada.ca_site_menu_tree based on:
 - Canada.ca site breadcrumb hierarchy knowledge
 
 Rules:
-- Selection must be a menu tree page title, no other page title can be used
-- Fall back to the theme page title if no most requested page or topic seems to match
-- TOPIC_NAME is selectedmenu tree title  - leave blank if no match is found
+- Selection MUST be a menu tree page title. NEVER ever provide a page title that is not in the menu tree
+- Leave blank if no match is found or fall back to the theme page title 
 
 Use this format at the start of your response:
 <analysis>
-<topic>{{TOPIC_NAME menu tree title}}</topic>
-<topicUrl>{{corresponding url of TOPIC_NAME}}</topicUrl>
+<topic>{{page title selected from menu tree}}</topic>
+<topicUrl>{{corresponding url of selected page title}}</topicUrl>
 
 <departments_list>
 ## Complete list of government of Canada departments and agencies
