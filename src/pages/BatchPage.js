@@ -5,11 +5,12 @@ import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react
 import BatchUpload from '../components/batch/BatchUpload.js';
 import BatchList from '../components/batch/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
+import { useTranslations } from '../hooks/useTranslations.js';
 
 
 
-const EvaluationPage = ({ lang = 'en' }) => {
-
+const BatchPage = ({ lang = 'en' }) => {
+  const { t } = useTranslations(lang);
 
   const handleDownloadClick = (batchId, type) => {
     console.log('Button clicked for batch:', batchId);
@@ -102,71 +103,71 @@ const EvaluationPage = ({ lang = 'en' }) => {
       } catch (error) {
         console.error('Error fetching batch or creating file:', error);
       }
-    
+
+    };
+
+    fetchBatchAndDownload(batchId, type);
   };
 
-  fetchBatchAndDownload(batchId, type);
+  const handleCompleteCancelClick = async (batchId, action, provider,) => {
+    if (action === 'cancel') {
+      console.log('Button clicked to cancel batch:', batchId);
+      await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
+    } else {
+      console.log('Button clicked to complete batch:', batchId);
+      await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+    }
+  };
+
+
+
+
+
+  return (
+    <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
+      <h1 className='mb-400'>{t('batch.navigation.title')}</h1>
+      <nav className="mb-400" aria-label={t('batch.navigation.ariaLabel')}>
+        <h2 className='mt-400 mb-400'>{t('batch.navigation.links.onThisPage')}</h2>
+        <ul>
+          <li className="mb-400">
+            <GcdsText>
+              <GcdsLink href="#evaluator">{t('batch.navigation.links.newEvaluation')}</GcdsLink>
+            </GcdsText>
+          </li>
+          <li className="mb-400">
+            <GcdsText>
+              <GcdsLink href="#running-evaluation">{t('batch.navigation.links.runningBatches')}</GcdsLink>
+            </GcdsText>
+          </li>
+          <li className="mb-400">
+            <GcdsText>
+              <GcdsLink href="#processed-evaluation">{t('batch.navigation.links.processedBatches')}</GcdsLink>
+            </GcdsText>
+          </li>
+        </ul>
+      </nav>
+
+      <section id="evaluator" className="mb-600">
+        <h2 className='mt-400 mb-400'>{t('batch.sections.evaluator.title')}</h2>
+        <BatchUpload lang={lang} />
+      </section>
+
+      <section id="running-evaluation" className="mb-600">
+        <h2 className='mt-400 mb-400'>{t('batch.sections.running.title')}</h2>
+        <BatchList
+          buttonAction={handleCompleteCancelClick}
+          batchStatus="processing,completed" lang={lang} />
+      </section>
+
+      <section id="processed-evaluation" className="mb-600">
+        <h2 className='mt-400 mb-400'>{t('batch.sections.processed.title')}</h2>
+        <BatchList
+          buttonAction={handleDownloadClick}
+          batchStatus="processed" lang={lang} />
+      </section>
+
+    </GcdsContainer>
+  );
 };
 
-const handleCompleteCancelClick = async (batchId, action, provider,) => {
-  if (action === 'cancel') {
-    console.log('Button clicked to cancel batch:', batchId);
-    await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
-  } else {
-    console.log('Button clicked to complete batch:', batchId);
-    await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
-  }
-};
-
-
-
-
-
-return (
-  <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-    <h1 className='mb-400'>Evaluation</h1>
-    <nav className="mb-400" aria-label="On this page">
-      <h2 className='mt-400 mb-400'>On this page</h2>
-      <ul>
-        <li className="mb-400">
-          <GcdsText>
-            <GcdsLink href="#evaluator">New Evaluation</GcdsLink>
-          </GcdsText>
-        </li>
-        <li className="mb-400">
-          <GcdsText>
-            <GcdsLink href="#running-evaluation">Running batches</GcdsLink>
-          </GcdsText>
-        </li>
-        <li className="mb-400">
-          <GcdsText>
-            <GcdsLink href="#processed-evaluation">Processed Batches</GcdsLink>
-          </GcdsText>
-        </li>
-      </ul>
-    </nav>
-
-    <section id="evaluator" className="mb-600">
-      <h2 className='mt-400 mb-400'>Load and run evaluation</h2>
-      <BatchUpload />
-    </section>
-
-    <section id="running-evaluation" className="mb-600">
-      <h2 className='mt-400 mb-400'>Running Batches</h2>
-      <BatchList
-        buttonAction={handleCompleteCancelClick}
-        batchStatus="processing,completed" />
-    </section>
-
-    <section id="processed-evaluation" className="mb-600">
-      <h2 className='mt-400 mb-400'>Processed Evaluations</h2>
-      <BatchList
-        buttonAction={handleDownloadClick}
-        batchStatus="processed" />
-    </section>
-
-  </GcdsContainer>
-);
-};
-
-export default EvaluationPage;
+export default BatchPage;

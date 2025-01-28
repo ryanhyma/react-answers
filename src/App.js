@@ -51,12 +51,12 @@ const AppContent = () => {
           <Route path="/" element={<HomePage lang="en" />} />
           <Route path="/en" element={<HomePage lang="en" />} />
           <Route path="/en/admin" element={<AdminPage lang="en" />} />
-          <Route path="/en/evaluation" element={<EvaluationPage lang="en" />} />
+          <Route path="/en/batch" element={<EvaluationPage lang="en" />} />
           
           {/* French routes */}
           <Route path="/fr" element={<HomePage lang="fr" />} />
           <Route path="/fr/admin" element={<AdminPage lang="fr" />} />
-          <Route path="/fr/evaluation" element={<EvaluationPage lang="fr" />} />
+          <Route path="/fr/batch" element={<EvaluationPage lang="fr" />} />
         </Routes>
       </main>
 

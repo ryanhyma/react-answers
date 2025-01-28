@@ -82,7 +82,7 @@ export const ChatPipelineService = {
             setTimeout(() => {
                 onStatusUpdate(status);
                 resolve();
-            }, 500); // delay of 1/2 second
+            }, 1500); // delay of 1 & 1/2 second
         });
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {

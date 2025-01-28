@@ -65,6 +65,7 @@ const ContextService = {
   deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
+      // TODO add referring URL to the context of the search?
       const searchResults = await ContextService.contextSearch(question);
       console.log('Executed Search:', question);
       return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));

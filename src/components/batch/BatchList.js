@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { createRoot } from 'react-dom/client'; // Import createRoot
 import DataTable from 'datatables.net-react';
 import 'datatables.net-dt/css/dataTables.dataTables.css';
 import DT from 'datatables.net-dt';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
 import { getApiUrl, getProviderApiUrl } from '../../utils/apiToUrl.js';
+import { useTranslations } from '../../hooks/useTranslations.js';
 
 DataTable.use(DT);
 
-const BatchList = ({ buttonAction, batchStatus }) => {
+const BatchList = ({ buttonAction, batchStatus, lang }) => {
     const [batches, setBatches] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const { t } = useTranslations(lang); // TODO: Pass actual language from props/context
 
     // Fetch batch status
     const fetchStatus = async (batchId, provider) => {
@@ -44,6 +46,20 @@ const BatchList = ({ buttonAction, batchStatus }) => {
         }
     };
 
+    // Memoize the columns configuration to prevent unnecessary re-renders
+    const columns = useMemo(() => [
+        { title: t('batch.list.columns.batchId'), data: 'batchId' },
+        { title: t('batch.list.columns.createdDate'), data: 'createdAt' },
+        { title: t('batch.list.columns.provider'), data: 'provider' },
+        { title: t('batch.list.columns.type'), data: 'type' },
+        { title: t('batch.list.columns.status'), data: 'status' },
+        {
+            title: t('batch.list.columns.action'),
+            data: null,
+            defaultContent: '',
+        },
+    ], [t]);
+
     // Fetch batches
     useEffect(() => {
         const fetchBatches = async () => {
@@ -61,11 +77,11 @@ const BatchList = ({ buttonAction, batchStatus }) => {
 
         const intervalId = setInterval(fetchBatches, 5000); // Poll every 5 seconds
         return () => clearInterval(intervalId); // Cleanup on unmount
-    }, []);
+    }, [lang]); // Add lang as a dependency
 
     // Handle button click
-    const handleButtonClick = (batchId, action,provider) => {
-        buttonAction(batchId, action,provider);
+    const handleButtonClick = (batchId, action, provider) => {
+        buttonAction(batchId, action, provider);
     };
 
     // Filter batches based on batchStatus and search text
@@ -80,18 +96,7 @@ const BatchList = ({ buttonAction, batchStatus }) => {
         <div>
             <DataTable
                 data={filteredBatches}
-                columns={[
-                    { title: 'Batch ID', data: 'batchId' },
-                    { title: 'Created Date', data: 'createdAt' },
-                    { title: 'Provider', data: 'provider' },
-                    { title: 'Type', data: 'type' },
-                    { title: 'Status', data: 'status' },
-                    {
-                        title: 'Actions',
-                        data: null, // Data is not directly mapped for actions
-                        defaultContent: '', // Avoid undefined content
-                    },
-                ]}
+                columns={columns} // Use memoized columns
                 options={{
                     paging: true,
                     searching: true,
@@ -108,8 +113,8 @@ const BatchList = ({ buttonAction, batchStatus }) => {
                             root.render(
                                 <>
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'csv')}>CSV</GcdsButton>
-                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'excel')}>Excel</GcdsButton>
+                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'csv')}>{t('batch.list.actions.csv')}</GcdsButton>
+                                        <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'excel')}>{t('batch.list.actions.excel')}</GcdsButton>
                                     </div>
                                 </>
                             );
@@ -117,17 +122,18 @@ const BatchList = ({ buttonAction, batchStatus }) => {
                             actionsCell.innerHTML = '';
                             const root = createRoot(actionsCell);
                             root.render(
-                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'complete', provider)}>Evaluate</GcdsButton>
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'complete', provider)}>{t('batch.list.actions.evaluate')}</GcdsButton>
                             );
                         } else if (status === 'processing') {
                             actionsCell.innerHTML = '';
                             const root = createRoot(actionsCell);
                             root.render(
-                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'cancel', provider)}>Cancel</GcdsButton>
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'cancel', provider)}>{t('batch.list.actions.cancel')}</GcdsButton>
                             );
                         }
                     },
                 }}
+                key={lang} // Add key prop to force re-render when language changes
             />
         </div>
     );

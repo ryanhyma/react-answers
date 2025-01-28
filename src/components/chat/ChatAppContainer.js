@@ -3,20 +3,10 @@ import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ChatInterface from './ChatInterface.js';
-import { ChatPipelineService, RedactionError } from '../../services/PipelineService.js';
+import { ChatPipelineService, RedactionError } from '../../services/ChatPipelineService.js';
 import { DataStoreService } from '../../services/DataStoreService.js';
 
-const statusMessages = {
-  redacting: 'Checking message...',
-  searching: 'Searching for relevant information...',
-  gettingContext: 'Understanding context...',
-  generatingAnswer: 'Generating response...',
-  complete: 'Response ready',
-  error: 'An error occurred',
-  verifyingCitation: "Verifying citation URL",
-  updatingDatastore: 'Updating datastore',
-  moderatingAnswer: 'Moderating answer',
-};
+
 
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
@@ -41,7 +31,6 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [textareaKey, setTextareaKey] = useState(0);
   const [selectedAI, setSelectedAI] = useState('openai'); //Changed from on Jan 10 2025
   const [showFeedback, setShowFeedback] = useState(false);
-
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
   const MAX_CONVERSATION_TURNS = 3;
@@ -53,6 +42,18 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
+
+  const statusMessages = useMemo(() => ({
+    redacting: t('homepage.chat.messages.redacting'),
+    searching: t('homepage.chat.messages.searching'),
+    gettingContext: t('homepage.chat.messages.gettingContext'),
+    generatingAnswer: t('homepage.chat.messages.generatingAnswer'),
+    complete: t('homepage.chat.messages.complete'),
+    error: t('homepage.chat.messages.error'),
+    verifyingCitation: t('homepage.chat.messages.verifyingCitation'),
+    updatingDatastore: t('homepage.chat.messages.updatingDatastore'),
+    moderatingAnswer: t('homepage.chat.messages.moderatingAnswer'),
+  }), [t]);
 
   const handleInputChange = (e) => {
     isTyping.current = true;
@@ -137,13 +138,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       const userMessage = inputText.trim();
       try {
         const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
-        
         const userMessageId = messageIdCounter.current++;
-
-
-
         clearInput();
-
         // Add the AI response to messages
         setMessages(prev => [...prev, {
           id: userMessageId,
@@ -155,7 +151,6 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         setTurnCount(prev => prev + 1);
         setShowFeedback(true);
         setIsLoading(false);
-
 
       } catch (error) {
         if (error instanceof RedactionError) {
@@ -199,10 +194,6 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       }
 
     }
-
-
-
-
   }, [
     inputText,
     referringUrl,
@@ -214,25 +205,19 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     isLoading,
     messages,
     turnCount,
-   ]);
+  ]);
 
   useEffect(() => {
     if (pageUrl && !referringUrl) {
       setReferringUrl(pageUrl);
     }
-
     if (urlDepartment && !selectedDepartment) {
       setSelectedDepartment(urlDepartment);
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-
-
-
-
-
   const formatAIResponse = useCallback((aiService, messageId) => {
-    
+
     // Clean up any instruction tags from the paragraphs
     // Find the message to get its department
     const message = messages.find(m => m.id === messageId);

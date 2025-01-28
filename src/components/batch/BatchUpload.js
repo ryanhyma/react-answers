@@ -1,5 +1,6 @@
 // src/components/admin/Evaluator.js
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from '../../hooks/useTranslations.js';
 import {
     GcdsContainer,
     GcdsHeading,
@@ -12,7 +13,8 @@ import AdminCodeInput from '../admin/AdminCodeInput.js';
 import * as XLSX from 'xlsx';
 
 
-const BatchUpload = ({ selectedEntries, ...otherProps }) => {
+const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
+    const { t } = useTranslations(lang);
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
     const [results, setResults] = useState(null);
@@ -23,6 +25,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
     const [batchStatus, setBatchStatus] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState('en');
     const [adminCode, setAdminCode] = useState('');
+    
     const correctAdminCode = '2024';
 
     const handleFileChange = (event) => {
@@ -35,7 +38,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
         }
 
         if (!uploadedFile.name.endsWith('.csv')) {
-            setError('Please upload a CSV file that you downloaded from the Feedback Viewer');
+            setError(t('batch.upload.error.invalidFile'));
             setFile(null);
             return;
         }
@@ -269,11 +272,12 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
             <div className="steps-container">
                 <div className="step">
 
-                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer.</GcdsText>
-                    <GcdsText>CSV must contain:</GcdsText>
-                    <ul><li>Problem Details/Question - required</li>
-                        <li>URL - optional </li>
-                        <li>Context Properties - optional - If left blank, the batch will first derive context, if provided it will use the provided context to retrieve answers</li>
+                    <GcdsText>{t('batch.upload.intro')}</GcdsText>
+                    <GcdsText>{t('batch.upload.csvRequirements.title')}</GcdsText>
+                    <ul>
+                        <li>{t('batch.upload.csvRequirements.items.problemDetails')}</li>
+                        <li>{t('batch.upload.csvRequirements.items.url')}</li>
+                        <li>{t('batch.upload.csvRequirements.items.context')}</li>
                     </ul>
 
                     <form onSubmit={handleUpload} className="mt-400">
@@ -281,13 +285,13 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                             code={adminCode}
                             onChange={handleAdminCodeChange}
                             correctCode={correctAdminCode}
-                            label="Enter Admin Code to enable file upload:"
+                            label={t('batch.upload.adminCode')}
                         />
 
                         <div className="ai-toggle">
                             <fieldset className="ai-toggle_fieldset">
                                 <div className="ai-toggle_container">
-                                    <legend className="ai-toggle_legend">AI Service:</legend>
+                                    <legend className="ai-toggle_legend">{t('batch.upload.aiService.label')}</legend>
 
                                     <div className="flex-center">
                                         <input
@@ -299,7 +303,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label className="mrgn-rght-15" htmlFor="chatgpt">OpenAI</label>
+                                        <label className="mrgn-rght-15" htmlFor="chatgpt">{t('batch.upload.aiService.openai')}</label>
                                     </div>
                                     <div className="ai-toggle_option">
                                         <input
@@ -311,7 +315,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="claude">Anthropic</label>
+                                        <label htmlFor="claude">{t('batch.upload.aiService.anthropic')}</label>
                                     </div>
                                 </div>
                             </fieldset>
@@ -320,7 +324,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                         <div className="language-toggle mrgn-bttm-20">
                             <fieldset className="ai-toggle_fieldset">
                                 <div className="flex-center">
-                                    <legend className="ai-toggle_legend">Evaluation Language:</legend>
+                                    <legend className="ai-toggle_legend">{t('batch.upload.language.label')}</legend>
                                     <div className="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
@@ -331,7 +335,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label className="mrgn-rght-15" htmlFor="english">English</label>
+                                        <label className="mrgn-rght-15" htmlFor="english">{t('batch.upload.language.english')}</label>
                                     </div>
                                     <div className="flex-center">
                                         <input
@@ -343,7 +347,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="french">French</label>
+                                        <label htmlFor="french">{t('batch.upload.language.french')}</label>
                                     </div>
                                 </div>
                             </fieldset>
@@ -351,7 +355,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
 
                         <div className="file-input-container mrgn-bttm-20">
                             <label htmlFor="csvFile mrgn-bttm-10">
-                                Select feedback CSV file:
+                                {t('batch.upload.file.label')}
                             </label>
                             <input
                                 type="file"
@@ -361,7 +365,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                 className="mrgn-bttm-10 display-block"
                             />
                             {file && (
-                                <div>Selected file: {file.name}</div>
+                                <div>{t('batch.upload.file.selected')} {file.name}</div>
                             )}
                         </div>
 
@@ -377,7 +381,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                 className="primary-button force-style-button"
                                 disabled={adminCode !== correctAdminCode}
                             >
-                                Upload File
+                                {t('batch.upload.buttons.upload')}
                             </button>
                         )}
 
@@ -385,7 +389,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                             <div className="mt-4">
                                 {batchStatus === 'preparing' && selectedAI === 'openai' && (
                                     <div className="text-sm text-gray-500 mt-2">
-                                        This may take up to a minute to start...
+                                        {t('batch.upload.status.openaiWait')}
                                     </div>
                                 )}
                             </div>
@@ -393,9 +397,9 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
 
                         {results && (
                             <div className="results-section mt-400">
-                                <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
-                                <GcdsText>File: {results.fileName}</GcdsText>
-                                <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
+                                <GcdsHeading tag="h3">{t('batch.upload.results.title')}</GcdsHeading>
+                                <GcdsText>{t('batch.upload.results.file')} {results.fileName}</GcdsText>
+                                <GcdsText>{t('batch.upload.results.entriesProcessed')} {results.entriesProcessed}</GcdsText>
                             </div>
                         )}
 
@@ -405,7 +409,7 @@ const BatchUpload = ({ selectedEntries, ...otherProps }) => {
                                     onClick={handleProcessFile}
                                     className="secondary-button force-style-button"
                                 >
-                                    Start Processing
+                                    {t('batch.upload.buttons.startProcessing')}
                                 </button>
 
                             </div>
