@@ -1,6 +1,24 @@
 // api/chatgpt.js
 import { createOpenAIAgent } from '../agents/AgentService.js';
 
+const convertInteractionsToMessages = (interactions) => {
+  let messages = [];
+  // Reverse the interactions array to process them in reverse order.
+  const reversedInteractions = [...interactions].reverse();
+  for (let i = reversedInteractions.length - 1; i >= 0; i--) {
+    messages.push({
+      role: "user",
+      content: reversedInteractions[i].interaction.question,
+    });
+
+    messages.push({
+      role: "assistant",
+      content: reversedInteractions[i].interaction.answer.content,
+    });
+  }
+  return messages;
+};
+
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -17,7 +35,7 @@ export default async function handler(req, res) {
           role: "system",
           content: systemPrompt,
         },
-        ...conversationHistory,
+        ...convertInteractionsToMessages(conversationHistory),
         {
           role: "user",
           content: message,
@@ -52,4 +70,9 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+
+ 
+  
+  
+
 }

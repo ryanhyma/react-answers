@@ -14,48 +14,76 @@ export const PipelineStatus = {
     COMPLETE: 'complete',
     VERIFYING_CITATION: 'verifyingCitation',
     UPDATING_DATASTORE: 'updatingDatastore',
-    MOERATING_ANSWER: 'moderatingAnswer',
+    MODERATING_ANSWER: 'moderatingAnswer',
     ERROR: 'error'
 };
 export const ChatPipelineService = {
 
-    processMessage: async (chatId, userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
+    processResponse: async (chatId, userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
 
-        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl);
-        onStatusUpdate(PipelineStatus.REDACTING);
+        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_QUESTION, onStatusUpdate);
+
+        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl,conversationHistory, selectedAI);
+        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.REDACTING, onStatusUpdate);
         ChatPipelineService.processRedaction(userMessage);
 
-        onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
-        const context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
+        let context = null;
+        if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].interaction.answer.answerType !== 'question') {
+            const lastMessage = conversationHistory[conversationHistory.length - 1];
+            context = lastMessage.context;
+        } else {
+            // if initial questions or last response type was a questions
+            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GETTING_CONTEXT, onStatusUpdate);
+            // TODO conversation history
+            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
+        }
         console.log("➡️ Derived context:", context);
-        onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
+
+        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GENERATING_ANSWER, onStatusUpdate);
+
         // TOOD check about evaluation
         const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
         console.log("➡️ Answer Received:", answer);
+        let finalCitationUrl, confidenceRating = null;
+        if (answer.answerType !== 'question') {
+            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.VERIFYING_CITATION, onStatusUpdate);
+            const citationResult = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
+            finalCitationUrl = citationResult.url;
+            confidenceRating = citationResult.confidenceRating;
+            console.log("➡️ Citation validated:", { finalCitationUrl, confidenceRating });
+        }
 
-        onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
-        const { finalCitationUrl, confidenceRating } = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
-        console.log("➡️ Citation validated:");
-
-        onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
+        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
         // Log the interaction with the validated URL
         DataStoreService.persistInteraction(selectedAI, userMessage, referringUrl,
             answer,
             finalCitationUrl,
             answer.citationUrl,
             confidenceRating,
-            context, chatId
+            context, chatId,
+            
         );
+
+        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);
         console.log("➡️ pipeline complete");
         return {
             answer: answer,
             context: context,
+            question: userMessage,
             citationUrl: finalCitationUrl,
             confidenceRating: confidenceRating
         };
 
 
 
+    },
+    updateStatusWithDelay: async (status, onStatusUpdate) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                onStatusUpdate(status);
+                resolve();
+            }, 500); // delay of 1/2 second
+        });
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {
 
@@ -71,7 +99,7 @@ export const ChatPipelineService = {
             return validationResult;
 
         }
-        return { finalCitationUrl: null, confidenceRating: null };
+        return { url: null, confidenceRating: null };
     },
     processRedaction: (userMessage) => {
 

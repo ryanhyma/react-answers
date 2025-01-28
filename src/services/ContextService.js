@@ -5,13 +5,13 @@ import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
 
 const ContextService = {
-  sendMessage: async (provider, message, lang = 'en', department = '', referringUrl, searchResults) => {
+  sendMessage: async (aiProvider, message, lang = 'en', department = '', referringUrl, searchResults, searchProvider) => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
-      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department) + searchResults;
+      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
       message += (referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : '');
-      const response = await fetch(getProviderApiUrl(provider, "context"), {
+      const response = await fetch(getProviderApiUrl(aiProvider, "context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,6 +19,9 @@ const ContextService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
+          aiProvider : aiProvider,
+          searchResults: searchResults,
+          searchProvider: searchProvider,
         }),
       });
 
@@ -28,9 +31,9 @@ const ContextService = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      return await response.json();
 
-      return data.content;
+      
     } catch (error) {
       console.error('Error calling Context API:', error);
       throw error;
@@ -52,39 +55,41 @@ const ContextService = {
         throw new Error(`HTTP error! status: ${searchResponse.status}`);
       }
 
-      const searchData = await searchResponse.json();
-      return searchData.content;
+      return await searchResponse.json();
     } catch (error) {
       console.error('Error searching context:', error);
       throw error;
     }
 
   },
-
-  deriveContext: async (provider, question, lang = 'en', department = '', referringUrl) => {
+  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
-      const searchResults = "<searchResults>" + await ContextService.contextSearch(question) + "</searchResults>";
+      const searchResults = await ContextService.contextSearch(question);
       console.log('Executed Search:', question);
-      let context = ContextService.parseContext(await ContextService.sendMessage(provider, question, lang, department, referringUrl, searchResults));
-      context.searchResults = searchResults;
-      return context;
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
     }
   },
-  parseContext: (text) => {
-    const topicMatch = text.match(/<topic>([\s\S]*?)<\/topic>/);
-    const topicUrlMatch = text.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
-    const departmentMatch = text.match(/<department>([\s\S]*?)<\/department>/);
-    const departmentUrlMatch = text.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
+  parseContext: (context) => {
+    const topicMatch = context.message.match(/<topic>([\s\S]*?)<\/topic>/);
+    const topicUrlMatch = context.message.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+    const departmentMatch = context.message.match(/<department>([\s\S]*?)<\/department>/);
+    const departmentUrlMatch = context.message.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
+    
 
     return {
       topic: topicMatch ? topicMatch[1] : null,
       topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
       department: departmentMatch ? departmentMatch[1] : null,
-      departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null
+      departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null,
+      searchResults: context.searchResults,
+      searchProvider: context.searchProvider,
+      model: context.model,
+      inputTokens: context.inputTokens,
+      outputTokens: context.outputTokens,
     };
   },
 

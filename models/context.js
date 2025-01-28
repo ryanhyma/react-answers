@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { model } from 'mongoose';
 
 const Schema = mongoose.Schema;
 
@@ -10,8 +10,8 @@ const contextSchema = new Schema({
     searchResults: { type: String, required: false },
     inputTokens: { type: String, required: false },
     outputTokens: { type: String, required: false },
-    cachedCreationInputTokens: { type: String, required: false },
-    cachedReadInputTokens: { type: String, required: false }
+    model: { type: String, required: false },
+    searchProvider: { type: String, required: false },
 });
 
 export const Context = mongoose.models.Context || mongoose.model('Context', contextSchema);

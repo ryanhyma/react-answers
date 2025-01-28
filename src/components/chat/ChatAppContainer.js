@@ -39,9 +39,9 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('chatgpt'); //Changed from on Jan 10 2025
+  const [selectedAI, setSelectedAI] = useState('openai'); //Changed from on Jan 10 2025
   const [showFeedback, setShowFeedback] = useState(false);
-  const [checkedCitations, setCheckedCitations] = useState({});
+
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
   const MAX_CONVERSATION_TURNS = 3;
@@ -49,11 +49,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const MAX_CHAR_LIMIT = 400;
   const messageIdCounter = useRef(0);
   const [displayStatus, setDisplayStatus] = useState('startingToThink');
-  const [currentDepartment, setCurrentDepartment] = useState('');
-  const [currentTopic, setCurrentTopic] = useState('');
-  const [currentSearchResults, setCurrentSearchResults] = useState('');
-  const [currentDepartmentUrl, setCurrentDepartmentUrl] = useState('');
-  const [currentTopicUrl, setCurrentTopicUrl] = useState('');
+
 
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
@@ -138,33 +134,13 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         return;
       }
 
-      // Get conversation history for context
-      const conversationHistory = messages
-        .filter(m => !m.temporary)
-        .map(m => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.interaction.answer.content
-        }));
-
-
       const userMessage = inputText.trim();
       try {
-        const interaction = await ChatPipelineService.processMessage(chatId, userMessage, conversationHistory, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
-        // Now that message is validated and redacted, show formatted message with "Starting to think..."
+        const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        
         const userMessageId = messageIdCounter.current++;
 
-        // TODO - Why set redacted messages if nothing was redacted?
-        /*setMessages(prevMessages => [
-          ...prevMessages,
-          {
-            id: userMessageId,
-            text: userMessage,
-            redactedText: answer.redactedText,
-            redactedItems: answer.redactedItems,
-            sender: 'user',
-            ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-          }
-        ]);*/
+
 
         clearInput();
 
@@ -238,12 +214,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     isLoading,
     messages,
     turnCount,
-    currentDepartment,
-    currentDepartmentUrl,
-    currentSearchResults,
-    currentTopic,
-    currentTopicUrl
-  ]);
+   ]);
 
   useEffect(() => {
     if (pageUrl && !referringUrl) {
@@ -255,50 +226,30 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-  // Memoize the parsed responses with better message tracking
-  const parsedResponses = useMemo(() => {
-    if (isTyping.current) return {};
 
-    const responses = {};
-    const processedIds = new Set();
-
-    messages.forEach((message) => {
-      if (message.sender === 'ai' && !processedIds.has(message.id) && message.id !== undefined) {
-        processedIds.add(message.id);
-        responses[message.id] = {
-          ...message.interaction.answer,
-          aiService: message.aiService
-        };
-      }
-    });
-    return responses;
-  }, [messages]);
 
 
 
 
   const formatAIResponse = useCallback((aiService, messageId) => {
-    const parsedResponse = parsedResponses[messageId];
-    if (!parsedResponse) return null;
-
+    
     // Clean up any instruction tags from the paragraphs
-    // TODO, move to one place of parsing.
-    if (parsedResponse.paragraphs) {
-      parsedResponse.paragraphs = parsedResponse.paragraphs.map(paragraph =>
+    // Find the message to get its department
+    const message = messages.find(m => m.id === messageId);
+    let paragraphs = message.interaction.answer.paragraphs;
+    if (paragraphs) {
+      paragraphs = paragraphs.map(paragraph =>
         paragraph.replace(/<translated-question>.*?<\/translated-question>/g, '')
       );
     }
+    const displayUrl = message.interaction.citationUrl;
+    const finalConfidenceRating = message.interaction.confidenceRating ? message.interaction.confidenceRating : '0.1';
 
-    const displayUrl = parsedResponse.citationUrl;
-    const finalConfidenceRating = parsedResponse.confidenceRating ? parsedResponse.confidenceRating : '0.1';
-
-    // Find the message to get its department
-    const message = messages.find(m => m.id === messageId);
     const messageDepartment = message?.department || selectedDepartment;
 
     return (
       <div className="ai-message-content">
-        {parsedResponse.paragraphs.map((paragraph, index) => {
+        {paragraphs.map((paragraph, index) => {
           const sentences = extractSentences(paragraph);
           return sentences.map((sentence, sentenceIndex) => (
             <p key={`${messageId}-p${index}-s${sentenceIndex}`} className="ai-sentence">
@@ -306,9 +257,9 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
             </p>
           ));
         })}
-        {parsedResponse.responseType === 'normal' && (parsedResponse.citationHead || displayUrl) && (
+        {message.interaction.answer.answerType === 'normal' && (message.interaction.answer.citationHead || displayUrl) && (
           <div className="citation-container">
-            {parsedResponse.citationHead && <p key={`${messageId}-head`} className="citation-head">{parsedResponse.citationHead}</p>}
+            {message.interaction.answer.citationHead && <p key={`${messageId}-head`} className="citation-head">{message.interaction.answer.citationHead}</p>}
             {displayUrl && (
               <p key={`${messageId}-link`} className="citation-link">
                 <a href={displayUrl} target="_blank" rel="noopener noreferrer">
@@ -326,7 +277,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         )}
       </div>
     );
-  }, [parsedResponses, checkedCitations, t, selectedDepartment, messages]);
+  }, [t, messages]);
 
   // Add handler for department changes
   const handleDepartmentChange = (department) => {
@@ -353,17 +304,12 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       turnCount={turnCount}
       showFeedback={showFeedback}
       displayStatus={displayStatus}
-      currentDepartment={currentDepartment}
-      currentTopic={currentTopic}
-      currentSearchResults={currentSearchResults}
       MAX_CONVERSATION_TURNS={MAX_CONVERSATION_TURNS}
       t={t}
       lang={lang}
       privacyMessage={t('homepage.chat.messages.privacy')}
       getLabelForInput={() => turnCount >= 1 ? t('homepage.chat.input.followUp') : t('homepage.chat.input.initial')}
       extractSentences={extractSentences}
-      parsedResponses={parsedResponses}
-      checkedCitations={checkedCitations}
       chatId={chatId}
     />
   );

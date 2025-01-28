@@ -59,10 +59,10 @@ const AnswerService = {
     parseResponse: (text) => {
 
         if (!text) {
-            return { responseType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
+            return { answerType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
         }
 
-        let responseType = 'normal';
+        let answerType = 'normal';
         let content = text;
         let preliminaryChecks = null;
         let englishAnswer = null;
@@ -103,13 +103,13 @@ const AnswerService = {
 
         // Check response types
         if (content.includes('<not-gc>')) {
-            responseType = 'not-gc';
+            answerType = 'not-gc';
             content = content.replace(/<\/?not-gc>/g, '').trim();
         } else if (content.includes('<pt-muni>')) {
-            responseType = 'pt-muni';
+            answerType = 'pt-muni';
             content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
         } else if (content.includes('<clarifying-question>')) {
-            responseType = 'question';
+            answerType = 'question';
             content = content.replace(/<\/?clarifying-question>/g, '').trim();
         }
         const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
@@ -121,7 +121,7 @@ const AnswerService = {
 
         const paragraphs = content.split(/\n+/);
 
-        return { responseType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating };
+        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating };
 
     },
 

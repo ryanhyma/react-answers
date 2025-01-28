@@ -13,8 +13,8 @@ async function dbConnect() {
 
   if (!cached.promise) {
     const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      //useNewUrlParser: true,
+      //useUnifiedTopology: true,
       bufferCommands: false,
       serverSelectionTimeoutMS: 60000,
       socketTimeoutMS: 120000,        

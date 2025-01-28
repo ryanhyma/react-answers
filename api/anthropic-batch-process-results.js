@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Batch } from "../models/batch.js";
 import dbConnect from "./db-connect.js";
-import {parseContextMessage} from "../shared/responseMessageParser.js"
+
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,

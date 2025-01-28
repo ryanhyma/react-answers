@@ -35,7 +35,10 @@ const contextSearch = async (query) => {
         });
         const results = res.data;
         const extractedResults = extractSearchResults(results);
-        return extractedResults;
+        return {
+            results: extractedResults,
+            provider: "Google Custom Search"
+        };
     } catch (error) {
         console.error("Error during Google Custom Search:", error);
         return "The search service is currently down. Please try again later.";
