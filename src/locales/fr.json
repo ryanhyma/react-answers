@@ -91,6 +91,7 @@
         "complete": "Réponse prête...",
         "verifyingCitation": "Vérification de l'URL de citation...",
         "updatingDatastore": "Mise à jour du datastore...",
+        "moderatingAnswer": "Modération de la réponse...",
         "moderatingQuestion": "Modération de la question...",
         "needClarification" : "Nécessite des précisions..."
       },

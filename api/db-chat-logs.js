@@ -27,7 +27,13 @@ export default async function handler(req, res) {
         populate: [
           { path: 'expertFeedback' },
           { path: 'question' },
-          { path: 'answer', populate: ['sentences'] }
+          {
+            path: 'answer',
+            populate: [
+              { path: 'sentences' },
+              { path: 'citation' }
+            ]
+          }
         ]
       })
       .sort({ createdAt: -1 })

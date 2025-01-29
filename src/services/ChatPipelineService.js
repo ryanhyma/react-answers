@@ -60,7 +60,7 @@ export const ChatPipelineService = {
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
         // Log the interaction with the validated URL
-        DataStoreService.persistInteraction(
+        await DataStoreService.persistInteraction(
             selectedAI, 
             userMessage,
             userMessageId,
@@ -70,6 +70,7 @@ export const ChatPipelineService = {
             confidenceRating,
             context, 
             chatId,
+            lang
         );
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);

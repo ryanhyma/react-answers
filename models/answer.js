@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const answerSchema = new mongoose.Schema({
   englishAnswer: { type: String, required: false },
-  translatedAnswer: { type: String, required: false },
+  content: { type: String, required: false },
   sentences: [{ type: String, required: false }],
   citation: { type: mongoose.Schema.Types.ObjectId, ref: 'Citation' },
   inputTokens: { type: String, required: false },

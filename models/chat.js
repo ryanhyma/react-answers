@@ -6,9 +6,9 @@ const ChatSchema = new mongoose.Schema({
     interactions: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Interaction'
     }],
-    provider: { type: String, required: false },
+    aiProvider: { type: String, required: false },
     referringUrl: { type: String, required: false },
-    language: { type: String, required: false },
+    pageLanguage: { type: String, required: false },
 
 },{
     timestamps: true, versionKey: false,

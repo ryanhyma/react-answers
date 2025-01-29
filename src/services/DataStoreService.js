@@ -35,6 +35,7 @@ export const DataStoreService = {
     confidenceRating,
     context,
     chatId,
+    lang
   ) => {
     const interaction = {
       selectedAI: selectedAI,
@@ -46,6 +47,7 @@ export const DataStoreService = {
       confidenceRating: confidenceRating,
       context: context,
       chatId: chatId,
+      pageLanguage: lang,
     };
 
     try {

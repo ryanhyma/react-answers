@@ -96,11 +96,21 @@ const ExportService = {
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const orderedHeaders = headerOrder.map(headerObj => headerObj.dataLabel)
-                .concat(filteredHeaders.filter(header => !headerOrder.some(headerObj => headerObj.dataLabel === header)));
+            const chatInfo = [chat.pageLanguage, chat.aiProvider, chat.referringUrl];
+            const chatInfoHeaders = ['chat.pageLanguage', 'chat.aiService', 'chat.referringUrl'];
 
-            const orderedRows = filteredRows.map(row =>
-                orderedHeaders.map(header => row[filteredHeaders.indexOf(header)])
+            // Insert chatInfo into each row
+            const rowsWithChatInfo = filteredRows.map(row => chatInfo.concat(row));
+
+            // Update headers to include chatInfoHeaders
+            const updatedHeaders = chatInfoHeaders.concat(filteredHeaders);
+
+            // Update orderedHeaders and orderedRows to include chatInfo
+            const orderedHeaders = headerOrder.map(headerObj => headerObj.dataLabel)
+                .concat(updatedHeaders.filter(header => !headerOrder.some(headerObj => headerObj.dataLabel === header)));
+
+            const orderedRows = rowsWithChatInfo.map(row =>
+                orderedHeaders.map(header => row[updatedHeaders.indexOf(header)])
             );
 
             const finalHeaders = orderedHeaders.map(header => {
@@ -112,6 +122,8 @@ const ExportService = {
                 worksheetData.push(finalHeaders);
             }
             worksheetData.push(...orderedRows);
+
+            
         }
 
         if (type === 'xlsx') {
@@ -121,29 +133,29 @@ const ExportService = {
         }
     }, exportChats: (chats, filename) => {
         const headerOrder = [
-            { dataLabel: 'interaction.createdAt', outputLabel: 'createdAt' },
-            { dataLabel: 'chat.language', outputLabel: 'pageLanguage' },
-            { dataLabel: 'interaction.referringUrl', outputLabel: 'referringUrl' },
+            { dataLabel: 'createdAt', outputLabel: 'createdAt' },
+            { dataLabel: 'chat.pageLanguage', outputLabel: 'pageLanguage' },
+            { dataLabel: 'chat.referringUrl', outputLabel: 'referringUrl' },
             { dataLabel: 'question.language', outputLabel: 'questionLanguage' },
             { dataLabel: 'question.redactedQuestion', outputLabel: 'redactedQuestion' },
             { dataLabel: 'chat.aiService', outputLabel: 'aiService' },
-            { dataLabel: 'question.citation.citationUrl', outputLabel: 'citationUrl' },
-            { dataLabel: 'question.citation.confidenceRating', outputLabel: 'confidenceRating' },
+            { dataLabel: 'answer.citation.providedCitationUrl', outputLabel: 'citationUrl' },
+            { dataLabel: 'answer.citation.confidenceRating', outputLabel: 'confidenceRating' },
             { dataLabel: 'answer.englishAnswer', outputLabel: 'englishAnswer' },
-            { dataLabel: 'answer.answer', outputLabel: 'answer' },
-            { dataLabel: 'answer.sentences.sentence0', outputLabel: 'sentence1' },
-            { dataLabel: 'answer.sentences.sentence1', outputLabel: 'sentence2' },
-            { dataLabel: 'answer.sentences.sentence2', outputLabel: 'sentence3' },
-            { dataLabel: 'answer.sentences.sentence3', outputLabel: 'sentence4' },
+            { dataLabel: 'answer.content', outputLabel: 'answer' },
+            { dataLabel: 'answer.sentences.0', outputLabel: 'sentence1' },
+            { dataLabel: 'answer.sentences.1', outputLabel: 'sentence2' },
+            { dataLabel: 'answer.sentences.2', outputLabel: 'sentence3' },
+            { dataLabel: 'answer.sentences.3', outputLabel: 'sentence4' },
             { dataLabel: 'chat.feedback', outputLabel: 'feedback' },
-            { dataLabel: 'interaction.expertFeedback.totalScore', outputLabel: 'expertFeedback.totalScore' },
-            { dataLabel: 'interaction.expertFeedback.sentence1Score', outputLabel: 'expertFeedback.sentence1Score' },
-            { dataLabel: 'interaction.expertFeedback.sentence2Score', outputLabel: 'expertFeedback.sentence2Score' },
-            { dataLabel: 'interaction.expertFeedback.sentence3Score', outputLabel: 'expertFeedback.sentence3Score' },
-            { dataLabel: 'interaction.expertFeedback.sentence4Score', outputLabel: 'expertFeedback.sentence4Score' },
-            { dataLabel: 'interaction.expertFeedback.citationScore', outputLabel: 'expertFeedback.citationScore' },
-            { dataLabel: 'interaction.expertFeedback.answerImprovement', outputLabel: 'expertFeedback.answerImprovement' },
-            { dataLabel: 'interaction.expertFeedback.expertCitationUrl', outputLabel: 'expertFeedback.expertCitationUrl' },
+            { dataLabel: 'expertFeedback.totalScore', outputLabel: 'expertFeedback.totalScore' },
+            { dataLabel: 'expertFeedback.sentence1Score', outputLabel: 'expertFeedback.sentence1Score' },
+            { dataLabel: 'expertFeedback.sentence2Score', outputLabel: 'expertFeedback.sentence2Score' },
+            { dataLabel: 'expertFeedback.sentence3Score', outputLabel: 'expertFeedback.sentence3Score' },
+            { dataLabel: 'expertFeedback.sentence4Score', outputLabel: 'expertFeedback.sentence4Score' },
+            { dataLabel: 'expertFeedback.citationScore', outputLabel: 'expertFeedback.citationScore' },
+            { dataLabel: 'expertFeedback.answerImprovement', outputLabel: 'expertFeedback.answerImprovement' },
+            { dataLabel: 'expertFeedback.expertCitationUrl', outputLabel: 'expertFeedback.expertCitationUrl' },
         ];
         const type = filename.endsWith('.csv') ? 'csv' : filename.endsWith('.xlsx') ? 'xlsx' : 'xlsx';
         return ExportService.chatsToSpreadsheet(chats, headerOrder, type, filename);

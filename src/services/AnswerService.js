@@ -57,7 +57,7 @@ const AnswerService = {
             throw error;
         }
     },
-    parseSentences : (text) => {
+    parseSentences: (text) => {
         const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
         const sentences = [];
         let match;
@@ -65,7 +65,7 @@ const AnswerService = {
         while ((match = sentenceRegex.exec(text)) !== null) {
             const index = parseInt(match[1]) - 1;
             if (index >= 0 && index < 4 && match[2].trim()) {
-            sentences[index] = match[2].trim();
+                sentences[index] = match[2].trim();
             }
         }
 
@@ -92,11 +92,15 @@ const AnswerService = {
         let confidenceRating = null;
 
         // Extract preliminary checks - this regex needs to capture multiline content
+        let questionLanguage = "";
         const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
         if (preliminaryMatch) {
             preliminaryChecks = preliminaryMatch[1].trim();
             content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
+            questionLanguage = /<question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks)[1].trim();
         }
+
+
 
         // Extract citation information before processing answers
         const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
@@ -144,7 +148,7 @@ const AnswerService = {
         const sentences = AnswerService.parseSentences(content);
 
 
-        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences };
+        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage };
 
     },
 

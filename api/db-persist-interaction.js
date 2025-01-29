@@ -22,7 +22,8 @@ export default async function handler(req, res) {
       chat = new Chat();
     }
     chat.chatId = interaction.chatId;
-    chat.provider = interaction.aiService;
+    chat.aiProvider = interaction.selectedAI;
+    chat.pageLanguage = interaction.pageLanguage;
     chat.referringUrl = interaction.referringUrl;
     
     const dbInteraction = new Interaction();
@@ -35,23 +36,25 @@ export default async function handler(req, res) {
     await context.save();
     dbInteraction.context = context._id;
 
+    const citation = new Citation();
+    citation.aiCitationUrl = interaction.answer.citationUrl;
+    citation.providedCitationUrl = interaction.finalCitationUrl;
+    citation.confidenceRating = interaction.confidenceRating;
+    citation.citationHead = interaction.answer.citationHead;
+    await citation.save();
+
     const answer = new Answer();
+    answer.citation = citation._id;
     Object.assign(answer, interaction.answer);
     answer.sentences = interaction.answer.sentences;
     await answer.save();
     dbInteraction.answer = answer._id;
-
-    const citation = new Citation();
-    citation.aiCitationUrl = interaction.answer.citationUrl;
-    citation.providerCitationUrl = interaction.finalCitationUrl;
-    citation.confidenceRating = interaction.confidenceRating;
-    citation.citationHead = interaction.answer.citationHead;
-    await citation.save();
-    answer.citation = citation._id;
+    await answer.save();
     
 
     const question = new Question();
     question.redactedQuestion = interaction.question;
+    question.language = interaction.answer.questionLanguage;
     await question.save();
     dbInteraction.question = question._id;
 
