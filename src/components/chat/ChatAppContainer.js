@@ -53,6 +53,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     verifyingCitation: t('homepage.chat.messages.verifyingCitation'),
     updatingDatastore: t('homepage.chat.messages.updatingDatastore'),
     moderatingAnswer: t('homepage.chat.messages.moderatingAnswer'),
+    needClarification: t('homepage.chat.messages.needClarification'),
   }), [t]);
 
   const handleInputChange = (e) => {
@@ -137,7 +138,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
       const userMessage = inputText.trim();
       try {
-        const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messageIdCounter.current, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
         const userMessageId = messageIdCounter.current++;
         clearInput();
         // Add the AI response to messages

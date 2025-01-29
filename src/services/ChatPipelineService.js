@@ -15,15 +15,16 @@ export const PipelineStatus = {
     VERIFYING_CITATION: 'verifyingCitation',
     UPDATING_DATASTORE: 'updatingDatastore',
     MODERATING_ANSWER: 'moderatingAnswer',
-    ERROR: 'error'
+    ERROR: 'error',
+    NEED_CLARIFICATION: 'needClarification'
 };
 export const ChatPipelineService = {
 
-    processResponse: async (chatId, userMessage, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
+    processResponse: async (chatId, userMessage,userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_QUESTION, onStatusUpdate);
 
-        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl,conversationHistory, selectedAI);
+        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl, conversationHistory, selectedAI);
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.REDACTING, onStatusUpdate);
         ChatPipelineService.processRedaction(userMessage);
 
@@ -45,7 +46,7 @@ export const ChatPipelineService = {
         const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
         console.log("➡️ Answer Received:", answer);
         let finalCitationUrl, confidenceRating = null;
-        if (answer.answerType !== 'question') {
+        if (answer.answerType === 'normal') {
             await ChatPipelineService.updateStatusWithDelay(PipelineStatus.VERIFYING_CITATION, onStatusUpdate);
             const citationResult = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
             finalCitationUrl = citationResult.url;
@@ -53,15 +54,22 @@ export const ChatPipelineService = {
             console.log("➡️ Citation validated:", { finalCitationUrl, confidenceRating });
         }
 
+        if (answer.answerType === 'question') {
+            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.NEED_CLARIFICATION, onStatusUpdate);
+        }
+
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
         // Log the interaction with the validated URL
-        DataStoreService.persistInteraction(selectedAI, userMessage, referringUrl,
+        DataStoreService.persistInteraction(
+            selectedAI, 
+            userMessage,
+            userMessageId,
+            referringUrl,
             answer,
             finalCitationUrl,
-            answer.citationUrl,
             confidenceRating,
-            context, chatId,
-            
+            context, 
+            chatId,
         );
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);

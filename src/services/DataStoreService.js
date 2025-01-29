@@ -25,23 +25,27 @@ export const DataStoreService = {
 
 
   },
-  persistInteraction: async (selectedAI, userMessage, referringUrl,
+  persistInteraction: async (
+    selectedAI,
+    question,
+    userMessageId,
+    referringUrl,
     answer,
     finalCitationUrl,
-    originalCitationUrl,
     confidenceRating,
-    context, chatId
+    context,
+    chatId,
   ) => {
     const interaction = {
-      chatId: chatId || '',
-      aiService: selectedAI || '',
-      question: userMessage,
-      referringUrl: referringUrl || '',
-      originalCitationUrl: originalCitationUrl || '',
-      finalCitationUrl: finalCitationUrl || '',
-      confidenceRating: confidenceRating || '',
-      ...context,
-      ...answer
+      selectedAI: selectedAI,
+      question: question,
+      referringUrl: referringUrl,
+      answer: answer,
+      userMessageId: userMessageId,
+      finalCitationUrl: finalCitationUrl,
+      confidenceRating: confidenceRating,
+      context: context,
+      chatId: chatId,
     };
 
     try {

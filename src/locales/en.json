@@ -92,7 +92,8 @@
         "verifyingCitation": "Verifying citation URL...",
         "updatingDatastore": "Updating datastore...",
         "moderatingAnswer": "Moderating answer...",
-        "moderatingQuestion": "Moderating question..."
+        "moderatingQuestion": "Moderating question...",
+        "needClarification" : "Requires clarification..."
       },
       "citation": {
         "confidence": "Confidence:",

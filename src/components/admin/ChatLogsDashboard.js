@@ -3,6 +3,7 @@ import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
 import { getApiUrl } from '../../utils/apiToUrl.js';
+import DataTable from 'datatables.net-react';
 
 const extractSentences = (text) => {
   const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
@@ -260,38 +261,20 @@ const ChatLogsDashboard = () => {
         ) : logs.length > 0 ? (
           <div className="p-4">
             <p className="mb-4 text-gray-600">Found {logs.length} chat interactions. Download the logs to see the full set and details.</p>
-            <div className="max-h-96 overflow-y-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User Query
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Response Length
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {logs.map((log, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(log.timestamp).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-900">
-                        {(log.redactedQuestion || '').substring(0, 50)}...
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {(log.aiResponse || '').length} chars
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              data={logs}
+              columns={[
+                { title: 'Date', data: 'createdAt', render: (data) => data ? data : '' },
+                { title: 'Chat ID', data: 'chatId', render: (data) => data ? data : '' },
+                { title: 'Interactions', data: 'interactions', render: (data) => data ? data.length : 0 },
+              ]}
+              options={{
+                paging: true,
+                searching: true,
+                ordering: true,
+                order: [[0, 'desc']], // Order by Date (column index 0) descending
+              }}
+            />
           </div>
         ) : (
           <div className="p-4">

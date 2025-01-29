@@ -19,15 +19,16 @@ export default async function handler(req, res) {
     startDate.setDate(startDate.getDate() - days);
 
     const chats = await Chat.find({
-      timestamp: { $gte: createdDate }
+      createdAt: { $gte: startDate }
     })
-    .sort({ timestamp: -1 })
-    .lean();
-
+      .populate('interactions')
+      .sort({ createdAt: -1 })
+      .lean({ virtuals: true });
     return res.status(200).json({
       success: true,
       logs: chats
     });
+
 
   } catch (error) {
     console.error('API Error:', error);
