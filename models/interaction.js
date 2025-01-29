@@ -5,6 +5,10 @@ const InteractionSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  responseTime: {
+    type: String,
+    required: false
+  },
   answer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Answer'

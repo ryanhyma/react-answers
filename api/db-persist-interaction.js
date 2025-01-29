@@ -28,6 +28,7 @@ export default async function handler(req, res) {
     
     const dbInteraction = new Interaction();
     dbInteraction.interactionId = interaction.userMessageId;
+    dbInteraction.responseTime = interaction.responseTime;
     await dbInteraction.save();
     chat.interactions.push(dbInteraction._id);
 

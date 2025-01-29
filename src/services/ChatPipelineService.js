@@ -21,7 +21,7 @@ export const PipelineStatus = {
 export const ChatPipelineService = {
 
     processResponse: async (chatId, userMessage,userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
-
+        const startTime = Date.now();
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_QUESTION, onStatusUpdate);
 
         console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl, conversationHistory, selectedAI);
@@ -59,6 +59,10 @@ export const ChatPipelineService = {
         }
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
+        
+        const endTime = Date.now();
+        const totalResponseTime = endTime - startTime;
+        console.log("➡️ Total response time:", totalResponseTime, "ms");
         // Log the interaction with the validated URL
         await DataStoreService.persistInteraction(
             selectedAI, 
@@ -70,7 +74,8 @@ export const ChatPipelineService = {
             confidenceRating,
             context, 
             chatId,
-            lang
+            lang,
+            totalResponseTime
         );
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);
