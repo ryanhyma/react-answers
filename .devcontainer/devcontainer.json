@@ -1,9 +1,8 @@
 {
-    "name": "React Development",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
+    "name": "AI Answers Development",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "server",
+    "workspaceFolder": "/workspaces/ai-answers",
     "customizations": {
         "vscode": {
             "extensions": [
