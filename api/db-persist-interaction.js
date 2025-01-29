@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     answer.sentences = interaction.answer.sentences;
     await answer.save();
     dbInteraction.answer = answer._id;
-    await answer.save();
+    
     
 
     const question = new Question();
