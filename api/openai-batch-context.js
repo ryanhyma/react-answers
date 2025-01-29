@@ -92,7 +92,7 @@ export default async function handler(req, res) {
             model: modelConfig.name
         });
 
-       // save the batch id and entries
+        // save the batch id and entries
         await dbConnect();
         const savedBatch = new Batch({
             batchId: openAIBatch.id,
@@ -103,17 +103,30 @@ export default async function handler(req, res) {
 
         });
         await savedBatch.save();
-        req.body.requests.forEach((request, index) => {
+        for (const [index, request] of req.body.requests.entries()) {
+            const context = new Context({
+                searchProvider: request.searchResults.provider,
+                searchResults: request.searchResults.results,  // Convert to string as per schema
+            });
+            await context.save();
+
+            // Create Question document
+            const question = new Question({
+                redactedQuestion: request.message
+            });
+            await question.save();
+
+            // Create Interaction with references
             let interaction = new Interaction({
                 interactionId: `batch-${index}`,
-                question: { redactedQuestion: request.message },
-                context: { searchProvider: request.searchResults.provider, results: request.searchResults.results }
+                question: question._id,
+                context: context._id
             });
-            interaction.save();
-            savedBatch.interactions.push(interaction);
-        });
+            await interaction.save();
 
-
+            // Add interaction reference to batch
+            savedBatch.interactions.push(interaction._id);
+        }
         await savedBatch.save();
 
         console.log('Batch saved:', savedBatch);

@@ -1,7 +1,8 @@
 // src/ClaudeService.js
 
 import loadSystemPrompt from './systemPrompt.js';
-import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
+import { getProviderApiUrl } from '../utils/apiToUrl.js';
+
 
 
 
@@ -125,12 +126,23 @@ const AnswerService = {
 
     },
 
-    sendBatchMessages: async (provider, entries, lang,batchName) => {
+    sendBatchMessages: async (provider, entries, lang, batchName) => {
         try {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry, true,batchName);
-                messagePayload.entry = entry;
+                const context = {
+                    topic: entry.CONTEXT_TOPIC,
+                    topicUrl: entry.CONTEXT_TOPICURL,
+                    department: entry.CONTEXT_DEPARTMENT,
+                    departmentUrl: entry.CONTEXT_DEPARTMENTURL,
+                    searchResults: entry.CONTEXT_SEARCHRESULTS,
+                    searchProvider: entry.CONTEXT_SEARCHPROVIDER,
+                    model: entry.CONTEXT_MODEL,
+                    inputTokens: entry.CONTEXT_INPUTTOKENS,
+                    outputTokens: entry.CONTEXT_OUTPUTTOKENS,
+                };
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.QUESTION_REDACTEDQUESTION, [], lang, context, true,"");
+                messagePayload.context = context;
                 return messagePayload;
             }));
 
@@ -140,7 +152,6 @@ const AnswerService = {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    batch: true,
                     requests: batchEntries,
                     lang: lang,
                     batchName: batchName,
@@ -158,7 +169,7 @@ const AnswerService = {
             throw error;
         }
     },
-    
+
 };
 
 export default AnswerService;

@@ -56,10 +56,10 @@ const BatchPage = ({ lang = 'en' }) => {
         const filteredRows = rows.map(row => 
           filteredHeaders.map(header => row[headers.indexOf(header)])
         );
-
-        const worksheetData = [filteredHeaders, ...filteredRows];
-
-
+        
+        const uppercaseHeaders = filteredHeaders.map(header => header.toUpperCase().replace(/\./g, '_'));
+        const worksheetData = [uppercaseHeaders, ...filteredRows];
+        
         if (type === 'excel') {
           const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 

@@ -91,24 +91,24 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
                 throw new Error('The CSV file is empty or invalid.');
             }
 
-            const headers = jsonData[0].map(header => header.trim().toLowerCase());
-            const problemDetailsIndex = headers.findIndex(h => h === 'problem details' || h === 'question');
+            const headers = jsonData[0].map(header => header.trim().toUpperCase());
+            const problemDetailsIndex = headers.findIndex(h => h === 'PROBLEM DETAILS' || h === 'QUESTION' || h === 'QUESTION_REDACTEDQUESTION');
 
             if (problemDetailsIndex === -1) {
-                throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
+                throw new Error('Required column "PROBLEM DETAILS/QUESTION_REDACTEDQUESTION" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
             }
 
             const entries = jsonData.slice(1)
                 .map(row => {
                     const entry = {};
                     headers.forEach((header, index) => {
-                        const key = header === 'problem details' ? 'question' : header;
+                        const key = header === 'PROBLEM DETAILS' ? 'QUESTION_REDACTEDQUESTION' : header;
                         entry[key] = row[index]?.trim() || '';
                     });
                     console.log('Processing entry:', entry);
                     return entry;
                 })
-                .filter(entry => entry['question']); // Only filter based on 'question' presence
+                .filter(entry => entry['QUESTION_REDACTEDQUESTION']); // Only filter based on 'QUESTION' presence
 
             console.log(`Found ${entries.length} valid entries to process`);
             return entries;
@@ -119,7 +119,7 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
     };
 
     const needsContext = (entries) => {
-        return entries.some(entry => !entry.context_output_tokens);
+        return entries.some(entry => !entry.CONTEXT_OUTPUTTOKENS);
     };
 
 
@@ -134,12 +134,12 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
 
             if (needsContext(entries)) {
                 console.log('Some entries need context. Deriving context batch processing...');
-                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI,batchName);
+                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI, batchName);
                 console.log('Context batch started: ' + result.batchId);
                 return result;
             } else {
                 try {
-                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage,batchName);
+                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage, batchName);
 
                     console.log(`${selectedAI} batch response:`, data);
 

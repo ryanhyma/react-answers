@@ -68,7 +68,7 @@ export default async function handler(req, res) {
         for (const [index, request] of req.body.requests.entries()) {
             const context = new Context({
                 searchProvider: request.searchResults.provider,
-                searchResults: JSON.stringify(request.searchResults.results),  // Convert to string as per schema
+                searchResults: request.searchResults.results,  // Convert to string as per schema
             });
             await context.save();
 

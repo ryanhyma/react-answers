@@ -192,7 +192,8 @@
         "provider": "Provider",
         "type": "Type",
         "status": "Status",
-        "batchName": "Name"
+        "batchName": "Name",
+        "action" : "Action"
       },
       "actions": {
         "csv": "CSV",
