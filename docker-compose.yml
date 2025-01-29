@@ -16,6 +16,8 @@ services:
       context: .
       dockerfile: docker/Dockerfile.server
     container_name: ai-answers-server
+    volumes:
+      - .:/workspace:cached
     ports:
       - '3001:3001'
     environment:

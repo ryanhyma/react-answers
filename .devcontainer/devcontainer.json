@@ -2,7 +2,7 @@
     "name": "AI Answers Development",
     "dockerComposeFile": "../docker-compose.yml",
     "service": "server",
-    "workspaceFolder": "/workspaces/ai-answers",
+    "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
             "extensions": [
