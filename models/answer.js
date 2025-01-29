@@ -11,6 +11,9 @@ const answerSchema = new mongoose.Schema({
   cachedReadInputTokens: { type: String, required: false },
   model: { type: String, required: false },
   answerType: { type: String, required: false },
+},{
+  timestamps: true, versionKey: false,
+  id: false,
 });
 
 export const Answer = mongoose.models.Answer || mongoose.model('Answer', answerSchema);

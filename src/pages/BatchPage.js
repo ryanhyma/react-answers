@@ -1,5 +1,5 @@
 import React from 'react';
-import { flatten } from 'flat';
+
 import * as XLSX from 'xlsx';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
@@ -7,40 +7,14 @@ import BatchUpload from '../components/batch/BatchUpload.js';
 import BatchList from '../components/batch/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 import { useTranslations } from '../hooks/useTranslations.js';
+import ExportService from '../services/ExportService.js';
 
 
 
 const BatchPage = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
 
-  const jsonToFlatTable = (data) => {
-    // Ensure data is an array and not null/undefined
-    if (!Array.isArray(data) || data.length === 0) {
-      console.error("jsonToFlatTable: Received invalid or empty data", data);
-      return { headers: [], rows: [] };
-    }
-
-    // Step 1: Filter out null/undefined objects before flattening
-    const validItems = data.filter(item => item && typeof item === "object");
-
-    if (validItems.length === 0) {
-      console.error("jsonToFlatTable: No valid objects to process");
-      return { headers: [], rows: [] };
-    }
-
-    // Step 2: Flatten each object safely
-    const flattenedItems = validItems.map(obj => flatten(obj));
-
-    // Step 3: Get all unique headers (keys) across all objects
-    const headers = [...new Set(flattenedItems.flatMap(Object.keys))];
-
-    // Step 4: Create rows, ensuring consistent header order
-    const rows = flattenedItems.map(item =>
-      headers.map(header => item[header] ?? '')
-    );
-
-    return { headers, rows };
-  };
+  
 
 
   const handleDownloadClick = (batchId, type) => {
@@ -50,7 +24,7 @@ const BatchPage = ({ lang = 'en' }) => {
         const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`));
         const batch = await response.json();
         const items = Array.isArray(batch.interactions) ? batch.interactions : [batch.interactions];
-        const { headers, rows } = jsonToFlatTable(items);
+        const { headers, rows } = ExportService.jsonToFlatTable(items);
 
         const filteredHeaders = headers.filter(header => !header.includes('_id') && !header.includes('__v'));
         const filteredRows = rows.map(row => 

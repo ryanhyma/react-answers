@@ -5,6 +5,9 @@ const citationSchema = new mongoose.Schema({
     providedCitationUrl: { type: String, required: false },
     citationHead: { type: String, required: false },
     confidenceRating: { type: String, required: false },
+},{
+    timestamps: true, versionKey: false,
+    id: false,
 });
 
 export const Citation = mongoose.models.Citation || mongoose.model('Citation', citationSchema);

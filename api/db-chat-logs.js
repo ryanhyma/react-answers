@@ -1,6 +1,7 @@
 // api/chat-logs.js to retrieve logs from the database for evaluation purposes
 import dbConnect from './db-connect.js';
 import { Chat } from '../models/chat.js';
+import { version } from 'mongoose';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -21,9 +22,16 @@ export default async function handler(req, res) {
     const chats = await Chat.find({
       createdAt: { $gte: startDate }
     })
-      .populate('interactions')
+      .populate({
+        path: 'interactions',
+        populate: [
+          { path: 'expertFeedback' },
+          { path: 'question' },
+          { path: 'answer', populate: ['sentences'] }
+        ]
+      })
       .sort({ createdAt: -1 })
-      .lean({ virtuals: true });
+      .lean({ virtuals: true, versionKey: false, id: false });
     return res.status(200).json({
       success: true,
       logs: chats

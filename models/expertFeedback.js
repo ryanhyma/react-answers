@@ -10,6 +10,9 @@ const expertFeedbackSchema = new Schema({
     citationScore: { type: Number, required: false },
     answerImprovement: { type: String, required: false },
     expertCitationUrl: { type: String, required: false }
+},{
+    timestamps: true, versionKey: false,
+    id: false,
 });
 
 module.exports = mongoose.model('ExpertFeedback', expertFeedbackSchema);

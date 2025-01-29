@@ -21,7 +21,10 @@ const InteractionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Context'
   }
-}, { timestamps: true });
+},{
+  timestamps: true, versionKey: false,
+  id: false,
+});
 
 
 export const Interaction = mongoose.models.Interaction || mongoose.model('Interaction', InteractionSchema);

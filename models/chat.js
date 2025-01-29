@@ -7,8 +7,12 @@ const ChatSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Interaction'
     }],
     provider: { type: String, required: false },
-    referringUrl: { type: String, required: false }
+    referringUrl: { type: String, required: false },
+    language: { type: String, required: false },
 
-}, { timestamps: true });
+},{
+    timestamps: true, versionKey: false,
+    id: false,
+});
 
 export const Chat = mongoose.models.Chat || mongoose.model('Chat', ChatSchema);

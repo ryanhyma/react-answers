@@ -57,6 +57,26 @@ const AnswerService = {
             throw error;
         }
     },
+    parseSentences : (text) => {
+        const sentenceRegex = /<s-(\d+)>(.*?)<\/s-\d+>/g;
+        const sentences = [];
+        let match;
+
+        while ((match = sentenceRegex.exec(text)) !== null) {
+            const index = parseInt(match[1]) - 1;
+            if (index >= 0 && index < 4 && match[2].trim()) {
+            sentences[index] = match[2].trim();
+            }
+        }
+
+        // If no sentence tags found, treat entire text as first sentence
+        if (sentences.length === 0 && text.trim()) {
+            sentences[0] = text.trim();
+        }
+
+        return Array(4).fill('').map((_, i) => sentences[i] || '');
+    }
+    ,
     parseResponse: (text) => {
 
         if (!text) {
@@ -121,8 +141,10 @@ const AnswerService = {
         }
 
         const paragraphs = content.split(/\n+/);
+        const sentences = AnswerService.parseSentences(content);
 
-        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating };
+
+        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences };
 
     },
 
@@ -141,7 +163,7 @@ const AnswerService = {
                     inputTokens: entry.CONTEXT_INPUTTOKENS,
                     outputTokens: entry.CONTEXT_OUTPUTTOKENS,
                 };
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.QUESTION_REDACTEDQUESTION, [], lang, context, true,"");
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.QUESTION_REDACTEDQUESTION, [], lang, context, true, "");
                 messagePayload.context = context;
                 return messagePayload;
             }));

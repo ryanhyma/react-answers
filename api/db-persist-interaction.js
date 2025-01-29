@@ -37,6 +37,7 @@ export default async function handler(req, res) {
 
     const answer = new Answer();
     Object.assign(answer, interaction.answer);
+    answer.sentences = interaction.answer.sentences;
     await answer.save();
     dbInteraction.answer = answer._id;
 
