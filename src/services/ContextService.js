@@ -19,7 +19,7 @@ const ContextService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
-          aiProvider : aiProvider,
+          aiProvider: aiProvider,
           searchResults: searchResults,
           searchProvider: searchProvider,
         }),
@@ -33,7 +33,7 @@ const ContextService = {
 
       return await response.json();
 
-      
+
     } catch (error) {
       console.error('Error calling Context API:', error);
       throw error;
@@ -79,7 +79,7 @@ const ContextService = {
     const topicUrlMatch = context.message.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
     const departmentMatch = context.message.match(/<department>([\s\S]*?)<\/department>/);
     const departmentUrlMatch = context.message.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
-    
+
 
     return {
       topic: topicMatch ? topicMatch[1] : null,
@@ -94,7 +94,7 @@ const ContextService = {
     };
   },
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName) => {
     try {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
@@ -112,10 +112,10 @@ const ContextService = {
       const updatedRequests = requests.map((request, index) => ({
         message: request,
         systemPrompt: SYSTEM_PROMPT,
-        searchResults: "<searchResults>" + searchResults[index] + "</searchResults>",
+        searchResults: searchResults[index],
       }));
 
-      const response = await ContextService.sendBatch(updatedRequests, aiService);
+      const response = await ContextService.sendBatch(updatedRequests, aiService, batchName, lang);
       return {
         batchId: response.batchId,
         batchStatus: response.batchStatus
@@ -128,7 +128,7 @@ const ContextService = {
   },
 
 
-  sendBatch: async (requests, aiService) => {
+  sendBatch: async (requests, aiService, batchName, lang) => {
     try {
       const response = await fetch(getProviderApiUrl(aiService, "batch-context"), {
         method: 'POST',
@@ -137,7 +137,9 @@ const ContextService = {
         },
         body: JSON.stringify({
           requests,
-          aiService
+          aiService,
+          batchName,
+          lang,
         }),
       });
 

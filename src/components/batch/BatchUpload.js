@@ -5,6 +5,7 @@ import {
     GcdsContainer,
     GcdsHeading,
     GcdsText,
+    GcdsInput
 } from '@cdssnc/gcds-components-react';
 import MessageService from '../../services/AnswerService.js';
 import ContextService from '../../services/ContextService.js';
@@ -13,7 +14,7 @@ import AdminCodeInput from '../admin/AdminCodeInput.js';
 import * as XLSX from 'xlsx';
 
 
-const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
+const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
     const { t } = useTranslations(lang);
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
@@ -25,7 +26,8 @@ const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
     const [batchStatus, setBatchStatus] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState('en');
     const [adminCode, setAdminCode] = useState('');
-    
+    const [batchName, setBatchName] = useState('');
+
     const correctAdminCode = '2024';
 
     const handleFileChange = (event) => {
@@ -70,37 +72,9 @@ const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
         }
     };
 
-    const isValidLine = (line) => {
-        // Remove all commas and whitespace
-        const cleanLine = line.replace(/,/g, '').trim();
-        return cleanLine.length > 0;
-    };
 
-    const parseCSVLine = (line) => {
-        const values = [];
-        let currentValue = '';
-        let withinQuotes = false;
 
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
 
-            if (char === '"') {
-                withinQuotes = !withinQuotes;
-                continue;
-            }
-
-            if (char === ',' && !withinQuotes) {
-                values.push(currentValue.trim());
-                currentValue = '';
-                continue;
-            }
-
-            currentValue += char;
-        }
-
-        values.push(currentValue.trim());
-        return values;
-    };
 
     const processCSV = (csvText) => {
         try {
@@ -160,12 +134,12 @@ const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
 
             if (needsContext(entries)) {
                 console.log('Some entries need context. Deriving context batch processing...');
-                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI);
+                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI,batchName);
                 console.log('Context batch started: ' + result.batchId);
                 return result;
             } else {
                 try {
-                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage);
+                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage,batchName);
 
                     console.log(`${selectedAI} batch response:`, data);
 
@@ -267,6 +241,10 @@ const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
         setAdminCode(e.target.value);
     };
 
+    const handleBatchNameChange = (e) => {
+        setBatchName(e.target.value);
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
@@ -287,6 +265,20 @@ const BatchUpload = ({ lang,selectedEntries, ...otherProps }) => {
                             correctCode={correctAdminCode}
                             label={t('batch.upload.adminCode')}
                         />
+                        <div className="mrgn-bttm-20">
+                            <label htmlFor="batchName" className="mrgn-bttm-10 display-block">
+                                {t('batch.upload.batchName')}
+                            </label>
+                            <input
+                                type="text"
+                                id="batchName"
+                                value={batchName}
+                                onChange={handleBatchNameChange}
+                                className="mrgn-bttm-10"
+                            />
+                        </div>
+
+
 
                         <div className="ai-toggle">
                             <fieldset className="ai-toggle_fieldset">

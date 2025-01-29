@@ -48,6 +48,7 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
 
     // Memoize the columns configuration to prevent unnecessary re-renders
     const columns = useMemo(() => [
+        { title: t('batch.list.columns.batchName'), data: 'name' },
         { title: t('batch.list.columns.batchId'), data: 'batchId' },
         { title: t('batch.list.columns.createdDate'), data: 'createdAt' },
         { title: t('batch.list.columns.provider'), data: 'provider' },

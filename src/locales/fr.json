@@ -126,7 +126,7 @@
     "navigation": {
       "title": "Sur cette page",
       "links": {
-        "onThisPage" : "Links on this page",
+        "onThisPage": "Links on this page",
         "newEvaluation": "Nouveau lot",
         "runningBatches": "Lots en cours",
         "processedBatches": "Lots traités"
@@ -144,6 +144,7 @@
       }
     },
     "upload": {
+      "batchName": "Nom",
       "intro": "Sélectionnez le service d'IA, la langue et votre fichier CSV. Utilisez un fichier que vous avez téléchargé et nettoyé depuis le visualiseur de rétroaction.",
       "csvRequirements": {
         "title": "Le CSV doit contenir :",
@@ -184,8 +185,10 @@
       }
     },
     "list": {
-      "title":"title",
+      
+      "title": "title",
       "columns": {
+        "batchName": "Nom",
         "batchId": "ID du lot",
         "createdDate": "Date de création",
         "provider": "Fournisseur",

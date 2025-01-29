@@ -14,7 +14,15 @@ export default async function handler(req, res) {
 
     try {
         await dbConnect();
-        const batch = await Batch.findOne({ batchId });
+        const batch = await Batch.findOne({ batchId }).populate({
+            path: 'interactions',
+            populate: [
+            { path: 'answer', model: 'Answer', populate: { path: 'citation', model: 'Citation' } },
+            { path: 'question', model: 'Question' },
+            { path: 'expertFeedback', model: 'ExpertFeedback' },
+            { path: 'context', model: 'Context' }
+            ]
+        });
         if (!batch) {
             return res.status(404).json({ message: 'Batch not found' });
         }

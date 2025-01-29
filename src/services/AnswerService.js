@@ -125,11 +125,11 @@ const AnswerService = {
 
     },
 
-    sendBatchMessages: async (provider, entries, lang) => {
+    sendBatchMessages: async (provider, entries, lang,batchName) => {
         try {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry, true);
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.question, [], lang, entry, true,batchName);
                 messagePayload.entry = entry;
                 return messagePayload;
             }));
@@ -141,7 +141,10 @@ const AnswerService = {
                 },
                 body: JSON.stringify({
                     batch: true,
-                    requests: batchEntries
+                    requests: batchEntries,
+                    lang: lang,
+                    batchName: batchName,
+                    provider: provider
                 })
             });
 
@@ -155,27 +158,7 @@ const AnswerService = {
             throw error;
         }
     },
-    /*getBatchStatus: async (batchId) => {
-      const response = await fetch(`${API_URL}/status/${batchId}`);
-  
-      if (!response.ok) {
-        throw new Error('Failed to get batch status');
-      }
-  
-      return response.json();
-    },
-    getBatchResults: async (resultsUrl) => {
-      const response = await fetch(resultsUrl);
-  
-      if (!response.ok) {
-        throw new Error('Failed to get batch results');
-      }
-  
-      const text = await response.text();
-      return text.split('\n')
-        .filter(line => line.trim())
-        .map(line => JSON.parse(line));
-    }*/
+    
 };
 
 export default AnswerService;

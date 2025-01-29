@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
 const InteractionSchema = new mongoose.Schema({
-  
+  interactionId: {
+    type: String,
+    required: false
+  },
   answer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Answer'

@@ -1,6 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Batch } from "../models/batch.js";
 import dbConnect from "./db-connect.js";
+import { Context } from "../models/context.js";
+import { Question } from "../models/question.js";
+import { Interaction } from "../models/interaction.js";
+import { Answer } from "../models/answer.js";
+import ContextService from "../src/services/ContextService.js";
 
 
 const anthropic = new Anthropic({
@@ -16,31 +21,32 @@ const handleAnthropic = async (batch) => {
 
     for await (const result of resultsStream) {
       const customId = result.custom_id;
-      const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);
-
-      if (entryIndex !== -1) {
+      batch = await Batch.findById(batch._id).populate('interactions');
+      const interaction = batch.interactions.find(interaction => interaction.interactionId === customId);
+      if (interaction) {
         let updatedEntry = null;
 
         if (batch.type === 'context') {
+          // TODO fix this when services moved to server side
           const response = result.result.message.content[0].text;
-          context = parseContextMessage(response);
-          
+          const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
+          const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+          const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
+          const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
 
-          updatedEntry = {
-            question: batch.entries[entryIndex].question,
-            searchResults: batch.entries[entryIndex].searchResults,
-            entry_id: customId,
-            topic: topicMatch ? topicMatch[1] : null,
-            topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
-            department: departmentMatch ? departmentMatch[1] : null,
-            departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null,
-            context_model: result.result.message.model,
-            context_input_tokens: result.result.message.usage.input_tokens,
-            context_output_tokens: result.result.message.usage.output_tokens,
-            context_cached_creation_input_tokens: result.result.message.usage.cache_creation_input_tokens,
-            context_cached_read_input_tokens: result.result.message.usage.cache_read_input_tokens,
-          };
-
+            let context = await Context.findById(interaction.context);
+            context.topic = topicMatch ? topicMatch[1] : context.topic;
+            context.topicUrl = topicUrlMatch ? topicUrlMatch[1] : context.topicUrl;
+            context.department = departmentMatch ? departmentMatch[1] : context.department;
+            context.departmentUrl = departmentUrlMatch ? departmentUrlMatch[1] : context.departmentUrl;
+            context.model = result.result.message.model;
+            context.inputTokens = result.result.message.usage.input_tokens;
+            context.outputTokens = result.result.message.usage.output_tokens;
+            context.cachedCreationInputTokens = result.result.message.usage.cache_creation_input_tokens;
+            context.cachedReadInputTokens = result.result.message.usage.cache_read_input_tokens;
+            await context.save();
+            const question = await Question.findById(interaction.question);
+            await question.save();
         } else {
           const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
           const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
@@ -70,11 +76,6 @@ const handleAnthropic = async (batch) => {
           };
         }
 
-        // Update the batch entry individually
-        await Batch.updateOne(
-          { batchId: batch.batchId, 'entries.entry_id': customId },
-          { $set: { 'entries.$': updatedEntry } }
-        );
       }
     }
 

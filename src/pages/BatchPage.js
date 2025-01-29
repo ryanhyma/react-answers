@@ -1,4 +1,5 @@
 import React from 'react';
+import { flatten } from 'flat';
 import * as XLSX from 'xlsx';
 // import { useTranslations } from '../hooks/useTranslations';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
@@ -12,94 +13,105 @@ import { useTranslations } from '../hooks/useTranslations.js';
 const BatchPage = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
 
+  const jsonToFlatTable = (data) => {
+    // Ensure data is an array and not null/undefined
+    if (!Array.isArray(data) || data.length === 0) {
+      console.error("jsonToFlatTable: Received invalid or empty data", data);
+      return { headers: [], rows: [] };
+    }
+
+    // Step 1: Filter out null/undefined objects before flattening
+    const validItems = data.filter(item => item && typeof item === "object");
+
+    if (validItems.length === 0) {
+      console.error("jsonToFlatTable: No valid objects to process");
+      return { headers: [], rows: [] };
+    }
+
+    // Step 2: Flatten each object safely
+    const flattenedItems = validItems.map(obj => flatten(obj));
+
+    // Step 3: Get all unique headers (keys) across all objects
+    const headers = [...new Set(flattenedItems.flatMap(Object.keys))];
+
+    // Step 4: Create rows, ensuring consistent header order
+    const rows = flattenedItems.map(item =>
+      headers.map(header => item[header] ?? '')
+    );
+
+    return { headers, rows };
+  };
+
+
   const handleDownloadClick = (batchId, type) => {
     console.log('Button clicked for batch:', batchId);
     const fetchBatchAndDownload = async (batchId, type) => {
       try {
         const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`));
         const batch = await response.json();
+        const items = Array.isArray(batch.interactions) ? batch.interactions : [batch.interactions];
+        const { headers, rows } = jsonToFlatTable(items);
 
-        if (batch && batch.entries) {
-          const worksheetData = [
-            ['entry_id', 'question', 'url', 'topic', 'topicUrl', 'department', 'departmentUrl', 'searchResults', 'context_model', 'context_input_tokens', 'context_output_tokens', 'context_cached_creation_input_tokens', 'context_cached_read_input_tokens', 'answer', 'answer_citation_url', 'answer_citation_head', 'answer_citation_confidence', 'answer_model', 'answer_input_tokens', 'answer_output_tokens', 'answer_cached_creation_input_tokens', 'answer_cached_read_input_tokens'],
-            ...batch.entries.map(entry => [
-              entry.entry_id,
-              entry.question,
-              entry.url,
-              entry.topic,
-              entry.topicUrl,
-              entry.department,
-              entry.departmentUrl,
-              entry.searchResults,
-              entry.context_model,
-              entry.context_input_tokens,
-              entry.context_output_tokens,
-              entry.context_cached_creation_input_tokens,
-              entry.context_cached_read_input_tokens,
-              entry.answer,
-              entry.answer_citation_url,
-              entry.answer_citation_head,
-              entry.answer_citation_confidence,
-              entry.answer_model,
-              entry.answer_input_tokens,
-              entry.answer_output_tokens,
-              entry.answer_cached_creation_input_tokens,
-              entry.answer_cached_read_input_tokens
-            ])
-          ];
+        const filteredHeaders = headers.filter(header => !header.includes('_id') && !header.includes('__v'));
+        const filteredRows = rows.map(row => 
+          filteredHeaders.map(header => row[headers.indexOf(header)])
+        );
 
-          if (type === 'excel') {
-            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        const worksheetData = [filteredHeaders, ...filteredRows];
 
-            // Bold the headings
-            const headingRange = XLSX.utils.decode_range(worksheet['!ref']);
-            for (let C = headingRange.s.c; C <= headingRange.e.c; ++C) {
-              const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
-              if (!worksheet[cellAddress]) continue;
-              if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
-              if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
-              worksheet[cellAddress].s.font.bold = true;
-            }
 
-            // Add filters
-            worksheet['!autofilter'] = { ref: worksheet['!ref'] };
+        if (type === 'excel') {
+          const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-            // Adjust column widths
-            const colWidths = worksheetData[0].map((_, colIndex) => ({
-              wch: Math.max(...worksheetData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10)))
-            }));
-            worksheet['!cols'] = colWidths;
-
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
-
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `batch_${batchId}.xlsx`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          } else if (type === 'csv') {
-            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
-
-            const csvBuffer = XLSX.write(workbook, { bookType: 'csv', type: 'array' });
-            const blob = new Blob([csvBuffer], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `batch_${batchId}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+          // Bold the headings
+          const headingRange = XLSX.utils.decode_range(worksheet['!ref']);
+          for (let C = headingRange.s.c; C <= headingRange.e.c; ++C) {
+            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
+            if (!worksheet[cellAddress]) continue;
+            if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+            if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
+            worksheet[cellAddress].s.font.bold = true;
           }
+
+          // Add filters
+          worksheet['!autofilter'] = { ref: worksheet['!ref'] };
+
+          // Adjust column widths
+          const colWidths = worksheetData[0].map((_, colIndex) => ({
+            wch: Math.max(...worksheetData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10)))
+          }));
+          worksheet['!cols'] = colWidths;
+
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
+
+          const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+          const link = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", `batch_${batchId}.xlsx`);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else if (type === 'csv') {
+          const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
+
+          const csvBuffer = XLSX.write(workbook, { bookType: 'csv', type: 'array' });
+          const blob = new Blob([csvBuffer], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", `batch_${batchId}.csv`);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }
+
       } catch (error) {
         console.error('Error fetching batch or creating file:', error);
       }

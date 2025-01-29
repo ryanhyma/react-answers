@@ -92,7 +92,7 @@
         "verifyingCitation": "Verifying citation URL...",
         "updatingDatastore": "Updating datastore...",
         "moderatingAnswer": "Moderating answer...",
-        "moderatingQuestion" : "Moderating question..."
+        "moderatingQuestion": "Moderating question..."
       },
       "citation": {
         "confidence": "Confidence:",
@@ -130,7 +130,7 @@
         "newEvaluation": "New Batch",
         "runningBatches": "Running batches",
         "processedBatches": "Processed Batches",
-        "onThisPage" : "Links on this page"
+        "onThisPage": "Links on this page"
       }
     },
     "sections": {
@@ -145,6 +145,7 @@
       }
     },
     "upload": {
+      "batchName": "Name",
       "intro": "Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer.",
       "csvRequirements": {
         "title": "CSV must contain:",
@@ -190,8 +191,9 @@
         "createdDate": "Created Date",
         "provider": "Provider",
         "type": "Type",
-        "status": "Status"
-      },    
+        "status": "Status",
+        "batchName": "Name"
+      },
       "actions": {
         "csv": "CSV",
         "excel": "Excel",

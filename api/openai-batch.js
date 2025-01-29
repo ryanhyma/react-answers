@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
-import { Readable } from 'stream';
 import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch.js';
 
@@ -91,8 +90,7 @@ export default async function handler(req, res) {
             batchId: batch.id,
             type: "question",
             provider: "openai",
-            entries: req.body.requests.map((request, index) => ({
-                entry_id: `eval-${index}`,
+            interactions: req.body.requests.map((request, index) => ({
                 ...request.entry
             }))
         });
