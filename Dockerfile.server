@@ -1,25 +1,34 @@
-# Build stage
-FROM node:18-alpine
+# Use a Node.js image for the server
+FROM node:18
 
+# Set the working directory to match the project root structure
 WORKDIR /app
 
-# Copy package files for both root and server
-COPY package*.json ./
-COPY server/package*.json ./server/
+# Copy root package files for api/ and agents/ dependencies
+COPY package.json package-lock.json ./
+RUN npm install
 
-# Install dependencies for both
-RUN npm ci
-RUN cd server && npm ci
+# Copy server package files and install its dependencies
+COPY server/package.json server/package-lock.json ./server/
+WORKDIR /app/server
+RUN npm install
 
-# Copy source code
-COPY . .
+# Copy all required directories maintaining the project structure
+WORKDIR /app
+COPY api/ ./api/
+COPY config/ ./config/
+COPY models/ ./models/
+COPY agents/ ./agents/
+COPY server/ ./server/
 
-# Environment variables will be provided at runtime
-ENV PORT=3001
-ENV NODE_ENV=production
+# Copy environment variables to root so ../.env works from server directory
+COPY .env ./server/
 
-# Expose the port
+# Set working directory back to server for starting the app
+WORKDIR /app/server
+
+# Expose the backend server port (3001 by default)
 EXPOSE 3001
 
-# Start the server
-CMD ["node", "server/server.js"]
+# Start the backend server
+CMD ["npm", "start"]
