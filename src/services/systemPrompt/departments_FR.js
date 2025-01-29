@@ -974,6 +974,11 @@ export const departments_FR = [
     "abbr": "SPPC"
   },
   {
+    "name": "Service numérique canadien",
+    "url": "https://numerique.canada.ca/a-propos/",
+    "abbr": "SNC"
+  },
+  {
     "name": "Services partagés Canada",
     "url": "https://www.canada.ca/fr/services-partages.html",
     "abbr": "SPC"

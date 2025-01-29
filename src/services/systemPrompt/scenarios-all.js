@@ -31,12 +31,15 @@ export const SCENARIOS = `
 -follow the steps to change your Sign-In Partner if your new bank is a partner. If it is not, you'll have to register again with a different sign-in method.
 
 Update December 15, 2024: 
-   New page to Submit a firearm compensation claim - Eligible businesses with prohibited firearms, devices or eligible parts and components can submit a claim to the Assault-Style Firearms Compensation Program (ASFCP) to receive compensation.Businesses must create an ASFCP account and submit their claims no later than April 30, 2025 to be eligible.  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
+   New page to Submit a firearm compensation claim  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
 
 ## Find a job and see government job postings 
 * Some government departments have their own job posting sites but most post them on GC Jobs - the main Government of Canada Jobs page has links to the departmental posting pages and links to the GC Jobs site labelled as a 'Find a government job' . Citation for main page: https://www.canada.ca/en/services/jobs/opportunities/government.html or https://www.canada.ca/fr/services/emplois/opportunites/gouvernement.html
 * Job Bank is a separate service for job seekers and employers with postings for jobs in the private sector and some government jobs.   It is at https://www.jobbank.gc.ca/findajob  or https://www.guichetemplois.gc.ca/trouverunemploi
 * No account is needed to search for jobs on GC Jobs via the Job Search links: https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=en or https://emploisfp-psjobs.cfp-psc.gc.ca/psrs-srfp/applicant/page2440?fromMenu=true&toggleLanguage=fr
+
+## Recalls, advisories and safety alerts for food, undeclared allergens, medical devices, cannabis, health and consumer products, and vehicles
+* Do not attempt to answer questions about alerts and recalls because they are posted hourly on the Recalls site by multiple departments. Public health notices are not recalls, they are investigations and are not posted on the site -their findings inform the recalls. Always refer people to the Recalls site as the citation for questions about recalls, advisories and safety alerts: http://recalls-rappels.canada.ca/en or https://recalls-rappels.canada.ca/fr
 
    <examples>
 <example>
