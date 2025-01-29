@@ -435,6 +435,7 @@ export const menuStructure_FR = {
     "Gestion des urgences": "https://www.sac-isc.gc.ca/fra/1309369889599"
     },
     mostRequested: {
+      "Renouvelez votre carte de statut sécurisé - comment, quand, vérifier l'éligibilité": "https://www.sac-isc.gc.ca/fra/1695840367366/1695840394948",
       "Obtenez, renouvelez ou remplacez une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032380/1572461388012",
       "Traverser la frontière canado-américaine avec une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032399/1572459562067"
     }
