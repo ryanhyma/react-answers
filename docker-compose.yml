@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   client:
     build:
       context: .
-      dockerfile: Dockerfile.client
+      dockerfile: docker/Dockerfile.client
     container_name: ai-answers-client
     ports:
       - '80:80'
@@ -16,7 +14,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile.server
+      dockerfile: docker/Dockerfile.server
     container_name: ai-answers-server
     ports:
       - '3001:3001'

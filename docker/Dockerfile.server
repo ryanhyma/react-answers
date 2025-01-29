@@ -5,24 +5,24 @@ FROM node:18
 WORKDIR /app
 
 # Copy root package files for api/ and agents/ dependencies
-COPY package.json package-lock.json ./
+COPY ../package.json ../package-lock.json ./
 RUN npm install
 
 # Copy server package files and install its dependencies
-COPY server/package.json server/package-lock.json ./server/
+COPY ../server/package.json ../server/package-lock.json ./server/
 WORKDIR /app/server
 RUN npm install
 
 # Copy all required directories maintaining the project structure
 WORKDIR /app
-COPY api/ ./api/
-COPY config/ ./config/
-COPY models/ ./models/
-COPY agents/ ./agents/
-COPY server/ ./server/
+COPY ../api/ ./api/
+COPY ../config/ ./config/
+COPY ../models/ ./models/
+COPY ../agents/ ./agents/
+COPY ../server/ ./server/
 
 # Copy environment variables to root so ../.env works from server directory
-COPY .env ./server/
+COPY ../.env ./server/
 
 # Set working directory back to server for starting the app
 WORKDIR /app/server
