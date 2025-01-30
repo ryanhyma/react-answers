@@ -96,8 +96,8 @@ const ExportService = {
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const globalInfo = [chat.pageLanguage, chat.aiProvider, chat.referringUrl];
-            const globalInfoHeaders = ['pageLanguage', 'aiService', 'referringUrl'];
+            const globalInfo = [chat.chatId,chat.pageLanguage, chat.aiProvider, chat.referringUrl];
+            const globalInfoHeaders = ['chatId','pageLanguage', 'aiService', 'referringUrl'];
 
             
             const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
@@ -133,6 +133,7 @@ const ExportService = {
         }
     }, export: (items, filename) => {
         const headerOrder = [
+            { dataLabel: 'chatId', outputLabel: 'chatId' },
             { dataLabel: 'createdAt', outputLabel: 'createdAt' },
             { dataLabel: 'pageLanguage', outputLabel: 'pageLanguage' },
             { dataLabel: 'referringUrl', outputLabel: 'referringUrl' },
