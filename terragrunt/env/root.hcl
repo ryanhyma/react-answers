@@ -5,7 +5,7 @@ locals {
 # DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING
 
 inputs = {
-  product_name              = "react-answers"
+  product_name              = "ai-answers"
   account_id                = "${local.vars.inputs.account_id}"
   domain                    = "${local.vars.inputs.domain}"
   env                       = "${local.vars.inputs.env}"
