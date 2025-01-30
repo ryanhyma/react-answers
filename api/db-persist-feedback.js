@@ -1,7 +1,7 @@
 import dbConnect from './db-connect.js';
 import { Chat } from '../models/chat.js';
 import { ExpertFeedback } from '../models/expertFeedback.js';
-import '../models/interaction.js';
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

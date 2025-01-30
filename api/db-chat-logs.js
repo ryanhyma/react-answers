@@ -3,6 +3,7 @@ import dbConnect from './db-connect.js';
 import { Chat } from '../models/chat.js';
 
 
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
