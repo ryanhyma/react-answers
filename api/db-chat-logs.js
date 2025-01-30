@@ -26,6 +26,7 @@ export default async function handler(req, res) {
       .populate({
         path: 'interactions',
         populate: [
+          { path: 'context'},
           { path: 'expertFeedback' },
           { path: 'question' },
           {
