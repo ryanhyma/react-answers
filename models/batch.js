@@ -5,8 +5,9 @@ const BatchSchema = new mongoose.Schema({
   batchId: { type: String, required: true },
   type: { type: String, required: true },
   name: { type: String, required: true },
-  provider: { type: String, required: true },
-  language: { type: String, required: true },
+  aiProvider: { type: String, required: true },
+  pageLanguage: { type: String, required: true },
+  referringUrl: { type: String, required: false },
   interactions: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Interaction'

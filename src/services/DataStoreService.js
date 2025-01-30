@@ -96,7 +96,9 @@ export const DataStoreService = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          feedback: expertFeedback,
+          chatId: chatId,
+          interactionId: userMessageId,
+          expertFeedback: formattedExpertFeedback
         }),
       });
 

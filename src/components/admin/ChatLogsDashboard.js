@@ -59,11 +59,11 @@ const ChatLogsDashboard = () => {
   };
 
   const downloadCSV = () => {
-    ExportService.exportChats(logs, filename('csv'));
+    ExportService.export(logs, filename('csv'));
   };
 
   const downloadExcel = () => {
-    ExportService.exportChats(logs, filename('xlsx'));
+    ExportService.export(logs, filename('xlsx'));
   };
 
   const handleAdminCodeChange = (e) => {

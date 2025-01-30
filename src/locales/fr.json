@@ -201,7 +201,7 @@
       "actions": {
         "csv": "CSV",
         "excel": "Excel",
-        "evaluate": "Évaluer",
+        "process": "Traiter",
         "cancel": "Annuler"
       }
     }

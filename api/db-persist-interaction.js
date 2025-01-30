@@ -51,8 +51,6 @@ export default async function handler(req, res) {
     await answer.save();
     dbInteraction.answer = answer._id;
     
-    
-
     const question = new Question();
     question.redactedQuestion = interaction.question;
     question.language = interaction.answer.questionLanguage;
@@ -61,8 +59,6 @@ export default async function handler(req, res) {
 
     await dbInteraction.save();
     await chat.save();
-
-
 
     res.status(200).json({ message: 'Interaction logged successfully' });
   } catch (error) {

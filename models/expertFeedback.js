@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+import mongoose, { model } from 'mongoose';
+const Schema = mongoose.Schema;
 
 const expertFeedbackSchema = new Schema({
     totalScore: { type: Number, required: false },
@@ -15,5 +15,4 @@ const expertFeedbackSchema = new Schema({
     timestamps: true, versionKey: false,
     id: false,
 });
-
-module.exports = mongoose.model('ExpertFeedback', expertFeedbackSchema);
+export const ExpertFeedback = mongoose.models.ExpertFeedback || mongoose.model('ExpertFeedback', expertFeedbackSchema);

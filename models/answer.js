@@ -7,8 +7,6 @@ const answerSchema = new mongoose.Schema({
   citation: { type: mongoose.Schema.Types.ObjectId, ref: 'Citation' },
   inputTokens: { type: String, required: false },
   outputTokens: { type: String, required: false },
-  cachedCreationInputTokens: { type: String, required: false },
-  cachedReadInputTokens: { type: String, required: false },
   model: { type: String, required: false },
   answerType: { type: String, required: false },
 },{

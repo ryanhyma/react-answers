@@ -15,9 +15,9 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
     const { t } = useTranslations(lang); // TODO: Pass actual language from props/context
 
     // Fetch batch status
-    const fetchStatus = async (batchId, provider) => {
+    const fetchStatus = async (batchId, aiProvider) => {
         try {
-            const response = await fetch(getProviderApiUrl(provider, `batch-status?batchId=${batchId}`));
+            const response = await fetch(getProviderApiUrl(aiProvider, `batch-status?batchId=${batchId}`));
             const data = await response.json();
             return { batchId, status: data.status };
         } catch (error) {
@@ -31,7 +31,7 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
         try {
             const statusPromises = batches.map(batch => {
                 if (!batch.status) {
-                    return fetchStatus(batch.batchId, batch.provider);
+                    return fetchStatus(batch.batchId, batch.aiProvider);
                 } else {
                     return Promise.resolve({ batchId: batch.batchId, status: batch.status });
                 }
@@ -51,7 +51,7 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
         { title: t('batch.list.columns.batchName'), data: 'name' },
         { title: t('batch.list.columns.batchId'), data: 'batchId' },
         { title: t('batch.list.columns.createdDate'), data: 'createdAt' },
-        { title: t('batch.list.columns.provider'), data: 'provider' },
+        { title: t('batch.list.columns.provider'), data: 'aiProvider' },
         { title: t('batch.list.columns.type'), data: 'type' },
         { title: t('batch.list.columns.status'), data: 'status' },
         {
@@ -104,7 +104,7 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
                     ordering: true,
                     order: [[1, 'desc']], // Order by Created Date (column index 1) descending
                     createdRow: (row, data) => {
-                        const { batchId, status, provider } = data;
+                        const { batchId, status, aiProvider } = data;
 
                         // Clear and append custom buttons dynamically
                         const actionsCell = row.querySelector('td:last-child');
@@ -123,13 +123,13 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
                             actionsCell.innerHTML = '';
                             const root = createRoot(actionsCell);
                             root.render(
-                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'complete', provider)}>{t('batch.list.actions.evaluate')}</GcdsButton>
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'complete', aiProvider)}>{t('batch.list.actions.process')}</GcdsButton>
                             );
                         } else if (status === 'processing') {
                             actionsCell.innerHTML = '';
                             const root = createRoot(actionsCell);
                             root.render(
-                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'cancel', provider)}>{t('batch.list.actions.cancel')}</GcdsButton>
+                                <GcdsButton size="small" onClick={() => handleButtonClick(batchId, 'cancel', aiProvider)}>{t('batch.list.actions.cancel')}</GcdsButton>
                             );
                         }
                     },
