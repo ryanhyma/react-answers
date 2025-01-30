@@ -1,6 +1,6 @@
 {
     "name": "AI Answers Development",
-    "dockerComposeFile": "../docker-compose.yml",
+    "dockerComposeFile": "docker-compose.yml",
     "service": "server",
     "workspaceFolder": "/workspace",
     "customizations": {
@@ -21,7 +21,7 @@
             }
         }
     },
-    "forwardPorts": [3000],
+    "forwardPorts": [3000, 3001, 27017, 9191],
     "postCreateCommand": "npm install",
     "remoteUser": "node",
     "features": {
