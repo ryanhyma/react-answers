@@ -212,6 +212,8 @@ const ChatInterface = ({
                       onFeedback={handleFeedback}
                       lang={lang}
                       sentenceCount={getLastMessageSentenceCount()}
+                      chatId={chatId} 
+                      userMessageId={message.id}
                     />
                   )}
               </>
