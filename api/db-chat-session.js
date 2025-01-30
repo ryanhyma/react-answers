@@ -4,26 +4,25 @@ import crypto from 'crypto';
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
-
-// Generate session token with a random UUID as jti
 export default async function handler(req, res) {
-    const readableId = uuidv4(); // random & unique
+    const readableId = uuidv4();
 
     const options = {
-        jwtid: readableId,  // sets jti
+        jwtid: readableId,
         expiresIn: '1h'
     };
+    
     const token = jwt.sign({}, secretKey, options);
-    res.cookie('token', token, {
-        httpOnly: true,     // Prevent JavaScript access
-        secure: true,       // Send only over HTTPS
-        sameSite: 'Strict', // Prevent CSRF attacks
-        maxAge: 3600000,    // Expire in 1 hour
-    });
-    res.json({ chatId : readableId });
-};
+    
+    // Set cookie using headers instead of res.cookie
+    res.setHeader('Set-Cookie', [
+        `token=${token}; ` +
+        'HttpOnly; ' +
+        'Secure; ' +
+        'SameSite=Strict; ' +
+        'Path=/; ' +
+        'Max-Age=3600'
+    ]);
 
-
-
-
-
+    return res.status(200).json({ chatId: readableId });
+}
