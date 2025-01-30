@@ -99,7 +99,7 @@ const ContextService = {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
       const requests = entries
-        .map(entry => entry['QUESTION.REDACTEDQUESTION']);
+        .map(entry => entry['REDACTEDQUESTION']);
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
 
       const searchResults = await Promise.all(
