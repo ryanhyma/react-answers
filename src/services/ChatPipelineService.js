@@ -30,6 +30,7 @@ export const ChatPipelineService = {
         let context = null;
         // remove error messages
         conversationHistory = conversationHistory.filter(message => !message.error);
+        conversationHistory = conversationHistory.filter(message => message.sender === 'ai');
         if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].interaction.answer.answerType !== 'question') {
             const lastMessage = conversationHistory[conversationHistory.length - 1];
             context = lastMessage.context;

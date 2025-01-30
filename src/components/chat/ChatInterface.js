@@ -171,7 +171,7 @@ const ChatInterface = ({
                   message.redactedText?.includes('XXX') ? "privacy-message" :
                     message.redactedText?.includes('###') ? "redacted-message" : ""
                 }>
-                  {message.redactedText}
+                  {message.text}
                 </p>
                 {message.redactedItems?.length > 0 && message.redactedText && (
                   <p className={

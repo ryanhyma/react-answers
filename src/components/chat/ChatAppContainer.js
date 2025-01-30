@@ -135,18 +135,26 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         ]);
         return;
       }
-
+      const userMessageId = messageIdCounter.current++;
       const userMessage = inputText.trim();
+        setMessages(prevMessages => [
+          ...prevMessages,
+          {
+            id: userMessageId,
+            text: userMessage,
+            sender: 'user',
+            ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
+          }
+        ]);
       try {
         const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messageIdCounter.current, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
-        const userMessageId = messageIdCounter.current++;
         clearInput();
         // Add the AI response to messages
-        setMessages(prev => [...prev, {
+        setMessages(prevMessages => [...prevMessages, {
           id: userMessageId,
           interaction: interaction,
           sender: 'ai',
-          aiService: selectedAI
+          aiService: selectedAI,
         }]);
 
         setTurnCount(prev => prev + 1);
@@ -155,9 +163,9 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
       } catch (error) {
         if (error instanceof RedactionError) {
-
           const userMessageId = messageIdCounter.current++;
           const blockedMessageId = messageIdCounter.current++;
+          setMessages(prevMessages => prevMessages.slice(0, -1));
           setMessages(prevMessages => [
             ...prevMessages,
             {
