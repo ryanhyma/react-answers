@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     let chat = await Chat.findOne({ chatId: chatId }).populate({path: 'interactions'});
     let existingInteraction = chat.interactions.find(interaction => interaction.interactionId == interactionId);
     let expertFeedback = new ExpertFeedback();
-    existingInteraction.answer.expertFeedback = expertFeedback._id;
+    existingInteraction.expertFeedback = expertFeedback._id;
     Object.assign(expertFeedback, feedback);
     await expertFeedback.save();
     await existingInteraction.save();
