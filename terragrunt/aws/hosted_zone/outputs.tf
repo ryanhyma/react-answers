@@ -1,4 +1,4 @@
 output "hosted_zone_id" {
   description = "Route53 hosted zone ID that will hold our DNS records"
-  value       = aws_route53_zone.react_answers.zone_id
+  value       = aws_route53_zone.ai_answers.zone_id
 }

@@ -1,21 +1,21 @@
 output "vpc_id" {
   description = "The VPC id"
-  value       = module.react_answers_vpc.vpc_id
+  value       = module.ai_answers_vpc.vpc_id
 }
 
 output "vpc_private_subnet_ids" {
   description = "List of the React Answers app VPC private subnet ids"
-  value       = module.react_answers_vpc.private_subnet_ids
+  value       = module.ai_answers_vpc.private_subnet_ids
 }
 
 output "vpc_public_subnet_ids" {
   description = "List of the React Answers App VPC public subnet ids"
-  value       = module.react_answers_vpc.public_subnet_ids
+  value       = module.ai_answers_vpc.public_subnet_ids
 }
 
 output "vpc_cidr_block" {
   description = "List of cidr block ips for the React Answers VPC"
-  value       = module.react_answers_vpc.cidr_block
+  value       = module.ai_answers_vpc.cidr_block
 }
 
 

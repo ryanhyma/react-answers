@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "react_answers" {
+resource "aws_ecr_repository" "ai_answers" {
   name                 = "ai-answers"
   image_tag_mutability = "MUTABLE"
 
