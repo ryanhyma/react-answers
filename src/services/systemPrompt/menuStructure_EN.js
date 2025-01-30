@@ -433,6 +433,7 @@ export const menuStructure_EN = {
       "Emergency management": "https://www.sac-isc.gc.ca/eng/1309369889599"
     },
     mostRequested: {
+      "Renew your secure status card - how, when, check eligibility": "https://www.sac-isc.gc.ca/eng/1695840367366/1695840394948",
       "Get, renew or replace a status card": "https://www.sac-isc.gc.ca/eng/1100100032380/1572461388012",
       "Crossing the Canada-U.S. border with a status card": "https://www.sac-isc.gc.ca/eng/1100100032399/1572459562067"
     }
