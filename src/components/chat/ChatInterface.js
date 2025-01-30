@@ -165,7 +165,7 @@ const ChatInterface = ({
           <div key={`message-${message.id}`} className={`message ${message.sender}`}>
             {message.sender === 'user' ? (
               <div className={`user-message-box ${message.redactedText?.includes('XXX') ? 'privacy-box' :
-                  message.redactedText?.includes('###') ? 'redacted-box' : ''
+                message.redactedText?.includes('###') ? 'redacted-box' : ''
                 }`}>
                 <p className={
                   message.redactedText?.includes('XXX') ? "privacy-message" :
@@ -190,8 +190,8 @@ const ChatInterface = ({
               <>
                 {message.error ? (
                   <div className={`error-message-box ${messages[messages.findIndex(m => m.id === message.id) - 1]?.redactedText?.includes('XXX')
-                      ? 'privacy-error-box'
-                      : 'error-box'
+                    ? 'privacy-error-box'
+                    : 'error-box'
                     }`}>
                     <p className={
                       messages[messages.findIndex(m => m.id === message.id) - 1]?.redactedText?.includes('XXX')
@@ -202,20 +202,20 @@ const ChatInterface = ({
                     </p>
                   </div>
                 ) : (
-                  formatAIResponse(message.aiService,message)
+                  formatAIResponse(message.aiService, message)
                 )}
-                {//message.id === messages.length - 1 &&
-                  //showFeedback &&
-                  //!message.error &&
-                  //(message.interaction.answer.answerType === 'answer') && (
+                {message.id === messages.length - 1 &&
+                  showFeedback &&
+                  !message.error &&
+                  (message.interaction.answer.answerType === 'normal') && (
                     (<FeedbackComponent
                       onFeedback={handleFeedback}
                       lang={lang}
                       sentenceCount={getLastMessageSentenceCount()}
-                      chatId={chatId} 
+                      chatId={chatId}
                       userMessageId={message.id}
                     />
-                  )}
+                    ))}
               </>
             )}
           </div>

@@ -16,8 +16,8 @@ const FeedbackComponent = ({ onFeedback, lang = 'en', sentenceCount = 1, chatId,
         totalScore: 100,
         isPositive: true,
       };
-      //onFeedback(true, expertFeedback);
-      //setFeedbackGiven(true);
+      onFeedback(true, expertFeedback);
+      setFeedbackGiven(true);
       DataStoreService.persistFeedback(expertFeedback, chatId, userMessageId);
     } else {
       setShowExpertRating(true);
