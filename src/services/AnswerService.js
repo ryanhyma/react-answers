@@ -157,17 +157,17 @@ const AnswerService = {
             console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
                 const context = {
-                    topic: entry.CONTEXT_TOPIC,
-                    topicUrl: entry.CONTEXT_TOPICURL,
-                    department: entry.CONTEXT_DEPARTMENT,
-                    departmentUrl: entry.CONTEXT_DEPARTMENTURL,
-                    searchResults: entry.CONTEXT_SEARCHRESULTS,
-                    searchProvider: entry.CONTEXT_SEARCHPROVIDER,
-                    model: entry.CONTEXT_MODEL,
-                    inputTokens: entry.CONTEXT_INPUTTOKENS,
-                    outputTokens: entry.CONTEXT_OUTPUTTOKENS,
+                    topic: entry['CONTEXT.TOPIC'],
+                    topicUrl: entry['CONTEXT.TOPICURL'],
+                    department: entry['CONTEXT.DEPARTMENT'],
+                    departmentUrl: entry['CONTEXT.DEPARTMENTURL'],
+                    searchResults: entry['CONTEXT.SEARCHRESULTS'],
+                    searchProvider: entry['CONTEXT.SEARCHPROVIDER'],
+                    model: entry['CONTEXT.MODEL'],
+                    inputTokens: entry['CONTEXT.INPUTTOKENS'],
+                    outputTokens: entry['CONTEXT.OUTPUTTOKENS'],
                 };
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.QUESTION_REDACTEDQUESTION, [], lang, context, true, "");
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, "");
                 messagePayload.context = context;
                 return messagePayload;
             }));
