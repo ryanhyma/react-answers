@@ -92,23 +92,23 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
             }
 
             const headers = jsonData[0].map(header => header.trim().toUpperCase());
-            const problemDetailsIndex = headers.findIndex(h => h === 'PROBLEM DETAILS' || h === 'QUESTION' || h === 'QUESTION_REDACTEDQUESTION');
+            const problemDetailsIndex = headers.findIndex(h => h === 'PROBLEM DETAILS' || h === 'QUESTION' || h === 'QUESTION.REDACTEDQUESTION');
 
             if (problemDetailsIndex === -1) {
-                throw new Error('Required column "PROBLEM DETAILS/QUESTION_REDACTEDQUESTION" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
+                throw new Error('Required column "PROBLEM DETAILS/QUESTION.REDACTEDQUESTION" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
             }
 
             const entries = jsonData.slice(1)
                 .map(row => {
                     const entry = {};
                     headers.forEach((header, index) => {
-                        const key = header === 'PROBLEM DETAILS' ? 'QUESTION_REDACTEDQUESTION' : header;
+                        const key = header === 'PROBLEM DETAILS' ? 'QUESTION.REDACTEDQUESTION' : header;
                         entry[key] = row[index]?.trim() || '';
                     });
                     console.log('Processing entry:', entry);
                     return entry;
                 })
-                .filter(entry => entry['QUESTION_REDACTEDQUESTION']); // Only filter based on 'QUESTION' presence
+                .filter(entry => entry['QUESTION.REDACTEDQUESTION']); // Only filter based on 'QUESTION' presence
 
             console.log(`Found ${entries.length} valid entries to process`);
             return entries;

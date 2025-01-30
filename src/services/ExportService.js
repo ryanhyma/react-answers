@@ -84,7 +84,7 @@ const ExportService = {
         document.body.removeChild(link);
     }
     ,
-    chatsToSpreadsheet: async (chats, headerOrder, type = 'excel', filename) => {
+    toSpreadsheet: async (chats, headerOrder, type = 'excel', filename) => {
         const worksheetData = [];
 
         for (const chat of chats) {
@@ -96,20 +96,20 @@ const ExportService = {
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const chatInfo = [chat.pageLanguage, chat.aiProvider, chat.referringUrl];
-            const chatInfoHeaders = ['chat.pageLanguage', 'chat.aiService', 'chat.referringUrl'];
+            const globalInfo = [chat.pageLanguage, chat.aiProvider, chat.referringUrl];
+            const globalInfoHeaders = ['pageLanguage', 'aiService', 'referringUrl'];
 
-            // Insert chatInfo into each row
-            const rowsWithChatInfo = filteredRows.map(row => chatInfo.concat(row));
+            
+            const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
 
             // Update headers to include chatInfoHeaders
-            const updatedHeaders = chatInfoHeaders.concat(filteredHeaders);
+            const updatedHeaders = globalInfoHeaders.concat(filteredHeaders);
 
             // Update orderedHeaders and orderedRows to include chatInfo
             const orderedHeaders = headerOrder.map(headerObj => headerObj.dataLabel)
                 .concat(updatedHeaders.filter(header => !headerOrder.some(headerObj => headerObj.dataLabel === header)));
 
-            const orderedRows = rowsWithChatInfo.map(row =>
+            const orderedRows = rowsWithGlobalInfo.map(row =>
                 orderedHeaders.map(header => row[updatedHeaders.indexOf(header)])
             );
 
@@ -131,14 +131,14 @@ const ExportService = {
         } else if (type === 'csv') {
             ExportService.worksheetDataToCSV(worksheetData, filename);
         }
-    }, exportChats: (chats, filename) => {
+    }, export: (items, filename) => {
         const headerOrder = [
             { dataLabel: 'createdAt', outputLabel: 'createdAt' },
-            { dataLabel: 'chat.pageLanguage', outputLabel: 'pageLanguage' },
-            { dataLabel: 'chat.referringUrl', outputLabel: 'referringUrl' },
+            { dataLabel: 'pageLanguage', outputLabel: 'pageLanguage' },
+            { dataLabel: 'referringUrl', outputLabel: 'referringUrl' },
             { dataLabel: 'question.language', outputLabel: 'questionLanguage' },
             { dataLabel: 'question.redactedQuestion', outputLabel: 'redactedQuestion' },
-            { dataLabel: 'chat.aiService', outputLabel: 'aiService' },
+            { dataLabel: 'aiService', outputLabel: 'aiService' },
             { dataLabel: 'answer.citation.providedCitationUrl', outputLabel: 'citationUrl' },
             { dataLabel: 'answer.citation.confidenceRating', outputLabel: 'confidenceRating' },
             { dataLabel: 'answer.englishAnswer', outputLabel: 'englishAnswer' },
@@ -147,7 +147,7 @@ const ExportService = {
             { dataLabel: 'answer.sentences.1', outputLabel: 'sentence2' },
             { dataLabel: 'answer.sentences.2', outputLabel: 'sentence3' },
             { dataLabel: 'answer.sentences.3', outputLabel: 'sentence4' },
-            { dataLabel: 'chat.feedback', outputLabel: 'feedback' },
+            { dataLabel: 'feedback', outputLabel: 'feedback' },
             { dataLabel: 'expertFeedback.totalScore', outputLabel: 'expertFeedback.totalScore' },
             { dataLabel: 'expertFeedback.sentence1Score', outputLabel: 'expertFeedback.sentence1Score' },
             { dataLabel: 'expertFeedback.sentence2Score', outputLabel: 'expertFeedback.sentence2Score' },
@@ -158,7 +158,7 @@ const ExportService = {
             { dataLabel: 'expertFeedback.expertCitationUrl', outputLabel: 'expertFeedback.expertCitationUrl' },
         ];
         const type = filename.endsWith('.csv') ? 'csv' : filename.endsWith('.xlsx') ? 'xlsx' : 'xlsx';
-        return ExportService.chatsToSpreadsheet(chats, headerOrder, type, filename);
+        return ExportService.toSpreadsheet(items, headerOrder, type, filename);
     },
 
 };

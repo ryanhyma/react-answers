@@ -45,8 +45,7 @@ const handleAnthropic = async (batch) => {
             context.cachedCreationInputTokens = result.result.message.usage.cache_creation_input_tokens;
             context.cachedReadInputTokens = result.result.message.usage.cache_read_input_tokens;
             await context.save();
-            const question = await Question.findById(interaction.question);
-            await question.save();
+            
         } else {
           const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
           const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;

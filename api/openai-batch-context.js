@@ -1,10 +1,11 @@
 import OpenAI from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
-import fs from 'fs';
 import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch.js';
 import { Interaction } from '../models/interaction.js';
-import { language } from 'googleapis/build/src/apis/language/index.js';
+import { Context } from '../models/context.js';
+import { Question } from '../models/question.js';
+
 
 
 const modelConfig = getModelConfig('openai', 'gpt-4o-mini');
