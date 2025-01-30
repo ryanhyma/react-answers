@@ -26,8 +26,6 @@ const handleAnthropic = async (batch) => {
       batch = await Batch.findById(batch._id).populate('interactions');
       const interaction = batch.interactions.find(interaction => interaction.interactionId === customId);
       if (interaction) {
-
-
         if (batch.type === 'context') {
           // TODO fix this when services moved to server side
           const response = result.result.message.content[0].text;

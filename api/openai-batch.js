@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         const modelConfig = getModelConfig('openai');
 
         const jsonlRequests = requests.map((request, index) => ({
-            custom_id: `eval-${index}`,
+            custom_id: `batch-${index}`,
             method: "POST",
             url: "/v1/chat/completions",
             body: {
