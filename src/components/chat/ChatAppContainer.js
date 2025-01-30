@@ -165,7 +165,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
               text: error.redactedText,
               redactedText: error.redactedText,
               redactedItems: error.redactedItems,
-              sender: 'user'
+              sender: 'user',
+              error: true
             },
             {
               id: blockedMessageId,
@@ -178,6 +179,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
             }
           ]);
           clearInput();
+          setIsLoading(false);
           return;
         } else {
           console.error('Error in handleSendMessage:', error);
@@ -191,6 +193,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
               error: true
             }
           ]);
+          clearInput();
+          setIsLoading(false);
         }
       }
 
