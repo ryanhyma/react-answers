@@ -1,6 +1,10 @@
 import { Batch } from '../models/batch.js';
 import OpenAI from 'openai';
 import dbConnect from './db-connect.js';
+import { Citation } from '../models/citation.js';
+import AnswerService from '../src/services/AnswerService.js';
+import { Answer } from '../models/answer.js';
+import { Context } from '../models/context.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -39,7 +43,7 @@ const handleOpenAI = async (batch) => {
           const customId = result.custom_id;
           batch = await Batch.findById(batch._id).populate('interactions');
           const interaction = batch.interactions.find(interaction => interaction.interactionId === customId);
-         
+
 
           if (interaction) {
             if (batch.type === 'context') {
@@ -60,6 +64,7 @@ const handleOpenAI = async (batch) => {
               context.cachedCreationInputTokens = result.result.message.usage.cache_creation_input_tokens;
               context.cachedReadInputTokens = result.result.message.usage.cache_read_input_tokens;
               await context.save();
+              
             } else {
               // TODO put this in common place
               const parsedAnswer = AnswerService.parseResponse(result.response.body.choices[0].message.content);
@@ -95,8 +100,8 @@ const handleOpenAI = async (batch) => {
 
 
 
-    //batch.status = 'processed';
-    //await batch.save();
+    batch.status = 'processed';
+    await batch.save();
     return { status: 'completed' };
 
   } catch (error) {
