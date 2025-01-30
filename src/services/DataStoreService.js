@@ -1,4 +1,3 @@
-import { UserSquare } from 'lucide-react';
 import { getApiUrl } from '../utils/apiToUrl.js';
 export const DataStoreService = {
   checkDatabaseConnection: async () => {
@@ -72,7 +71,7 @@ export const DataStoreService = {
       });
     }
   },
-  persistFeedback: async (messages, checkedCitations, isPositive, referringUrl, originalCitationUrl, citationUrl, confidenceRating, preliminaryChecks, englishAnswer, content, expertFeedback) => {
+  persistFeedback: async (expertFeedback, chatId, userMessageId) => {
     // Standardize expert feedback format - only accept new format
     let formattedExpertFeedback = null;
     if (expertFeedback) {
@@ -84,43 +83,34 @@ export const DataStoreService = {
         sentence4Score: expertFeedback.sentence4Score ?? null,
         citationScore: expertFeedback.citationScore ?? null,
         answerImprovement: expertFeedback.answerImprovement || '',
-        expertCitationUrl: expertFeedback.expertCitationUrl || ''
+        expertCitationUrl: expertFeedback.expertCitationUrl || '',
+        feedback: expertFeedback.isPositive ? 'positive' : 'negative'
       };
     }
+    console.log(`User feedback: ${expertFeedback}`);
 
+    try {
+      const response = await fetch(getApiUrl('db-persist-feedback'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          feedback: expertFeedback,
+        }),
+      });
 
-    const feedback = isPositive ? 'positive' : 'negative';
-    console.log(`User feedback: ${feedback}`, expertFeedback);
-
-    // Get the last message (which should be the AI response)
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === 'ai') {
-      const { text: aiResponse, aiService: selectedAIService } = lastMessage;
-      // Get original URL from AI response
-
-      // Get validated URL from checkedCitations
-      const lastIndex = messages.length - 1;
-      const validationResult = checkedCitations[lastIndex];
-      const finalCitationUrl = validationResult?.url || validationResult?.fallbackUrl;
-
-      // Get the user's message (which should be the second-to-last message)
-      const userMessage = messages[messages.length - 2];
-      if (userMessage && userMessage.sender === 'user') {
-        // Only log if there's feedback
-        DataStoreService.persistInteraction(
-          selectedAIService,
-          userMessage.redactedText,
-          referringUrl,
-          aiResponse,
-          finalCitationUrl,
-          originalCitationUrl,
-          confidenceRating,
-          feedback,
-          expertFeedback
-        );
+      if (!response.ok) {
+        throw new Error('Failed to log interaction');
       }
-    }
-  }
 
+      console.log('Interaction logged successfully to database');
+    } catch (error) {
+      console.log('Development mode: Interaction logged to console', {
+        ...expertFeedback
+      });
+    }
+
+  }
 };
 

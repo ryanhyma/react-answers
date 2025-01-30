@@ -110,10 +110,11 @@ const ChatInterface = ({
     return t('homepage.chat.input.initial');
   };
 
+  // TOOD is there a difference between paragraphs and sentrences?
   const getLastMessageSentenceCount = () => {
     const lastAiMessage = messages.filter(m => m.sender === 'ai').pop();
-    if (lastAiMessage && parsedResponses[lastAiMessage.id]) {
-      return parsedResponses[lastAiMessage.id].paragraphs.reduce((count, paragraph) =>
+    if (lastAiMessage.interaction.answer.paragraphs.length > 0) {
+      return lastAiMessage.interaction.answer.paragraphs.reduce((count, paragraph) =>
         count + extractSentences(paragraph).length, 0);
     }
     return 1;
@@ -201,13 +202,13 @@ const ChatInterface = ({
                     </p>
                   </div>
                 ) : (
-                  formatAIResponse(message.aiService, message.id)
+                  formatAIResponse(message.aiService,message)
                 )}
-                {message.id === messages.length - 1 &&
-                  showFeedback &&
-                  !message.error &&
-                  (message.interaction.answer.responseType === 'answer') && (
-                    <FeedbackComponent
+                {//message.id === messages.length - 1 &&
+                  //showFeedback &&
+                  //!message.error &&
+                  //(message.interaction.answer.answerType === 'answer') && (
+                    (<FeedbackComponent
                       onFeedback={handleFeedback}
                       lang={lang}
                       sentenceCount={getLastMessageSentenceCount()}

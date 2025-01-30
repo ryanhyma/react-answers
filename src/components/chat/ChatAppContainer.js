@@ -217,11 +217,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-  const formatAIResponse = useCallback((aiService, messageId) => {
-
-    // Clean up any instruction tags from the paragraphs
-    // Find the message to get its department
-    const message = messages.find(m => m.id === messageId);
+  const formatAIResponse = useCallback((aiService,message) => {
+    const messageId = message.id;
     let paragraphs = message.interaction.answer.paragraphs;
     if (paragraphs) {
       paragraphs = paragraphs.map(paragraph =>

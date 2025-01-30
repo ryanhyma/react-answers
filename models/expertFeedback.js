@@ -9,7 +9,8 @@ const expertFeedbackSchema = new Schema({
     sentence4Score: { type: Number, required: false },
     citationScore: { type: Number, required: false },
     answerImprovement: { type: String, required: false },
-    expertCitationUrl: { type: String, required: false }
+    expertCitationUrl: { type: String, required: false },
+    feedback: { type: String, required: false }
 },{
     timestamps: true, versionKey: false,
     id: false,
