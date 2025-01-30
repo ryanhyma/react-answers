@@ -59,8 +59,9 @@ export default async function handler(req, res) {
         const savedBatch = new Batch({
             batchId: batch.id,
             type: "context",
-            provider: "anthropic",
-            language: req.body.lang,
+            aiProvider: "anthropic",
+            pageLanguage: req.body.lang,
+            referringUrl: req.body.referringUrl,
             name: req.body.batchName
 
         });

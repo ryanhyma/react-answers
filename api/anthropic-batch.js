@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    
+
     console.log('Batch API request received:', {
       requestCount: req.body.requests?.length,
       systemPromptPresent: !!req.body.requests?.[0]?.systemPrompt,
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       throw new Error('Invalid requests array in payload');
     }
 
-    
+
     const batch = await anthropic.beta.messages.batches.create({
       requests: req.body.requests.map((request, index) => ({
         custom_id: `eval-${index}`,
@@ -48,20 +48,23 @@ export default async function handler(req, res) {
       model: modelConfig.name
     });
 
-     // save the batch id and entries
-     await dbConnect();
-     const savedBatch = new Batch({
-         batchId: batch.id,
-         type: "question",
-         provider: "anthropic",
-         entries: req.body.requests.map((request, index) => ({
-             entry_id: `eval-${index}`,
-             ...request.entry
-         }))
-     });
-     await savedBatch.save();
+    // save the batch id and entries
+    await dbConnect();
+    const savedBatch = new Batch({
+      name: req.body.batchName,
+      batchId: batch.id,
+      type: "question",
+      aiProvider: "anthropic",
+      pageLanguage: req.body.lang,
+      referringUrl: req.body.referringUrl,
+      entries: req.body.requests.map((request, index) => ({
+        entry_id: `eval-${index}`,
+        ...request.entry
+      }))
+    });
+    await savedBatch.save();
 
-     console.log('Batch saved:', savedBatch);
+    console.log('Batch saved:', savedBatch);
 
     return res.status(200).json({
       batchId: batch.id,

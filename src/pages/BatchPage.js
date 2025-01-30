@@ -15,7 +15,8 @@ const BatchPage = ({ lang = 'en' }) => {
     const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`));
     const batch = await response.json();
     const batches = [batch];
-    ExportService.export(batches, type);
+    const fileName = `${batch.name}-${batch.type}.${type === 'excel' ? 'xlsx' : 'csv'}`;
+    ExportService.export(batches, fileName);
   };
 
   const handleCompleteCancelClick = async (batchId, action, provider,) => {
