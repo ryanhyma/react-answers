@@ -68,13 +68,11 @@ async function contextSearch(query) {
  * canadaCASearch tool to perform a search using Coveo.
  */
 const contextSearchTool = tool(
-    async ({ lang, query }) => {
+    async ({ lang, query, searchService = 'canadaca' }) => {
         try {
-            console.log(`Starting search with query: ${query}`);
+            console.log(`Starting ${searchService} search with query: ${query}`);
 
-            const results = await contextSearch(
-                query
-            );
+            const results = await contextSearch(query);
 
             if (!results) {
                 return `Failed to retrieve search results for query: ${query}`;
@@ -90,13 +88,19 @@ const contextSearchTool = tool(
     },
     {
         name: "canadaCASearch",
-        description: "Perform a search using Coveo. Provide the 'query' as the search term. Example input: { query: 'health services' }",
+        description: "Perform a search using Coveo or Google. Provide the 'query' as the search term and optionally 'searchService' ('google' or 'canadaca')",
         schema: {
             type: "object",
             properties: {
                 query: {
                     type: "string",
-                    description: "The search term to query on the Indigenous Services Canada website.",
+                    description: "The search term to query.",
+                },
+                searchService: {
+                    type: "string",
+                    description: "The search service to use ('google' or 'canadaca').",
+                    enum: ["google", "canadaca"],
+                    default: "canadaca"
                 },
             },
             required: ["lang", "query"],

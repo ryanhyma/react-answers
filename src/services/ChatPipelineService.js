@@ -19,7 +19,7 @@ export const PipelineStatus = {
 };
 export const ChatPipelineService = {
 
-    processResponse: async (chatId, userMessage,userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate) => {
+    processResponse: async (chatId, userMessage, userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate, searchProvider) => {
         const startTime = Date.now();
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_QUESTION, onStatusUpdate);
 
@@ -38,7 +38,7 @@ export const ChatPipelineService = {
             // if initial questions or last response type was a questions
             await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GETTING_CONTEXT, onStatusUpdate);
             // TODO conversation history
-            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl);
+            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider);
         }
         console.log("➡️ Derived context:", context);
 

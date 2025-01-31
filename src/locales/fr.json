@@ -65,6 +65,11 @@
           "openai": "OpenAI",
           "cohere": "Cohere"
         },
+        "searchSelection": {
+          "label": "Recherche :",
+          "canadaca": "Canada.ca",
+          "google": "Google"
+        },
         "referringUrl": {
           "label": "URL de référence Canada.ca (facultatif)"
         }

@@ -39,14 +39,17 @@ const ContextService = {
       throw error;
     }
   },
-  contextSearch: async (message) => {
+  contextSearch: async (message, searchProvider) => {
     try {
       const searchResponse = await fetch(getApiUrl("context-search"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: message }),
+        body: JSON.stringify({ 
+          query: message,
+          searchService: searchProvider  // Add searchProvider
+        }),
       });
 
       if (!searchResponse.ok) {
@@ -62,11 +65,11 @@ const ContextService = {
     }
 
   },
-  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl) => {
+  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl, searchProvider) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       // TODO add referring URL to the context of the search?
-      const searchResults = await ContextService.contextSearch(question);
+      const searchResults = await ContextService.contextSearch(question, searchProvider);
       console.log('Executed Search:', question);
       return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));
     } catch (error) {

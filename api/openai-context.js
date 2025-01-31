@@ -1,5 +1,5 @@
 import { createContextAgent } from '../agents/AgentService.js';
-import {contextSearch} from '../agents/tools/canadaCASearch.js';
+import {contextSearch} from '../agents/tools/canadaCAContextSearch.js';
 
 const invokeAgent = async (agentType, systemPrompt, message, searchResults, searchProvider) => {
   try {
