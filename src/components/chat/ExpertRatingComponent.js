@@ -96,41 +96,50 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
         <h2>{t('homepage.expertRating.intro')}</h2>
         <details className="answer-details">
           <summary>{t('homepage.expertRating.title')}</summary>
-          <div className="sentence-rating-group">
-            <h3>{t('homepage.expertRating.sentence1')}</h3>
-            <div className="radio-group">
-              <label>
+          <fieldset className="gc-chckbxrdio sentence-rating-group">
+            <legend>{t('homepage.expertRating.sentence1')}</legend>
+            <ul className="list-unstyled lst-spcd-2">
+              <li className="radio">
                 <input
                   type="radio"
                   name="sentence1Score"
+                  id="sentence1-100"
                   value="100"
                   checked={expertFeedback.sentence1Score === 100}
                   onChange={handleRadioChange}
                 />
-                {t('homepage.expertRating.options.good')} (100)
-              </label>
-              <label>
+                <label htmlFor="sentence1-100">
+                  {t('homepage.expertRating.options.good')} (100)
+                </label>
+              </li>
+              <li className="radio">
                 <input
                   type="radio"
                   name="sentence1Score"
+                  id="sentence1-80"
                   value="80"
                   checked={expertFeedback.sentence1Score === 80}
                   onChange={handleRadioChange}
                 />
-                {t('homepage.expertRating.options.needsImprovement')} (80)
-              </label>
-              <label>
+                <label htmlFor="sentence1-80">
+                  {t('homepage.expertRating.options.needsImprovement')} (80)
+                </label>
+              </li>
+              <li className="radio">
                 <input
                   type="radio"
                   name="sentence1Score"
+                  id="sentence1-0"
                   value="0"
                   checked={expertFeedback.sentence1Score === 0}
                   onChange={handleRadioChange}
                 />
-                {t('homepage.expertRating.options.incorrect')} (0)
-              </label>
-            </div>
-          </div>
+                <label htmlFor="sentence1-0">
+                  {t('homepage.expertRating.options.incorrect')} (0)
+                </label>
+              </li>
+            </ul>
+          </fieldset>
           {[...Array(Math.min(3, sentenceCount - 1))].map((_, index) => (
             <div key={index + 2} className="sentence-rating-group">
               <h3>{t(`homepage.expertRating.sentence${index + 2}`)}</h3>
