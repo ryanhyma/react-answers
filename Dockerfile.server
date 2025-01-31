@@ -1,0 +1,25 @@
+# Use a Node.js image for the server
+FROM node:lts
+
+# Set the working directory to match devcontainer workspace
+WORKDIR /workspace
+
+# Copy all required directories maintaining the project structure
+COPY api/ ./api/
+COPY config/ ./config/
+COPY models/ ./models/
+COPY agents/ ./agents/
+COPY server/ ./server/
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Set working directory to server for starting the app
+WORKDIR /workspace/server
+
+# Expose the backend server port (3001 by default)
+EXPOSE 3001
+
+# Start the backend server
+CMD ["npm", "start"]

@@ -1,0 +1,18 @@
+# Use a Node.js image for the React app
+FROM node:lts
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy all files
+COPY ./ ./
+
+# Expose port 3000 for the React development server
+EXPOSE 3000
+
+# Start the React development server
+CMD ["npm", "start"]
