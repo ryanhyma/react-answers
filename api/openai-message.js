@@ -1,5 +1,8 @@
 // api/chatgpt.js
 import { createOpenAIAgent } from '../agents/AgentService.js';
+const NUM_RETRIES = 3;
+const BASE_DELAY = 1000; // 1 second
+
 
 const convertInteractionsToMessages = (interactions) => {
   let messages = [];
@@ -20,7 +23,7 @@ const convertInteractionsToMessages = (interactions) => {
 };
 
 
-export default async function handler(req, res) {
+async function invokeHandler(req, res) {
   if (req.method === 'POST') {
     try {
       console.log('OpenAI API request received');
@@ -70,9 +73,29 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-
- 
-  
-  
-
 }
+
+export default async function handler(req, res) {
+  let lastError;
+
+  for (let attempt = 0; attempt < NUM_RETRIES; attempt++) {
+    try {
+      return await invokeHandler(req, res);
+    } catch (error) {
+      lastError = error;
+      console.error(`Attempt ${attempt + 1} failed:`, error);
+
+      if (attempt < NUM_RETRIES - 1) {
+        const delay = Math.pow(2, attempt) * BASE_DELAY;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  console.error('All retry attempts failed');
+  return res.status(500).json({
+    error: 'Failed after retries',
+    details: lastError?.message
+  });
+}
+
