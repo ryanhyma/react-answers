@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 // Shows ratings for a maximum of 4 sentences, and for the citation score
 // if there are somehow 5 sentences, the 5th sentence is ignored _YES THIS IS A HACK
@@ -84,7 +86,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
 
   return (
     <form onSubmit={handleSubmit} className="expert-rating-container">
-    <i className="fa-solid fa-close close-icon" 
+    <FontAwesomeIcon icon="fa-solid fa-close" className="close-icon" 
         onClick={onClose} 
         onKeyDown={(e) => e.key === 'Enter' && onClose()} 
         role="button" 
