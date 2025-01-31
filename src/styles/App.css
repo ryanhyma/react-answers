@@ -1153,9 +1153,6 @@ textarea.form-control {
     }
 }
 
-.form-group {
-    margin-bottom: 15px
-}
 
 
 fieldset {
@@ -1169,7 +1166,8 @@ fieldset {
     position: relative;
     display: block;
     margin-top: 10px;
-    margin-bottom: 10px
+    margin-bottom: 26px;
+    line-height: 2.8em;
 }
 
 .checkbox.disabled label,.radio.disabled label,fieldset[disabled] .checkbox label,fieldset[disabled] .radio label {
@@ -1331,10 +1329,10 @@ fieldset.gc-chckbxrdio {
 .gc-chckbxrdio legend {
     float: none;
     font-family: "Lato";
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     margin-bottom: 15px;
-    margin-top: 0
+    margin-top: 0;
 }
 
 .gc-chckbxrdio input[type=checkbox],.gc-chckbxrdio input[type=radio] {
@@ -1356,16 +1354,16 @@ fieldset.gc-chckbxrdio {
 }
 
 .gc-chckbxrdio input[type=checkbox]+label::before,.gc-chckbxrdio input[type=radio]+label::before {
-    border: 14px solid #fff;
+    border: 13px solid #fff;
     -webkit-box-shadow: 0 0 0 2px #333;
     box-shadow: 0 0 0 2px #000;
     content: "";
     display: inline-block;
-    height: 18px;
+    height: 19px;
     left: 0;
     position: absolute;
     top: 2px;
-    width: 18px
+    width: 19px
 }
 
 .gc-chckbxrdio input[type=checkbox]+label:hover::before,.gc-chckbxrdio input[type=radio]+label:hover::before {
@@ -1383,8 +1381,21 @@ fieldset.gc-chckbxrdio {
 }
 
 .gc-chckbxrdio input[type=checkbox]:focus+label::before,.gc-chckbxrdio input[type=radio]:focus+label::before {
-    -webkit-box-shadow: 0 0 0 2px #000,0 0 8px 4px #3b99fc;
-    box-shadow: 0 0 0 2px #000,0 0 8px 4px #3b99fc
+    outline: 4px solid #0535d2;
+    outline-offset: 4px;
+}
+
+.gc-chckbxrdio input[type=checkbox]:focus + label::before,
+.gc-chckbxrdio input[type=radio]:focus + label::before {
+    box-shadow: 0 0 0 2px #0535d2;
+}
+
+.gc-chckbxrdio input[type=radio]:focus + label::before {
+    background: #0535d2;
+}
+
+.gc-chckbxrdio input[type=radio]:checked:focus + label::before {
+    background: #0535d2;
 }
 
 .gc-chckbxrdio input[type=radio]+label::before {
