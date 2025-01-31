@@ -33,7 +33,7 @@ export const ChatPipelineService = {
         conversationHistory = conversationHistory.filter(message => message.sender === 'ai');
         if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].interaction.answer.answerType !== 'question') {
             const lastMessage = conversationHistory[conversationHistory.length - 1];
-            context = lastMessage.context;
+            context = lastMessage.interaction.context;
         } else {
             // if initial questions or last response type was a questions
             await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GETTING_CONTEXT, onStatusUpdate);

@@ -124,9 +124,9 @@ const AnswerService = {
         const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
         if (answerMatch) {
             content = answerMatch[1].trim();
-            content = content.replace(/<citation-head>[\s\S]*?<\/citation-head>/s, '').trim();
-            content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
         }
+        content = content.replace(/<citation-head>[\s\S]*?<\/citation-head>/s, '').trim();
+        content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
 
 
         // Check response types
