@@ -28,8 +28,7 @@ export default async function handler(req, res) {
         const { query } = req.body;
 
         try {
-            const result = await performSearch(query);
-            res.json({ content: result });
+            res.json(await performSearch(query));
         } catch (error) {
             console.error('Error processing search:', error);
             res.status(500).json({ error: 'Internal Server Error' });

@@ -1,6 +1,8 @@
 // api/chat-logs.js to retrieve logs from the database for evaluation purposes
 import dbConnect from './db-connect.js';
-import { ChatInteraction } from '../models/chat/interaction.js';
+import { Chat } from '../models/chat.js';
+
+
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -11,44 +13,38 @@ export default async function handler(req, res) {
     await dbConnect();
     console.log('DB Connected in chat-logs endpoint');
 
-    const totalCount = await ChatInteraction.countDocuments();
+    const totalCount = await Chat.countDocuments();
     console.log('Total documents in collection:', totalCount);
 
     const days = parseInt(req.query.days) || 1;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    const logs = await ChatInteraction.find({
-      timestamp: { $gte: startDate }
+    const chats = await Chat.find({
+      createdAt: { $gte: startDate }
     })
-    .sort({ timestamp: -1 })
-    .lean();
-
-    // Transform the data to match what the frontend expects
-    const transformedLogs = logs.map(log => ({
-      timestamp: log.timestamp,
-      redactedQuestion: log.redactedQuestion,
-      aiResponse: log.aiResponse,
-      aiService: log.aiService,
-      referringUrl: log.referringUrl,
-      citationUrl: log.citationUrl,
-      originalCitationUrl: log.originalCitationUrl,
-      confidenceRating: log.confidenceRating,
-      feedback: log.feedback,
-      expertFeedback: log.expertFeedback || {
-        veryIncorrect: false,
-        somewhatIncorrect: false,
-        incomplete: false,
-        citationVeryIncorrect: false,
-        citationSomewhatIncorrect: false,
-        expertCitationUrl: ''
-      }
-    }));
-
+      .populate({
+        path: 'interactions',
+        populate: [
+          { path: 'context'},
+          { path: 'expertFeedback' },
+          { path: 'question' },
+          {
+            path: 'answer',
+            populate: [
+              { path: 'sentences' },
+              { path: 'citation' }
+            ]
+          }
+        ]
+      })
+      .sort({ createdAt: -1 })
+      .lean({ virtuals: true, versionKey: false, id: false });
     return res.status(200).json({
       success: true,
-      logs: transformedLogs
+      logs: chats
     });
+
 
   } catch (error) {
     console.error('API Error:', error);

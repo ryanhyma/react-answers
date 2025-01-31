@@ -24,6 +24,11 @@ import anthropicBatchCancelHandler from '../api/anthropic-batch-cancel.js';
 import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
 import anthropicContextAgentHandler from '../api/anthropic-context.js';
 import openAIContextAgentHandler from '../api/openai-context.js';
+import dbChatSessionHandler from '../api/db-chat-session.js';
+import dbVerifyChatSessionHandler from '../api/db-verify-chat-session.js';
+import dbCheckhandler from '../api/db-check.js';
+import dbPersistInteraction from '../api/db-persist-interaction.js';
+import dbPersistFeedback from '../api/db-persist-feedback.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,11 +66,15 @@ if (process.env.REACT_APP_ENV === 'development') {
   console.log('Running in production mode');
 }
 
+app.post('/api/db-persist-feedback', dbPersistFeedback);
+app.post('/api/db-persist-interaction', dbPersistInteraction);
+app.get('/api/db-chat-session', dbChatSessionHandler);
 
-
+app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);
 app.post("/api/openai-message", openAIHandler);
 
 app.post('/api/anthropic-message', anthropicAgentHandler);
+
 
 app.post('/api/anthropic-context', anthropicContextAgentHandler);
 
@@ -100,6 +109,8 @@ app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHand
 app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
+
+app.get('/api/db-check', dbCheckhandler);
 
 
 

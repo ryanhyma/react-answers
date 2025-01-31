@@ -1,17 +1,21 @@
 // src/components/admin/Evaluator.js
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from '../../hooks/useTranslations.js';
 import {
     GcdsContainer,
     GcdsHeading,
     GcdsText,
+    GcdsInput
 } from '@cdssnc/gcds-components-react';
 import MessageService from '../../services/AnswerService.js';
 import ContextService from '../../services/ContextService.js';
 import '../../styles/App.css';
 import AdminCodeInput from '../admin/AdminCodeInput.js';
+import * as XLSX from 'xlsx';
 
 
-const Evaluator = ({ selectedEntries, ...otherProps }) => {
+const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
+    const { t } = useTranslations(lang);
     const [file, setFile] = useState(null);
     const [processing, setProcessing] = useState(false);
     const [results, setResults] = useState(null);
@@ -22,6 +26,8 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     const [batchStatus, setBatchStatus] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState('en');
     const [adminCode, setAdminCode] = useState('');
+    const [batchName, setBatchName] = useState('');
+
     const correctAdminCode = '2024';
 
     const handleFileChange = (event) => {
@@ -34,7 +40,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
 
         if (!uploadedFile.name.endsWith('.csv')) {
-            setError('Please upload a CSV file that you downloaded from the Feedback Viewer');
+            setError(t('batch.upload.error.invalidFile'));
             setFile(null);
             return;
         }
@@ -66,68 +72,43 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         }
     };
 
-    const isValidLine = (line) => {
-        // Remove all commas and whitespace
-        const cleanLine = line.replace(/,/g, '').trim();
-        return cleanLine.length > 0;
-    };
 
-    const parseCSVLine = (line) => {
-        const values = [];
-        let currentValue = '';
-        let withinQuotes = false;
 
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
 
-            if (char === '"') {
-                withinQuotes = !withinQuotes;
-                continue;
-            }
-
-            if (char === ',' && !withinQuotes) {
-                values.push(currentValue.trim());
-                currentValue = '';
-                continue;
-            }
-
-            currentValue += char;
-        }
-
-        values.push(currentValue.trim());
-        return values;
-    };
 
     const processCSV = (csvText) => {
         try {
-            const lines = csvText
-                .split(/\r?\n/)
-                .filter(line => isValidLine(line));
+            // Parse the CSV content using XLSX
+            const workbook = XLSX.read(csvText, { type: 'string' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
 
-            const headers = parseCSVLine(lines[0]);
-            const problemDetailsIndex = headers.findIndex(h => h.trim().toLowerCase() === 'problem details' || h.trim().toLowerCase() === 'question');
+            // Convert sheet data to JSON
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
-
-            if (problemDetailsIndex === -1) {
-                throw new Error('Required column "Problem Details" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
+            // Validate and extract data
+            if (!jsonData.length) {
+                throw new Error('The CSV file is empty or invalid.');
             }
 
-            const entries = lines.slice(1)
-                .map(line => {
+            const headers = jsonData[0].map(header => header.trim().toUpperCase());
+            const problemDetailsIndex = headers.findIndex(h => h === 'PROBLEM DETAILS' || h === 'QUESTION' || h === 'REDACTEDQUESTION');
 
-                    const values = parseCSVLine(line);
-                    
+            if (problemDetailsIndex === -1) {
+                throw new Error('Required column "PROBLEM DETAILS/REDACTEDQUESTION" not found in CSV file. Please ensure you are using a file with that column or downloaded from the Feedback Viewer.');
+            }
+
+            const entries = jsonData.slice(1)
+                .map(row => {
                     const entry = {};
-
                     headers.forEach((header, index) => {
-                        const key = header.trim().toLowerCase() === 'problem details' ? 'question' : header.trim();
-                        entry[key] = values[index]?.trim() || '';
+                        const key = header === 'PROBLEM DETAILS' ? 'REDACTEDQUESTION' : header;
+                        entry[key] = row[index]?.trim() || '';
                     });
-
                     console.log('Processing entry:', entry);
                     return entry;
                 })
-                .filter(entry => entry['question']); // Only filter based on 'question' presence
+                .filter(entry => entry['REDACTEDQUESTION']); // Only filter based on 'QUESTION' presence
 
             console.log(`Found ${entries.length} valid entries to process`);
             return entries;
@@ -138,7 +119,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     };
 
     const needsContext = (entries) => {
-        return entries.some(entry => !entry.context_output_tokens);
+        return entries.some(entry => !entry["CONTEXT.CREATEDAT"]);
     };
 
 
@@ -153,12 +134,12 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
             if (needsContext(entries)) {
                 console.log('Some entries need context. Deriving context batch processing...');
-                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI);
+                const result = await ContextService.deriveContextBatch(entries, selectedLanguage, selectedAI, batchName);
                 console.log('Context batch started: ' + result.batchId);
                 return result;
             } else {
                 try {
-                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage);
+                    const data = await MessageService.sendBatchMessages(selectedAI, entries, selectedLanguage, batchName);
 
                     console.log(`${selectedAI} batch response:`, data);
 
@@ -222,12 +203,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setProcessing(false);
         setResults(null);
         setError(null);
-        setSelectedAI('anthropic');
         setFileUploaded(false);
         setBatchId(null);
         setBatchStatus(null);
-        setSelectedLanguage('en');
-        setAdminCode('');
         document.getElementById('csvFile').value = ''; // Reset file input
     };
 
@@ -263,16 +241,21 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
         setAdminCode(e.target.value);
     };
 
+    const handleBatchNameChange = (e) => {
+        setBatchName(e.target.value);
+    };
+
     return (
         <GcdsContainer className="mb-600">
             <div className="steps-container">
                 <div className="step">
 
-                    <GcdsText>Select the AI service, language, and your CSV file. Use one you've downloaded and cleaned from the Feedback viewer.</GcdsText>
-                    <GcdsText>CSV must contain:</GcdsText>
-                    <ul><li>Problem Details/Question - required</li>
-                        <li>URL - optional </li>
-                        <li>Context Properties - optional - If left blank, the batch will first derive context, if provided it will use the provided context to retrieve answers</li>
+                    <GcdsText>{t('batch.upload.intro')}</GcdsText>
+                    <GcdsText>{t('batch.upload.csvRequirements.title')}</GcdsText>
+                    <ul>
+                        <li>{t('batch.upload.csvRequirements.items.problemDetails')}</li>
+                        <li>{t('batch.upload.csvRequirements.items.url')}</li>
+                        <li>{t('batch.upload.csvRequirements.items.context')}</li>
                     </ul>
 
                     <form onSubmit={handleUpload} className="mt-400">
@@ -280,13 +263,27 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             code={adminCode}
                             onChange={handleAdminCodeChange}
                             correctCode={correctAdminCode}
-                            label="Enter Admin Code to enable file upload:"
+                            label={t('batch.upload.adminCode')}
                         />
+                        <div className="mrgn-bttm-20">
+                            <label htmlFor="batchName" className="mrgn-bttm-10 display-block">
+                                {t('batch.upload.batchName')}
+                            </label>
+                            <input
+                                type="text"
+                                id="batchName"
+                                value={batchName}
+                                onChange={handleBatchNameChange}
+                                className="mrgn-bttm-10"
+                            />
+                        </div>
+
+
 
                         <div className="ai-toggle">
                             <fieldset className="ai-toggle_fieldset">
                                 <div className="ai-toggle_container">
-                                    <legend className="ai-toggle_legend">AI Service:</legend>
+                                    <legend className="ai-toggle_legend">{t('batch.upload.aiService.label')}</legend>
 
                                     <div className="flex-center">
                                         <input
@@ -298,7 +295,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label className="mrgn-rght-15" htmlFor="chatgpt">OpenAI</label>
+                                        <label className="mrgn-rght-15" htmlFor="chatgpt">{t('batch.upload.aiService.openai')}</label>
                                     </div>
                                     <div className="ai-toggle_option">
                                         <input
@@ -310,7 +307,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleAIToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="claude">Anthropic</label>
+                                        <label htmlFor="claude">{t('batch.upload.aiService.anthropic')}</label>
                                     </div>
                                 </div>
                             </fieldset>
@@ -319,7 +316,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                         <div className="language-toggle mrgn-bttm-20">
                             <fieldset className="ai-toggle_fieldset">
                                 <div className="flex-center">
-                                    <legend className="ai-toggle_legend">Evaluation Language:</legend>
+                                    <legend className="ai-toggle_legend">{t('batch.upload.language.label')}</legend>
                                     <div className="flex-center mrgn-rght-15">
                                         <input
                                             type="radio"
@@ -330,7 +327,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label className="mrgn-rght-15" htmlFor="english">English</label>
+                                        <label className="mrgn-rght-15" htmlFor="english">{t('batch.upload.language.english')}</label>
                                     </div>
                                     <div className="flex-center">
                                         <input
@@ -342,7 +339,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                             onChange={handleLanguageToggle}
                                             className="ai-toggle_radio-input"
                                         />
-                                        <label htmlFor="french">French</label>
+                                        <label htmlFor="french">{t('batch.upload.language.french')}</label>
                                     </div>
                                 </div>
                             </fieldset>
@@ -350,7 +347,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
                         <div className="file-input-container mrgn-bttm-20">
                             <label htmlFor="csvFile mrgn-bttm-10">
-                                Select feedback CSV file:
+                                {t('batch.upload.file.label')}
                             </label>
                             <input
                                 type="file"
@@ -360,7 +357,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 className="mrgn-bttm-10 display-block"
                             />
                             {file && (
-                                <div>Selected file: {file.name}</div>
+                                <div>{t('batch.upload.file.selected')} {file.name}</div>
                             )}
                         </div>
 
@@ -376,7 +373,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                 className="primary-button force-style-button"
                                 disabled={adminCode !== correctAdminCode}
                             >
-                                Upload File
+                                {t('batch.upload.buttons.upload')}
                             </button>
                         )}
 
@@ -384,7 +381,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                             <div className="mt-4">
                                 {batchStatus === 'preparing' && selectedAI === 'openai' && (
                                     <div className="text-sm text-gray-500 mt-2">
-                                        This may take up to a minute to start...
+                                        {t('batch.upload.status.openaiWait')}
                                     </div>
                                 )}
                             </div>
@@ -392,9 +389,9 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
 
                         {results && (
                             <div className="results-section mt-400">
-                                <GcdsHeading tag="h3">Processing Complete</GcdsHeading>
-                                <GcdsText>File: {results.fileName}</GcdsText>
-                                <GcdsText>Entries processed: {results.entriesProcessed}</GcdsText>
+                                <GcdsHeading tag="h3">{t('batch.upload.results.title')}</GcdsHeading>
+                                <GcdsText>{t('batch.upload.results.file')} {results.fileName}</GcdsText>
+                                <GcdsText>{t('batch.upload.results.entriesProcessed')} {results.entriesProcessed}</GcdsText>
                             </div>
                         )}
 
@@ -404,7 +401,7 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
                                     onClick={handleProcessFile}
                                     className="secondary-button force-style-button"
                                 >
-                                    Start Processing
+                                    {t('batch.upload.buttons.startProcessing')}
                                 </button>
 
                             </div>
@@ -418,4 +415,4 @@ const Evaluator = ({ selectedEntries, ...otherProps }) => {
     );
 };
 
-export default Evaluator;
+export default BatchUpload;

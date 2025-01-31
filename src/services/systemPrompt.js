@@ -100,7 +100,7 @@ async function loadSystemPrompt(language = 'en', context) {
     const fullPrompt = `
       ${ROLE}
 
-      ## Current Context
+      ## Current date
       Today is ${currentDate}.
       ## Official language context:
       ${languageContext}
@@ -118,10 +118,12 @@ async function loadSystemPrompt(language = 'en', context) {
       ${department ? `## Department-Specific Scenarios\n${content.scenarios}` : ''}
 
       ${citationInstructions}
+
+    Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
     console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
-    console.log(fullPrompt); //temporary
+    // console.log(fullPrompt); //temporary
     return fullPrompt;
 
   } catch (error) {

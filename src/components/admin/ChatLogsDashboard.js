@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import AdminCodeInput from './AdminCodeInput.js';
+import { getApiUrl } from '../../utils/apiToUrl.js';
+import DataTable from 'datatables.net-react';
+import DT from 'datatables.net-dt';
+import ExportService from '../../services/ExportService.js';
+DataTable.use(DT);
+
 
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [adminCode, setAdminCode] = useState('');
+  // TODO this is in plain site we need an admin module
   const correctAdminCode = 'noPII';
 
   const fetchLogs = async () => {
@@ -17,13 +24,10 @@ const ChatLogsDashboard = () => {
 
     setLoading(true);
     try {
-      const API_URL = process.env.NODE_ENV === 'production' 
-  ? '/api/chat-logs?days='  // Vercel serverless function
-  : `http://localhost:3001/api/db-chat-logs?days=`;
-      const response = await fetch(API_URL + timeRange);
+      const response = await fetch(getApiUrl("db-chat-logs?days=") + timeRange);
       const data = await response.json();
       console.log('API Response:', data);
-      
+
       if (data.success) {
         setLogs(data.logs || []);
       } else {
@@ -37,120 +41,29 @@ const ChatLogsDashboard = () => {
     setLoading(false);
   };
 
+  const filename = (ext) => {
+    let name = 'chat-logs-' + timeRange + '-' + new Date().toISOString();
+    return name + '.' + ext;
+  };
+
+
   const downloadJSON = () => {
-    const blob = new Blob([JSON.stringify(logs, null, 2)], { 
-      type: 'application/json' 
-    });
-    const url = window.URL.createObjectURL(blob);
+    const json = JSON.stringify(logs, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chat-logs-${new Date().toISOString()}.json`;
-    document.body.appendChild(a);
+    a.download = filename('json');
     a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
   };
 
   const downloadCSV = () => {
-    const columns = [
-      'timestamp',
-      'redactedQuestion',
-      'aiService',
-      'confidenceRating',
-      'citationUrl',
-      'originalCitationUrl',
-      'sentence1',
-      'sentence2',
-      'sentence3',
-      'sentence4',
-      'referringUrl',
-      'feedback',
-      'expertFeedback.totalScore',
-      'expertFeedback.sentence1Score',
-      'expertFeedback.sentence2Score',
-      'expertFeedback.sentence3Score',
-      'expertFeedback.sentence4Score',
-      'expertFeedback.citationScore',
-      'expertFeedback.answerImprovement',
-      'expertFeedback.expertCitationUrl'
-    ];
+    ExportService.export(logs, filename('csv'));
+  };
 
-    // Create CSV header
-    const header = columns.map(column => {
-      return column.includes('.') ? column.split('.')[1] : column;
-    }).join(',');
-
-    const extractResponseData = (aiResponse) => {
-      const data = {
-        sentences: {
-          sentence1: '',
-          sentence2: '',
-          sentence3: '',
-          sentence4: ''
-        }
-      };
-
-      if (!aiResponse) return data;
-
-      // Extract sentences
-      if (aiResponse.includes('<s-')) {
-        const matches = aiResponse.match(/<s-(\d)>(.*?)<\/s-\1>/g);
-        if (matches) {
-          matches.forEach((match, index) => {
-            if (index < 4) {
-              const content = match.replace(/<\/?s-\d>/g, '').trim();
-              data.sentences[`sentence${index + 1}`] = content;
-            }
-          });
-        }
-      } else {
-        data.sentences.sentence1 = aiResponse.trim();
-      }
-
-      return data;
-    };
-
-    // Create CSV rows
-    const rows = logs.map(log => {
-      const extractedData = extractResponseData(log.aiResponse);
-      
-      return columns.map(column => {
-        let value = '';
-        if (column.includes('.')) {
-          const [parent, child] = column.split('.');
-          value = log[parent]?.[child] || '';
-        } else if (column.startsWith('sentence')) {
-          value = extractedData.sentences[column] || '';
-        } else if (column === 'confidenceRating') {
-          value = log.confidenceRating || '';
-        } else if (column === 'citationUrl') {
-          value = log.citationUrl || '';
-        } else if (column === 'originalCitationUrl') {
-          value = log.originalCitationUrl || '';
-        } else {
-          value = log[column] || '';
-        }
-        const escapedValue = value.toString().replace(/"/g, '""');
-        return `"${escapedValue}"`;
-      }).join(',');
-    });
-
-    // Combine header and rows
-    const csv = [header, ...rows].join('\n');
-
-    // Add UTF-8 BOM and create blob
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
-    
-    // Create and download file
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chat-logs-${new Date().toISOString()}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+  const downloadExcel = () => {
+    ExportService.export(logs, filename('xlsx'));
   };
 
   const handleAdminCodeChange = (e) => {
@@ -168,8 +81,8 @@ const ChatLogsDashboard = () => {
 
       <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
-          <label 
-            htmlFor="timeRange" 
+          <label
+            htmlFor="timeRange"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
             Time range
@@ -187,17 +100,17 @@ const ChatLogsDashboard = () => {
           </select>
         </div>
 
-        <GcdsButton 
+        <GcdsButton
           onClick={fetchLogs}
           disabled={loading || adminCode !== correctAdminCode}
           className="me-400 hydrated mrgn-tp-1r"
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
-        
+
         {logs.length > 0 && adminCode === correctAdminCode && (
           <>
-            <GcdsButton 
+            <GcdsButton
               onClick={downloadJSON}
               disabled={loading}
               className="me-400 hydrated mrgn-tp-1r"
@@ -205,12 +118,19 @@ const ChatLogsDashboard = () => {
               Download JSON
             </GcdsButton>
 
-            <GcdsButton 
+            <GcdsButton
               onClick={downloadCSV}
               disabled={loading}
               className="me-400 hydrated mrgn-tp-1r"
             >
               Download CSV
+            </GcdsButton>
+            <GcdsButton
+              onClick={downloadExcel}
+              disabled={loading}
+              className="me-400 hydrated mrgn-tp-1r"
+            >
+              Download Excel
             </GcdsButton>
           </>
         )}
@@ -224,38 +144,20 @@ const ChatLogsDashboard = () => {
         ) : logs.length > 0 ? (
           <div className="p-4">
             <p className="mb-4 text-gray-600">Found {logs.length} chat interactions. Download the logs to see the full set and details.</p>
-            <div className="max-h-96 overflow-y-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User Query
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Response Length
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {logs.map((log, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(log.timestamp).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-900">
-                        {(log.redactedQuestion || '').substring(0, 50)}...
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {(log.aiResponse || '').length} chars
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              data={logs}
+              columns={[
+                { title: 'Date', data: 'createdAt', render: (data) => data ? data : '' },
+                { title: 'Chat ID', data: 'chatId', render: (data) => data ? data : '' },
+                { title: 'Interactions', data: 'interactions', render: (data) => data ? data.length : 0 },
+              ]}
+              options={{
+                paging: true,
+                searching: true,
+                ordering: true,
+                order: [[0, 'desc']], // Order by Date (column index 0) descending
+              }}
+            />
           </div>
         ) : (
           <div className="p-4">

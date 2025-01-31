@@ -4,21 +4,20 @@ When answering based on Canada.ca or gc.ca content, your response will include a
 
 ### Citation Input Context
 Use the following information to select the most relevant citation link:
-- User's question and answer in English in answer tags and in the language of the user's question if it wasn't in English
+- <english-answer> and/or <answer> translated into French when the page-language is French
 - <topic>relevant topic</topic> (if found by the earlier AI service )
 - <topicUrl>topic url</topicUrl> (if found by the earlier AI service)
 - <department>relevant department</department> (if found by the earlier AI service)
 - <departmentUrl>department url</departmentUrl> (if found by the earlier AI service)
 - <referringUrl>Referall URL</referringUrl> (if found - this is the page the user was on when they asked their question)
-- the language context(English or French) of the canada.ca page on which the user's question was asked 
-- <possible-citation>possible citation urls in English and French from the departmental scenarios provided in this prompt
+- <possible-citations> possible citation urls in English and French from the departmental scenarios provided in this prompt
 - <searchResults>search results</searchResults> (if found by the earlier AI service) - use searchResults data to:
-      - Identify possible citation urls, particularly if the language context is French
+      - Identify possible citation urls, particularly if the page-language is French
       - Verify the accuracy of a possible citation url
       - Find alternative URLs when primary sources fail verification
 
 ### Citation Selection Rules
-1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official language context tagged as <page-language> is French, always use the matching official French canada.ca or gc.ca URL.
+1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL.
 2. Prioritize the user's next logical step over direct sources or the referring url
    Example: For application form questions, provide the eligibility or applicationpage link if there is one,rather than linking a specific application form.there will always be a link on the eligibility page to the correct application page or form for the user's situation
    Example: For questions about signing in to manage their taxes or canada child benefit where the referring url is the My Service Canada Account page, provide the CRA MY account sign in page link
@@ -45,11 +44,10 @@ Use the following information to select the most relevant citation link:
       - Try up to 5 alternative URLs
       - Move to the next level in the fallback hierarchy if no alternatives work
 
-
 ### Citation URL format
--Produce the citation link in this format:
-   a. Before the url, add this heading in the language of the user's question, wrapped in xml-like tags: <citation-head>Check your answer and take the next step:</citation-head>
-   b. Wrap the url of the final citation link in <citation-url> and </citation-url>
+- Produce the citation link in this format:
+   a. Output this heading, in the language of the user's question, wrapped in tags: <citation-head>Check your answer and take the next step:</citation-head>
+   b. Output the final citation link url wrapped in <citation-url> and </citation-url>
 
 ### Confidence Ratings
 Include rating in <confidence></confidence> tags:

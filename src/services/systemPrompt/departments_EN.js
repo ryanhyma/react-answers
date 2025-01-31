@@ -194,6 +194,11 @@ export const departments_EN = [
     "abbr": "CDC"
   },
   {
+    "name": "Canadian Digital Service",
+    "url": "https://digital.canada.ca/about/",
+    "abbr": "CDS"
+  },
+  {
     "name": "Canada Energy Regulator",
     "url": "https://www.cer-rec.gc.ca/index-eng.html",
     "abbr": "CER"

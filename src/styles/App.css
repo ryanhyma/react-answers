@@ -141,7 +141,7 @@
     padding: 1.5em 1.5em 1.5em 1.5em;
     text-align: center;
     text-wrap: balance;
-    border: 1px solid #33465c;
+    border: 1px solid var(--gcds-color-blue-100);
     margin-top: -1px;
 }
 .privacy-preview p {
@@ -332,7 +332,8 @@
  .feedback-survey-link:hover {
      text-decoration: none;
 }
- .error-message {
+
+.error-message {
      color: var(--gcds-color-red-900);
      background-color: var(--gcds-color-red-100);
      border: 1px solid var(--gcds-color-red-100);
@@ -340,7 +341,19 @@
      padding: 0.75rem;
      margin-bottom: 10px;
 }
-.error-message i {
+
+
+.privacy-error-message {
+    color: #33465c;
+    background-color: #F7FAFD;
+    border: 1px solid var(--gcds-color-blue-100);
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.redacted-error-message i {
     margin-right: 6px;
 }
 
@@ -472,6 +485,7 @@ gcds-button.send-button {
 
 
 /* Chat app container styles - this is still a hot mess to clean up, just getting the styles out of inline */
+
 .ai-toggle {
     margin-bottom: 10px;
     }
@@ -647,19 +661,13 @@ gcds-container:first-of-type {
         }
       }
 
-#temp-hint {
+.loading-hint-text {
     margin-top: -20px;
-    margin-bottom: 40px;
     margin-left: 10px;
     font-size: 0.85em;
 }
 
-#temp-hint i {
-    margin-right: 6px;
-    color: var(--gcds-color-blue-850)
-}
-
-#temp-hint p {
+.loading-hint-text {
     color: var(--gcds-color-blue-850);
     font-size: 18px;
 }
@@ -789,8 +797,24 @@ details > summary:first-of-type {
     font-family: "Noto Sans"
 }
 
-.btn-primary-sm:hover {
+.btn-primary {
+    margin-top: 10px;
+    padding: 10px 18px;
     background-color: var(--gcds-color-blue-900);
+    font-weight: 500;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1.55em;
+    font-family: "Noto Sans"
+}
+
+.btn-primary-sm:hover,
+.btn-primary:hover,
+.btn-primary-send:hover {
+    background-color: var(--gcds-color-blue-700);
 }
 
 .btn-secondary-sm:hover {
@@ -819,8 +843,6 @@ summary:focus,
     font-weight: 500;
     border-radius: 4px;
     padding: 0.35rem;
-    margin-bottom: 10px;
-    margin-top: -10px;
 }
 
 .character-limit {
@@ -831,11 +853,156 @@ summary:focus,
     font-weight: 500;
     border-radius: 4px;
     padding: 0.35rem;
-    margin-bottom: 10px;
-    margin-top: -10px;
 }
 
 .character-limit i,
 .character-warning i {
     padding-right: 4px;
 }
+
+/* Container for the form elements */
+.field-container {
+    max-width: 800px;
+  }
+  
+  /* Style the label */
+  .field-container label {
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+.hr {
+    padding-top: 30px;
+    margin-top: 60px;
+    border-top: 1px solid #ccc;
+  }
+
+  /* Container for the textarea and button */
+  .form-group {
+    display: flex;
+    position: relative;
+    border: 2px solid #333;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  
+  /* Style the textarea */
+  .form-group textarea {
+    flex: 1;
+    padding: 8px;
+    min-height: 64px;
+    resize: none;
+    overflow: hidden;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+  
+  
+  /* Button styling */
+  .btn-primary-send {
+    margin: 0;
+    padding: 8px 18px;
+    background-color: #26374a !important;
+    font-weight: 500;
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1.55em;
+    font-family: "Noto Sans";
+    height: 70px;
+    align-self: flex-start;
+    display: none;
+  }
+  
+  /* Show button with transition */
+  .btn-primary-send.visible {
+    display: inline-block;
+    animation: slideIn 0.3s ease forwards;
+  }
+  
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Character counter */
+  .char-counter {
+    position: absolute;
+    bottom: -20px;
+    right: 0;
+    font-size: 0.75em;
+    color: #666;
+  }
+  
+  /* Label styling */
+  .field-container label {
+    font-size: 24px;
+    font-family: "Lato";
+    font-weight: bold;
+  }
+  
+  /* Hint text styling */
+  .hint-text {
+    font-size: 20px;
+    color: #333;
+    font-family: "Noto Sans";
+    padding-bottom: 20px;
+    display: block;
+  }
+  
+  .field-container:focus-within .hint-text,
+  .field-container:focus-within label {
+    color: #0535d2;
+  }
+  
+  /* Focus states */
+  .form-group:focus-within {
+    border-color: #0535d2;
+    outline: 3px solid #0535d2;
+    outline-offset: 0.225rem;
+    box-shadow: 0 0 0 0.125rem #fff;
+  }
+  
+  textarea:focus {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+  
+    /* Button text and icon styles */
+  .button-text {
+    display: inline !important;
+  }
+  
+  .btn-primary-send .button-icon,
+  .btn-primary-send svg.button-icon {
+    display: none !important;
+  }
+  
+  /* Media query for mobile */
+  @media screen and (max-width: 600px) {
+    .button-text {
+      display: none !important;
+    }
+  
+    .btn-primary-send .button-icon,
+    .btn-primary-send svg.button-icon {
+      display: inline !important;
+    }
+  
+    .form-group button {
+      padding: 8px 18px;
+      min-width: 44px;
+    }
+  }
