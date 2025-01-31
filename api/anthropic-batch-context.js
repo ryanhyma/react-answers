@@ -1,7 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
 import dbConnect from './db-connect.js';
 import { getModelConfig } from '../config/ai-models.js';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
+import { Interaction } from '../models/interaction.js';
+import { Context } from '../models/context.js';
+import { Question } from '../models/question.js';
+
 
 const modelConfig = getModelConfig('anthropic', 'claude-3-5-haiku-20241022');
 const anthropic = new Anthropic({
@@ -32,12 +36,12 @@ export default async function handler(req, res) {
 
         const batch = await anthropic.beta.messages.batches.create({
             requests: req.body.requests.map((request, index) => ({
-                custom_id: `eval-${index}`,
+                custom_id: `batch-${index}`,
                 params: {
                     model: modelConfig.name,
                     messages: [{ role: "user", content: request.message }],
                     max_tokens: modelConfig.maxTokens,
-                    system: request.systemPrompt + request.searchResults,
+                    system: request.systemPrompt + "<searchResults>" + request.searchResults.results + "</searchResults>",
                     temperature: modelConfig.temperature
                 }
             }))
@@ -55,13 +59,37 @@ export default async function handler(req, res) {
         const savedBatch = new Batch({
             batchId: batch.id,
             type: "context",
-            provider: "anthropic",
-            entries: req.body.requests.map((request, index) => ({
-                entry_id: `eval-${index}`,
-                question: request.message,
-                searchResults: request.searchResults,
-            }))
+            aiProvider: "anthropic",
+            pageLanguage: req.body.lang,
+            referringUrl: req.body.referringUrl,
+            name: req.body.batchName
+
         });
+        await savedBatch.save();
+        for (const [index, request] of req.body.requests.entries()) {
+            const context = new Context({
+                searchProvider: request.searchResults.provider,
+                searchResults: request.searchResults.results,  // Convert to string as per schema
+            });
+            await context.save();
+
+            // Create Question document
+            const question = new Question({
+                redactedQuestion: request.message
+            });
+            await question.save();
+
+            // Create Interaction with references
+            let interaction = new Interaction({
+                interactionId: `batch-${index}`,
+                question: question._id,  // Store reference to Question
+                context: context._id     // Store reference to Context
+            });
+            await interaction.save();
+
+            // Add interaction reference to batch
+            savedBatch.interactions.push(interaction._id);
+        }
         await savedBatch.save();
 
         logString += 'Batch saved successfully to the database.\n';
