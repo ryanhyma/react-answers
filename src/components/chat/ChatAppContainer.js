@@ -158,6 +158,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         }]);
 
         setTurnCount(prev => prev + 1);
+        
         setShowFeedback(true);
         setIsLoading(false);
 

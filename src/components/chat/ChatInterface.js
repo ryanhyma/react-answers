@@ -204,18 +204,18 @@ const ChatInterface = ({
                 ) : (
                   formatAIResponse(message.aiService, message)
                 )}
-                {message.id === messages.length - 1 &&
+                {message.id === messages[messages.length - 1].id &&
                   showFeedback &&
                   !message.error &&
                   (message.interaction.answer.answerType === 'normal') && (
-                    (<FeedbackComponent
+                    <FeedbackComponent
                       onFeedback={handleFeedback}
                       lang={lang}
                       sentenceCount={getLastMessageSentenceCount()}
                       chatId={chatId}
                       userMessageId={message.id}
                     />
-                    ))}
+                  )}
               </>
             )}
           </div>
