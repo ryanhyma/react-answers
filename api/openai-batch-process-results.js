@@ -1,6 +1,10 @@
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 import OpenAI from 'openai';
 import dbConnect from './db-connect.js';
+import { Citation } from '../models/citation.js';
+import AnswerService from '../src/services/AnswerService.js';
+import { Answer } from '../models/answer.js';
+import { Context } from '../models/context.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -37,11 +41,11 @@ const handleOpenAI = async (batch) => {
 
           const result = JSON.parse(line.trim());
           const customId = result.custom_id;
-          const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);
+          batch = await Batch.findById(batch._id).populate('interactions');
+          const interaction = batch.interactions.find(interaction => interaction.interactionId === customId);
 
-          if (entryIndex !== -1) {
-            let updatedEntry = null;
 
+          if (interaction) {
             if (batch.type === 'context') {
               const response = result.response.body.choices[0].message.content;
               const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
@@ -49,57 +53,40 @@ const handleOpenAI = async (batch) => {
               const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
               const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
 
-              updatedEntry = {
-                question: batch.entries[entryIndex].question,
-                searchResults: batch.entries[entryIndex].searchResults,
-                entry_id: customId,
-                topic: topicMatch ? topicMatch[1] : null,
-                topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
-                department: departmentMatch ? departmentMatch[1] : null,
-                departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null,
-                context_model: result.response.body.model,
-                context_input_tokens: result.response.body.usage.prompt_tokens,
-                context_output_tokens: result.response.body.usage.completion_tokens,
-                context_cached_creation_input_tokens: '',
-                context_cached_read_input_tokens: '',
-              };
+              let context = await Context.findById(interaction.context);
+              context.topic = topicMatch ? topicMatch[1] : context.topic;
+              context.topicUrl = topicUrlMatch ? topicUrlMatch[1] : context.topicUrl;
+              context.department = departmentMatch ? departmentMatch[1] : context.department;
+              context.departmentUrl = departmentUrlMatch ? departmentUrlMatch[1] : context.departmentUrl;
+              context.model = result.result.message.model;
+              context.inputTokens = result.result.message.usage.input_tokens;
+              context.outputTokens = result.result.message.usage.output_tokens;
+              context.cachedCreationInputTokens = result.result.message.usage.cache_creation_input_tokens;
+              context.cachedReadInputTokens = result.result.message.usage.cache_read_input_tokens;
+              await context.save();
+              
             } else {
-              const citationHeadRegex = /<citation-head>(.*?)<\/citation-head>/;
-              const citationUrlRegex = /<citation-url>(.*?)<\/citation-url>/;
-              const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/;
+              // TODO put this in common place
+              const parsedAnswer = AnswerService.parseResponse(result.response.body.choices[0].message.content);
 
-              const citationHeadMatch = result.response.body.choices[0].message.content.match(citationHeadRegex);
-              const citationUrlMatch = result.response.body.choices[0].message.content.match(citationUrlRegex);
-              const confidenceRatingMatch = result.response.body.choices[0].message.content.match(confidenceRatingRegex);
+              const citation = new Citation();
+              citation.aiCitationUrl = parsedAnswer.citationUrl;
+              // TODO this should be fixed
+              //citation.providedCitationUrl = ChatPiplineService.verifyCitation(parsedMessage.finalCitationUrl);
+              citation.confidenceRating = parsedAnswer.confidenceRating;
+              citation.citationHead = parsedAnswer.citationHead;
+              await citation.save();
 
-              const answer = result.response.body.choices[0].message.content
-                .replace(citationHeadRegex, '')
-                .replace(citationUrlRegex, '')
-                .replace(confidenceRatingRegex, '')
-                .trim();
+              const answer = new Answer();
+              answer.citation = citation._id;
+              Object.assign(answer, parsedAnswer);
+              answer.sentences = parsedAnswer.sentences;
+              await answer.save();
+              interaction.answer = answer._id;
 
-              updatedEntry = {
-                ...batch.entries[entryIndex].toJSON(),
-                answer_model: result.response.body.model,
-                answer: answer,
-                answer_input_tokens: result.response.body.usage.prompt_tokens,
-                answer_output_tokens: result.response.body.usage.completion_tokens,
-                answer_cached_creation_input_tokens: '',
-                answer_cached_read_input_tokens: '',
-                answer_citation_head: citationHeadMatch ? citationHeadMatch[1] : null,
-                answer_citation_url: citationUrlMatch ? citationUrlMatch[1] : null,
-                answer_citation_confidence: confidenceRatingMatch ? confidenceRatingMatch[1] : null,
-              };
+              await interaction.save();
+              await batch.save();
             }
-
-            // Update the batch entry
-            batch.entries[entryIndex] = updatedEntry;
-
-            // Save the updated entry individually
-            await Batch.updateOne(
-              { batchId: batch.batchId, 'entries.entry_id': customId },
-              { $set: { 'entries.$': updatedEntry } }
-            );
           }
         }
 
@@ -111,7 +98,7 @@ const handleOpenAI = async (batch) => {
     }
 
 
-  
+
 
     batch.status = 'processed';
     await batch.save();

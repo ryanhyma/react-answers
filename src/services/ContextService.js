@@ -3,14 +3,15 @@ import loadContextSystemPrompt from './contextSystemPrompt.js';
 import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
 
+
 const ContextService = {
-  sendMessage: async (provider, message, lang = 'en', department = '') => {
+  sendMessage: async (aiProvider, message, lang = 'en', department = '', referringUrl, searchResults, searchProvider) => {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
-
-      const response = await fetch(getProviderApiUrl(provider, "context"), {
+      message += (referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : '');
+      const response = await fetch(getProviderApiUrl(aiProvider, "context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -18,6 +19,9 @@ const ContextService = {
         body: JSON.stringify({
           message,
           systemPrompt: SYSTEM_PROMPT,
+          aiProvider: aiProvider,
+          searchResults: searchResults,
+          searchProvider: searchProvider,
         }),
       });
 
@@ -27,80 +31,90 @@ const ContextService = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      return await response.json();
 
-      return data.content;
+
     } catch (error) {
       console.error('Error calling Context API:', error);
       throw error;
     }
   },
+  contextSearch: async (message) => {
+    try {
+      const searchResponse = await fetch(getApiUrl("context-search"), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
 
-  deriveContext: async (provider, question, lang = 'en', department = '') => {
+      if (!searchResponse.ok) {
+        const errorText = await searchResponse.text();
+        console.error('Search API error response:', errorText);
+        throw new Error(`HTTP error! status: ${searchResponse.status}`);
+      }
+
+      return await searchResponse.json();
+    } catch (error) {
+      console.error('Error searching context:', error);
+      throw error;
+    }
+
+  },
+  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
-
-      const response = await ContextService.sendMessage(provider, question, lang, department);
-
-      // Parse the XML-style tags from the response
-      const topicMatch = response.match(/<topic>([\s\S]*?)<\/topic>/);
-      const topicUrlMatch = response.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
-      const departmentMatch = response.match(/<department>([\s\S]*?)<\/department>/);
-      const departmentUrlMatch = response.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
-      const searchResultsMatch = response.match(/<searchResults>([\s\S]*?)<\/searchResults>/);
-
-
-      return {
-        topic: topicMatch ? topicMatch[1] : 'none',
-        topicUrl: topicUrlMatch ? topicUrlMatch[1] : '',
-        department: departmentMatch ? departmentMatch[1] : '',
-        departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : '',
-        searchResults: searchResultsMatch ? searchResultsMatch[1] : ''
-
-      };
+      // TODO add referring URL to the context of the search?
+      const searchResults = await ContextService.contextSearch(question);
+      console.log('Executed Search:', question);
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
     }
   },
+  parseContext: (context) => {
+    const topicMatch = context.message.match(/<topic>([\s\S]*?)<\/topic>/);
+    const topicUrlMatch = context.message.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
+    const departmentMatch = context.message.match(/<department>([\s\S]*?)<\/department>/);
+    const departmentUrlMatch = context.message.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
+
+    return {
+      topic: topicMatch ? topicMatch[1] : null,
+      topicUrl: topicUrlMatch ? topicUrlMatch[1] : null,
+      department: departmentMatch ? departmentMatch[1] : null,
+      departmentUrl: departmentUrlMatch ? departmentUrlMatch[1] : null,
+      searchResults: context.searchResults,
+      searchProvider: context.searchProvider,
+      model: context.model,
+      inputTokens: context.inputTokens,
+      outputTokens: context.outputTokens,
+    };
+  },
+
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName) => {
     try {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
       const requests = entries
-        .filter(entry => !entry.context || entry.context.trim() === '')
-        .map(entry => entry.question);
+        .map(entry => entry['REDACTEDQUESTION']);
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          const searchResponse = await fetch(getApiUrl("context-search"), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: request }),
-          });
-
-          if (!searchResponse.ok) {
-            const errorText = await searchResponse.text();
-            console.error('Search API error response:', errorText);
-            throw new Error(`HTTP error! status: ${searchResponse.status}`);
-          }
-
-          const searchData = await searchResponse.json();
-          return searchData.content;
+          return await ContextService.contextSearch(request);
         })
       );
 
       const updatedRequests = requests.map((request, index) => ({
         message: request,
         systemPrompt: SYSTEM_PROMPT,
-        searchResults: "<searchResults>" + searchResults[index] + "</searchResults>",
+        searchResults: searchResults[index],
       }));
 
-      const response = await ContextService.sendBatch(updatedRequests, aiService);
+      const response = await ContextService.sendBatch(updatedRequests, aiService, batchName, lang);
       return {
         batchId: response.batchId,
         batchStatus: response.batchStatus
@@ -113,16 +127,18 @@ const ContextService = {
   },
 
 
-  sendBatch: async (requests, aiService) => {
+  sendBatch: async (requests, aiService, batchName, lang) => {
     try {
-      const response = await fetch(getProviderApiUrl(aiService,"batch-context"), {
+      const response = await fetch(getProviderApiUrl(aiService, "batch-context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           requests,
-          aiService
+          aiService,
+          batchName,
+          lang,
         }),
       });
 

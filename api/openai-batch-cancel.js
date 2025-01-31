@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
