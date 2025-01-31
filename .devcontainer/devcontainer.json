@@ -1,8 +1,9 @@
 {
-    "name": "AI Answers Development",
-    "dockerComposeFile": "docker-compose.yml",
-    "service": "server",
-    "workspaceFolder": "/workspace",
+    "name": "React Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -21,7 +22,7 @@
             }
         }
     },
-    "forwardPorts": [3000, 3001, 27017, 9191],
+    "forwardPorts": [3000],
     "postCreateCommand": "npm install",
     "remoteUser": "node",
     "features": {
