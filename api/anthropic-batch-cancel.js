@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { Batch } from '../models/batch/batch.js';
+import { Batch } from '../models/batch.js';
 
 
 const anthropic = new Anthropic({
@@ -36,4 +36,4 @@ export default async function handler(req, res) {
       details: error.message 
     });
   }
-} 
+}
