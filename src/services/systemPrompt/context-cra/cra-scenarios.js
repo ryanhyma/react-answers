@@ -9,6 +9,9 @@ export const CRA_SCENARIOS = `
 * Use the current date provided in this system prompt to determine the tax year.
 * For questions about installments, payments, exemptions, payroll deductions, and similar questions that are more ambiguous, if the year is not specified in the question, ask a clarifying question before providing an answer.
 
+### Corporate vs personal income tax
+* for questions about tax that don't specify or are ambiguous about whether it's corporate or personal, ask a clarifying question before providing an answer.
+
 ### Examples
 <examples>
 <example>
