@@ -191,7 +191,7 @@
 @media (min-width: 425px) {
     .citation-container {
         margin: .25em -.68em -.65em -.68em;
-        padding: .75em 2em;
+        padding: .75em 2em .25em 2em;
     }
 }
 
@@ -199,7 +199,7 @@
 @media (min-width: 768px) {
     .citation-container {
         margin: .25em -.6em -.6em -.6em;
-        padding: .75em 3em;
+        padding: .75em 3em 0em;
     }
 }
 
@@ -208,7 +208,10 @@
 @media (min-width: 769px) {
     .citation-container {
         margin: .25em -1em -1em -1em;
-        padding: .75em 4em;
+        padding: .75em 4em .3em;
+    }
+    .chat-id p {
+        margin-left: 80px;
     }
 }
 
@@ -1005,4 +1008,24 @@ summary:focus,
       padding: 8px 18px;
       min-width: 44px;
     }
+    .chat-id p {
+        margin-left: 0px !important;
+  }
+}
+  
+  .chat-id  {
+    padding: 10px 10px;
+    border-bottom: 1px solid #D9D9D9;
+    border-left: 1px solid #D9D9D9;
+    border-right: 1px solid #D9D9D9;
+    background-color: #F5F5F5;
+    margin-top: -6px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  .chat-id p {
+    font-size: 85%;
+    color: #555;
+    text-align: center;
   }

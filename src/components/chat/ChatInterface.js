@@ -204,7 +204,14 @@ const ChatInterface = ({
                     </p>
                   </div>
                 ) : (
-                  formatAIResponse(message.aiService, message)
+                  <>
+                    {formatAIResponse(message.aiService, message)}
+                    {chatId && (
+                      <div className="chat-id">
+                        <p>{t('homepage.chat.chatId')}: {chatId}</p>
+                      </div>
+                    )}
+                  </>
                 )}
                 {message.id === messages[messages.length - 1].id &&
                   showFeedback &&
@@ -217,7 +224,7 @@ const ChatInterface = ({
                       chatId={chatId}
                       userMessageId={message.id}
                     />
-                  )}
+                )}
               </>
             )}
           </div>
@@ -305,11 +312,6 @@ const ChatInterface = ({
                           t('homepage.chat.messages.character') :
                           t('homepage.chat.messages.characters'))
                     }
-                  </div>
-                )}
-                {chatId && (
-                  <div className="chat-id">
-                    <p>{t('homepage.chat.chatId')}: {chatId}</p>
                   </div>
                 )}
               </div>
