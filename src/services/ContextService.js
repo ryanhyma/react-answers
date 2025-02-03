@@ -46,7 +46,7 @@ const ContextService = {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           query: message,
           searchService: searchProvider  // Add searchProvider
         }),
@@ -70,8 +70,8 @@ const ContextService = {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       // TODO add referring URL to the context of the search?
       const searchResults = await ContextService.contextSearch(question, searchProvider);
-      console.log('Executed Search:', question);
-      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));
+      console.log('Executed Search:', question + ' ' + searchProvider);
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults, searchProvider));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
