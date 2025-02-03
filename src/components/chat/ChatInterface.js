@@ -15,11 +15,13 @@ const ChatInterface = ({
   handleSendMessage,
   handleReload,
   handleAIToggle,
+  handleSearchToggle, // Add this prop
   handleDepartmentChange,
   handleReferringUrlChange,
   handleFeedback,
   formatAIResponse,
   selectedAI,
+  selectedSearch, // Add this prop
   selectedDepartment,
   referringUrl,
   turnCount,
@@ -349,6 +351,38 @@ const ChatInterface = ({
               </fieldset>
             </div>
 
+            <div className="search-toggle">
+              <fieldset className="ai-toggle_fieldset">
+                <div className="ai-toggle_container">
+                  <legend className="ai-toggle_legend">{t('homepage.chat.options.searchSelection.label')}</legend>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="search-canadaca"
+                      name="search-selection"
+                      value="canadaca"
+                      checked={selectedSearch === 'canadaca'}
+                      onChange={handleSearchToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="search-canadaca">{t('homepage.chat.options.searchSelection.canadaca')}</label>
+                  </div>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="search-google"
+                      name="search-selection"
+                      value="google"
+                      checked={selectedSearch === 'google'}
+                      onChange={handleSearchToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="search-google">{t('homepage.chat.options.searchSelection.google')}</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
             <div className="mrgn-bttm-10">
               <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
               <input
@@ -362,6 +396,9 @@ const ChatInterface = ({
           </GcdsDetails>
         </div>
       )}
+      <div className="chat-id-container">
+        <p>{chatId}</p>
+      </div>
     </div>
   );
 };

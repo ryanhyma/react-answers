@@ -1,4 +1,5 @@
-import { contextSearch } from '../agents/tools/contextSearch.js';
+import { contextSearch as canadaContextSearch } from '../agents/tools/canadaCaContextSearch.js';
+import { contextSearch as googleContextSearch } from '../agents/tools/googleContextSearch.js';
 
 async function exponentialBackoff(fn, retries = 5, delay = 1000) {
     for (let i = 0; i < retries; i++) {
@@ -16,19 +17,22 @@ async function exponentialBackoff(fn, retries = 5, delay = 1000) {
     }
 }
 
-async function performSearch(query) {
-    return await exponentialBackoff(() => contextSearch(query));
+async function performSearch(query, searchService = 'canadaca') {
+    const searchFunction = searchService.toLowerCase() === 'google' 
+        ? googleContextSearch 
+        : canadaContextSearch;
+        
+    return await exponentialBackoff(() => searchFunction(query));
 }
-
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         console.log('Received request to /api/context-agent');
         console.log('Request body:', req.body);
-        const { query } = req.body;
+        const { query, searchService } = req.body;
 
         try {
-            res.json(await performSearch(query));
+            res.json(await performSearch(query, searchService));
         } catch (error) {
             console.error('Error processing search:', error);
             res.status(500).json({ error: 'Internal Server Error' });

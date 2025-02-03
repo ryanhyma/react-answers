@@ -7,6 +7,7 @@ const ChatSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Interaction'
     }],
     aiProvider: { type: String, required: false },
+    searchProvider: { type: String, required: false },
     referringUrl: { type: String, required: false },
     pageLanguage: { type: String, required: false },
 

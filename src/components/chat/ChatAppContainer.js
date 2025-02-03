@@ -6,8 +6,6 @@ import ChatInterface from './ChatInterface.js';
 import { ChatPipelineService, RedactionError } from '../../services/ChatPipelineService.js';
 import { DataStoreService } from '../../services/DataStoreService.js';
 
-
-
 // Utility functions go here, before the component
 const extractSentences = (paragraph) => {
   const sentenceRegex = /<s-?\d+>(.*?)<\/s-?\d+>/g;
@@ -20,9 +18,9 @@ const extractSentences = (paragraph) => {
 };
 
 
-
-
 const ChatAppContainer = ({ lang = 'en', chatId }) => {
+  const MAX_CONVERSATION_TURNS = 3;
+  const MAX_CHAR_LIMIT = 400;
   const { t } = useTranslations(lang);
   const { url: pageUrl, department: urlDepartment } = usePageContext();
   const [messages, setMessages] = useState([]);
@@ -30,18 +28,17 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
   const [selectedAI, setSelectedAI] = useState('openai'); //Changed from on Jan 10 2025
+  const [selectedSearch, setSelectedSearch] = useState('canadaca'); // Add this line
   const [showFeedback, setShowFeedback] = useState(false);
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
-  const MAX_CONVERSATION_TURNS = 3;
   const [turnCount, setTurnCount] = useState(0);
-  const MAX_CHAR_LIMIT = 400;
   const messageIdCounter = useRef(0);
   const [displayStatus, setDisplayStatus] = useState('startingToThink');
-
-
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
+
+
 
   const statusMessages = useMemo(() => ({
     redacting: t('homepage.chat.messages.redacting'),
@@ -68,6 +65,11 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const handleAIToggle = (e) => {
     setSelectedAI(e.target.value);
     console.log('AI toggled to:', e.target.value); // Add this line for debugging
+  };
+
+  const handleSearchToggle = (e) => {
+    setSelectedSearch(e.target.value);
+    console.log('Search toggled to:', e.target.value);
   };
 
   const clearInput = useCallback(() => {
@@ -137,17 +139,29 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       }
       const userMessageId = messageIdCounter.current++;
       const userMessage = inputText.trim();
-        setMessages(prevMessages => [
-          ...prevMessages,
-          {
-            id: userMessageId,
-            text: userMessage,
-            sender: 'user',
-            ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
-          }
-        ]);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          id: userMessageId,
+          text: userMessage,
+          sender: 'user',
+          ...(referringUrl.trim() && { referringUrl: referringUrl.trim() })
+        }
+      ]);
       try {
-        const interaction = await ChatPipelineService.processResponse(chatId, userMessage, messageIdCounter.current, messages, lang, selectedDepartment, referringUrl, selectedAI, t, (status) => { setDisplayStatus(status); });
+        const interaction = await ChatPipelineService.processResponse(
+          chatId, 
+          userMessage, 
+          messageIdCounter.current, 
+          messages, 
+          lang, 
+          selectedDepartment, 
+          referringUrl, 
+          selectedAI,
+          t, 
+          (status) => { setDisplayStatus(status); },
+          selectedSearch  // Add this parameter
+        );
         clearInput();
         // Add the AI response to messages
         setMessages(prevMessages => [...prevMessages, {
@@ -158,7 +172,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         }]);
 
         setTurnCount(prev => prev + 1);
-        
+
         setShowFeedback(true);
         setIsLoading(false);
 
@@ -212,6 +226,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     inputText,
     referringUrl,
     selectedAI,
+    selectedSearch,  // Add this dependency
     lang,
     t,
     clearInput,
@@ -230,7 +245,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
     }
   }, [pageUrl, urlDepartment, referringUrl, selectedDepartment]);
 
-  const formatAIResponse = useCallback((aiService,message) => {
+  const formatAIResponse = useCallback((aiService, message) => {
     const messageId = message.id;
     let paragraphs = message.interaction.answer.paragraphs;
     if (paragraphs) {
@@ -290,11 +305,13 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       handleSendMessage={handleSendMessage}
       handleReload={handleReload}
       handleAIToggle={handleAIToggle}
+      handleSearchToggle={handleSearchToggle} // Add this line
       handleDepartmentChange={handleDepartmentChange}
       handleReferringUrlChange={handleReferringUrlChange}
       handleFeedback={handleFeedback}
       formatAIResponse={formatAIResponse}
       selectedAI={selectedAI}
+      selectedSearch={selectedSearch} // Add this line
       selectedDepartment={selectedDepartment}
       referringUrl={referringUrl}
       turnCount={turnCount}

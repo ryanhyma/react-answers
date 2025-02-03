@@ -1,5 +1,6 @@
 import { createContextAgent } from '../agents/AgentService.js';
 
+
 const invokeAgent = async (agentType, systemPrompt, message, searchResults, searchProvider) => {
   try {
     const contextAgent = await createContextAgent(agentType);

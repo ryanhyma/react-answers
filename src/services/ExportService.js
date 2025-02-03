@@ -96,8 +96,8 @@ const ExportService = {
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const globalInfo = [chat.chatId,chat.pageLanguage, chat.aiProvider, chat.referringUrl];
-            const globalInfoHeaders = ['chatId','pageLanguage', 'aiService', 'referringUrl'];
+            const globalInfo = [chat.chatId,chat.pageLanguage, chat.aiProvider, chat.searchProvider, chat.referringUrl ];
+            const globalInfoHeaders = ['chatId','pageLanguage', 'aiService','searchService', 'referringUrl'];
 
             
             const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
@@ -139,7 +139,8 @@ const ExportService = {
             { dataLabel: 'referringUrl', outputLabel: 'referringUrl' },
             { dataLabel: 'question.language', outputLabel: 'questionLanguage' },
             { dataLabel: 'question.redactedQuestion', outputLabel: 'redactedQuestion' },
-            { dataLabel: 'aiService', outputLabel: 'aiService' },
+            { dataLabel: 'aiProvider', outputLabel: 'aiService' }, // Changed from aiService
+            { dataLabel: 'searchService', outputLabel: 'searchService' }, // Changed from searchService
             { dataLabel: 'answer.citation.providedCitationUrl', outputLabel: 'citationUrl' },
             { dataLabel: 'answer.citation.confidenceRating', outputLabel: 'confidenceRating' },
             { dataLabel: 'answer.englishAnswer', outputLabel: 'englishAnswer' },
