@@ -41,7 +41,7 @@ const ContextService = {
   },
   contextSearch: async (message, searchProvider) => {
     try {
-      const searchResponse = await fetch(getApiUrl("context-search"), {
+      const searchResponse = await fetch(getApiUrl("search-context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

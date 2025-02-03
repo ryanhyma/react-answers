@@ -77,7 +77,8 @@ export const ChatPipelineService = {
             context, 
             chatId,
             lang,
-            totalResponseTime
+            totalResponseTime,
+            searchProvider
         );
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);

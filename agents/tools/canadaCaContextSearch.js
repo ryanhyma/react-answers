@@ -50,9 +50,8 @@ async function contextSearch(query) {
             });
             throw new Error(`HTTP error! Status: ${response.status}, StatusText: ${response.statusText}`);
         }
-
-        const data = await response.json();
-        return data;
+        const extractedResults = extractSearchResults(await response.json());
+        return extractedResults;
     } catch (error) {
         // Log the entire error object
         console.error("Error performing search:", {

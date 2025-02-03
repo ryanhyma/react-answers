@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     }
     chat.chatId = interaction.chatId;
     chat.aiProvider = interaction.selectedAI;
+    chat.searchProvider = interaction.searchProvider;
     chat.pageLanguage = interaction.pageLanguage;
     chat.referringUrl = interaction.referringUrl;
     
