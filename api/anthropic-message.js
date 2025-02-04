@@ -30,7 +30,7 @@ async function invokeHandler(req, res) {
       const { message, systemPrompt, conversationHistory } = req.body;
       console.log('Request body:', req.body);
 
-    
+
       const claudeAgent = await createClaudeAgent();
 
       const messages = [
@@ -56,11 +56,13 @@ async function invokeHandler(req, res) {
             classType: msg.constructor.name,
           });
         });
-        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-        if (!lastMessage || lastMessage.trim() === '') {
-          throw new Error('Claude returned nothing in the response');
-        }
-        res.json({ content: lastMessage });
+        const lastMessage = answer.messages[answer.messages.length - 1];
+        res.json({
+          content: lastMessage.content,
+          inputTokens: lastMessage.response_metadata.usage.input_tokens,
+          outputTokens: lastMessage.response_metadata.usage.output_tokens,
+          model: lastMessage.response_metadata.model,
+        });
       } else {
         throw new Error('Claude returned no messages');
       }

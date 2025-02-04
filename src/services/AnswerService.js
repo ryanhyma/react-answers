@@ -51,7 +51,9 @@ const AnswerService = {
 
             const data = await response.json();
             console.log(provider + ' API response:', data);
-            return AnswerService.parseResponse(data.content);
+            const parsedResponse = AnswerService.parseResponse(data.content);
+            const mergedResponse = { ...data, ...parsedResponse };
+            return mergedResponse;
         } catch (error) {
             console.error('Error calling ' + provider + ' API:', error);
             throw error;
