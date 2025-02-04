@@ -4,12 +4,12 @@ const InteractionSchema = new mongoose.Schema({
   interactionId: {
     type: String,
     required: false,
-    default: null
+    default: ''
   },
   responseTime: {
     type: String,
     required: false,
-    default: null
+    default: ''
   },
   answer: {
     type: mongoose.Schema.Types.ObjectId,
@@ -30,23 +30,12 @@ const InteractionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Context',
     default: null
-  }
-},{
+  },
+
+}, {
   timestamps: true,
   versionKey: false,
   id: false,
-  toJSON: {
-    virtuals: true,
-    transform: function(doc, ret) {
-      // Ensure all fields exist in output
-      ret.interactionId = ret.interactionId || null;
-      ret.responseTime = ret.responseTime || null;
-      ret.answer = ret.answer || null;
-      ret.question = ret.question || null;
-      ret.expertFeedback = ret.expertFeedback || null;
-      ret.context = ret.context || null;
-    }
-  }
 });
 
 export const Interaction = mongoose.models.Interaction || mongoose.model('Interaction', InteractionSchema);

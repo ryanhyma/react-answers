@@ -7,24 +7,15 @@ const ChatSchema = new mongoose.Schema({
         ref: 'Interaction',
         default: []
     }],
-    aiProvider: { type: String, required: false, default: null },
-    searchProvider: { type: String, required: false, default: null },
-    referringUrl: { type: String, required: false, default: null },
-    pageLanguage: { type: String, required: false, default: null },
+    aiProvider: { type: String, required: false, default: '' },
+    searchProvider: { type: String, required: false, default: '' },
+    referringUrl: { type: String, required: false, default: '' },
+    pageLanguage: { type: String, required: false, default: '' },
 },{
     timestamps: true,
     versionKey: false,
     id: false,
-    toJSON: {
-        virtuals: true,
-        transform: function(doc, ret) {
-            // Ensure all fields exist in output
-            ret.aiProvider = ret.aiProvider || null;
-            ret.searchProvider = ret.searchProvider || null;
-            ret.referringUrl = ret.referringUrl || null;
-            ret.pageLanguage = ret.pageLanguage || null;
-        }
-    }
+    
 });
 
 export const Chat = mongoose.models.Chat || mongoose.model('Chat', ChatSchema);

@@ -40,26 +40,11 @@ export default async function handler(req, res) {
       })
       .sort({ createdAt: -1 });
 
-    const transformOptions = { virtuals: true, versionKey: false };
     
-    const transformDoc = (doc) => {
-      if (!doc) return doc;
-      const transformed = doc.toJSON ? doc.toJSON(transformOptions) : doc;
-      
-      Object.keys(transformed).forEach(key => {
-        if (Array.isArray(transformed[key])) {
-          transformed[key] = transformed[key].map(item => transformDoc(item));
-        } else if (transformed[key] && typeof transformed[key] === 'object') {
-          transformed[key] = transformDoc(transformed[key]);
-        }
-      });
-      
-      return transformed;
-    };
 
     return res.status(200).json({
       success: true,
-      logs: chats.map(doc => transformDoc(doc))
+      logs: chats
     });
 
 
