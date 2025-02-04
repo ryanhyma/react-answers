@@ -46,6 +46,10 @@ jobs:
         working-directory: terragrunt/env/staging/ssm
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
 
+      - name: Apply hosted zone
+        working-directory: terragrunt/env/staging/hosted_zone
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve
+
       - name: Apply network
         working-directory: terragrunt/env/staging/network
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
@@ -54,6 +58,6 @@ jobs:
         working-directory: terragrunt/env/staging/ecr
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
 
-      - name: Apply hosted zone
-        working-directory: terragrunt/env/staging/hosted_zone
+      - name: Apply database
+        working-directory: terragrunt/env/staging/database
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
