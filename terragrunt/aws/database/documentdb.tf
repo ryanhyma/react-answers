@@ -25,7 +25,7 @@ resource "aws_security_group" "ai-answers-docdb-sg" {
     cidr_blocks = [var.vpc_cidr_block]
   }
 
-  # Outbound rules (egress): Allow all traffic to the internet
+  # Outbound rules (egress): Allow all traffic outbound but only to destinations within the cidr block. 
   egress {
     from_port   = 0
     to_port     = 0
