@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { flatten } from 'flat';
 const ExportService = {
 
-    jsonToFlatTable: (data) => {
+    jsonToFlatTable: (data, headers) => {
 
         // Ensure data is an array and not null/undefined
         if (!Array.isArray(data) || data.length === 0) {
@@ -21,17 +21,32 @@ const ExportService = {
         // Step 2: Flatten each object safely
         const flattenedItems = validItems.map(obj => flatten(obj));
 
-        // Step 3: Get all unique headers (keys) across all objects
-        const headers = [...new Set(flattenedItems.flatMap(Object.keys))];
-
-        // Step 4: Create rows, ensuring consistent header order
+        // Step 3: Create rows, ensuring consistent header order
         const rows = flattenedItems.map(item =>
             headers.map(header => item[header] ?? '')
         );
 
-        return { headers, rows };
+        return rows;
 
     },
+
+    getHeaders: (data) => {
+        if (!Array.isArray(data) || data.length === 0) {
+            console.error("getHeaders: Received invalid or empty data", data);
+            return [];
+        }
+
+        const validItems = data.filter(item => item && typeof item === "object");
+
+        if (validItems.length === 0) {
+            console.error("getHeaders: No valid objects to process");
+            return [];
+        }
+
+        const flattenedItems = validItems.map(obj => flatten(obj));
+        return [...new Set(flattenedItems.flatMap(Object.keys))];
+    },
+
     worksheetDataToCSV(worksheetData, filename) {
         const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
         const workbook = XLSX.utils.book_new();
@@ -47,6 +62,7 @@ const ExportService = {
         link.click();
         document.body.removeChild(link);
     },
+
     worksheetDataToExcel(worksheetData, filename) {
         const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
@@ -82,24 +98,24 @@ const ExportService = {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    }
-    ,
+    },
+
     toSpreadsheet: async (chats, headerOrder, type = 'excel', filename) => {
         const worksheetData = [];
-
+        const headersSet = new Set(chats.flatMap(chat => ExportService.getHeaders(chat.interactions)));
+        const headers = Array.from(headersSet);
         for (const chat of chats) {
             const interactions = chat.interactions;
             const items = interactions;
-            const { headers, rows } = ExportService.jsonToFlatTable(items);
+            const rows = ExportService.jsonToFlatTable(items,headers);
             const filteredHeaders = headers.filter(header => !header.includes('_id') && !header.includes('__v'));
             const filteredRows = rows.map(row =>
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const globalInfo = [chat.chatId,chat.pageLanguage, chat.aiProvider, chat.searchProvider, chat.referringUrl ];
-            const globalInfoHeaders = ['chatId','pageLanguage', 'aiService','searchService', 'referringUrl'];
+            const globalInfo = [chat.chatId, chat.pageLanguage, chat.aiProvider, chat.searchProvider, chat.referringUrl];
+            const globalInfoHeaders = ['chatId', 'pageLanguage', 'aiService', 'searchService', 'referringUrl'];
 
-            
             const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
 
             // Update headers to include chatInfoHeaders
@@ -122,8 +138,6 @@ const ExportService = {
                 worksheetData.push(finalHeaders);
             }
             worksheetData.push(...orderedRows);
-
-            
         }
 
         if (type === 'xlsx') {
@@ -131,7 +145,9 @@ const ExportService = {
         } else if (type === 'csv') {
             ExportService.worksheetDataToCSV(worksheetData, filename);
         }
-    }, export: (items, filename) => {
+    },
+
+    export: (items, filename) => {
         const headerOrder = [
             { dataLabel: 'chatId', outputLabel: 'chatId' },
             { dataLabel: 'createdAt', outputLabel: 'createdAt' },
@@ -139,8 +155,8 @@ const ExportService = {
             { dataLabel: 'referringUrl', outputLabel: 'referringUrl' },
             { dataLabel: 'question.language', outputLabel: 'questionLanguage' },
             { dataLabel: 'question.redactedQuestion', outputLabel: 'redactedQuestion' },
-            { dataLabel: 'aiProvider', outputLabel: 'aiService' }, // Changed from aiService
-            { dataLabel: 'searchService', outputLabel: 'searchService' }, // Changed from searchService
+            { dataLabel: 'aiService', outputLabel: 'aiService' },
+            { dataLabel: 'searchService', outputLabel: 'searchService' },
             { dataLabel: 'answer.citation.providedCitationUrl', outputLabel: 'citationUrl' },
             { dataLabel: 'answer.citation.confidenceRating', outputLabel: 'confidenceRating' },
             { dataLabel: 'answer.englishAnswer', outputLabel: 'englishAnswer' },

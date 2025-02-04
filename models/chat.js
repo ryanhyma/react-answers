@@ -1,19 +1,21 @@
 import mongoose from 'mongoose';
 
-
 const ChatSchema = new mongoose.Schema({
     chatId: { type: String, required: true },
     interactions: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'Interaction'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Interaction',
+        default: []
     }],
-    aiProvider: { type: String, required: false },
-    searchProvider: { type: String, required: false },
-    referringUrl: { type: String, required: false },
-    pageLanguage: { type: String, required: false },
-
+    aiProvider: { type: String, required: false, default: '' },
+    searchProvider: { type: String, required: false, default: '' },
+    referringUrl: { type: String, required: false, default: '' },
+    pageLanguage: { type: String, required: false, default: '' },
 },{
-    timestamps: true, versionKey: false,
+    timestamps: true,
+    versionKey: false,
     id: false,
+    
 });
 
 export const Chat = mongoose.models.Chat || mongoose.model('Chat', ChatSchema);

@@ -3,32 +3,39 @@ import mongoose from 'mongoose';
 const InteractionSchema = new mongoose.Schema({
   interactionId: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   responseTime: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   answer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Answer'
+    ref: 'Answer',
+    default: null
   },
   question: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Question'
+    ref: 'Question',
+    default: null
   },
   expertFeedback: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ExpertFeedback'
+    ref: 'ExpertFeedback',
+    default: null
   },
   context: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Context'
-  }
-},{
-  timestamps: true, versionKey: false,
+    ref: 'Context',
+    default: null
+  },
+
+}, {
+  timestamps: true,
+  versionKey: false,
   id: false,
 });
-
 
 export const Interaction = mongoose.models.Interaction || mongoose.model('Interaction', InteractionSchema);

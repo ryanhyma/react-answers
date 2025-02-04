@@ -56,17 +56,18 @@ async function invokeHandler(req, res) {
             classType: msg.constructor.name,
           });
         });
-        const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-
-        if (!lastMessage || lastMessage.trim() === '') {
-          throw new Error('Claude returned nothing in the response');
-        }
-        res.json({ content: lastMessage });
+        const lastMessage = answer.messages[answer.messages.length - 1];
+        res.json({
+          content: lastMessage.content,
+          inputTokens: lastMessage.response_metadata.tokenUsage.promptTokens,
+          outputTokens: lastMessage.response_metadata.tokenUsage.completionTokens,
+          model: lastMessage.response_metadata.model_name,
+        });
       } else {
-        throw new Error('Claude returned no messages');
+        throw new Error('OpenAI returned no messages');
       }
     } catch (error) {
-      console.error('Error calling Claude API:', error.message);
+      console.error('Error calling OpenAI API:', error.message);
       res.status(500).json({ error: 'Error processing your request', details: error.message });
     }
   } else {
@@ -74,7 +75,6 @@ async function invokeHandler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
 export default async function handler(req, res) {
   let lastError;
 
@@ -98,4 +98,3 @@ export default async function handler(req, res) {
     details: lastError?.message
   });
 }
-

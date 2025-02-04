@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 const BatchSchema = new mongoose.Schema({
-  status: { type: String, required: false },
-  batchId: { type: String, required: true },
-  type: { type: String, required: true },
-  name: { type: String, required: true },
-  aiProvider: { type: String, required: true },
-  pageLanguage: { type: String, required: true },
-  referringUrl: { type: String, required: false },
+  status: { type: String, required: false, default: '' },
+  batchId: { type: String, required: true, default: '' },
+  type: { type: String, required: true, default: '' },
+  name: { type: String, required: true, default: '' },
+  aiProvider: { type: String, required: true, default: '' },
+  pageLanguage: { type: String, required: true, default: '' },
+  referringUrl: { type: String, required: false, default: '' },
   interactions: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Interaction'
@@ -15,7 +15,6 @@ const BatchSchema = new mongoose.Schema({
 },{
   timestamps: true, versionKey: false,
   id: false,
-});;
-
+});
 
 export const Batch = mongoose.models.Batch || mongoose.model('Batch', BatchSchema);

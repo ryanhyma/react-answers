@@ -3,16 +3,16 @@ import mongoose, { model } from 'mongoose';
 const Schema = mongoose.Schema;
 
 const contextSchema = new Schema({
-    topic: { type: String, required: false },
-    topicUrl: { type: String, required: false },
-    department: { type: String, required: false },
-    departmentUrl: { type: String, required: false },
-    searchResults: { type: String, required: false },
-    inputTokens: { type: String, required: false },
-    outputTokens: { type: String, required: false },
-    model: { type: String, required: false },
-    searchProvider: { type: String, required: false },
-},{
+    topic: { type: String, required: false, default: '' },
+    topicUrl: { type: String, required: false, default: '' },
+    department: { type: String, required: false, default: '' },
+    departmentUrl: { type: String, required: false, default: '' },
+    searchResults: { type: String, required: false, default: '' },
+    inputTokens: { type: String, required: false, default: '' },
+    outputTokens: { type: String, required: false, default: '' },
+    model: { type: String, required: false, default: '' },
+    searchProvider: { type: String, required: false, default: '' },
+}, {
     timestamps: true, versionKey: false,
     id: false,
 });
