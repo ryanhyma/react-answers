@@ -81,7 +81,7 @@ const createContextAgent = async (agentType) => {
         timeoutMs: 60000,
       });
       break;
-    case 'claude':
+    case 'anthropic':
       llm = new ChatAnthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
         modelName: 'claude-3-5-haiku-20241022',

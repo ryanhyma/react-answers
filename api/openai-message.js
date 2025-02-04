@@ -57,7 +57,6 @@ async function invokeHandler(req, res) {
           });
         });
         const lastMessage = answer.messages[answer.messages.length - 1]?.content;
-
         if (!lastMessage || lastMessage.trim() === '') {
           throw new Error('Claude returned nothing in the response');
         }
@@ -74,7 +73,6 @@ async function invokeHandler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
 export default async function handler(req, res) {
   let lastError;
 
@@ -98,4 +96,3 @@ export default async function handler(req, res) {
     details: lastError?.message
   });
 }
-

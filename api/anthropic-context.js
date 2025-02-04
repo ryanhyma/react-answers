@@ -32,9 +32,9 @@ const invokeAgent = async (agentType, systemPrompt, message, searchResults, sear
       });
       return {
         message: lastMessage,
-        inputTokens: lastResult.response_metadata.tokenUsage.promptTokens,
-        outputTokens: lastResult.response_metadata.tokenUsage.completionTokens,
-        model: lastResult.response_metadata.model_name,
+        inputTokens: lastResult.response_metadata.usage.input_tokens,
+        outputTokens: lastResult.response_metadata.usage.output_tokens,
+        model: lastResult.response_metadata.model,
         searchProvider: searchProvider,
         searchResults: searchResults
 
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     const { message, systemPrompt, aiProvider, searchResults, searchProvider } = req.body;
     const agentType = aiProvider;
     // TODO - Ryan - retry twice, refactor when I have time
-    const agentTypes = ['claude', 'claude'];
+    const agentTypes = ['anthropic', 'anthropic'];
 
     // If agentType is provided in the request, use it as the first agent to try
     const agentsToTry = agentType ? [agentType, ...agentTypes.filter(agent => agent !== agentType)] : agentTypes;
