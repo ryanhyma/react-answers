@@ -149,7 +149,7 @@ const ExportService = {
             { dataLabel: 'answer.sentences.1', outputLabel: 'sentence2' },
             { dataLabel: 'answer.sentences.2', outputLabel: 'sentence3' },
             { dataLabel: 'answer.sentences.3', outputLabel: 'sentence4' },
-            { dataLabel: 'feedback', outputLabel: 'feedback' },
+            { dataLabel: 'expertFeedback.feedback', outputLabel: 'feedback' },
             { dataLabel: 'expertFeedback.totalScore', outputLabel: 'expertFeedback.totalScore' },
             { dataLabel: 'expertFeedback.sentence1Score', outputLabel: 'expertFeedback.sentence1Score' },
             { dataLabel: 'expertFeedback.sentence2Score', outputLabel: 'expertFeedback.sentence2Score' },

@@ -78,7 +78,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   }, []);
 
   const handleFeedback = useCallback((isPositive, expertFeedback = null) => {
-    DataStoreService.persistFeedback(isPositive, expertFeedback);
+    //DataStoreService.persistFeedback(isPositive, expertFeedback);
   }, [messages, referringUrl]);
 
   const handleReferringUrlChange = (e) => {
@@ -149,10 +149,11 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         }
       ]);
       try {
+        const aiMessageId = messageIdCounter.current++;
         const interaction = await ChatPipelineService.processResponse(
           chatId, 
           userMessage, 
-          messageIdCounter.current, 
+          aiMessageId, 
           messages, 
           lang, 
           selectedDepartment, 
@@ -165,7 +166,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
         clearInput();
         // Add the AI response to messages
         setMessages(prevMessages => [...prevMessages, {
-          id: userMessageId,
+          id: aiMessageId,
           interaction: interaction,
           sender: 'ai',
           aiService: selectedAI,
