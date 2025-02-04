@@ -21,39 +21,10 @@ services:
     ports:
       - '3001:3001'
     environment:
-      - MONGODB_URI=mongodb://admin:password@mongodb:27017/?authSource=admin
-    depends_on:
-      - mongodb
-
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    ports:
-      - '9191:8081'
-    environment:
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
-      ME_CONFIG_MONGODB_ADMINUSERNAME: 'admin'
-      ME_CONFIG_MONGODB_ADMINPASSWORD: 'password'
-      ME_CONFIG_BASICAUTH_USERNAME: 'admin'
-      ME_CONFIG_BASICAUTH_PASSWORD: 'password'
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_URL: 'mongodb://admin:password@mongodb:27017/?authSource=admin'
-    depends_on:
-      - mongodb
+      # Replace these values with your AWS DocumentDB details
+      - MONGODB_URI=mongodb://${DOCDB_USERNAME}:${DOCDB_PASSWORD}@${DOCDB_CLUSTER_ENDPOINT}:27017/${DOCDB_DATABASE}?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
 
 volumes:
-  mongo-data:
   server-node-modules:
   root-node-modules:
 
