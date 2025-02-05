@@ -71,7 +71,7 @@ const ContextService = {
       // TODO add referring URL to the context of the search?
       const searchResults = await ContextService.contextSearch(question, searchProvider);
       console.log('Executed Search:', question + ' ' + searchProvider);
-      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults, searchProvider));
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
