@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { Batch } from '../models/batch.js';
+import dbConnect from './db-connect.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -17,6 +18,7 @@ export default async function handler(req, res) {
     }
 
     const batch = await openai.batches.cancel(batchId);
+    await dbConnect();
     await Batch.findOneAndDelete({ batchId });
 
     return res.status(200).json({
