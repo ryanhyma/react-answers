@@ -58,9 +58,9 @@ const handleOpenAI = async (batch) => {
               context.topicUrl = topicUrlMatch ? topicUrlMatch[1] : context.topicUrl;
               context.department = departmentMatch ? departmentMatch[1] : context.department;
               context.departmentUrl = departmentUrlMatch ? departmentUrlMatch[1] : context.departmentUrl;
-              context.model = result.response_metadata.model_name;
-              context.inputTokens = result.response_metadata.tokenUsage.promptTokens,
-              context.outputTokens = result.response_metadata.tokenUsage.completionTokens,
+              context.model = result.response.body.model;
+              context.inputTokens = result.response.body.usage.prompt_tokens,
+              context.outputTokens = result.response.body.usage.completion_tokens,
               await context.save();
               
             } else {
