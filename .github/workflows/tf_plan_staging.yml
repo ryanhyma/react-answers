@@ -1,12 +1,12 @@
-name: 'Terraform plan staging'
+name: "Terraform plan staging"
 
 on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'terragrunt/**'
-      - '!terragrunt/env/staging/**'
-      - '.github/workflows/tf_plan_staging.yml'
+      - "terragrunt/**"
+      - "!terragrunt/env/staging/**"
+      - ".github/workflows/tf_plan_staging.yml"
 
 env:
   AWS_REGION: ca-central-1
@@ -52,7 +52,7 @@ jobs:
         uses: cds-snc/terraform-plan@v3.2.2
         with:
           comment-delete: true
-          comment-title: 'Staging: ${{ matrix.module }}'
+          comment-title: "Staging: ${{ matrix.module }}"
           directory: ./terragrunt/env/staging/${{ matrix.module }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           terragrunt: true

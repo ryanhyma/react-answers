@@ -17,7 +17,7 @@ resource "aws_security_group" "app" {
   description = "Security Group for the React Answers App"
 
   # ID of the VPC where this SG will be created
-  vpc_id = module.react_answers_vpc.vpc_id
+  vpc_id = module.ai_answers_vpc.vpc_id
 
   # Ensures Terraform removes associated rules upon SG destruction or modification
   revoke_rules_on_delete = true

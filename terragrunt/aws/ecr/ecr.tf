@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "react_answers" {
-  name                 = "react-answers"
+resource "aws_ecr_repository" "ai_answers" {
+  name                 = "ai-answers"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
