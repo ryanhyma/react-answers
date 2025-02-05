@@ -201,12 +201,12 @@ class RedactionService {
    * Get the list of threat patterns in English and French
    * @returns {RegExp} Regular expression for threats
    */
-  get threatPattern() {
-    const englishThreats = 'bomb|gun|knife|sword|kill|murder|suicide|maim|die|anthrax|attack|assassinate|bomb|bombs|bombing|bombed|execution|explosive|explosives|shoot|shoots|shooting|shot|hostage|murder|suicide|kill|killed|killing';
-    const frenchThreats = 'anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie';
+  // get threatPattern() {
+  //   const englishThreats = 'bomb|gun|knife|sword|kill|murder|suicide|maim|die|anthrax|attack|assassinate|bomb|bombs|bombing|bombed|execution|explosive|explosives|shoot|shoots|shooting|shot|hostage|murder|suicide|kill|killed|killing';
+  //   const frenchThreats = 'anthrax|attaque|assassiner|bombe|bombarder|bombance|bombardera|bombarderons|bombarderont|bombes|bombardement|bombardé|exécution|explosif|explosifs|tirer|tirerai|tirera|tirerons|tireront|tirons|fusillade|tiré|otage|meurtre|suicider|tuer|tuerai|tuera|tuerons|tueront|tuons|tué|tuerie';
     
-    return new RegExp(`\\b(${englishThreats}|${frenchThreats})\\b`, 'gi');
-  }
+  //   return new RegExp(`\\b(${englishThreats}|${frenchThreats})\\b`, 'gi');
+  // }
 
   /**
    * Get all redaction patterns
@@ -219,10 +219,10 @@ class RedactionService {
         pattern: this.profanityPattern,
         type: 'profanity'
       },
-      { 
-        pattern: this.threatPattern,
-        type: 'threat'
-      },
+      // { 
+      //   pattern: this.threatPattern,
+      //   type: 'threat'
+      // },
       {
         pattern: this.manipulationPattern,
         type: 'manipulation'
