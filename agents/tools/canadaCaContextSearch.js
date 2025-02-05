@@ -33,11 +33,12 @@ async function contextSearch(query) {
         const response = await fetch(process.env.CANADA_CA_SEARCH_URI, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${process.env.CANADA_CA_SEARCH_API_KEY}`,
-                "Content-Type": "application/json",
-                "Accept": "application/json"
+            "Authorization": `Bearer ${process.env.CANADA_CA_SEARCH_API_KEY}`,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
             },
-            body: JSON.stringify({ q: query })
+            body: JSON.stringify({ q: query }),
+            timeout: 30000 // 30 seconds timeout
         });
 
         if (!response.ok) {
