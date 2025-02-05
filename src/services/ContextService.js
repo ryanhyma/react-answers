@@ -97,7 +97,7 @@ const ContextService = {
     };
   },
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName) => {
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName, searchProvider = 'canadaca') => {
     try {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
@@ -107,7 +107,7 @@ const ContextService = {
 
       const searchResults = await Promise.all(
         requests.map(async (request) => {
-          return await ContextService.contextSearch(request);
+          return await ContextService.contextSearch(request, searchProvider);
         })
       );
 
