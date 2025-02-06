@@ -101,7 +101,7 @@ export default async function handler(req, res) {
         await savedBatch.save();
         for (const [index, request] of req.body.requests.entries()) {
             const context = new Context({
-                ...req.body.context,
+                ...request.context,
             });
             await context.save();
 
