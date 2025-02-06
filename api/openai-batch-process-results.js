@@ -67,6 +67,7 @@ const handleOpenAI = async (batch) => {
               // TODO put this in common place
               const parsedAnswer = AnswerService.parseResponse(result.response.body.choices[0].message.content);
 
+
               const citation = new Citation();
               citation.aiCitationUrl = parsedAnswer.citationUrl;
               // TODO this should be fixed
@@ -76,6 +77,9 @@ const handleOpenAI = async (batch) => {
               await citation.save();
 
               const answer = new Answer();
+              answer.inputTokens = result.response.body.usage.prompt_tokens;
+              answer.outputTokens = result.response.body.usage.completion_tokens;
+              answer.model = result.response.body.model;
               answer.citation = citation._id;
               Object.assign(answer, parsedAnswer);
               answer.sentences = parsedAnswer.sentences;
@@ -117,6 +121,8 @@ export default async function handler(req, res) {
         throw new Error('Batch ID is required');
       }
       await dbConnect();
+      
+            
       const batch = await Batch.findOne({ batchId });
       if (!batch) {
         throw new Error('Batch not found');
