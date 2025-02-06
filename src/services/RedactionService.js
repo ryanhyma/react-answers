@@ -185,8 +185,8 @@ class RedactionService {
         description: 'Passport Numbers'
       },
       {
-        pattern:/(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})/g,
-        description: 'Social Insurance Numbers (with flexible separators)'
+        pattern: /\b(?<!\$)(?=.*\d)[A-Z0-9][A-Z0-9\s\-.]{3,}[A-Z0-9]\b(?=.*\d)/gi,
+        description: 'Sequences of 5+ characters containing at least one digit, excluding dollar amounts (catches various ID numbers, SSN, SIN, credit cards, etc.)'
       },
       {
         pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
@@ -211,10 +211,6 @@ class RedactionService {
       {
         pattern: /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi,
         description: 'IP addresses'
-      },
-      {
-        pattern: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/g,
-        description: 'Social Insurance Numbers (with flexible separators)'
       },
       {
         pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g,
