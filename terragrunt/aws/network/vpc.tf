@@ -8,6 +8,9 @@ module "ai_answers_vpc" {
   name              = var.product_name
   billing_tag_value = var.billing_tag_value
 
+  # Enable 2 aviablity zones for subnets as this is requirement for the DocumentDB database
+  availability_zones = 2
+
   # Enables VPC flow logs and blocks ssh and rdp traffic
   enable_flow_log = true
   block_ssh       = true
