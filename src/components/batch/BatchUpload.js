@@ -27,7 +27,7 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
     const [adminCode, setAdminCode] = useState('');
     const [batchName, setBatchName] = useState('');
-    const [selectedSearch, setSelectedSearch] = useState('canadaca');
+    const [selectedSearch, setSelectedSearch] = useState('google');
 
     const correctAdminCode = '2024';
 
