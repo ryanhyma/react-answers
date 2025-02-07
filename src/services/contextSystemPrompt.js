@@ -1,38 +1,38 @@
-import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
-import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
+// import { menuStructure_EN } from './systemPrompt/menuStructure_EN.js';
+// import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 import { departments_EN } from './systemPrompt/departments_EN.js';
 import { departments_FR } from './systemPrompt/departments_FR.js';
 
 async function loadContextSystemPrompt(language = 'en', department = '') {
   try {
     // Validate base imports
-    if (!menuStructure_EN || !menuStructure_FR) {
+    if (!departments_EN || !departments_FR) {
       throw new Error('Required imports are undefined');
     } 
 
     // Select language-specific content
-    const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
+    // const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const departmentsList = language === 'fr' ? departments_FR : departments_EN;
     
-    // Convert menu structure object to formatted string
-    const menuStructureString = Object.entries(menuStructure)
-      .map(([category, data]) => {
-        const topics = Object.entries(data.topics || {})
-          .map(([name, url]) => `    ${name}: ${url}`)
-          .join('\n');
+//     // Convert menu structure object to formatted string
+//     const menuStructureString = Object.entries(menuStructure)
+//       .map(([category, data]) => {
+//         const topics = Object.entries(data.topics || {})
+//           .map(([name, url]) => `    ${name}: ${url}`)
+//           .join('\n');
         
-        const mostRequested = Object.entries(data.mostRequested || {})
-          .map(([name, url]) => `    ${name}: ${url}`)
-          .join('\n');
+//         const mostRequested = Object.entries(data.mostRequested || {})
+//           .map(([name, url]) => `    ${name}: ${url}`)
+//           .join('\n');
 
-        return `
-${category} (${data.url})
-  Topics:
-${topics}
-  Most Requested:
-${mostRequested}`;
-      })
-      .join('\n\n');
+//         return `
+// ${category} (${data.url})
+//   Topics:
+// ${topics}
+//   Most Requested:
+// ${mostRequested}`;
+//       })
+//       .join('\n\n');
 
     // Convert departments array to formatted string
     const departmentsString = departmentsList
@@ -55,13 +55,13 @@ ${mostRequested}`;
       This will be passed to the Answer service, which will use it to provide accurate, department-specific responses to the user's question. Your analysis is crucial for ensuring questions are routed to the correct department's knowledge base and answered with the appropriate context.
 
 <departments_list>
-## Complete list of government of Canada departments and agencies with their matching url
+## Complete list of government of Canada departments and agencies with their matching url, in the officiallanguage of the AI Answer page the user is on
   ${departmentsString}
 </departments_list> 
 
 ## Context for selecting the most relevant department:
 * Question and conversation history 
-- break the most recent question down into phrases to exclude those not relevant to government of Canada questions
+- break the most recent question down into phrases to focus on those most relevant to government of Canada questions
 - take the conversation history into account in case of clarifying questions and/or follow-up questions
 * <referringUrl> if present is the Government of Canada web page the user was on when they asked the question, this url may identify the department in a segment. However, the question may be related to a different department because the user is not on the correct page for their question or task. For example, the user may be on the MSCA sign in page asking how to sign in to get their Notice of Assessment, which is done through their CRA account.
 * <searchResults> if present, are the search results for the question 
