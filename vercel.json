@@ -1,13 +1,10 @@
 {
-    "version": 2,
-    "public": true,
-    "routes": [
+    "headers": [
       {
-        "src": "/manifest.json",
-        "dest": "/manifest.json",
-        "headers": {
-          "cache-control": "public, max-age=0, must-revalidate"
-        }
+        "source": "/manifest.json",
+        "headers": [
+          { "key": "Content-Type", "value": "application/json" }
+        ]
       }
     ]
   }
