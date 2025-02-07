@@ -37,3 +37,8 @@ variable "billing_tag_value" {
   description = "The value we use to track billing"
   type        = string
 }
+
+variable "default_tags" {
+  description = "The default tags we apply to all resources"
+  type        = map(string)
+}

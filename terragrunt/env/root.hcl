@@ -13,6 +13,10 @@ inputs = {
   billing_code              = "${local.vars.inputs.cost_center_code}"
   billing_tag_value         = "${local.vars.inputs.cost_center_code}"
   cbs_satellite_bucket_name = "cbs-satellite-${local.vars.inputs.account_id}"
+  default_tags              = {
+    CostCentre = "${local.vars.inputs.cost_center_code}"
+    Terraform  = true
+  }
 }
 
 generate "provider" {

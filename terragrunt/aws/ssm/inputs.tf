@@ -9,3 +9,9 @@ variable "docdb_password" {
   sensitive   = true
   type        = string
 }
+
+variable "openai_api_key" {
+  description = "The openai api key"
+  sensitive   = true
+  type        = string
+}
