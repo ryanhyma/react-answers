@@ -17,3 +17,8 @@ output "docdb_username_name" {
   description = "The document db username"
   value       = aws_ssm_parameter.docdb_username.name
 }
+
+output "openai_api_key_arn" {
+  description = "Arm of he openai api key parameter"
+  value       = aws_ssm_parameter.openai_api_key.arn
+}
