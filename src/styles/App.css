@@ -693,7 +693,7 @@ gcds-container:first-of-type {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
-  border: 1px solid #ddd;
+  border: 2px solid #333;
   border-radius: 4px;
 }
 
@@ -974,6 +974,19 @@ summary:focus,
     outline-offset: 0.225rem;
     box-shadow: 0 0 0 0.125rem #fff;
   }
+
+
+/* Make text inputs appear below their labels */
+.expert-rating-container input[type="url"]:focus,
+.expert-rating-container input[type="text"]:focus,
+.expert-rating-container textarea:focus {
+    border-color: #0535d2 !important;
+    outline: 3px solid #0535d2 !important;
+    outline-offset: 0.225rem !important;
+    box-shadow: 0 0 0 0.125rem #fff !important;
+    border-radius: 4px !important;
+}
+
   
   textarea:focus {
     border-radius: 0 !important;
@@ -1010,12 +1023,16 @@ summary:focus,
     }
   }
 
-  /* radios */
+/* radios */
 
 fieldset {
     border: 1px solid silver;
     margin: 0 2px;
     padding: .35em .625em .75em
+}
+
+fieldset.gc-chckbxrdio legend:first-of-type {
+    padding-top: 20px;
 }
 
 legend {
@@ -1037,7 +1054,8 @@ label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
-    font-weight: 700
+    font-weight: 700;
+    color:#333 !important;
 }
 
 input[type=search] {
@@ -1332,7 +1350,7 @@ fieldset.gc-chckbxrdio {
 .gc-chckbxrdio legend {
     float: none;
     font-family: "Lato";
-    font-size: 22px;
+    font-size: 1.625rem;
     font-weight: 700;
     margin-bottom: 15px;
     margin-top: 0;
@@ -1352,7 +1370,7 @@ fieldset.gc-chckbxrdio {
 .gc-chckbxrdio input[type=checkbox]+label,.gc-chckbxrdio input[type=radio]+label {
     display: inline-block;
     line-height: 2;
-    margin-left: 36px;
+    margin-left: 40px;
     width: auto
 }
 
