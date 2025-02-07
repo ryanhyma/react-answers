@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { GcdsFieldset } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
