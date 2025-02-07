@@ -91,7 +91,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
         role="button" 
         tabIndex={0} 
         aria-label="Close" />
-      <fieldset className="gc-chckbxrdio">
+      <fieldset className="gc-chckbxrdio sm-v">
         <h2>{t('homepage.expertRating.intro')}</h2>
         <details className="answer-details">
       <summary>{t('homepage.expertRating.title')}</summary>
@@ -251,7 +251,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
           </div>
 
           <div>
-            <label htmlFor="expert-citation-url">
+            <label className="expert-citation-url" htmlFor="expert-citation-url">
               {t('homepage.expertRating.options.betterCitation')}
               <input
                 type="url"

@@ -1181,7 +1181,6 @@ textarea.form-control {
 }
 
 
-
 .gc-chckbxrdio fieldset {
     min-width: 0;
     padding: 0;
@@ -1189,12 +1188,22 @@ textarea.form-control {
     border: 0
 }
 
-.checkbox,.radio {
+.answer-improvement label, .expert-citation-url label {
+    font-weight: 500 !important;
+    margin-top: 30px !important;
+}
+.gc-chckbxrdio .checkbox, .gc-chckbxrdio .radio {
     position: relative;
     display: block;
     margin-top: 10px;
     margin-bottom: 26px;
     line-height: 2.8em;
+}
+
+.gc-chckbxrdio.sm-v .checkbox, .gc-chckbxrdio.sm-v .radio {
+    margin-top: 10px;
+    margin-bottom: 18px;
+    line-height: 1em;
 }
 
 .checkbox.disabled label,.radio.disabled label,fieldset[disabled] .checkbox label,fieldset[disabled] .radio label {
@@ -1391,6 +1400,11 @@ fieldset.gc-chckbxrdio {
     position: absolute;
     top: 2px;
     width: 19px
+}
+
+.gc-chckbxrdio .sm-v input[type=checkbox]+label::before,.gc-chckbxrdio input[type=radio]+label::before {
+    height: 12px;
+    width: 12px
 }
 
 .gc-chckbxrdio input[type=checkbox]+label:hover::before,.gc-chckbxrdio input[type=radio]+label:hover::before {
