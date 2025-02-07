@@ -115,5 +115,9 @@ app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 
 
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Healthy' });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

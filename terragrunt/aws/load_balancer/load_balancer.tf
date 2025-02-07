@@ -49,7 +49,7 @@ resource "aws_lb_target_group" "ai_answers" {
   health_check {
     enabled             = true
     interval            = 60
-    path                = "/"
+    path                = "/health"
     timeout             = 30
     healthy_threshold   = 2
     unhealthy_threshold = 2
