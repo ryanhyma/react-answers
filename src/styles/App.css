@@ -1188,7 +1188,7 @@ textarea.form-control {
     border: 0
 }
 
-.answer-improvement label, .expert-citation-url label {
+.answer-improvement label, label.expert-citation-url {
     font-weight: 500 !important;
     margin-top: 30px !important;
 }
@@ -1389,6 +1389,12 @@ fieldset.gc-chckbxrdio {
     width: auto
 }
 
+
+.gc-chckbxrdio.sm-v input[type=checkbox]+label,.gc-chckbxrdio.sm-v input[type=radio]+label {
+    margin-left: 32px;
+}
+
+
 .gc-chckbxrdio input[type=checkbox]+label::before,.gc-chckbxrdio input[type=radio]+label::before {
     border: 13px solid #fff;
     -webkit-box-shadow: 0 0 0 2px #333;
@@ -1403,8 +1409,9 @@ fieldset.gc-chckbxrdio {
 }
 
 .gc-chckbxrdio .sm-v input[type=checkbox]+label::before,.gc-chckbxrdio input[type=radio]+label::before {
-    height: 12px;
-    width: 12px
+    border: 10px solid #fff;
+    height: 16px;
+    width: 16px
 }
 
 .gc-chckbxrdio input[type=checkbox]+label:hover::before,.gc-chckbxrdio input[type=radio]+label:hover::before {
