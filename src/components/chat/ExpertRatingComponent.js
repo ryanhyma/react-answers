@@ -264,7 +264,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
           </div>
         </details>
       </fieldset>
-      <button type="submit" className="btn-primary-sm mrgn-lft-sm">{t('homepage.expertRating.submit')}</button>
+      <button type="submit" className="btn-primary mrgn-lft-sm">{t('homepage.expertRating.submit')}</button>
     </form>
   );
 };
