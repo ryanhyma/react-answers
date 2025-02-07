@@ -29,6 +29,13 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
     setExpertFeedback(prev => ({ ...prev, [name]: value }));
   };
 
+    // Prevent form submission on enter key press inside text areas
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     
@@ -259,6 +266,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
                 name="expertCitationUrl"
                 value={expertFeedback.expertCitationUrl}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
               />
             </label>
           </div>
