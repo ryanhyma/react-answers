@@ -587,6 +587,11 @@ gcds-button.send-button {
     margin-top: 1rem;
 }
 
+.mrgn-lft-sm {
+    margin-left: 16px;
+    margin-top: 0px !important
+}
+
 .service-status-alert {
     background-color: #F3E9E8;
     border: 1px solid #BC3331; 
