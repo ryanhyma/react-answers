@@ -33,7 +33,14 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
-
+app.use(express.static(path.join(__dirname, '../build')));
+app.get('*', (req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    next();
+    return;
+  }
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
@@ -107,6 +114,10 @@ app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 
 
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Healthy' });
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

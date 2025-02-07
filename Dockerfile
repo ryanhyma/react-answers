@@ -1,31 +1,41 @@
 # Use Node.js LTS as the base image
+FROM node:lts AS build
+
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+# Use Node.js for the backend
 FROM node:lts
 
-# Set environment variable for MongoDB (can be overridden at runtime)
-ENV MONGODB_URI="mongodb://${DOCDB_USERNAME}:${DOCDB_PASSWORD}@${DOCDB_CLUSTER_ENDPOINT}:27017/${DOCDB_DATABASE}?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
-
-# Set up client
+# Set working directory
 WORKDIR /app
+
+# Copy package files and install dependencies
 COPY package.json package-lock.json ./
+COPY server/package.json server/package-lock.json ./server/
 RUN npm install
-COPY ./ ./
 
-# Set up server
-WORKDIR /workspace
-COPY package.json package-lock.json ./
-RUN npm install
-COPY api/ ./api/
-COPY config/ ./config/
-COPY models/ ./models/
-COPY agents/ ./agents/
-COPY server/ ./server/
+# Copy built frontend and backend code
+COPY --from=build /app/build /app/build
+COPY server /app/server
+COPY api /app/api
+COPY agents /app/agents
+COPY config /app/config
+COPY models /app/models
 
-# Create start script
-RUN echo '#!/bin/sh\ncd /app && npm start &\ncd /workspace/server && npm start' > /start.sh && \
-    chmod +x /start.sh
+# Expose only the backend port
+EXPOSE 3001
 
-# Expose both ports
-EXPOSE 3000 3001
-
-# Start both services
-CMD ["/start.sh"]
+# Start the backend server
+CMD ["node", "server/server.js"]
