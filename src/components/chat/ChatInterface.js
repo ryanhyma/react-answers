@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GcdsDetails } from '@cdssnc/gcds-components-react';
 import FeedbackComponent from './FeedbackComponent.js';
-import { useTranslations } from '../../hooks/useTranslations.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const MAX_CHARS = 400;
@@ -15,11 +14,13 @@ const ChatInterface = ({
   handleSendMessage,
   handleReload,
   handleAIToggle,
+  handleSearchToggle, // Add this prop
   handleDepartmentChange,
   handleReferringUrlChange,
   handleFeedback,
   formatAIResponse,
   selectedAI,
+  selectedSearch, // Add this prop
   selectedDepartment,
   referringUrl,
   turnCount,
@@ -202,7 +203,14 @@ const ChatInterface = ({
                     </p>
                   </div>
                 ) : (
-                  formatAIResponse(message.aiService, message)
+                  <>
+                    {formatAIResponse(message.aiService, message)}
+                    {chatId && (
+                      <div className="chat-id">
+                        <p>{t('homepage.chat.chatId')}: {chatId}</p>
+                      </div>
+                    )}
+                  </>
                 )}
                 {message.id === messages[messages.length - 1].id &&
                   showFeedback &&
@@ -215,7 +223,7 @@ const ChatInterface = ({
                       chatId={chatId}
                       userMessageId={message.id}
                     />
-                  )}
+                )}
               </>
             )}
           </div>
@@ -305,11 +313,6 @@ const ChatInterface = ({
                     }
                   </div>
                 )}
-                {chatId && (
-                  <div className="chat-id">
-                    <p>{t('homepage.chat.chatId')}: {chatId}</p>
-                  </div>
-                )}
               </div>
             </form>
           )}
@@ -347,6 +350,38 @@ const ChatInterface = ({
               </fieldset>
             </div>
 
+            <div className="search-toggle">
+              <fieldset className="ai-toggle_fieldset">
+                <div className="ai-toggle_container">
+                  <legend className="ai-toggle_legend">{t('homepage.chat.options.searchSelection.label')}</legend>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="search-canadaca"
+                      name="search-selection"
+                      value="canadaca"
+                      checked={selectedSearch === 'canadaca'}
+                      onChange={handleSearchToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="search-canadaca">{t('homepage.chat.options.searchSelection.canadaca')}</label>
+                  </div>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="search-google"
+                      name="search-selection"
+                      value="google"
+                      checked={selectedSearch === 'google'}
+                      onChange={handleSearchToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="search-google">{t('homepage.chat.options.searchSelection.google')}</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
             <div className="mrgn-bttm-10">
               <label htmlFor="referring-url">{t('homepage.chat.options.referringUrl.label')}</label>
               <input
@@ -360,6 +395,9 @@ const ChatInterface = ({
           </GcdsDetails>
         </div>
       )}
+      <div className="chat-id-container">
+        <p>{chatId}</p>
+      </div>
     </div>
   );
 };

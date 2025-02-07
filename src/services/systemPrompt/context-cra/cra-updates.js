@@ -6,16 +6,20 @@ export const CRA_UPDATES = `
 </cra_gst_holiday_break>
 
 <personal-income-tax-filing-updates>
-## Most tax pages were updated January 23rd 2025 for the 2024 tax year. For example:
+## Most tax pages were updated January 23rd 2025 for the 2024 tax year or with 2025 dates and deductions. For example:
 - https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/trousses-impot-toutes-annees-imposition/trousse-generale-impot-prestations.html
 - https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/get-ready-taxes.html or https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-particuliers/preparez-vous-impots.html
-Key 2024 dates:
+- https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4032-payroll-deductions-tables.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/retenues-paie/t4032-tables-retenues-paie.html
+- https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4032-payroll-deductions-tables/t4032on-jan/t4032on-january-general-information.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/retenues-paie/t4032-tables-retenues-paie/t4032on-jan/t4032on-janvier-information-generale.html
+
+Key dates for filing 2024 taxes in 2025:
 February 24, 2025: Earliest day to file your taxes online
 April 30, 2025: Deadline to file your taxes
 March 3 2025: Deadline to contribute to an RRSP, a PRPP, or an SPP
 June 15, 2025 (June 16, 2025, since June 15 is a Sunday): Deadline to file your taxes if you or your spouse or common-law partner are self-employed
 April 30, 2025: Deadline to pay your taxes
  - What's new for 2024: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/whats-new.html or https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/tout-votre-declaration-revenus/declaration-revenus/remplir-declaration-revenus/quoi-neuf.html
+</personal-income-tax-filing-updates>
 
 <cra-account-update>
 ## CRA Account - Sign-in to your CRA account page

@@ -39,14 +39,17 @@ const ContextService = {
       throw error;
     }
   },
-  contextSearch: async (message) => {
+  contextSearch: async (message, searchProvider) => {
     try {
-      const searchResponse = await fetch(getApiUrl("context-search"), {
+      const searchResponse = await fetch(getApiUrl("search-context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: message }),
+        body: JSON.stringify({
+          query: message,
+          searchService: searchProvider  // Add searchProvider
+        }),
       });
 
       if (!searchResponse.ok) {
@@ -62,13 +65,13 @@ const ContextService = {
     }
 
   },
-  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl) => {
+  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl, searchProvider) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       // TODO add referring URL to the context of the search?
-      const searchResults = await ContextService.contextSearch(question);
-      console.log('Executed Search:', question);
-      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchResults.provider));
+      const searchResults = await ContextService.contextSearch(question, searchProvider);
+      console.log('Executed Search:', question + ' ' + searchProvider);
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
@@ -94,7 +97,7 @@ const ContextService = {
     };
   },
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName) => {
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName, searchProvider = 'google') => {
     try {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
@@ -102,11 +105,14 @@ const ContextService = {
         .map(entry => entry['REDACTEDQUESTION']);
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
 
-      const searchResults = await Promise.all(
-        requests.map(async (request) => {
-          return await ContextService.contextSearch(request);
-        })
-      );
+      const searchResults = [];
+      for (let i = 0; i < requests.length; i++) {
+        if (searchProvider === 'canadaca' && i > 0 && i % 10 === 0) {
+          console.log('Pausing for a minute to avoid rate limits for canadaca...');
+          await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute
+        }
+        searchResults.push(await ContextService.contextSearch(requests[i], searchProvider));
+      }
 
       const updatedRequests = requests.map((request, index) => ({
         message: request,

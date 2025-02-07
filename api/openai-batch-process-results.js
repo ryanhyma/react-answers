@@ -58,16 +58,15 @@ const handleOpenAI = async (batch) => {
               context.topicUrl = topicUrlMatch ? topicUrlMatch[1] : context.topicUrl;
               context.department = departmentMatch ? departmentMatch[1] : context.department;
               context.departmentUrl = departmentUrlMatch ? departmentUrlMatch[1] : context.departmentUrl;
-              context.model = result.result.message.model;
-              context.inputTokens = result.result.message.usage.input_tokens;
-              context.outputTokens = result.result.message.usage.output_tokens;
-              context.cachedCreationInputTokens = result.result.message.usage.cache_creation_input_tokens;
-              context.cachedReadInputTokens = result.result.message.usage.cache_read_input_tokens;
+              context.model = result.response.body.model;
+              context.inputTokens = result.response.body.usage.prompt_tokens,
+              context.outputTokens = result.response.body.usage.completion_tokens,
               await context.save();
               
             } else {
               // TODO put this in common place
               const parsedAnswer = AnswerService.parseResponse(result.response.body.choices[0].message.content);
+
 
               const citation = new Citation();
               citation.aiCitationUrl = parsedAnswer.citationUrl;
@@ -78,6 +77,9 @@ const handleOpenAI = async (batch) => {
               await citation.save();
 
               const answer = new Answer();
+              answer.inputTokens = result.response.body.usage.prompt_tokens;
+              answer.outputTokens = result.response.body.usage.completion_tokens;
+              answer.model = result.response.body.model;
               answer.citation = citation._id;
               Object.assign(answer, parsedAnswer);
               answer.sentences = parsedAnswer.sentences;
@@ -119,6 +121,8 @@ export default async function handler(req, res) {
         throw new Error('Batch ID is required');
       }
       await dbConnect();
+      
+            
       const batch = await Batch.findOne({ batchId });
       if (!batch) {
         throw new Error('Batch not found');

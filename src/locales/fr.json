@@ -65,6 +65,11 @@
           "openai": "OpenAI",
           "cohere": "Cohere"
         },
+        "searchSelection": {
+          "label": "Recherche :",
+          "canadaca": "Canada.ca",
+          "google": "Google"
+        },
         "referringUrl": {
           "label": "URL de référence Canada.ca (facultatif)"
         }
@@ -170,6 +175,11 @@
       "file": {
         "label": "Sélectionner le fichier CSV de rétroaction :",
         "selected": "Fichier sélectionné :"
+      },
+      "searchService": {
+        "label": "Service de recherche",
+        "google": "Google",
+        "canadaca": "Recherche Canada.ca"
       },
       "buttons": {
         "upload": "Télécharger le fichier",

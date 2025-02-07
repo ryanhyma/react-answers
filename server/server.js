@@ -13,14 +13,14 @@ import anthropicBatchHandler from '../api/anthropic-batch.js';
 import openAIBatchHandler from '../api/openai-batch.js';
 import anthropicBatchStatusHandler from '../api/anthropic-batch-status.js';
 import openAIBatchStatusHandler from '../api/openai-batch-status.js';
-import contextSearchHandler from '../api/context-search.js';
+import contextSearchHandler from '../api/search-context.js';
 import anthropicBatchContextHandler from '../api/anthropic-batch-context.js';
 import openAIBatchContextHandler from '../api/openai-batch-context.js';
 import dbBatchListHandler from '../api/db-batch-list.js';
 import anthropicBatchProcessResultsHandler from '../api/anthropic-batch-process-results.js';
 import openAIBatchProcessResultsHandler from '../api/openai-batch-process-results.js';
 import dbBatchRetrieveHandler from '../api/db-batch-retrieve.js';
-import anthripicBatchCancelHanlder from '../api/anthropic-batch-cancel.js';
+import anthropicBatchCancelHandler from '../api/anthropic-batch-cancel.js';
 import openAIBatchCancelHandler from '../api/openai-batch-cancel.js';
 import anthropicContextAgentHandler from '../api/anthropic-context.js';
 import openAIContextAgentHandler from '../api/openai-context.js';
@@ -90,11 +90,11 @@ app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
 
 app.get('/api/openai-batch-status', openAIBatchStatusHandler);
 
-app.post('/api/context-search', contextSearchHandler);
+app.post('/api/search-context', contextSearchHandler);
 
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
 
-app.get('/api/anthropic-batch-cancel', anthripicBatchCancelHanlder);
+app.get('/api/anthropic-batch-cancel', anthropicBatchCancelHandler);
 
 app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
 

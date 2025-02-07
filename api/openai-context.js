@@ -1,15 +1,14 @@
 import { createContextAgent } from '../agents/AgentService.js';
 
+
 const invokeAgent = async (agentType, systemPrompt, message, searchResults, searchProvider) => {
   try {
     const contextAgent = await createContextAgent(agentType);
 
-
-
     const messages = [
       {
         role: "system",
-        content: `${systemPrompt}<searchResults>${searchResults}</searchResults>`,
+        content: `${systemPrompt}<searchResults>${searchResults.results}</searchResults>`,
       },
       {
         role: "user",
@@ -25,7 +24,7 @@ const invokeAgent = async (agentType, systemPrompt, message, searchResults, sear
 
     if (Array.isArray(answer.messages) && answer.messages.length > 0) {
       const lastResult = answer.messages[answer.messages.length - 1];
-      const lastMessage = lastResult.content
+      const lastMessage = lastResult.content;
       console.log('ContextAgent Response:', {
         content: lastMessage,
         role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
@@ -51,7 +50,6 @@ const invokeAgent = async (agentType, systemPrompt, message, searchResults, sear
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-
     console.log('Request body:', req.body);
     const { message, systemPrompt, aiProvider, searchResults, searchProvider } = req.body;
     const agentType = aiProvider;
@@ -65,7 +63,7 @@ export default async function handler(req, res) {
       for (const agentType of agentsToTry) {
         try {
           const result = await invokeAgent(agentType, systemPrompt, message, searchResults, searchProvider);
-          res.json( result);
+          res.json(result);
           return;
         } catch (error) {
           console.error(`Error with ${agentType} agent:`, error);
