@@ -217,7 +217,6 @@ const ChatInterface = ({
                   !message.error &&
                   (message.interaction.answer.answerType === 'normal') && (
                     <FeedbackComponent
-                      onFeedback={handleFeedback}
                       lang={lang}
                       sentenceCount={getLastMessageSentenceCount()}
                       chatId={chatId}
@@ -395,9 +394,6 @@ const ChatInterface = ({
           </GcdsDetails>
         </div>
       )}
-      <div className="chat-id-container">
-        <p>{chatId}</p>
-      </div>
     </div>
   );
 };
