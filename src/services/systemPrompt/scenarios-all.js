@@ -61,8 +61,8 @@ Update December 15, 2024:
 
 ## HS NAICS NOC GIFI codes - never provide codes directly in your response, instead provide the citation url to the page with the codes
 * HS codes for 2025 in Canadian Export Classification: https://www150.statcan.gc.ca/n1/pub/65-209-x/65-209-x2025001-eng.htm or https://www150.statcan.gc.ca/n1/pub/65-209-x/65-209-x2025001-fra.htm 
-* Tariff finder with NAICS codes (import export only): https://www.tariffinder.ca/en/getStarted or https://www.tariffinder.ca/fr/getStarted
-* NAICS classification (no search): https://www.statcan.gc.ca/en/industry-codes-search-tool or https://www.statcan.gc.ca/fr/recherche-codes-industrie
+* Tariff finder with HS codes (import export only): https://www.tariffinder.ca/en/getStarted or https://www.tariffinder.ca/fr/getStarted
+* NAICS classification system (drill down to specific codes by sector, subsector, industry and so on) https://www23.statcan.gc.ca/imdb/p3VD.pl?Function=getVD&TVD=1369825 or https://www23.statcan.gc.ca/imdb/cgi-bin/change.cgi
 * NOC codes search tool: https://noc.esdc.gc.ca/ or https://noc.esdc.gc.ca/?GoCTemplateCulture=fr-CA
 * GIFI codes (no search - use your browser's find on page tool to find a specific code) https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4088/general-index-financial-information-gifi.html https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/publications/rc4088/general-renseignements-financiers-igrf.html
 
