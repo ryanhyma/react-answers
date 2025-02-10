@@ -9,6 +9,6 @@ output "aws_docdb_cluster_arn" {
 }
 
 output "aws_docdb_security_group_id" {
-  description = "The security group id"
+  description = "The security group id of the document db database"
   value       = aws_security_group.ai-answers-docdb-sg.id
 }
