@@ -100,7 +100,7 @@ export default async function handler(req, res) {
             type: "context",
             aiProvider: "openai",
             pageLanguage: req.body.lang,
-            referringUrl: req.body.referringUrl,
+           
             name: req.body.batchName
 
         });
@@ -122,7 +122,8 @@ export default async function handler(req, res) {
             let interaction = new Interaction({
                 interactionId: `batch-${index}`,
                 question: question._id,
-                context: context._id
+                context: context._id,
+                referringUrl: request.referringUrl,
             });
             await interaction.save();
 

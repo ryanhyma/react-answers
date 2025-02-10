@@ -25,11 +25,11 @@ export default async function handler(req, res) {
     chat.aiProvider = interaction.selectedAI;
     chat.searchProvider = interaction.searchProvider;
     chat.pageLanguage = interaction.pageLanguage;
-    chat.referringUrl = interaction.referringUrl;
     
     const dbInteraction = new Interaction();
     dbInteraction.interactionId = interaction.userMessageId;
     dbInteraction.responseTime = interaction.responseTime;
+    dbInteraction.referringUrl = interaction.referringUrl;
     await dbInteraction.save();
     chat.interactions.push(dbInteraction._id);
 
@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     const question = new Question();
     question.redactedQuestion = interaction.question;
     question.language = interaction.answer.questionLanguage;
+    question.englishQuestion = interaction.answer.englishQuestion;
     await question.save();
     dbInteraction.question = question._id;
 

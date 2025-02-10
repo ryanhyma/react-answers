@@ -6,6 +6,7 @@ const InteractionSchema = new mongoose.Schema({
     required: false,
     default: ''
   },
+  referringUrl: { type: String, required: false, default: '' },
   responseTime: {
     type: String,
     required: false,

@@ -3,10 +3,6 @@
 import loadSystemPrompt from './systemPrompt.js';
 import { getProviderApiUrl } from '../utils/apiToUrl.js';
 
-
-
-
-
 const AnswerService = {
 
     prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false, referringUrl) => {
@@ -92,6 +88,7 @@ const AnswerService = {
         let citationHead = null;
         let citationUrl = null;
         let confidenceRating = null;
+        let englishQuestion = "";
 
         // Extract preliminary checks - this regex needs to capture multiline content
         let questionLanguage = "";
@@ -100,9 +97,9 @@ const AnswerService = {
             preliminaryChecks = preliminaryMatch[1].trim();
             content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
             questionLanguage = /<question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks)[1].trim();
+            const englishQuestionMatch = /<english-question>(.*?)<\/english-question>/s.exec(preliminaryChecks);
+            englishQuestion = englishQuestionMatch ? englishQuestionMatch[1].trim() : '';
         }
-
-
 
         // Extract citation information before processing answers
         const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
@@ -130,7 +127,6 @@ const AnswerService = {
         content = content.replace(/<citation-head>[\s\S]*?<\/citation-head>/s, '').trim();
         content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
 
-
         // Check response types
         if (content.includes('<not-gc>')) {
             answerType = 'not-gc';
@@ -152,8 +148,7 @@ const AnswerService = {
         const paragraphs = content.split(/\n+/);
         const sentences = AnswerService.parseSentences(content);
 
-
-        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage };
+        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage, englishQuestion };
 
     },
 
@@ -172,7 +167,8 @@ const AnswerService = {
                     inputTokens: entry['CONTEXT.INPUTTOKENS'],
                     outputTokens: entry['CONTEXT.OUTPUTTOKENS'],
                 };
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, "");
+                const referringUrl = entry['REFERRINGURL'] || '';
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, referringUrl);
                 messagePayload.context = context;
                 return messagePayload;
             }));

@@ -83,7 +83,8 @@ export default async function handler(req, res) {
             let interaction = new Interaction({
                 interactionId: `batch-${index}`,
                 question: question._id,  // Store reference to Question
-                context: context._id     // Store reference to Context
+                context: context._id,    // Store reference to Context
+                referringUrl: request.referringUrl,
             });
             await interaction.save();
 

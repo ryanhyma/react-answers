@@ -107,14 +107,20 @@ const ExportService = {
         for (const chat of chats) {
             const interactions = chat.interactions;
             const items = interactions;
-            const rows = ExportService.jsonToFlatTable(items,headers);
+            const rows = ExportService.jsonToFlatTable(items, headers);
             const filteredHeaders = headers.filter(header => !header.includes('_id') && !header.includes('__v'));
             const filteredRows = rows.map(row =>
                 filteredHeaders.map(header => row[headers.indexOf(header)])
             );
 
-            const globalInfo = [chat.chatId, chat.pageLanguage, chat.aiProvider, chat.searchProvider, chat.referringUrl];
-            const globalInfoHeaders = ['chatId', 'pageLanguage', 'aiService', 'searchService', 'referringUrl'];
+            // Make sure we include the referringUrl from both the chat level and interaction level
+            const globalInfo = [
+                chat.chatId, 
+                chat.pageLanguage, 
+                chat.aiProvider, 
+                chat.searchProvider
+            ];
+            const globalInfoHeaders = ['chatId', 'pageLanguage', 'aiService', 'searchService'];
 
             const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
 

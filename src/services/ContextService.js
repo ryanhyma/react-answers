@@ -118,6 +118,7 @@ const ContextService = {
         message: request,
         systemPrompt: SYSTEM_PROMPT,
         searchResults: searchResults[index],
+        referringUrl: entries[index]['REFERRINGURL'] || ''
       }));
 
       const response = await ContextService.sendBatch(updatedRequests, aiService, batchName, lang);
@@ -135,6 +136,7 @@ const ContextService = {
 
   sendBatch: async (requests, aiService, batchName, lang) => {
     try {
+      console.log(`🤖 Context Service: Sending batch to ${aiService}`);
       const response = await fetch(getProviderApiUrl(aiService, "batch-context"), {
         method: 'POST',
         headers: {
@@ -145,7 +147,7 @@ const ContextService = {
           aiService,
           batchName,
           lang,
-        }),
+                  }),
       });
 
       if (!response.ok) {
