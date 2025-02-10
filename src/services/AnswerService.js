@@ -3,10 +3,6 @@
 import loadSystemPrompt from './systemPrompt.js';
 import { getProviderApiUrl } from '../utils/apiToUrl.js';
 
-
-
-
-
 const AnswerService = {
 
     prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false, referringUrl) => {
@@ -102,8 +98,6 @@ const AnswerService = {
             questionLanguage = /<question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks)[1].trim();
         }
 
-
-
         // Extract citation information before processing answers
         const citationHeadMatch = /<citation-head>(.*?)<\/citation-head>/s.exec(content);
         const citationUrlMatch = /<citation-url>(.*?)<\/citation-url>/s.exec(content);
@@ -130,7 +124,6 @@ const AnswerService = {
         content = content.replace(/<citation-head>[\s\S]*?<\/citation-head>/s, '').trim();
         content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
 
-
         // Check response types
         if (content.includes('<not-gc>')) {
             answerType = 'not-gc';
@@ -152,7 +145,6 @@ const AnswerService = {
         const paragraphs = content.split(/\n+/);
         const sentences = AnswerService.parseSentences(content);
 
-
         return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage };
 
     },
@@ -172,7 +164,8 @@ const AnswerService = {
                     inputTokens: entry['CONTEXT.INPUTTOKENS'],
                     outputTokens: entry['CONTEXT.OUTPUTTOKENS'],
                 };
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, "");
+                const referringUrl = entry['REFERRINGURL'] || '';
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, referringUrl);
                 messagePayload.context = context;
                 return messagePayload;
             }));
