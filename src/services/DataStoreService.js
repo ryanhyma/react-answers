@@ -91,7 +91,7 @@ export const DataStoreService = {
         feedback: expertFeedback.isPositive ? 'positive' : 'negative'
       };
     }
-    console.log(`User feedback: ${expertFeedback}`);
+    console.log(`User feedback:`, formattedExpertFeedback);
 
     try {
       const response = await fetch(getApiUrl('db-persist-feedback'), {
@@ -113,7 +113,7 @@ export const DataStoreService = {
       console.log('Interaction logged successfully to database');
     } catch (error) {
       console.log('Development mode: Interaction logged to console', {
-        ...expertFeedback
+        expertFeedback: formattedExpertFeedback
       });
     }
 
