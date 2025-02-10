@@ -88,6 +88,7 @@ const AnswerService = {
         let citationHead = null;
         let citationUrl = null;
         let confidenceRating = null;
+        let englishQuestion = "";
 
         // Extract preliminary checks - this regex needs to capture multiline content
         let questionLanguage = "";
@@ -96,6 +97,8 @@ const AnswerService = {
             preliminaryChecks = preliminaryMatch[1].trim();
             content = content.replace(/<preliminary-checks>[\s\S]*?<\/preliminary-checks>/s, '').trim();
             questionLanguage = /<question-language>(.*?)<\/question-language>/s.exec(preliminaryChecks)[1].trim();
+            const englishQuestionMatch = /<english-question>(.*?)<\/english-question>/s.exec(preliminaryChecks);
+            englishQuestion = englishQuestionMatch ? englishQuestionMatch[1].trim() : '';
         }
 
         // Extract citation information before processing answers
@@ -145,7 +148,7 @@ const AnswerService = {
         const paragraphs = content.split(/\n+/);
         const sentences = AnswerService.parseSentences(content);
 
-        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage };
+        return { answerType, content, preliminaryChecks, englishAnswer, citationHead, citationUrl, paragraphs, confidenceRating, sentences, questionLanguage, englishQuestion };
 
     },
 

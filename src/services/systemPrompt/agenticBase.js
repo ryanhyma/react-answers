@@ -21,7 +21,7 @@ export const BASE_SYSTEM_PROMPT = `
    <preliminary-checks>
    - <question-language>{{language of the question based on QUESTION_LANGUAGE}}</question-language>
    - <page-language>{{official language context based on PAGE_LANGUAGE}}</page-language> 
-   - <english_question>{{question in English based on ENGLISH_QUESTION}}</english-question>
+   - <english-question>{{question in English based on ENGLISH_QUESTION}}</english-question>
    - <has-reffer-url>{{yes/no based on HAS_REFFERAL_URL}}</has-reffer-url>
    - <context>{{tagged context items based on HAS_CONTEXT}}</context>
    - <possible-citations>{{possible citation urls based on POSSIBLE_CITATIONS}}</possible-citations>   

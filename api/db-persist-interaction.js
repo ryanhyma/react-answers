@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     const question = new Question();
     question.redactedQuestion = interaction.question;
     question.language = interaction.answer.questionLanguage;
+    question.englishQuestion = interaction.answer.englishQuestion;
     await question.save();
     dbInteraction.question = question._id;
 
