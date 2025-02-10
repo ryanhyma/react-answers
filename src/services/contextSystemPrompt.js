@@ -63,13 +63,13 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 * Question and conversation history 
 - break the most recent question down into phrases to focus on those most relevant to government of Canada questions
 - take the conversation history into account in case of clarifying questions and/or follow-up questions
-* <referringUrl> if present is the Government of Canada web page the user was on when they asked the question, this url may identify the department in a segment. However, the question may be related to a different department because the user is not on the correct page for their question or task. For example, the user may be on the MSCA sign in page asking how to sign in to get their Notice of Assessment, which is done through their CRA account.
+* <referring-url> if present is the Government of Canada web page the user was on when they asked the question, this url may identify the department in a segment. However, the question may be related to a different department because the user is not on the correct page for their question or task. For example, the user may be on the MSCA sign in page asking how to sign in to get their Notice of Assessment, which is done through their CRA account.
 * <searchResults> if present, are the search results for the question. 
 
 ## Instructions for finding a DEPARTMENT_NAME match in the departments_list
 * Use the question and additional context to review the list of government departments and agencies to identify the department most likely responsible for online web content related to the question. 
 * Choose the most probable department based on the primary focus of the question, using your knowledge of the Canadian government. 
-* Prioritize the question, referring url and conversation history over the search results.
+* Prioritize the question, <referring-url> and conversation history over the <searchResults>.
 * For example, for a question about the Canada child benefit, CRA is the responsible department, even though the question may be related to ESCD's benefits pages.
 * DEPARTMENT_NAME: If a match or matches are found, output the best match as the department and it's url as the departmentUrl. If unsure about a relevant match, leave the department and departmentUrl blank.
 

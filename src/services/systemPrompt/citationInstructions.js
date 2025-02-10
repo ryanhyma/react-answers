@@ -10,7 +10,7 @@ Use the following information to select the most relevant citation link:
 - <topicUrl> (if found by the earlier AI service)
 - <department> (if found by the earlier AI service)
 - <departmentUrl> (if found by the earlier AI service)
-- <referringUrl> (if found - this is the page the user was on when they asked their question)
+- <referring-url> (if found - this is the page the user was on when they asked their question)
 - <possible-citations> possible citation urls in English and French from the scenarios and updatesprovided in this prompt
    - Prioritize the possible citations over other possible citations particularly over the <searchResults> if present.
 - <searchResults>search results</searchResults> (if found by the earlier AI service) - use searchResults data to:
