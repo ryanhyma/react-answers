@@ -71,8 +71,8 @@ const ExportService = {
         for (let C = headingRange.s.c; C <= headingRange.e.c; ++C) {
             const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
             if (!worksheet[cellAddress]) continue;
-            if (!worksheet[cellAddress].s) worksheet[cellAddress.s] = {};
-            if (!worksheet[cellAddress].s.font) worksheet[cellAddress.s.font] = {};
+            if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+            if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
             worksheet[cellAddress].s.font.bold = true;
         }
 
@@ -118,10 +118,9 @@ const ExportService = {
                 chat.chatId, 
                 chat.pageLanguage, 
                 chat.aiProvider, 
-                chat.searchProvider, 
-                chat.referringUrl
+                chat.searchProvider
             ];
-            const globalInfoHeaders = ['chatId', 'pageLanguage', 'aiService', 'searchService', 'referringUrl'];
+            const globalInfoHeaders = ['chatId', 'pageLanguage', 'aiService', 'searchService'];
 
             const rowsWithGlobalInfo = filteredRows.map(row => globalInfo.concat(row));
 

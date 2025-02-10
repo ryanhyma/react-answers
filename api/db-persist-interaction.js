@@ -25,11 +25,11 @@ export default async function handler(req, res) {
     chat.aiProvider = interaction.selectedAI;
     chat.searchProvider = interaction.searchProvider;
     chat.pageLanguage = interaction.pageLanguage;
-    chat.referringUrl = interaction.referringUrl;
     
     const dbInteraction = new Interaction();
     dbInteraction.interactionId = interaction.userMessageId;
     dbInteraction.responseTime = interaction.responseTime;
+    dbInteraction.referringUrl = interaction.referringUrl;
     await dbInteraction.save();
     chat.interactions.push(dbInteraction._id);
 

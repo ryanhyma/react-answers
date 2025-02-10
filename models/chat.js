@@ -9,13 +9,11 @@ const ChatSchema = new mongoose.Schema({
     }],
     aiProvider: { type: String, required: false, default: '' },
     searchProvider: { type: String, required: false, default: '' },
-    referringUrl: { type: String, required: false, default: '' },
     pageLanguage: { type: String, required: false, default: '' },
 },{
     timestamps: true,
     versionKey: false,
     id: false,
-    
 });
 
 export const Chat = mongoose.models.Chat || mongoose.model('Chat', ChatSchema);
