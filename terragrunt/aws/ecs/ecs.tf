@@ -1,5 +1,5 @@
 module "ai_answers" {
-  source = "github.com/cds-snc/terraform-modules//ecs?ref=v10.2.2"
+  source = "github.com/cds-snc/terraform-modules//ecs?ref=v10.3.0"
 
   # Cluster and service
   cluster_name = "ai-answers-cluster"
@@ -42,7 +42,7 @@ module "ai_answers" {
 
   # Forward logs to Sentinel
   sentinel_forwarder           = true
-  sentinel_forwarder_layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:100"
+  sentinel_forwarder_layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:188"
 
   billing_tag_value = var.billing_code
 }
