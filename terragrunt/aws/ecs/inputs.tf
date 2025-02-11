@@ -8,12 +8,6 @@ variable "vpc_private_subnet_ids" {
   type        = list(string)
 }
 
-variable "vpc_cidr_block" {
-  description = "CIDR block for the AI Answers VPC"
-  type        = list(string)
-  default     = ["10.0.0.0/16"]
-}
-
 variable "ecr_repository_arn" {
   description = "Arn of the ECR Repository"
   type        = string
@@ -62,9 +56,9 @@ variable "ai_answers_load_balancer_sg" {
   type        = string
 }
 
-variable "proxy_security_group_id" {
-  description = "The security group of the RDS proxy"
-  type        = string
+variable "aws_docdb_security_group_id" {
+  description = "Security group of the DocumentDB database"
+  type = string 
 }
 
 variable "sentinel_customer_id" {
