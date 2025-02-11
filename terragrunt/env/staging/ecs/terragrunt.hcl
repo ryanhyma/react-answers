@@ -13,7 +13,7 @@ dependency "iam" {
   mock_outputs_merge_with_state           = true
   mock_outputs = {
     iam_role_ai-answers-ecs-role_arn 	= ""
-    ecs_task_policy_attachment   	= ""
+    ai-answers-ecs-policy_attachment = ""
   }
 }
 
@@ -61,7 +61,7 @@ dependency "database" {
 
 inputs = {
   iam_role_ai-answers-ecs-role_arn = dependency.iam.outputs.iam_role_ai-answers-ecs-role_arn
-  ecs_task_policy_attachment   = dependency.iam.outputs.ecs_task_policy_attachment
+  ai-answers-ecs-policy_attachment = dependency.iam.outputs.ai-answers-ecs-policy_attachment
   vpc_private_subnet_ids       = dependency.network.outputs.vpc_private_subnet_ids
   vpc_id                       = dependency.network.outputs.vpc_id
   ecr_repository_url           = dependency.ecr.outputs.ecr_repository_url

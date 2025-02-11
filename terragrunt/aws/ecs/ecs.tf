@@ -6,7 +6,7 @@ module "ai_answers" {
   service_name = "ai-answers-app-service"
   depends_on = [
     var.lb_listener,
-    var.ecs_task_policy_attachment
+    var.ai-answers-ecs-policy_attachment
   ]
 
   # Task/Container definition

@@ -35,7 +35,7 @@ variable "iam_role_ai-answers-ecs-role_arn" {
   type        = string
 }
 
-variable "ecs_task_policy_attachment" {
+variable "ai-answers-ecs-policy_attachment" {
   description = "ECS Task execution policy attachment"
   type        = string
 }
