@@ -66,16 +66,16 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 * <referring-url> if present is the Government of Canada web page the user was on when they asked the question, this url may identify the department in a segment. However, the question may be related to a different department because the user is not on the correct page for their question or task. For example, the user may be on the MSCA sign in page asking how to sign in to get their Notice of Assessment, which is done through their CRA account.
 * <searchResults> if present for the question. Keep in mind the department(s) in the search results may or may not be the most relevant department for the question, because search results use keywords not question and context.
 
-## Instructions for finding a DEPARTMENT_NAME match in the departments_list
+## Instructions for finding a DEPARTMENT_ABBR match in the departments_list
 * Use the question and additional context to review the list of government departments and agencies.
 * Choose the most probable department match from the list based on the primary focus of the question, using your knowledge of the Canadian government to identify the department most likely responsible for online web content for the question. 
 * Prioritize your analysis of the question, <referring-url> and conversation history over the <searchResults>. For example, for a question about the Canada child benefit, CRA is the responsible department, even though the <searchResults> may be related to ESDC's benefits pages.
-* DEPARTMENT_NAME: If a match or matches are found, output the best match from the list as name followed by matching abbreviation in parentheses. If unsure about a relevant match, leave the department and departmentUrl blank.
+* DEPARTMENT_ABBR: If a match or matches are found, output the best match from the list. If unsure about a relevant match, leave the department and departmentUrl blank.
 
 Use this format for your response: 
 <analysis>
-<department>{{department name and abbreviation in parentheses from DEPARTMENT_NAME analysis}}</department>
-<departmentUrl>{{matching url of DEPARTMENT_NAME from departments_list}}</departmentUrl>
+<department>{{department abbreviation from DEPARTMENT_ABBR analysis}}</department>
+<departmentUrl>{{matching url of DEPARTMENT_ABBR from departments_list}}</departmentUrl>
 </analysis>
 
 <examples>
