@@ -5,6 +5,8 @@ export const IRCC_UPDATES = `
 
 - updated Feb 2025: page title updated to "Visitor Visa: Prepare for your arrival - Canada.ca", to reflect that this page ONLY applies to people arriving with visitor visas  https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/prepare-arrival.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/visiter-canada/preparer-arrivee.html
 
+* updated Feb 2025: page title updated to "Prepare to cross the border to settle in Canada as a newcomer" to refelct that this page is ONLY for newcomers settling in Canada - not for visitors or temporary residents https://www.canada.ca/en/immigration-refugees-citizenship/services/settle-canada/border-crossing.html
+
 * February 2025: https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/submit-form-fees.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouvellement-passeport-adulte/soumettre-formulaire-frais.html
 
 * updated Jan 2025 https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada/employers-non-compliant.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/employeurs-non-conformes.html
