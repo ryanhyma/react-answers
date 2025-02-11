@@ -2,27 +2,41 @@
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 
-
-
 const ContextService = {
-  sendMessage: async (aiProvider, message, lang = 'en', department = '', referringUrl, searchResults, searchProvider) => {
-    try {
-      console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
+  prepareMessage: async (message, lang = 'en', department = '', referringUrl = '', searchResults = null, searchProvider = null, conversationHistory = []) => {
+    console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
-      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
-      message += (referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : '');
+    const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
+    const messageWithReferrer = `${message}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''}`;
+
+    return {
+      message: messageWithReferrer,
+      systemPrompt: SYSTEM_PROMPT,
+      searchResults,
+      searchProvider,
+      conversationHistory,
+      referringUrl
+    };
+  },
+
+  sendMessage: async (aiProvider, message, lang = 'en', department = '', referringUrl, searchResults, searchProvider, conversationHistory = []) => {
+    try {
+      const messagePayload = await ContextService.prepareMessage(
+        message,
+        lang,
+        department,
+        referringUrl,
+        searchResults,
+        searchProvider,
+        conversationHistory
+      );
+
       const response = await fetch(getProviderApiUrl(aiProvider, "context"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message,
-          systemPrompt: SYSTEM_PROMPT,
-          aiProvider: aiProvider,
-          searchResults: searchResults,
-          searchProvider: searchProvider,
-        }),
+        body: JSON.stringify(messagePayload),
       });
 
       if (!response.ok) {
@@ -33,12 +47,12 @@ const ContextService = {
 
       return await response.json();
 
-
     } catch (error) {
       console.error('Error calling Context API:', error);
       throw error;
     }
   },
+
   contextSearch: async (message, searchProvider) => {
     try {
       const searchResponse = await fetch(getApiUrl("search-context"), {
@@ -65,13 +79,13 @@ const ContextService = {
     }
 
   },
-  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl, searchProvider) => {
+  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl, searchProvider, conversationHistory = []) => {
     try {
       console.log(`🤖 Context Service: Analyzing question in ${lang.toUpperCase()}`);
       // TODO add referring URL to the context of the search?
       const searchResults = await ContextService.contextSearch(question, searchProvider);
       console.log('Executed Search:', question + ' ' + searchProvider);
-      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider));
+      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider, conversationHistory));
     } catch (error) {
       console.error('Error deriving context:', error);
       throw error;
@@ -101,27 +115,29 @@ const ContextService = {
     try {
       console.log(`🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
 
-      const requests = entries
-        .map(entry => entry['REDACTEDQUESTION']);
-      const SYSTEM_PROMPT = await loadContextSystemPrompt(lang);
-
       const searchResults = [];
-      for (let i = 0; i < requests.length; i++) {
+      for (let i = 0; i < entries.length; i++) {
         if (searchProvider === 'canadaca' && i > 0 && i % 10 === 0) {
           console.log('Pausing for a minute to avoid rate limits for canadaca...');
-          await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute
+          await new Promise(resolve => setTimeout(resolve, 60000));
         }
-        searchResults.push(await ContextService.contextSearch(requests[i], searchProvider));
+        searchResults.push(await ContextService.contextSearch(entries[i]['REDACTEDQUESTION'], searchProvider));
       }
 
-      const updatedRequests = requests.map((request, index) => ({
-        message: request,
-        systemPrompt: SYSTEM_PROMPT,
-        searchResults: searchResults[index],
-        referringUrl: entries[index]['REFERRINGURL'] || ''
-      }));
+      const requests = await Promise.all(
+        entries.map(async (entry, index) => {
+          return ContextService.prepareMessage(
+            entry['REDACTEDQUESTION'],
+            lang,
+            '',  // department not provided in batch
+            entry['REFERRINGURL'] || '',
+            searchResults[index],
+            searchProvider
+          );
+        })
+      );
 
-      const response = await ContextService.sendBatch(updatedRequests, aiService, batchName, lang);
+      const response = await ContextService.sendBatch(requests, aiService, batchName, lang);
       return {
         batchId: response.batchId,
         batchStatus: response.batchStatus
@@ -132,7 +148,6 @@ const ContextService = {
       throw error;
     }
   },
-
 
   sendBatch: async (requests, aiService, batchName, lang) => {
     try {
@@ -147,7 +162,7 @@ const ContextService = {
           aiService,
           batchName,
           lang,
-                  }),
+        }),
       });
 
       if (!response.ok) {

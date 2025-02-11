@@ -34,10 +34,9 @@ export const ChatPipelineService = {
             const lastMessage = conversationHistory[conversationHistory.length - 1];
             context = lastMessage.interaction.context;
         } else {
-            // if initial questions or last response type was a questions
+            // if initial questions or last response type was a question
             onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
-            // TODO conversation history
-            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider);
+            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider, conversationHistory);
         }
         console.log("➡️ Derived context:", context);
 
