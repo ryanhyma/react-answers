@@ -35,23 +35,44 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [turnCount, setTurnCount] = useState(0);
   const messageIdCounter = useRef(0);
   const [displayStatus, setDisplayStatus] = useState('startingToThink');
+  const statusTimeoutRef = useRef(null);
+  const statusQueueRef = useRef([]);
   // Add a ref to track if we're currently typing
   const isTyping = useRef(false);
 
+  const processNextStatus = () => {
+    if (statusQueueRef.current.length === 0) {
+      statusTimeoutRef.current = null;
+      return;
+    }
 
+    const nextStatus = statusQueueRef.current.shift();
+    setDisplayStatus(nextStatus);
 
-  /* const statusMessages = useMemo(() => ({
-     redacting: t('homepage.chat.messages.redacting'),
-     searching: t('homepage.chat.messages.searching'),
-     gettingContext: t('homepage.chat.messages.gettingContext'),
-     generatingAnswer: t('homepage.chat.messages.generatingAnswer'),
-     complete: t('homepage.chat.messages.complete'),
-     error: t('homepage.chat.messages.error'),
-     verifyingCitation: t('homepage.chat.messages.verifyingCitation'),
-     updatingDatastore: t('homepage.chat.messages.updatingDatastore'),
-     moderatingAnswer: t('homepage.chat.messages.moderatingAnswer'),
-     needClarification: t('homepage.chat.messages.needClarification'),
-   }), [t]);*/
+    statusTimeoutRef.current = setTimeout(() => {
+      processNextStatus();
+    }, 1500);
+  };
+
+  const updateStatusWithTimer = (status) => {
+    // Add the new status to the queue
+    statusQueueRef.current.push(status);
+
+    // If there's no active timeout, start processing the queue
+    if (!statusTimeoutRef.current) {
+      processNextStatus();
+    }
+  };
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (statusTimeoutRef.current) {
+        clearTimeout(statusTimeoutRef.current);
+      }
+    };
+  }, []);
+
 
   const handleInputChange = (e) => {
     isTyping.current = true;
@@ -158,7 +179,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
           referringUrl,
           selectedAI,
           t,
-          (status) => { setDisplayStatus(status); },
+          updateStatusWithTimer,  // Pass our new status handler
           selectedSearch  // Add this parameter
         );
         clearInput();

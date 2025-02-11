@@ -18,13 +18,12 @@ export const PipelineStatus = {
     NEED_CLARIFICATION: 'needClarification'
 };
 export const ChatPipelineService = {
-
     processResponse: async (chatId, userMessage, userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate, searchProvider) => {
         const startTime = Date.now();
-        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_QUESTION, onStatusUpdate);
+        onStatusUpdate(PipelineStatus.MODERATING_QUESTION);
 
         console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl, conversationHistory, selectedAI);
-        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.REDACTING, onStatusUpdate);
+        onStatusUpdate(PipelineStatus.REDACTING);
         ChatPipelineService.processRedaction(userMessage);
 
         let context = null;
@@ -36,20 +35,20 @@ export const ChatPipelineService = {
             context = lastMessage.interaction.context;
         } else {
             // if initial questions or last response type was a questions
-            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GETTING_CONTEXT, onStatusUpdate);
+            onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
             // TODO conversation history
             context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider);
         }
         console.log("➡️ Derived context:", context);
 
-        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.GENERATING_ANSWER, onStatusUpdate);
+        onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
 
         // TOOD check about evaluation
         const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
         console.log("➡️ Answer Received:", answer);
         let finalCitationUrl, confidenceRating = null;
         if (answer.answerType === 'normal') {
-            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.VERIFYING_CITATION, onStatusUpdate);
+            onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
             const citationResult = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
             finalCitationUrl = citationResult.url;
             confidenceRating = citationResult.confidenceRating;
@@ -57,31 +56,31 @@ export const ChatPipelineService = {
         }
 
         if (answer.answerType === 'question') {
-            await ChatPipelineService.updateStatusWithDelay(PipelineStatus.NEED_CLARIFICATION, onStatusUpdate);
+            onStatusUpdate(PipelineStatus.NEED_CLARIFICATION);
         }
 
-        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
-        
+        onStatusUpdate(PipelineStatus.UPDATING_DATASTORE);
+
         const endTime = Date.now();
         const totalResponseTime = endTime - startTime;
         console.log("➡️ Total response time:", totalResponseTime, "ms");
         // Log the interaction with the validated URL
         await DataStoreService.persistInteraction(
-            selectedAI, 
+            selectedAI,
             userMessage,
             userMessageId,
             referringUrl,
             answer,
             finalCitationUrl,
             confidenceRating,
-            context, 
+            context,
             chatId,
             lang,
             totalResponseTime,
             searchProvider
         );
 
-        await ChatPipelineService.updateStatusWithDelay(PipelineStatus.MODERATING_ANSWER, onStatusUpdate);
+        onStatusUpdate(PipelineStatus.MODERATING_ANSWER);
         console.log("➡️ pipeline complete");
         return {
             answer: answer,
@@ -90,20 +89,8 @@ export const ChatPipelineService = {
             citationUrl: finalCitationUrl,
             confidenceRating: confidenceRating
         };
-
-
-
-    },
-    updateStatusWithDelay: async (status, onStatusUpdate) => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                onStatusUpdate(status);
-                resolve();
-            }, 1500); // delay of 1 & 1/2 second
-        });
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {
-
         if (originalCitationUrl) {
             const validationResult = await urlToSearch.validateAndCheckUrl(
                 originalCitationUrl,
@@ -114,12 +101,10 @@ export const ChatPipelineService = {
             );
             console.log(`✅ Validated URL:`, validationResult);
             return validationResult;
-
         }
         return { url: null, confidenceRating: null };
     },
     processRedaction: (userMessage) => {
-
         const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
         // Check for blocked content (# for profanity/threats/manipulation, XXX for private info)
@@ -133,8 +118,6 @@ export const ChatPipelineService = {
         }
     }
 };
-
-
 
 export class RedactionError extends Error {
     constructor(message, redactedText, redactedItems) {
