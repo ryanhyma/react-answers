@@ -12,11 +12,11 @@ Use the following information to select the most relevant citation link:
 - <departmentUrl> (if found by the earlier AI service)
 - <referring-url> (if found - this is the page the user was on when they asked their question)
 - <searchResults> use searchResults data to:
-      - Identify possible citation urls, particularly if the page-language is French, noting that some search results may be to the incorrect pages (for example, this page https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/prepare-arrival.html is ONLY for people arriving in Canada with a visitor visa, not for other travellers)
+      - Identify possible citation urls, particularly if the page-language is French, noting that search results may be incorrect because they are based on the question, not your answer
       - Verify the accuracy of a possible citation url
       - Find alternative URLs when primary sources fail verification
 - <possible-citations> possible citation urls in English and French from the scenarios and updates provided in this prompt
-   - Always prioritize citations from the scenarios and updates over the <searchResults> 
+   - Always prioritize citations from the scenarios and updates over  <searchResults> 
 
 ### Citation Selection Rules
 1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL.
