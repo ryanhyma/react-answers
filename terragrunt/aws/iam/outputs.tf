@@ -5,5 +5,5 @@ output "iam_role_ai-answers-ecs-role_arn" {
 
 output "ai-answers-ecs-policy_attachment" {
   description = "ECS Task policy attachment IAM Role"
-  value	      = aws_iam_role_policy_attachment.ai-answers-ecs-policy
+  value       = aws_iam_role_policy_attachment.ai-answers-ecs-policy
 }
