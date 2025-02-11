@@ -61,20 +61,20 @@ export const ChatPipelineService = {
         }
 
         await ChatPipelineService.updateStatusWithDelay(PipelineStatus.UPDATING_DATASTORE, onStatusUpdate);
-        
+
         const endTime = Date.now();
         const totalResponseTime = endTime - startTime;
         console.log("➡️ Total response time:", totalResponseTime, "ms");
         // Log the interaction with the validated URL
         await DataStoreService.persistInteraction(
-            selectedAI, 
+            selectedAI,
             userMessage,
             userMessageId,
             referringUrl,
             answer,
             finalCitationUrl,
             confidenceRating,
-            context, 
+            context,
             chatId,
             lang,
             totalResponseTime,
@@ -99,7 +99,7 @@ export const ChatPipelineService = {
             setTimeout(() => {
                 onStatusUpdate(status);
                 resolve();
-            }, 1500); // delay of 1 & 1/2 second
+            }, 1);
         });
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {
