@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "ecs_egress_database" {
   from_port                = 27017
   to_port                  = 27017
   protocol                 = "TCP"
-  source_security_group_id = var.proxy_security_group_id
+  source_security_group_id = var.aws_docdb_security_group_id
   security_group_id        = aws_security_group.ecs_tasks.id
 }
 
@@ -50,5 +50,5 @@ resource "aws_security_group_rule" "database_ingress_ecs" {
   to_port                  = 27017
   protocol                 = "TCP"
   source_security_group_id = aws_security_group.ecs_tasks.id
-  security_group_id        = var.proxy_security_group_id
+  security_group_id        = var.aws_docdb_security_group_id
 }
