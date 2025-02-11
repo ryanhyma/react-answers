@@ -30,7 +30,7 @@ variable "fargate_memory" {
   default     = 512
 }
 
-variable "iam_role_ai_answers_task_arn" {
+variable "iam_role_ai-answers-ecs-role_arn" {
   description = "Arn of the IAM AI Answers task role"
   type        = string
 }

@@ -28,8 +28,8 @@ module "ai_answers" {
 
   # Task definition
   task_name          = "ai-answers-task"
-  task_exec_role_arn = var.iam_role_ai_answers_task_arn
-  task_role_arn      = var.iam_role_ai_answers_task_arn
+  task_exec_role_arn = var.iam_role_ai-answers-ecs-role_arn
+  task_role_arn      = var.iam_role_ai-answers-ecs-role_arn
 
 
   # Scaling

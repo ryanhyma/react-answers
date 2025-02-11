@@ -12,8 +12,8 @@ dependency "iam" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    iam_role_ai_answers_task_arn = ""
-    ecs_task_policy_attachment   = ""
+    iam_role_ai-answers-ecs-role_arn 	= ""
+    ecs_task_policy_attachment   	= ""
   }
 }
 
@@ -60,7 +60,7 @@ dependency "database" {
 
 
 inputs = {
-  iam_role_ai_answers_task_arn = dependency.iam.outputs.iam_role_ai_answers_task_arn
+  iam_role_ai-answers-ecs-role_arn = dependency.iam.outputs.iam_role_ai-answers-ecs-role_arn
   ecs_task_policy_attachment   = dependency.iam.outputs.ecs_task_policy_attachment
   vpc_private_subnet_ids       = dependency.network.outputs.vpc_private_subnet_ids
   vpc_id                       = dependency.network.outputs.vpc_id
