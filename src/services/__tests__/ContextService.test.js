@@ -6,43 +6,41 @@ global.fetch = jest.fn();
 
 describe('ContextService', () => {
   beforeEach(() => {
-    // Clear all mocks before each test
     fetch.mockClear();
   });
 
   describe('prepareMessage', () => {
     it('should prepare message with all parameters', async () => {
       const result = await ContextService.prepareMessage(
-        'anthropic',
         'test message',
         'en',
         'department1',
-        'https://example.com',
+        'https://referrer.com',
         ['result1'],
-        'google'
+        'google',
+        []
       );
 
       expect(result).toEqual({
-        message: 'test message\n<referring-url>https://example.com</referring-url>',
+        message: 'test message\n<referring-url>https://referrer.com</referring-url>',
         systemPrompt: expect.any(String),
         searchResults: ['result1'],
         searchProvider: 'google',
-        aiProvider: 'anthropic'
+        conversationHistory: [],
+        referringUrl: 'https://referrer.com'
       });
     });
 
     it('should prepare message without optional parameters', async () => {
-      const result = await ContextService.prepareMessage(
-        'anthropic',
-        'test message'
-      );
+      const result = await ContextService.prepareMessage('test message');
 
       expect(result).toEqual({
         message: 'test message',
         systemPrompt: expect.any(String),
         searchResults: null,
         searchProvider: null,
-        aiProvider: 'anthropic'
+        conversationHistory: [],
+        referringUrl: ''
       });
     });
   });
@@ -50,7 +48,7 @@ describe('ContextService', () => {
   describe('sendMessage', () => {
     it('should send message successfully', async () => {
       const mockResponse = {
-        message: 'response message',
+        content: 'response message',
         model: 'claude-2',
         inputTokens: 100,
         outputTokens: 50
@@ -65,7 +63,13 @@ describe('ContextService', () => {
 
       const result = await ContextService.sendMessage(
         'anthropic',
-        'test message'
+        'test message',
+        'en',
+        'department1',
+        'https://referrer.com',
+        ['search result'],
+        'google',
+        []
       );
 
       expect(result).toEqual(mockResponse);
@@ -73,7 +77,8 @@ describe('ContextService', () => {
         getProviderApiUrl('anthropic', 'context'),
         expect.objectContaining({
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          body: expect.any(String)
         })
       );
     });
@@ -111,6 +116,7 @@ describe('ContextService', () => {
         getApiUrl('search-context'),
         expect.objectContaining({
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             query: 'search query',
             searchService: 'google'
@@ -150,9 +156,7 @@ describe('ContextService', () => {
       const mockContext = {
         message: '<topic>Test Topic</topic>',
         searchResults: [],
-        model: 'claude-2',
-        inputTokens: 100,
-        outputTokens: 50
+        model: 'claude-2'
       };
 
       const result = ContextService.parseContext(mockContext);
@@ -165,8 +169,8 @@ describe('ContextService', () => {
         searchResults: [],
         searchProvider: undefined,
         model: 'claude-2',
-        inputTokens: 100,
-        outputTokens: 50
+        inputTokens: undefined,
+        outputTokens: undefined
       });
     });
   });
