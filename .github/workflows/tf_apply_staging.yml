@@ -17,6 +17,8 @@ env:
   TF_VAR_docdb_username: ${{ secrets.DOCDB_USERNAME}}
   TF_VAR_docdb_password: ${{ secrets.DOCDB_PASSWORD}}
   TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY}}
+  TF_VAR_sentinel_customer_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
+  TF_VAR_sentinel_shared_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
 permissions:
   id-token: write
@@ -66,7 +68,7 @@ jobs:
       - name: Apply iam
         working-directory: terragrunt/env/staging/iam
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
-        
+
       - name: Apply load balancer
         working-directory: terragrunt/env/staging/load_balancer
         run: terragrunt apply --terragrunt-non-interactive -auto-approve
