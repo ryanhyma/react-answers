@@ -47,8 +47,12 @@ module "ai_answers" {
   billing_tag_value = var.billing_code
 }
 
+resource "aws_cloudwatch_log_group" "ai_answers_group" {
+  name              = "/aws/ecs/ai-answers-cluster"
+  retention_in_days = 30
+}
 
 resource "aws_cloudwatch_log_stream" "ai_answers_stream" {
   name           = "ai-answers-log-stream"
-  log_group_name = "/aws/ecs/ai-answers-cluster"
+  log_group_name = aws_cloudwatch_log_group.ai_answers_group.name
 }
