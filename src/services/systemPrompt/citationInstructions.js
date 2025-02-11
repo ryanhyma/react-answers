@@ -15,11 +15,12 @@ Use the following information to select the most relevant citation link:
       - Identify possible citation urls, particularly if the page-language is French, noting that search results may be incorrect because they are based on the question, not your answer
       - Verify the accuracy of a possible citation url
       - Find alternative URLs when primary sources fail verification
-- <possible-citations> possible citation urls in English and French from the scenarios and updates provided in this prompt
+- <possible-citations> if this is Yes, look for possible citation urls in English and French from the scenarios and updates provided in this prompt
    - Always prioritize citations from the scenarios and updates over  <searchResults> 
 
 ### Citation Selection Rules
-1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL.
+1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL. 
+   - IMPORTANT: If the response suggests using a specific page then that page's URL MUST be selected. 
    - When choosing between URLs, always prefer broader, verified URLs and URLS from the scenarios and updates over specific URLs that you cannot confirm
 2. Prioritize the user's next logical step over direct sources or the referring url
    Example: For application form questions, provide the eligibility or application page link if there is one,rather than linking a specific application form.
