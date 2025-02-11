@@ -3,7 +3,7 @@ terraform {
 }
 
 dependencies {
-  paths = ["../iam", "../network", "../ecr", "../load_balancer", "../databse"]
+  paths = ["../iam", "../network", "../ecr", "../load_balancer", "../database"]
 }
 
 dependency "iam" {
@@ -50,13 +50,13 @@ dependency "load_balancer" {
   }
 }
 dependency "database" {
-	 config_path = "../database"
-	  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
-	  mock_outputs_merge_with_state           = true
-	  mock_outputs = {
-	     aws_docdb_security_group_id  = ""
-	     }
-	}
+  config_path                             = "../database"
+  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
+  mock_outputs_merge_with_state           = true
+  mock_outputs = {
+    aws_docdb_security_group_id = ""
+  }
+}
 
 
 inputs = {
@@ -69,7 +69,7 @@ inputs = {
   lb_listener                  = dependency.load_balancer.outputs.lb_listener
   lb_target_group_arn          = dependency.load_balancer.outputs.lb_target_group_arn
   ai_answers_load_balancer_sg  = dependency.load_balancer.outputs.ai_answers_load_balancer_sg
-  aws_docdb_security_group_id = dependency.database.outputs.aws_docdb_security_group_id
+  aws_docdb_security_group_id  = dependency.database.outputs.aws_docdb_security_group_id
 }
 
 include {
