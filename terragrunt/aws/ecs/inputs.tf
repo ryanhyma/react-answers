@@ -58,7 +58,7 @@ variable "ai_answers_load_balancer_sg" {
 
 variable "aws_docdb_security_group_id" {
   description = "Security group of the DocumentDB database"
-  type = string 
+  type        = string
 }
 
 variable "sentinel_customer_id" {
