@@ -13,8 +13,8 @@
       "title": "About AI Answers",
       "privacyNote": "To protect your privacy, numbers and addresses are not sent to the AI service.",
       "aiServices": {
-        "claude": "AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to April 2024",
-        "chatgpt": "AI service ChatGPT: OpenAI 4o, knowledge to May 2024",
+        "claude": "AI service Claude: Anthropic Claude Sonnet 3.5, knowledge to October 2024",
+        "chatgpt": "AI service ChatGPT: OpenAI 4o, knowledge to November 2024",
         "cohere": "Other services may be added in the future."
       },
       "systemPrompt": "Read the System Prompt",
