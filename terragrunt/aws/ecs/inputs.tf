@@ -70,3 +70,8 @@ variable "sentinel_shared_key" {
   type      = string
   sensitive = true
 }
+
+variable "openai_api_key_arn" {
+  description = "Arn of the OpenAI API key"
+  type        = string
+}

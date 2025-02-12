@@ -1,3 +1,11 @@
+locals {
+  container_secrets = [
+    {
+      "name" = "OPENAI_API_KEY"
+      "valueFrom" = var.openai_api_key_arn 
+    }
+  ]
+}
 module "ai_answers" {
   source = "github.com/cds-snc/terraform-modules//ecs?ref=v10.3.0"
 
@@ -16,6 +24,7 @@ module "ai_answers" {
   task_memory                = var.fargate_memory
   container_port             = 3001
   container_host_port        = 3001
+  container_secrets          = local.container_secrets
   container_linux_parameters = {}
   container_ulimits = [
     {
@@ -34,6 +43,7 @@ module "ai_answers" {
 
   # Scaling
   enable_autoscaling = true
+  desired_count     = 1
 
   # Networking
   lb_target_group_arn = var.lb_target_group_arn
