@@ -3,7 +3,7 @@ terraform {
 }
 
 dependencies {
-  paths = ["../iam", "../network", "../ecr", "../load_balancer", "../database"]
+  paths = ["../iam", "../network", "../ecr", "../load_balancer", "../database", "../ssm"]
 }
 
 dependency "iam" {
@@ -49,6 +49,7 @@ dependency "load_balancer" {
     ai_answers_load_balancer_sg = ""
   }
 }
+
 dependency "database" {
   config_path                             = "../database"
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
@@ -58,6 +59,15 @@ dependency "database" {
   }
 }
 
+dependency "ssm" {
+  config_path = "../ssm"
+  
+  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
+  mock_outputs_merge_with_state           = true
+  mock_outputs = {
+    openai_api_key_arn = ""
+  }
+}
 
 inputs = {
   iam_role_ai-answers-ecs-role_arn = dependency.iam.outputs.iam_role_ai-answers-ecs-role_arn
@@ -70,6 +80,7 @@ inputs = {
   lb_target_group_arn          = dependency.load_balancer.outputs.lb_target_group_arn
   ai_answers_load_balancer_sg  = dependency.load_balancer.outputs.ai_answers_load_balancer_sg
   aws_docdb_security_group_id  = dependency.database.outputs.aws_docdb_security_group_id
+  openai_api_key_arn          = dependency.ssm.outputs.openai_api_key_arn
 }
 
 include {
