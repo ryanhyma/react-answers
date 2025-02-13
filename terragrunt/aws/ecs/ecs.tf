@@ -1,8 +1,8 @@
 locals {
   container_secrets = [
     {
-      "name" = "OPENAI_API_KEY"
-      "valueFrom" = var.openai_api_key_arn 
+      "name"      = "OPENAI_API_KEY"
+      "valueFrom" = var.openai_api_key_arn
     }
   ]
 }
@@ -43,7 +43,7 @@ module "ai_answers" {
 
   # Scaling
   enable_autoscaling = true
-  desired_count     = 1
+  desired_count      = 1
 
   # Networking
   lb_target_group_arn = var.lb_target_group_arn
