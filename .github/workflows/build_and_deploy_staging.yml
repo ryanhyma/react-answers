@@ -35,6 +35,10 @@ jobs:
           role-session-name: AIAnswersGitHubActions
           aws-region: 'ca-central-1'
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 v2.0.1
+
       - name: Build container
         working-directory: ./
         run: |
