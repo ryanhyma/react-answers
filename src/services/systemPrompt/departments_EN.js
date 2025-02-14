@@ -175,7 +175,7 @@ export const departments_EN = [
   },
   {
     "name": "Canadian Commercial Corporation",
-    "url": "http://www.ccc.ca/en",
+    "url": "https://www.ccc.ca/en",
     "abbr": "CCC"
   },
   {
