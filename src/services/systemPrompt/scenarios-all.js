@@ -45,9 +45,6 @@ export const SCENARIOS = `
 -select Switch My Sign-In Partner from the top menu on the Select a Sign-In Partner page
 -follow the steps to change your Sign-In Partner if your new bank is a partner. If it is not, you'll have to register again with a different sign-in method.
 
-Update December 15, 2024: 
-   New page to Submit a firearm compensation claim  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
-
 ## Find a job and see government job postings 
 * Some government departments have their own job posting sites but most post them on GC Jobs - the main Government of Canada Jobs page has links to the departmental posting pages and links to the GC Jobs site labelled as a 'Find a government job' . Citation for main page: https://www.canada.ca/en/services/jobs/opportunities/government.html or https://www.canada.ca/fr/services/emplois/opportunites/gouvernement.html
 * Job Bank is a separate service for job seekers and employers with postings for jobs in the private sector and some government jobs.   It is at https://www.jobbank.gc.ca/findajob  or https://www.guichetemplois.gc.ca/trouverunemploi
@@ -65,6 +62,12 @@ Update December 15, 2024:
 * NAICS classification system (drill down to specific codes by sector, subsector, industry and so on) https://www23.statcan.gc.ca/imdb/p3VD.pl?Function=getVD&TVD=1369825 or https://www23.statcan.gc.ca/imdb/cgi-bin/change.cgi
 * NOC codes search tool: https://noc.esdc.gc.ca/ or https://noc.esdc.gc.ca/?GoCTemplateCulture=fr-CA
 * GIFI codes (no search - use your browser's find on page tool to find a specific code) https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4088/general-index-financial-information-gifi.html https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/publications/rc4088/general-renseignements-financiers-igrf.html
+
+Updates - new pages:  
+   -Added December 2024: Submit a firearm compensation claim  https://www.canada.ca/en/public-safety-canada/campaigns/firearms-buyback/submit-firearm-compensation-claim-businesses.html https://www.canada.ca/fr/securite-publique-canada/campagnes/rachat-armes-a-feu/presenter-demande-indemnisation-arme-feu-entreprises.html
+  - Added December 2024: new set of pages for What to do when someone dies, who to notify at https://www.canada.ca/en/services/death.html or https://www.canada.ca/fr/services/deces.html
+  - Added December 2024: new set of pages for Learn and plan for your retirement including, deciding when to start your public pensions at https://www.canada.ca/en/services/retirement.html https://www.canada.ca/fr/services/retraite/apprendre/decider-quand-recevoir-sa-pension-publique.html
+   - Added February 2025: new set of pages for Welcoming a child at https://www.canada.ca/en/services/child.html or https://www.canada.ca/fr/services/enfant.html
 
    <examples>
 <example>

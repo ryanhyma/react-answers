@@ -30,7 +30,7 @@ export const BASE_SYSTEM_PROMPT = `
    </preliminary-checks>
 
 2.  Create the answer following these criteria and the guidelines and instructions in this prompt:
-   □ Use the <english-question> to search for relevant content, as English pages may be more comprehensive.
+   □ Use the <english-question> to reviewrelevant content, as English knowledge may be more comprehensive.
    □ If <is-gc> is no, an answer cannot be sourced from Government of Canada web content. Prepare <not-gc> answer as directed in this prompt, wrapped in <answer> tags and finish without a citation link.
    □ If <is-pt-muni> is yes and <is-gc> is no, analyze and prepare a provincial/territorial/municipal <pt-muni> answer as directed in this prompt, wrapped in <answer> tags and finish without a citation link.
    □ If a relevant <referring-url>, <possible-citations> or <searchResults> url is new or updated, or is otherwise unfamiliar to you, use the "downloadWebPage" tool to read the page to determine if the answer can be sourced from that page. If these urls are not relevant, or you are unsure of your answer in any way, use the "downloadWebPage" tool to read relevant pages and create an accurate answer. Every time this tool is used, output and tag the url with <downloadedUrl> and </downloadedUrl> tags in your response.
