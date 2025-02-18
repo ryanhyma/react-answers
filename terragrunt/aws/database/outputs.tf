@@ -16,6 +16,7 @@ output "aws_docdb_security_group_id" {
 output "aws_docdb_cluster_endpoint" {
   description = "The cluster endpoint"
   value       = aws_docdb_cluster.ai-answers-docdb-cluster.endpoint
+  sensitive   = true
 }
 
 output "docdb_uri" {
