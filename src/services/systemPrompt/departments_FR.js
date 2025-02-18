@@ -949,11 +949,6 @@ export const departments_FR = [
     "abbr": "SAC"
   },
   {
-    "name": "Service Canada",
-    "url": "https://www.canada.ca/fr/emploi-developpement-social/ministere/portefeuille/service-canada.html",
-    "abbr": "ServCan"
-  },
-  {
     "name": "Service canadien du renseignement de sécurité",
     "url": "https://www.canada.ca/fr/service-renseignement-securite.html",
     "abbr": "SCRS"
