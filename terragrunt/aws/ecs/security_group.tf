@@ -7,6 +7,8 @@ resource "aws_security_group" "ecs_tasks" {
   description = "Allow inbound and outbound traffic for AI Answers"
   vpc_id      = var.vpc_id
 
+  ingress = []
+  egress  = []
   tags = {
     "CostCentre" = var.billing_code
   }
@@ -28,7 +30,7 @@ resource "aws_security_group_rule" "ecs_egress_all" {
   type        = "egress"
   from_port   = 0
   to_port     = 0
-  protocol    = "tcp"
+  protocol    = "-1"
 
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_tasks.id
