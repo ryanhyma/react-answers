@@ -12,3 +12,8 @@ variable "docdb_password_arn" {
   description = "The arn of the document db password parameter"
   type        = string
 }
+
+variable "docdb_uri_arn" {
+  description = "The arn of the document db uri parameter"
+  type        = string
+}

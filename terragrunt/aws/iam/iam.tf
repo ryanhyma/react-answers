@@ -24,7 +24,8 @@ data "aws_iam_policy_document" "ai-answers-ssm-policy" {
     resources = [
       var.docdb_password_arn,
       var.docdb_username_arn,
-      var.openai_api_key_arn
+      var.openai_api_key_arn,
+      var.docdb_uri_arn
     ]
   }
 }
