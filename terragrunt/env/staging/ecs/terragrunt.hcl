@@ -56,7 +56,7 @@ dependency "database" {
   mock_outputs_merge_with_state           = true
   mock_outputs = {
     aws_docdb_security_group_id = ""
-    docdb_uri_arn              = ""
+    docdb_uri_arn              = "mock_docdb_uri_arn"
   }
 }
 

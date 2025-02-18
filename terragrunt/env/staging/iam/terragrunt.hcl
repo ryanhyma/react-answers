@@ -22,7 +22,7 @@ dependency "database" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    docdb_uri_arn  = ""
+    docdb_uri_arn  = "mock_docdb_uri_arn"
   }
 }
 
