@@ -67,7 +67,6 @@ dependency "ssm" {
   mock_outputs_merge_with_state           = true
   mock_outputs = {
     openai_api_key_arn = ""
-   docdb_uri_arn              = "" 
   }
 }
 
