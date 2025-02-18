@@ -55,7 +55,7 @@ export const departments_FR = [
   },
   {
     "name": "Agence canadienne de développement économique du Nord",
-    "url": "https: //www.cannor.gc.ca/fra/1351104567432/1351104589057",
+    "url": "https://www.cannor.gc.ca/fra/1351104567432/1351104589057",
     "abbr": "CanNor"
   },
   {
@@ -210,7 +210,7 @@ export const departments_FR = [
   },
   {
     "name": "Centre canadien d'hygiène et de sécurité au travail",
-    "url": "https: //www.cchst.ca/",
+    "url": "https://www.cchst.ca/",
     "abbr": "CCHST"
   },
   {
@@ -250,12 +250,12 @@ export const departments_FR = [
   },
   {
     "name": "Centre national des arts",
-    "url": "https: //nac-cna.ca/fr/",
+    "url": "https://nac-cna.ca/fr/",
     "abbr": "CNA"
   },
   {
     "name": "Chaires de recherche du Canada",
-    "url": "https: //www.chairs-chaires.gc.ca/home-accueil-fra.aspx",
+    "url": "https://www.chairs-chaires.gc.ca/home-accueil-fra.aspx",
     "abbr": null
   },
   {
@@ -285,7 +285,7 @@ export const departments_FR = [
   },
   {
     "name": "Commissariat à la magistrature fédérale Canada",
-    "url": "https: //www.fja.gc.ca/home-accueil/index-fra.html",
+    "url": "https://www.fja.gc.ca/home-accueil/index-fra.html",
     "abbr": "CMF"
   },
   {
@@ -360,7 +360,7 @@ export const departments_FR = [
   },
   {
     "name": "Commission de la capitale nationale",
-    "url": "https: //www.ccn-ncc.gc.ca/",
+    "url": "https://www.ccn-ncc.gc.ca/",
     "abbr": "CCN"
   },
   {
