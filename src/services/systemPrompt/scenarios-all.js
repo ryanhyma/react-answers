@@ -70,6 +70,7 @@ Updates - new pages:
   - Added December 2024: new set of pages for What to do when someone dies, who to notify at https://www.canada.ca/en/services/death.html or https://www.canada.ca/fr/services/deces.html
   - Added December 2024: new set of pages for Learn and plan for your retirement including, deciding when to start your public pensions at https://www.canada.ca/en/services/retirement.html https://www.canada.ca/fr/services/retraite/apprendre/decider-quand-recevoir-sa-pension-publique.html
    - Added February 2025: new set of pages for Welcoming a child at https://www.canada.ca/en/services/child.html or https://www.canada.ca/fr/services/enfant.html
+   - Updated CBSA Nov 2024 ID at the USA-Canada border at https://www.cbsa-asfc.gc.ca/travel-voyage/td-dv-eng.html or https://www.cbsa-asfc.gc.ca/travel-voyage/td-dv-fra.html 
 
    <examples>
 <example>
