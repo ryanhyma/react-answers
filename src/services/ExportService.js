@@ -108,7 +108,7 @@ const ExportService = {
             const interactions = chat.interactions.map(interaction => ({
                 ...interaction,
                 uniqueID: chat.chatId ? 
-                    `${chat.chatId}_${interaction.interactionId}` : 
+                    `${chat.chatId}${interaction.interactionId}` : 
                     `${chat.batchId || 'batch'}_${interaction.interactionId}`
             }));
             const items = interactions;
