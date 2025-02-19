@@ -40,11 +40,10 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
     event.preventDefault();
     
     if (expertFeedback.expertCitationUrl && !isValidGovernmentUrl(expertFeedback.expertCitationUrl)) {
-      alert(t('homepage.expertRating.errors.invalidUrl'));
+      console.error(t('homepage.expertRating.errors.invalidUrl'));
       return;
     }
     
-    // Calculate total score before submitting
     const totalScore = computeTotalScore(expertFeedback);
     const feedbackWithScore = {
       ...expertFeedback,
@@ -66,27 +65,38 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
   };
 
   const computeTotalScore = (feedback) => {
-    // Get all sentence scores that exist and aren't null
+    // Check if any ratings were provided at all
+    const hasAnyRating = [
+      feedback.sentence1Score,
+      feedback.sentence2Score,
+      feedback.sentence3Score,
+      feedback.sentence4Score,
+      feedback.citationScore
+    ].some(score => score !== null);
+
+    // If no ratings were provided at all, return null
+    if (!hasAnyRating) return null;
+
+    // Get scores for existing sentences (up to sentenceCount)
     const sentenceScores = [
       feedback.sentence1Score,
       feedback.sentence2Score,
       feedback.sentence3Score,
       feedback.sentence4Score
-    ].filter(score => score !== null);
+    ]
+      .slice(0, sentenceCount)
+      .map(score => score === null ? 100 : score);  // Unrated sentences = 100
 
-    // If no sentences were rated, return 0
-    if (sentenceScores.length === 0) return 0;
-
-    // Calculate average of sentence scores and multiply by 0.75
+    // Calculate sentence component
     const sentenceComponent = (sentenceScores.reduce((sum, score) => sum + score, 0) / sentenceScores.length) * 0.75;
-    
-    // Citation score defaults to 25 (full marks) if not set
+
+    // Citation score defaults to 25 (good) in two cases:
+    // 1. Citation exists but wasn't rated
+    // 2. Answer has no citation section at all
     const citationComponent = feedback.citationScore !== null ? feedback.citationScore : 25;
 
-    // Simple addition since citation scores are already weighted
     const totalScore = sentenceComponent + citationComponent;
     
-    // Round to 2 decimal places
     return Math.round(totalScore * 100) / 100;
   };
 
