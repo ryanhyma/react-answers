@@ -107,7 +107,9 @@ const ExportService = {
         for (const chat of chats) {
             const interactions = chat.interactions.map(interaction => ({
                 ...interaction,
-                uniqueID: `${chat.chatId}_${interaction.interactionId}`
+                uniqueID: chat.chatId ? 
+                    `${chat.chatId}_${interaction.interactionId}` : 
+                    `${chat.batchId || 'batch'}_${interaction.interactionId}`
             }));
             const items = interactions;
             const rows = ExportService.jsonToFlatTable(items, headers);
