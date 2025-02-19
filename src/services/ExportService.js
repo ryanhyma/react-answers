@@ -103,9 +103,12 @@ const ExportService = {
     toSpreadsheet: async (chats, headerOrder, type = 'excel', filename) => {
         const worksheetData = [];
         const headersSet = new Set(chats.flatMap(chat => ExportService.getHeaders(chat.interactions)));
-        const headers = Array.from(headersSet);
+        const headers = ['uniqueID', ...Array.from(headersSet)];
         for (const chat of chats) {
-            const interactions = chat.interactions;
+            const interactions = chat.interactions.map(interaction => ({
+                ...interaction,
+                uniqueID: `${chat.chatId}_${interaction.interactionId}`
+            }));
             const items = interactions;
             const rows = ExportService.jsonToFlatTable(items, headers);
             const filteredHeaders = headers.filter(header => !header.includes('_id') && !header.includes('__v'));
@@ -155,6 +158,7 @@ const ExportService = {
 
     export: (items, filename) => {
         const headerOrder = [
+            { dataLabel: 'uniqueID', outputLabel: 'uniqueID' },
             { dataLabel: 'chatId', outputLabel: 'chatId' },
             { dataLabel: 'createdAt', outputLabel: 'createdAt' },
             { dataLabel: 'pageLanguage', outputLabel: 'pageLanguage' },
