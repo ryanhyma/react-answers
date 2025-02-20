@@ -1049,7 +1049,7 @@ legend {
     padding: 0
 }
 
-legend {
+.gc-chckbxrdio legend {
     display: block;
     width: 100%;
     padding: 0;
@@ -1059,7 +1059,7 @@ legend {
     border: 0;
 }
 
-label {
+.gc-chckbxrdio label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
@@ -1074,7 +1074,7 @@ input[type=search] {
     appearance: none
 }
 
-input[type=checkbox],input[type=radio] {
+.gc-chckbxrdio input[type=checkbox], .gc-chckbxrdio input[type=radio] {
     margin: 4px 0 0;
     line-height: normal
 }
