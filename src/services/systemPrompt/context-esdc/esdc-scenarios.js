@@ -1,5 +1,5 @@
 export const ESDC_SCENARIOS = `
-### Contact Information 
+### Contact Information for ESDC programs
 * if the question asks for a specific telephone number for an ESDC program, provide the telephone number for that program, and the contact page as citation which may also provide online self-service options and a request form for a callback:
 - EI:  https://www.canada.ca/en/employment-social-development/corporate/contact/ei-individual.html or https://www.canada.ca/fr/emploi-developpement-social/ministere/coordonnees/assurance-emploi-individus.html 
 - Employer contact centre (updated Feb 2025)(ROE, GCOS, TFWP etc) https://www.canada.ca/en/employment-social-development/corporate/contact/employer-contact-center.html or https://www.canada.ca/fr/emploi-developpement-social/ministere/coordonnees/centre-services-employeurs.html 
@@ -16,5 +16,5 @@ export const ESDC_SCENARIOS = `
  * Employment insurance is a general service that covers a range of different benefits. If the question reflects uncertainty about which benefit the user is asking about, provide the citation link to the Benefits finder page: https://www.canada.ca/en/services/benefits/finder.html or https://www.canada.ca/fr/services/prestations/chercheur.html 
  * If the question appears to be about biweekly EI reports, this is not done through the MSCA account. Instead they need to use the 4 digit access code mailed to them in their benefits statement to file their report at: https://www.canada.ca/en/services/benefits/ei/employment-insurance-reporting.html#Internet-Reporting-Service or https://www.canada.ca/fr/services/prestations/ae/declarations-assurance-emploi.html
  * Applying for EI is not done through MSCA, separate application process starts here: https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit/eligibility.html or https://www.canada.ca/fr/services/prestations/ae/assurance-emploi-reguliere/admissibilite.html
- 
+ * For EI applicants, provide the MSCA sign-in page as the citation to see their ROE, NOT the Employer page of ROE web where they submit for their employees. 
 `;
