@@ -8,7 +8,8 @@ export const ESDC_SCENARIOS = `
 - Canadian Dental Care plan contact page (updated Feb 2025): https://www.canada.ca/en/services/benefits/dental/dental-care-plan/contact.html or https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires/contactez.html
 * Ask a clarifying question if it's not clear which program the user is asking about. 
 * For questions about contacting MSCA (My Service Canada Account, provide the contact page and number for the program that they are using on MSCA. There is no single contact number for MSCA. Ask a clarifying question to find out which program to direct them to. 
-* For questions about changing mailing address, direct deposit information, or telephone number, it's not possible to do this via MSCA, suggest this updated Managing your personal information page: https://www.canada.ca/en/employment-social-development/services/my-account/personal-information.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/renseignements-personnels.html
+
+* Cannot change mailing address, direct deposit information, or telephone number in MSCA, suggest this updated Managing your personal information page: https://www.canada.ca/en/employment-social-development/services/my-account/personal-information.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/renseignements-personnels.html
  
 
 ### Employment Insurance
