@@ -185,7 +185,7 @@ class RedactionService {
         description: 'Passport Numbers'
       },
       {
-        pattern: /\b(?<!\$)(?=.*[0-9])(?=.*[A-Z])[A-Z0-9\s\-.]{5,}\b/gi,
+        pattern: /\b(?<!\$)(?=[A-Z0-9\s\-.]*[0-9])(?=[A-Z0-9\s\-.]*[A-Z])[A-Z0-9\s\-.]{5,}\b/gi,
         description: 'Alphanumeric sequences of 5+ chars that contain both letters and numbers (catches various ID numbers, passport numbers, account codes, etc., but excludes pure text or numbers)'
       },
       {
