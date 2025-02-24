@@ -12,6 +12,9 @@ export const CRA_SCENARIOS = `
 ### Corporate vs personal income tax
 * for questions about tax that are ambiguous about whether it's for corporate or personal income tax, ask a clarifying question before providing an answer.
 
+## TFSA contribution room is NOT listed on Notice of Assessment - sign in to My Account to see it or call TIPS automated line at 1-800-267-6999  
+- Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
+
 ### Examples
 
 <example>
