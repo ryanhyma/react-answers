@@ -7,15 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Shows ratings for a maximum of 4 sentences, and for the citation score
 // if there are somehow 5 sentences, the 5th sentence is ignored _YES THIS IS A HACK
 
-const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount = 1 }) => {
+const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount = 1, sentences = [] }) => {
   const { t } = useTranslations(lang);
   const [expertFeedback, setExpertFeedback] = useState({
     sentence1Score: null,
+    sentence1Explanation: '',
     sentence2Score: null,
+    sentence2Explanation: '',
     sentence3Score: null,
+    sentence3Explanation: '',
     sentence4Score: null,
+    sentence4Explanation: '',
     citationScore: null,
-    answerImprovement: '',
+    citationExplanation: '',
     expertCitationUrl: '',
   });
 
@@ -110,12 +114,15 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
         aria-label="Close" />
       <fieldset className="gc-chckbxrdio sm-v">
         <h2>{t('homepage.expertRating.intro')}</h2>
-        <details className="answer-details">
+        <details className="answer-details" open>
       <summary>{t('homepage.expertRating.title')}</summary>
           
           {/* Sentence 1 */}
           <div className="sentence-rating-group">
-            <legend>{t('homepage.expertRating.sentence1')}</legend>
+            <legend>
+              {t('homepage.expertRating.sentence1')}
+              {sentences[0] && <div className="sentence-text">"{sentences[0]}"</div>}
+            </legend>
             <ul className="list-unstyled lst-spcd-2">
               <li className="radio">
                 <input
@@ -157,12 +164,29 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
                 </label>
               </li>
             </ul>
+            {(expertFeedback.sentence1Score === 80 || expertFeedback.sentence1Score === 0) && (
+              <div className="explanation-field">
+                <label htmlFor="sentence1-explanation">
+                  {t('homepage.expertRating.options.explanation')}
+                  <textarea
+                    id="sentence1-explanation"
+                    name="sentence1Explanation"
+                    value={expertFeedback.sentence1Explanation}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyPress}
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
-          {/* Dynamic sentences 2-3 */}
+          {/* Dynamic sentences 2-4 */}
           {[...Array(Math.min(3, sentenceCount - 1))].map((_, index) => (
             <div key={index + 2} className="sentence-rating-group">
-              <legend>{t(`homepage.expertRating.sentence${index + 2}`)}</legend>
+              <legend>
+                {t(`homepage.expertRating.sentence${index + 2}`)}
+                {sentences[index + 1] && <div className="sentence-text">"{sentences[index + 1]}"</div>}
+              </legend>
               <ul className="list-unstyled lst-spcd-2">
                 <li className="radio">
                   <input
@@ -204,20 +228,22 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
                   </label>
                 </li>
               </ul>
+              {(expertFeedback[`sentence${index + 2}Score`] === 80 || expertFeedback[`sentence${index + 2}Score`] === 0) && (
+                <div className="explanation-field">
+                  <label htmlFor={`sentence${index + 2}-explanation`}>
+                    {t('homepage.expertRating.options.explanation')}
+                    <textarea
+                      id={`sentence${index + 2}-explanation`}
+                      name={`sentence${index + 2}Explanation`}
+                      value={expertFeedback[`sentence${index + 2}Explanation`]}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyPress}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
           ))}
-
-          <div className="answer-improvement">
-            <label htmlFor="answer-improvement">
-              {t('homepage.expertRating.options.answerImprovement')}
-              <textarea
-                id="answer-improvement"
-                name="answerImprovement"
-                value={expertFeedback.answerImprovement}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
         </details>
 
         <details className="citation-details">
@@ -265,6 +291,20 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
                 </label>
               </li>
             </ul>
+            {(expertFeedback.citationScore === 20 || expertFeedback.citationScore === 0) && (
+              <div className="explanation-field">
+                <label htmlFor="citation-explanation">
+                  {t('homepage.expertRating.options.explanation')}
+                  <textarea
+                    id="citation-explanation"
+                    name="citationExplanation"
+                    value={expertFeedback.citationExplanation}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyPress}
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           <div>

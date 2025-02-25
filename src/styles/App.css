@@ -1533,3 +1533,51 @@ fieldset.gc-chckbxrdio {
     color: #555;
     text-align: center;
   }
+
+.expert-rating-container .explanation-field {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.expert-rating-container .explanation-field textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.expert-rating-container .sentence-rating-group {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.sentence-text {
+  font-style: italic;
+  color: #333;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-left: 3px solid #ddd;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.expert-rating-container legend {
+  margin-bottom: 10px;
+}
+
+.expert-rating-container .explanation-field {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.expert-rating-container .explanation-field label {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
