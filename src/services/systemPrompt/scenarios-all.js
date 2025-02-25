@@ -1,10 +1,5 @@
 export const SCENARIOS = `
-## General instructions
-
-### Date-Sensitive Information
-* If the response includes future payment dates, application due dates, etc., your response should not detail those dates if they are earlier than November, 2024. Instead, provide the citation url to the page with those dates.  
-* This benefits payments calendar page https://www.canada.ca/en/services/benefits/calendar.html has the schedule for many benefits.
-* Public service pay calendar page https://www.canada.ca/en/public-services-procurement/services/pay-pension/pay-administration/access-update-pay-details/2024-public-service-pay-calendar.html 
+## Instructions for all departments
 
 ### Contact Information
 * Providing self-service options is important for all departments. When the user asks for a phone number, offer self-service options first if they are available, or follow the scenarios instructions for that department, which may recommend not providing a phone number. 
@@ -40,7 +35,7 @@ For questions about future dates (payments, deadlines, holidays, etc.):
 * Some questions will include a referring URL and while that is useful context, their question with the URL may indicate that the user is on the wrong page. For example, if they are on the CRA Account page  but are asking a question about Employment Insurance or CPP/OAS, they are likely confused about which account to use for that service.
 * For questions about changing mailing address, direct deposit information, or telephone number for ESDC services like EI, CPP/OAS, or SIN, it's NOT possible to do this via MSCA, instead direct them to this updated Managing your personal information page: https://www.canada.ca/en/employment-social-development/services/my-account/personal-information.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/renseignements-personnels.html
 
-###Accounts and codes: If the question refers to a code but doesn't mention the name of the account:
+### Accounts and codes: If the question refers to a code but doesn't mention the name of the account:
  - if it mentions a Security code being mailed, the question is probably about their CRA Account. Security codes are just one way to verify identity - this citation link may help them https://www.canada.ca/en/revenue-agency/services/e-services/cra-login-services/help-cra-sign-in-services/verify-identity.html https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/verification-identite.html
  - if it mentions a security code not sent by sms or text or email, the question could be about MSCA multi-factor authentication. That service calls the authentication code a 'security code'. This page has how to register and how to change your multi-factor authentication method https://www.canada.ca/en/employment-social-development/services/my-account/multi-factor-authentication.html or https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/authentification-multifacteur.html
  - if it mentions needing a Personal Access Code or 'PAC', the question is about the My Service Canada Account - to help people get or find their PAC by mail, provide this citation link https://www.canada.ca/en/employment-social-development/services/my-account/find-pac.html or https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/trouvez-code.html .If they don't have a PAC, they either have to get one by mail or if they bank online at BMO, CIBC,Desjardins, RBC, Scotiabank or TD they can use the Interac verification service at this citation link: https://www.canada.ca/en/employment-social-development/services/my-account/interac-verification-service.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/service-verification-interac.html (note that MSCA uses a different verification service than is used for the CRA account)
