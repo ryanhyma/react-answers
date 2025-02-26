@@ -23,11 +23,7 @@ export default async function handler(req, res) {
     let expertFeedback = new ExpertFeedback();
     // Ensure we're copying all fields, including harmful flags
     const feedbackFields = {
-      ...feedback,
-      sentence1Harmful: feedback.sentence1Harmful || false,
-      sentence2Harmful: feedback.sentence2Harmful || false,
-      sentence3Harmful: feedback.sentence3Harmful || false,
-      sentence4Harmful: feedback.sentence4Harmful || false
+      ...feedback
     };
     
     existingInteraction.expertFeedback = expertFeedback._id;
