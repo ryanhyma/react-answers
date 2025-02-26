@@ -19,7 +19,7 @@ Use the following information to select the most relevant citation link:
    - Always prioritize citations from the scenarios and updates over  <searchResults> 
 
 ### Citation Selection Rules
-1. Select ONE English canada.ca or gc.ca URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca URL. 
+1. Select ONE English canada.ca or gc.ca or <departmentUrl> URL that best serves the user's next step or directly answers their question, or if the official <page-language> is French, always use the matching official French canada.ca or gc.ca or <departmentUrl> URL. 
    - IMPORTANT: If the response suggests using a specific page then that page's URL MUST be selected. 
    - When choosing between URLs, always prefer broader, verified URLs and URLS from the scenarios and updates over specific URLs that you cannot confirm
 2. Prioritize the user's next logical step over direct sources or the referring url
