@@ -342,20 +342,20 @@ class RedactionService {
         pattern: /\b(?:my name is|je m'appelle|je me nomme|my name's|i am|i'm|je suis)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
         description: 'Names in introduction phrases'
       },
-      {
+      // {
         // Capitalized names (2-3 words)
-        pattern: /\b([A-Z][a-z]{1,20}(?:\s+[A-Z][a-z]{1,20}){1,2})\b(?!\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|Circle|Cir|Loop))\b/g,
-        description: 'Capitalized names (2-3 words, not followed by street type)'
-      },
+        // pattern: /\b([A-Z][a-z]{1,20}(?:\s+[A-Z][a-z]{1,20}){1,2})\b(?!\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|Circle|Cir|Loop))\b/g,
+        // description: 'Capitalized names (2-3 words, not followed by street type)'
+      // },
+      // {
+      //   // Names in greeting patterns
+      //   pattern: /\b(?:Dear|Hello|Hi|Bonjour|Cher|Chère|Salut)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+      //   description: 'Names in greeting patterns'
+      // },
       {
-        // Names in greeting patterns
-        pattern: /\b(?:Dear|Hello|Hi|Bonjour|Cher|Chère|Salut)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
-        description: 'Names in greeting patterns'
-      },
-      {
-        // Names in signature patterns
-        pattern: /\b(?:Sincerely|Regards|Best|Cheers|Cordialement|Sincèrement|Amicalement)\s*,\s*\n*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
-        description: 'Names in signature patterns'
+        // // Names in signature patterns
+        // pattern: /\b(?:Sincerely|Regards|Best|Cheers|Cordialement|Sincèrement|Amicalement)\s*,\s*\n*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+        // description: 'Names in signature patterns'
       }
     ].map(({ pattern }) => pattern);
   }
