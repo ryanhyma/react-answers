@@ -24,6 +24,7 @@ class RedactionService {
     this.threatPattern = null;
     this.namePattern = null;
     this.isInitialized = false;
+    this.enableNameDetection = false; // Temporarily disabled name detection
     this.initialize();
   }
 
@@ -33,6 +34,15 @@ class RedactionService {
    */
   isReady() {
     return this.isInitialized;
+  }
+
+  /**
+   * Enable or disable name detection
+   * @param {boolean} enable Whether to enable name detection
+   */
+  setNameDetection(enable) {
+    this.enableNameDetection = enable;
+    console.log(`Name detection ${enable ? 'enabled' : 'disabled'}`);
   }
 
   /**
@@ -388,27 +398,30 @@ class RedactionService {
     let redactedText = text;
     const redactedItems = [];
 
-    // First, detect names using NLP
-    const nameMatches = this.detectNames(text);
-    
-    // Sort name matches in reverse order (to avoid index shifting when replacing)
-    const sortedNameMatches = [...nameMatches].sort((a, b) => b.start - a.start);
-    
-    // Replace names with XXX (treating them as private information)
-    let redactedForNames = text;
-    sortedNameMatches.forEach(match => {
-      const replacement = 'XXX';
-      redactedForNames =
-        redactedForNames.substring(0, match.start) +
-        replacement +
-        redactedForNames.substring(match.end);
+    // Only perform name detection if enabled
+    if (this.enableNameDetection) {
+      // First, detect names using NLP
+      const nameMatches = this.detectNames(text);
       
-      redactedItems.push({ value: match.text, type: 'private' });
-      console.log(`Name detected and redacted: "${match.text}"`);
-    });
-    
-    // Update redactedText with the name-redacted version
-    redactedText = redactedForNames;
+      // Sort name matches in reverse order (to avoid index shifting when replacing)
+      const sortedNameMatches = [...nameMatches].sort((a, b) => b.start - a.start);
+      
+      // Replace names with XXX (treating them as private information)
+      let redactedForNames = text;
+      sortedNameMatches.forEach(match => {
+        const replacement = 'XXX';
+        redactedForNames =
+          redactedForNames.substring(0, match.start) +
+          replacement +
+          redactedForNames.substring(match.end);
+        
+        redactedItems.push({ value: match.text, type: 'private' });
+        console.log(`Name detected and redacted: "${match.text}"`);
+      });
+      
+      // Update redactedText with the name-redacted version
+      redactedText = redactedForNames;
+    }
 
     // Filter out patterns with null RegExp (in case initialization failed)
     const validPatterns = this.redactionPatterns.filter(({ pattern }) => pattern !== null);
