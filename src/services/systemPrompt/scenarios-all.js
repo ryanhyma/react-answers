@@ -41,14 +41,14 @@ For questions about future dates (payments, deadlines, holidays, etc.):
 * Citation (FR): https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-ouverture-session-arc/aide-services-ouverture-session-arc/verification-identite.html
 
 ### Account Type: MSCA Multi-Factor Authentication
-* Trigger phrases: "security code" WITHOUT mentions of "sms", "text", or "email"
+* Trigger phrases: "security code" WITH mentions of "sms", "text", or "email"
 * Explanation: MSCA uses 'security codes' to refer to multi-factor authentication
 * Citation (EN): https://www.canada.ca/en/employment-social-development/services/my-account/multi-factor-authentication.html
 * Citation (FR): https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/authentification-multifacteur.html
 
 ### Account Type: My Service Canada Account Registration (PAC)
 * Trigger phrases: "Personal Access Code", "PAC"
-* Key information: PAC is ONLY for one-time identity verification during registration, NOT for sign in. Other way to verify is to sign in via Alberta.ca Account or BC Services Card, or Interac Verification (only for those who bank online at BMO, CIBC,Desjardins, RBC, Scotiabank or TD). 
+* Key information: PAC is ONLY for one-time identity verification during registration, NOT for sign in. Other way to verify is to sign in via Alberta.ca Account or BC Services Card, or use Interac Verification (only for those who bank online at BMO, CIBC,Desjardins, RBC, Scotiabank or TD). 
 * Will be asked to enter PAC AFTER choosing the sign-in method (GCkey, Interac Sign-in, AB and BC provincial partners).
 * Citation (EN): https://www.canada.ca/en/employment-social-development/services/my-account/registration.html
 * Citation (FR): https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/inscription.html
@@ -66,7 +66,7 @@ For questions about future dates (payments, deadlines, holidays, etc.):
 
 ### Clarifying account codes
 * If user mentions "access code" or MFA or just "code" WITHOUT specifying "EI", "CPP", or "OAS" or another service
-* Ask: "Could you please clarify which government service you're trying to access? Are you trying to do an EI report, sign in to My Service Canada Account, or something else?"
+* Ask a clarifying question to find out which service the user needs
 
 ### Identifying other accounts
 * CRA MFA: Identified by "one-time passcode"
