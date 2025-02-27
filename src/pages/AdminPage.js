@@ -1,13 +1,12 @@
 import React from 'react';
-import { useTranslation } from '../hooks/useTranslations';
+import { useTranslations } from '../hooks/useTranslations.js';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
-import ChatLogsDashboard from '../components/admin/ChatLogsDashboard';
-import DatabaseLogs from '../components/admin/DatabaseLogs';
-import { usePageParam } from '../hooks/usePageParam';
+import { usePageContext } from '../hooks/usePageParam.js';
+import ChatLogsDashboard from '../components/admin/ChatLogsDashboard.js';
 
 const AdminPage = () => {
-  const { t } = useTranslation();
-  const { lang } = usePageParam();
+  const { t } = useTranslations();
+  const { lang } = usePageContext();
 
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
@@ -17,17 +16,7 @@ const AdminPage = () => {
         <ul>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#debug-logs">Debug Logs</GcdsLink>
-            </GcdsText>
-          </li>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href="#chat-logs">Chat Logs</GcdsLink>
-            </GcdsText>
-          </li>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href={`/${lang}/logs`}>Full Logs View</GcdsLink>
+              <GcdsLink href={`/${lang}/logs`}>View Logs</GcdsLink>
             </GcdsText>
           </li>
           <li className="mb-400">
@@ -37,12 +26,6 @@ const AdminPage = () => {
           </li>
         </ul>
       </nav>
-
-      <section id="debug-logs" className="mb-600">
-        <h2 className='mt-400 mb-400'>Debug Logs</h2>
-        <DatabaseLogs />
-      </section>
-
       <section id="chat-logs" className="mb-600">
         <h2 className='mt-400 mb-400'>Chat interaction logs</h2>
         <ChatLogsDashboard />

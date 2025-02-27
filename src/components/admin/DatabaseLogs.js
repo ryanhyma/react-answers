@@ -1,130 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { GcdsButton, GcdsSelect, GcdsCheckbox } from '@cdssnc/gcds-components-react';
-import DatabaseLoggingService from '../../services/DatabaseLoggingService';
+import React, { useState } from 'react';
+import { GcdsButton } from '@cdssnc/gcds-components-react';
+import AdminCodeInput from './AdminCodeInput.js';
+import DataTable from 'datatables.net-react';
+import DT from 'datatables.net-dt';
 
-const DatabaseLogs = () => {
-    const [logs, setLogs] = useState([]);
-    const [isDebugMode, setIsDebugMode] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [timeRange, setTimeRange] = useState('1');
-    const [logLevel, setLogLevel] = useState('all');
+DataTable.use(DT);
 
-    useEffect(() => {
-        // Subscribe to real-time log updates
-        const unsubscribe = DatabaseLoggingService.subscribe((logEntry) => {
-            setLogs(prevLogs => [...prevLogs, logEntry]);
-        });
+const DatabaseLogs = ({ logs, chatId, onStartLogging }) => {
+    const [adminCode, setAdminCode] = useState('');
+    const correctAdminCode = '2024';
 
-        return () => unsubscribe();
-    }, []);
-
-    const fetchLogs = async () => {
-        setLoading(true);
-        try {
-            const response = await DatabaseLoggingService.getLogs({
-                days: timeRange,
-                level: logLevel !== 'all' ? logLevel : undefined
-            });
-            setLogs(response.logs || []);
-        } catch (error) {
-            console.error('Error fetching logs:', error);
-        }
-        setLoading(false);
+    const handleAdminCodeChange = (e) => {
+        setAdminCode(e.target.value);
     };
 
-    const handleDebugModeChange = (event) => {
-        const enabled = event.target.checked;
-        setIsDebugMode(enabled);
-        DatabaseLoggingService.setDebugMode(enabled);
-        if (!enabled) {
-            setLogs([]); // Clear logs when disabling
-        }
-    };
-
-    const clearLogs = () => {
-        setLogs([]);
-    };
-
-    const getLogLevelColor = (level) => {
-        switch (level) {
-            case 'error': return 'text-red-500';
-            case 'warn': return 'text-yellow-500';
-            case 'debug': return 'text-blue-500';
-            default: return 'text-green-500';
-        }
-    };
+    const canStartLogging = adminCode === correctAdminCode && chatId;
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-4 flex-wrap">
-                <GcdsSelect
-                    id="timeRange"
-                    label="Time range"
-                    value={timeRange}
-                    onChange={(e) => setTimeRange(e.target.value)}
-                >
-                    <option value="1">Last 1 day</option>
-                    <option value="7">Last 7 days</option>
-                    <option value="30">Last 30 days</option>
-                </GcdsSelect>
+        <div className="space-y-6">
+            <AdminCodeInput
+                code={adminCode}
+                onChange={handleAdminCodeChange}
+                correctCode={correctAdminCode}
+                label="Enter Admin Code to view database logs:"
+            />
 
-                <GcdsSelect
-                    id="logLevel"
-                    label="Log level"
-                    value={logLevel}
-                    onChange={(e) => setLogLevel(e.target.value)}
-                >
-                    <option value="all">All levels</option>
-                    <option value="info">Info</option>
-                    <option value="warn">Warning</option>
-                    <option value="error">Error</option>
-                    <option value="debug">Debug</option>
-                </GcdsSelect>
-
-                <GcdsCheckbox
-                    checked={isDebugMode}
-                    onChange={handleDebugModeChange}
-                    label="Enable Debug Mode"
-                />
-
+            {adminCode === correctAdminCode && (
                 <GcdsButton
-                    onClick={fetchLogs}
-                    disabled={loading}
+                    type="button"
+                    disabled={!canStartLogging}
+                    onClick={onStartLogging}
                 >
-                    {loading ? 'Loading...' : 'Get logs'}
+                    Start Logging
                 </GcdsButton>
+            )}
 
-                {logs.length > 0 && (
-                    <GcdsButton
-                        onClick={clearLogs}
-                        variant="secondary"
-                    >
-                        Clear logs
-                    </GcdsButton>
-                )}
-            </div>
-
-            <div className="bg-gray-900 text-white p-4 rounded-lg h-96 overflow-auto font-mono text-sm">
-                {logs.length > 0 ? (
-                    logs.map((log, index) => (
-                        <div key={index} className="mb-2">
-                            <span className="text-gray-400">{new Date(log.timestamp).toLocaleString()}</span>{' '}
-                            <span className={getLogLevelColor(log.logLevel)}>[{log.logLevel}]</span>{' '}
-                            {log.chatId && <span className="text-purple-400">[Chat: {log.chatId}]</span>}{' '}
-                            <span className="text-white">{log.message}</span>
-                            {log.metadata && (
-                                <pre className="text-gray-400 ml-8 mt-1">
-                                    {JSON.stringify(log.metadata, null, 2)}
-                                </pre>
-                            )}
+            {canStartLogging && logs && (
+                <div className="bg-white shadow rounded-lg">
+                    {logs?.length > 0 ? (
+                        <div className="p-4">
+                            <DataTable
+                                data={logs}
+                                columns={[
+                                    { title: 'Timestamp', data: 'timestamp' },
+                                    { title: 'Level', data: 'level' },
+                                    { title: 'Message', data: 'message' },
+                                    { title: 'Metadata', data: 'metadata', render: data => JSON.stringify(data) }
+                                ]}
+                            />
                         </div>
-                    ))
-                ) : (
-                    <div className="text-gray-400">
-                        {isDebugMode ? 'Waiting for logs...' : 'Select options and click "Get logs" to view database logs'}
-                    </div>
-                )}
-            </div>
+                    ) : (
+                        <div className="p-4">
+                            <p className="text-gray-500">No logs available</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

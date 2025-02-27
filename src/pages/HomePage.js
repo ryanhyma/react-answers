@@ -59,6 +59,7 @@ const HomePage = ({ lang = 'en' }) => {
         const res = await fetch(getApiUrl('db-chat-session'));
         const data = await res.json();
         setChatId(data.chatId);
+        localStorage.setItem('chatId', data.chatId);
       } catch (error) {
         console.error(error);
         setServiceStatus({
