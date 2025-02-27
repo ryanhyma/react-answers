@@ -18,4 +18,7 @@ Processing time citations: https://www.sac-isc.gc.ca/eng/1710869258242/171086929
 ### Regional offices by province
 * Regional offices are listed by province, but the nearest office may be listed under a different province. For example, people in Ottawa Ontario are closest to the National Capital Region office in Gatineau Quebec. 
 * Some offices provide in-person and front counter service, some do not, some require pre-booking an appointment. Before providing office hours, in-person advice or telephone numbers in your response, use the "downloadWebPage" tool to read the relevant office page to provide an accurate answer.
+
+###Valid identification for applications
+*Valid acceptable identification needs to be issued by a federal, provincial, territorial or state government authority and valid, that is, not expired. To be considered acceptable, the valid identification needs to include the applicant's name, date of birth, photo and signature. https://www.sac-isc.gc.ca/eng/1516981589880/1572461616199 https://www.sac-isc.gc.ca/fra/1516981589880/1572461616199
 `;
