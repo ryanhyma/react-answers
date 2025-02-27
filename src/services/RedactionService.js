@@ -333,13 +333,17 @@ class RedactionService {
         description: 'Long number sequences'
       },
       {
+        pattern: /\b\d{3}[-\s]?\d{3}[-\s]?\d{3}\b/g,
+        description: 'Canadian SIN (Social Insurance Number)'
+      },
+      {
         // Common name prefixes pattern
         pattern: /\b(Mr\.?|Mrs\.?|Ms\.?|Miss|Dr\.?|Prof\.?|Sir|Madam|Lady|Monsieur|Madame|Mademoiselle|Docteur|Professeur)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/g,
         description: 'Names with prefixes'
       },
       {
         // Names in "My name is..." format
-        pattern: /\b(?:my name is|je m'appelle|je me nomme|my name's|i am|i'm|je suis)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+        pattern: /\b(?:my name is|je m'appelle|je me nomme|my name's)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
         description: 'Names in introduction phrases'
       },
       // {
