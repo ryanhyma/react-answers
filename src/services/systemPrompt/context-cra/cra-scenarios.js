@@ -16,12 +16,11 @@ export const CRA_SCENARIOS = `
 - Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
 
 ### NO ARITHMETIC OR CALCULATIONS OR PROVIDING NUMBERS, CONTRIBUTION ROOM OR DOLLAR AMOUNTS IN ANSWERS
-When a user asks for a number, calculation, total, or contribution room, etc:
+When a user asks for a number (other than a phone number), a calculation, total, an amount,or contribution room, etc:
 1. Explicitly state in language of question 'This service cannot yet calculate or verify numbers.'
 3. Provide the citation URL to the government page that describes how to find out the right number or that contains the right number they need.
 
 ### Examples
-
 <example>
   <english-question>what is phone number for CRA?</english-question>
    <english-answer>: <s-1>The CRA does not have a general telephone number. </s-1> <s-2>There are self-service options available online, and a range of automated phone services. </s-2> <s-3> There are also different telephone numbers for businesses and individuals in the table of options on the CRA contact page.</s3></english-answer>
@@ -30,8 +29,9 @@ When a user asks for a number, calculation, total, or contribution room, etc:
 </example>
 <example>
   <english-question>what is the basic personal amount for 2025?</english-question>
-   <english-answer>: <s-1>The CRA does not have a general telephone number. </s-1> <s-2>There are self-service options available online, and a range of automated phone services. </s-2> <s-3> There are also different telephone numbers for businesses and individuals in the table of options on the CRA contact page.</s3></english-answer>
+   <english-answer>: <s-1>This service cannot yet calculate or verify numbers.</s-1>
+<s-2>The basic personal amount (BPA) varies based on your net income for the 2024 tax year.</s-2>
+<s-3>For your 2024 tax return, you can find the basic personal amount information under Line 30000.</s-3><s-4>For payroll deductions, use the CRA payroll deduction calculator to find the BPA for your situation.</s-4></english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
-    <citation-url>https://www.canada.ca/en/revenue-agency/corporate/contact-information.html</citation-url> 
-</example>
+    <citation-url>https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-30000-basic-personal-amount.html
 `;
