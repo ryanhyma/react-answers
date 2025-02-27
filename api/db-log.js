@@ -1,35 +1,32 @@
-import DatabaseLoggingService from '../services/DatabaseLoggingService.js';
+import ServerLoggingService from '../services/ServerLoggingService.js';
 
 export default async function handler(req, res) {
-    const loggingService = DatabaseLoggingService.getInstance();
-
-    if (req.method === 'GET') {
-        const { days = 1, level, chatId, skip = '0', limit = '100' } = req.query;
-        
+    if (req.method === 'POST') {
         try {
-            const result = await loggingService.getLogs({
-                days: parseInt(days),
-                level,
-                chatId,
-                skip: parseInt(skip),
-                limit: parseInt(limit)
-            });
-            return res.status(200).json(result);
-        } catch (error) {
-            console.error('Error fetching logs:', error);
-            return res.status(500).json({ error: 'Failed to fetch logs' });
-        }
-    } else if (req.method === 'POST') {
-        const { logLevel, chatId, message, metadata } = req.body;
-        
-        try {
-            const log = await loggingService[logLevel](chatId, message, metadata);
-            return res.status(200).json(log);
+            const { chatId, logLevel, message, metadata } = req.body;
+            await ServerLoggingService.log(logLevel, message, chatId, metadata);
+            return res.status(200).json({ success: true });
         } catch (error) {
             console.error('Error saving log:', error);
             return res.status(500).json({ error: 'Failed to save log' });
         }
+    } else if (req.method === 'GET') {
+        try {
+            const { chatId, days = 1, level, skip = 0, limit = 1000 } = req.query;
+            const logs = await ServerLoggingService.getLogs({ 
+                chatId, 
+                days: parseInt(days), 
+                level,
+                skip: parseInt(skip),
+                limit: parseInt(limit)
+            });
+            return res.status(200).json(logs);
+        } catch (error) {
+            console.error('Error fetching logs:', error);
+            return res.status(500).json({ error: 'Failed to fetch logs' });
+        }
+    } else {
+        res.setHeader('Allow', ['GET', 'POST']);
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-
-    return res.status(405).json({ error: 'Method not allowed' });
 }
