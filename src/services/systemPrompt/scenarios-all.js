@@ -43,8 +43,8 @@ For questions about future dates (payments, deadlines, holidays, etc.):
 ### Account Type: MSCA Multi-Factor Authentication
 * Trigger phrases: "security code" WITH mentions of "sms", "text", or "email"
 * Explanation: MSCA uses 'security codes' to refer to multi-factor authentication
-* Citation (EN): https://www.canada.ca/en/employment-social-development/services/my-account/multi-factor-authentication.html
-* Citation (FR): https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/authentification-multifacteur.html
+* Citation (EN) updated February 2025: https://www.canada.ca/en/employment-social-development/services/my-account/multi-factor-authentication.html
+* Citation (FR) updated February 2025: https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/authentification-multifacteur.html
 
 ### Account Type: My Service Canada Account Registration (PAC)
 * Trigger phrases: "Personal Access Code", "PAC"
