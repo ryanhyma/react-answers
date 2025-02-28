@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         try {
             const { chatId, logLevel, message, metadata } = req.body;
-            await ServerLoggingService.log(logLevel, message, chatId, metadata);
+            ServerLoggingService.log(logLevel, message, chatId, metadata);
             return res.status(200).json({ success: true });
         } catch (error) {
             console.error('Error saving log:', error);
@@ -15,7 +15,6 @@ export default async function handler(req, res) {
             const { chatId, days = 1, level, skip = 0, limit = 1000 } = req.query;
             const logs = await ServerLoggingService.getLogs({ 
                 chatId, 
-                days: parseInt(days), 
                 level,
                 skip: parseInt(skip),
                 limit: parseInt(limit)
