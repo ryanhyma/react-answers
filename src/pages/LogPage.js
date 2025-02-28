@@ -13,7 +13,6 @@ const LogPage = () => {
   const [isPolling, setIsPolling] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(null);
 
-  // Get chatId from localStorage on component mount
   useEffect(() => {
     const storedChatId = localStorage.getItem('chatId');
     if (storedChatId) {
@@ -21,43 +20,39 @@ const LogPage = () => {
     }
   }, []);
 
-  const handleChatIdChange = (e) => {
-    const newChatId = e.target.value;
+  const handleChatIdChange = (newChatId) => {
     setChatId(newChatId);
-    if (newChatId) {
-      localStorage.setItem('chatId', newChatId);
-    }
+    localStorage.setItem('chatId', newChatId);
   };
 
-  const startLogging = () => {
-    // Use stored chatId if current is empty
+  const fetchLogs = () => {
     const idToUse = chatId || localStorage.getItem('chatId');
     if (!idToUse) return;
 
-    // Clear any existing polling
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-    }
-
-    // Initial fetch
     fetch(getApiUrl(`db-log?chatId=${idToUse}`))
       .then(response => response.json())
       .then(data => setLogs(data.logs))
       .catch(error => console.error('Error fetching logs:', error));
-
-    // Set up new polling interval
-    const interval = setInterval(() => {
-      fetch(getApiUrl(`db-log?chatId=${idToUse}`))
-        .then(response => response.json())
-        .then(data => setLogs(data.logs))
-        .catch(error => console.error('Error fetching logs:', error));
-    }, 5000);
-
-    setPollingInterval(interval);
-    setIsPolling(true);
   };
 
-  // Cleanup on unmount
+  const startLogging = (shouldStart) => {
+    setIsPolling(shouldStart);
+    
+    if (!shouldStart && pollingInterval) {
+      clearInterval(pollingInterval);
+      setPollingInterval(null);
+      return;
+    }
+
+    // Initial fetch if we're starting polling
+    if (shouldStart) {
+      fetchLogs();
+      // Set up polling
+      const interval = setInterval(fetchLogs, 5000);
+      setPollingInterval(interval);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (pollingInterval) {
@@ -76,20 +71,20 @@ const LogPage = () => {
       </nav>
 
       <section className="mb-600">
-        <h2 className='mt-400 mb-400'>Chat Logs</h2>
         <div className="mb-400">
           <GcdsInput
             type="text"
             label="Enter Chat ID:"
             value={chatId}
-            onChange={handleChatIdChange}
+            onChange={(e) => handleChatIdChange(e.target.value)}
             required
           />
         </div>
         <DatabaseLogs 
-          logs={isPolling ? logs : null}
+          logs={logs}
           chatId={chatId}
           onStartLogging={startLogging}
+          onChatIdChange={handleChatIdChange}
         />
       </section>
     </GcdsContainer>
