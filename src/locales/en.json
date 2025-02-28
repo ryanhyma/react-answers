@@ -219,5 +219,17 @@
   "logging": {
     "start": "Start",
     "pause": "Pause"
+  },
+  "admin": {
+    "title": "Admin",
+    "navigation": {
+      "ariaLabel": "On this page",
+      "title": "On this page",
+      "viewLogs": "View Logs",
+      "useApp": "Use the app"
+    },
+    "chatLogs": {
+      "title": "Chat interaction logs"
+    }
   }
 }

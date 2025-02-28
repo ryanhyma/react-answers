@@ -221,5 +221,17 @@
   "logging": {
     "start": "Démarrer",
     "pause": "Pause"
+  },
+  "admin": {
+    "title": "Administration",
+    "navigation": {
+      "ariaLabel": "Sur cette page",
+      "title": "Sur cette page",
+      "viewLogs": "Voir les journaux",
+      "useApp": "Utiliser l'application"
+    },
+    "chatLogs": {
+      "title": "Journaux d'interaction de chat"
+    }
   }
 }
