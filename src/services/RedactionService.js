@@ -16,6 +16,7 @@ import manipulationFr from './redactions/manipulation_fr.json';
 import threatsListEn from './redactions/threats_en.txt';
 import threatsListFr from './redactions/threats_fr.txt';
 import nlp from 'compromise';
+import LoggingService from './ClientLoggingService.js';
 
 class RedactionService {
   constructor() {
@@ -46,7 +47,7 @@ class RedactionService {
       this.initializeNamePattern();
       this.isInitialized = true;
     } catch (error) {
-      console.error('Failed to initialize RedactionService:', error);
+      await LoggingService.error("system", 'Failed to initialize RedactionService:', error);
       this.isInitialized = false;
     }
   }
@@ -61,21 +62,21 @@ class RedactionService {
         fetch(profanityListEn),
         fetch(profanityListFr)
       ]);
-      
+
       const [textEn, textFr] = await Promise.all([
         responseEn.text(),
         responseFr.text()
       ]);
-      
+
       const cleanFrenchWords = this.cleanWordList(textFr);
       const cleanEnglishWords = this.cleanWordList(textEn);
-      
+
       const combinedWords = [...cleanEnglishWords, ...cleanFrenchWords];
-      console.log('Loaded profanity words:', combinedWords.length, 'words');
-      
+      await LoggingService.info("system", `Loaded profanity words: ${combinedWords.length} words`);
+
       return combinedWords;
     } catch (error) {
-      console.error('Error loading profanity lists:', error);
+      await LoggingService.error("system", 'Error loading profanity lists:', error);
       return [];
     }
   }
@@ -90,21 +91,21 @@ class RedactionService {
         fetch(threatsListEn),
         fetch(threatsListFr)
       ]);
-      
+
       const [textEn, textFr] = await Promise.all([
         responseEn.text(),
         responseFr.text()
       ]);
-      
+
       const cleanEnglishWords = this.cleanWordList(textEn);
       const cleanFrenchWords = this.cleanWordList(textFr);
-      
+
       const combinedWords = [...cleanEnglishWords, ...cleanFrenchWords];
-      console.log('Loaded threat words:', combinedWords.length, 'words');
-      
+      await LoggingService.info("system", `Loaded threat words: ${combinedWords.length} words`);
+
       return combinedWords;
     } catch (error) {
-      console.error('Error loading threat lists:', error);
+      await LoggingService.error("system", 'Error loading threat lists:', error);
       return [];
     }
   }
@@ -161,7 +162,7 @@ class RedactionService {
         return `\\b${escaped}\\b`;
       })
       .join('|');
-    
+
     this.manipulationPattern = new RegExp(`(${pattern})`, 'gi');
   }
 
@@ -175,7 +176,7 @@ class RedactionService {
       'Mr\\.?', 'Mrs\\.?', 'Ms\\.?', 'Miss', 'Dr\\.?', 'Prof\\.?', 'Sir', 'Madam', 'Lady',
       'Monsieur', 'Madame', 'Mademoiselle', 'Docteur', 'Professeur'
     ];
-    
+
     // Create a pattern that matches names after prefixes
     // This is a fallback for the NLP-based name detection
     const prefixPattern = namePrefixes.join('|');
@@ -189,13 +190,13 @@ class RedactionService {
    */
   detectNames(text) {
     if (!text) return [];
-    
+
     const nameMatches = [];
-    
+
     // Use compromise NLP to find person names
     const doc = nlp(text);
     const people = doc.people().out('array');
-    
+
     // Find all person entities in the text
     people.forEach(person => {
       // Find all occurrences of this person's name in the text
@@ -203,34 +204,34 @@ class RedactionService {
       while (startIndex < text.length) {
         const index = text.indexOf(person, startIndex);
         if (index === -1) break;
-        
+
         nameMatches.push({
           start: index,
           end: index + person.length,
           text: person
         });
-        
+
         startIndex = index + 1;
       }
     });
-    
+
     // Use regex fallback for names with prefixes
     let match;
     while ((match = this.namePattern.exec(text)) !== null) {
       const fullMatch = match[0];
       const name = match[2]; // The name part without the prefix
-      
+
       nameMatches.push({
         start: match.index,
         end: match.index + fullMatch.length,
         text: fullMatch
       });
     }
-    
+
     // Sort matches by start position and remove overlaps
     return this.removeOverlappingMatches(nameMatches);
   }
-  
+
   /**
    * Remove overlapping matches, keeping the longer ones
    * @param {Array<{start: number, end: number, text: string}>} matches Array of matches
@@ -238,16 +239,16 @@ class RedactionService {
    */
   removeOverlappingMatches(matches) {
     if (matches.length <= 1) return matches;
-    
+
     // Sort by start position
     matches.sort((a, b) => a.start - b.start);
-    
+
     const result = [matches[0]];
-    
+
     for (let i = 1; i < matches.length; i++) {
       const current = matches[i];
       const previous = result[result.length - 1];
-      
+
       // Check if current overlaps with previous
       if (current.start < previous.end) {
         // If current is longer, replace previous
@@ -260,7 +261,7 @@ class RedactionService {
         result.push(current);
       }
     }
-    
+
     return result;
   }
 
@@ -390,10 +391,10 @@ class RedactionService {
 
     // First, detect names using NLP
     const nameMatches = this.detectNames(text);
-    
+
     // Sort name matches in reverse order (to avoid index shifting when replacing)
     const sortedNameMatches = [...nameMatches].sort((a, b) => b.start - a.start);
-    
+
     // Replace names with XXX (treating them as private information)
     let redactedForNames = text;
     sortedNameMatches.forEach(match => {
@@ -402,11 +403,12 @@ class RedactionService {
         redactedForNames.substring(0, match.start) +
         replacement +
         redactedForNames.substring(match.end);
-      
+
       redactedItems.push({ value: match.text, type: 'private' });
-      console.log(`Name detected and redacted: "${match.text}"`);
+      LoggingService.debug("system", `Name detected and redacted: "${match.text}"`);
     });
-    
+
+
     // Update redactedText with the name-redacted version
     redactedText = redactedForNames;
 
