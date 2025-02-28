@@ -37,6 +37,7 @@ const LogPage = () => {
       
       // Initialize DataTable
       dataTableRef.current = $(tableRef.current).DataTable({
+        data: logs, // Directly provide data during initialization
         columns: [
           { 
             title: 'Created At', 
@@ -60,16 +61,25 @@ const LogPage = () => {
             title: 'Metadata', 
             data: 'metadata', 
             render: data => {
-              const metadata = data ?? '';
-              return JSON.stringify(metadata).replaceAll("\\n","<br/>");
+              if (!data) return '';
+              
+              // Handle the metadata more carefully to prevent escaping issues
+              try {
+                // If data is already a string, don't stringify it again
+                const metadataStr = typeof data === 'string' ? data : JSON.stringify(data);
+                // Replace newlines with <br/> for display
+                return metadataStr.replace(/\\n/g, "<br/>");
+              } catch (e) {
+                console.error("Error formatting metadata:", e);
+                return String(data);
+              }
             }
           }
         ],
         order: [[0, 'desc']]
       });
       
-      // Add data to table
-      dataTableRef.current.rows.add(logs).draw();
+      // No need to add rows here as we're providing the data during initialization
     }
 
     return () => {
@@ -134,7 +144,9 @@ const LogPage = () => {
       .then(response => response.json())
       .then(data => {
         console.log("Logs fetched successfully:", data.logs?.length || 0, "entries");
-        setLogs(data.logs);
+        
+        // Simply update the logs state - the useEffect will handle recreating the table
+        setLogs(data.logs || []);
       })
       .catch(error => console.error('Error fetching logs:', error));
   };
