@@ -217,5 +217,9 @@
         "cancel": "Annuler"
       }
     }
+  },
+  "logging": {
+    "start": "Démarrer",
+    "pause": "Pause"
   }
 }
