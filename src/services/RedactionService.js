@@ -25,6 +25,7 @@ class RedactionService {
     this.threatPattern = null;
     this.namePattern = null;
     this.isInitialized = false;
+    this.enableNameDetection = false; // Temporarily disabled name detection
     this.initialize();
   }
 
@@ -34,6 +35,15 @@ class RedactionService {
    */
   isReady() {
     return this.isInitialized;
+  }
+
+  /**
+   * Enable or disable name detection
+   * @param {boolean} enable Whether to enable name detection
+   */
+  setNameDetection(enable) {
+    this.enableNameDetection = enable;
+    console.log(`Name detection ${enable ? 'enabled' : 'disabled'}`);
   }
 
   /**
@@ -324,29 +334,33 @@ class RedactionService {
         description: 'Long number sequences'
       },
       {
+        pattern: /\b\d{3}[-\s]?\d{3}[-\s]?\d{3}\b/g,
+        description: 'Canadian SIN (Social Insurance Number)'
+      },
+      {
         // Common name prefixes pattern
         pattern: /\b(Mr\.?|Mrs\.?|Ms\.?|Miss|Dr\.?|Prof\.?|Sir|Madam|Lady|Monsieur|Madame|Mademoiselle|Docteur|Professeur)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/g,
         description: 'Names with prefixes'
       },
       {
         // Names in "My name is..." format
-        pattern: /\b(?:my name is|je m'appelle|je me nomme|my name's|i am|i'm|je suis)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+        pattern: /\b(?:my name is|je m'appelle|je me nomme|my name's)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
         description: 'Names in introduction phrases'
       },
-      {
+      // {
         // Capitalized names (2-3 words)
-        pattern: /\b([A-Z][a-z]{1,20}(?:\s+[A-Z][a-z]{1,20}){1,2})\b(?!\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|Circle|Cir|Loop))\b/g,
-        description: 'Capitalized names (2-3 words, not followed by street type)'
-      },
+        // pattern: /\b([A-Z][a-z]{1,20}(?:\s+[A-Z][a-z]{1,20}){1,2})\b(?!\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|Circle|Cir|Loop))\b/g,
+        // description: 'Capitalized names (2-3 words, not followed by street type)'
+      // },
+      // {
+      //   // Names in greeting patterns
+      //   pattern: /\b(?:Dear|Hello|Hi|Bonjour|Cher|Chère|Salut)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+      //   description: 'Names in greeting patterns'
+      // },
       {
-        // Names in greeting patterns
-        pattern: /\b(?:Dear|Hello|Hi|Bonjour|Cher|Chère|Salut)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
-        description: 'Names in greeting patterns'
-      },
-      {
-        // Names in signature patterns
-        pattern: /\b(?:Sincerely|Regards|Best|Cheers|Cordialement|Sincèrement|Amicalement)\s*,\s*\n*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
-        description: 'Names in signature patterns'
+        // // Names in signature patterns
+        // pattern: /\b(?:Sincerely|Regards|Best|Cheers|Cordialement|Sincèrement|Amicalement)\s*,\s*\n*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/gi,
+        // description: 'Names in signature patterns'
       }
     ].map(({ pattern }) => pattern);
   }
@@ -389,28 +403,30 @@ class RedactionService {
     let redactedText = text;
     const redactedItems = [];
 
-    // First, detect names using NLP
-    const nameMatches = this.detectNames(text);
-
-    // Sort name matches in reverse order (to avoid index shifting when replacing)
-    const sortedNameMatches = [...nameMatches].sort((a, b) => b.start - a.start);
-
-    // Replace names with XXX (treating them as private information)
-    let redactedForNames = text;
-    sortedNameMatches.forEach(match => {
-      const replacement = 'XXX';
-      redactedForNames =
-        redactedForNames.substring(0, match.start) +
-        replacement +
-        redactedForNames.substring(match.end);
-
-      redactedItems.push({ value: match.text, type: 'private' });
-      LoggingService.debug("system", `Name detected and redacted: "${match.text}"`);
-    });
-
-
-    // Update redactedText with the name-redacted version
-    redactedText = redactedForNames;
+    // Only perform name detection if enabled
+    if (this.enableNameDetection) {
+      // First, detect names using NLP
+      const nameMatches = this.detectNames(text);
+      
+      // Sort name matches in reverse order (to avoid index shifting when replacing)
+      const sortedNameMatches = [...nameMatches].sort((a, b) => b.start - a.start);
+      
+      // Replace names with XXX (treating them as private information)
+      let redactedForNames = text;
+      sortedNameMatches.forEach(match => {
+        const replacement = 'XXX';
+        redactedForNames =
+          redactedForNames.substring(0, match.start) +
+          replacement +
+          redactedForNames.substring(match.end);
+        
+        redactedItems.push({ value: match.text, type: 'private' });
+        console.log(`Name detected and redacted: "${match.text}"`);
+      });
+      
+      // Update redactedText with the name-redacted version
+      redactedText = redactedForNames;
+    }
 
     // Filter out patterns with null RegExp (in case initialization failed)
     const validPatterns = this.redactionPatterns.filter(({ pattern }) => pattern !== null);
