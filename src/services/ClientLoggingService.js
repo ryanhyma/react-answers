@@ -7,7 +7,7 @@ const LoggingService = {
         console[level](`${emoji} ${message}`, metadata);
 
         try {
-            const response = await fetch(getApiUrl('db-log'), {
+            await fetch(getApiUrl('db-log'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
