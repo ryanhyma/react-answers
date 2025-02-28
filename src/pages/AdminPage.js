@@ -1,10 +1,12 @@
 import React from 'react';
-// import { useTranslations } from '../hooks/useTranslations';
+import { useTranslations } from '../hooks/useTranslations.js';
 import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
+import { usePageContext } from '../hooks/usePageParam.js';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard.js';
 
-const AdminPage = ({ lang = 'en' }) => {
-  // const { t } = useTranslations(lang);  //TODO: uncomment this when we have translations for this page 
+const AdminPage = () => {
+  const { t } = useTranslations();
+  const { lang } = usePageContext();
 
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
@@ -14,7 +16,7 @@ const AdminPage = ({ lang = 'en' }) => {
         <ul>
           <li className="mb-400">
             <GcdsText>
-              <GcdsLink href="#chat-logs">Download chat logs</GcdsLink>
+              <GcdsLink href={`/${lang}/logs`}>View Logs</GcdsLink>
             </GcdsText>
           </li>
           <li className="mb-400">
@@ -24,7 +26,6 @@ const AdminPage = ({ lang = 'en' }) => {
           </li>
         </ul>
       </nav>
-
       <section id="chat-logs" className="mb-600">
         <h2 className='mt-400 mb-400'>Chat interaction logs</h2>
         <ChatLogsDashboard />

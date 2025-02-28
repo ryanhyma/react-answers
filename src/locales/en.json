@@ -215,5 +215,9 @@
         "cancel": "Cancel"
       }
     }
+  },
+  "logging": {
+    "start": "Start",
+    "pause": "Pause"
   }
 }

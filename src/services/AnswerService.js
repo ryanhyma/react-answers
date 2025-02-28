@@ -2,20 +2,20 @@
 
 import loadSystemPrompt from './systemPrompt.js';
 import { getProviderApiUrl } from '../utils/apiToUrl.js';
+import ClientLoggingService from './ClientLoggingService.js';
 
 const AnswerService = {
 
-    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false, referringUrl) => {
-        console.log(`🤖 AnswerService: Processing message in ${lang.toUpperCase()}`);
+    prepareMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation = false, referringUrl, chatId) => {
+        await ClientLoggingService.info(chatId, `Processing message in ${lang.toUpperCase()}`);
 
         const SYSTEM_PROMPT = await loadSystemPrompt(lang, context);
         if (evaluation) {
             message = "<evaluation>" + message + "</evaluation>";
         }
-        // Only change: check for evaluation and use empty array if true
         const finalHistory = message.includes('<evaluation>') ? [] : conversationHistory;
         const messageWithReferrer = `${message}${referringUrl.trim() ? `\n<referring-url>${referringUrl.trim()}</referring-url>` : ''}`;
-        console.log('Sending to ' + provider + ' API:', {
+        await ClientLoggingService.debug(chatId, 'Sending to ' + provider + ' API:', {
             messageWithReferrer,
             conversationHistory: finalHistory,
             systemPromptLength: SYSTEM_PROMPT.length
@@ -28,9 +28,9 @@ const AnswerService = {
         };
     },
 
-    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation, referringUrl) => {
+    sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation, referringUrl, chatId) => {
         try {
-            const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context, evaluation, referringUrl);
+            const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context, evaluation, referringUrl, chatId);
             const response = await fetch(getProviderApiUrl(provider, "message"), {
                 method: 'POST',
                 headers: {
@@ -41,17 +41,17 @@ const AnswerService = {
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error(provider + ' API error response:', errorText);
+                await ClientLoggingService.error(chatId, provider + ' API error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log(provider + ' API response:', data);
+            await ClientLoggingService.debug(chatId, provider + ' API response:', data);
             const parsedResponse = AnswerService.parseResponse(data.content);
             const mergedResponse = { ...data, ...parsedResponse };
             return mergedResponse;
         } catch (error) {
-            console.error('Error calling ' + provider + ' API:', error);
+            await ClientLoggingService.error(chatId, 'Error calling ' + provider + ' API:', error);
             throw error;
         }
     },
@@ -152,9 +152,9 @@ const AnswerService = {
 
     },
 
-    sendBatchMessages: async (provider, entries, lang, batchName) => {
+    sendBatchMessages: async (provider, entries, lang, batchName, chatId) => {
         try {
-            console.log(`🤖 AnswerService: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+            await ClientLoggingService.info(chatId, `Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
             const batchEntries = await Promise.all(entries.map(async (entry) => {
                 const context = {
                     topic: entry['CONTEXT.TOPIC'],
@@ -168,7 +168,7 @@ const AnswerService = {
                     outputTokens: entry['CONTEXT.OUTPUTTOKENS'],
                 };
                 const referringUrl = entry['REFERRINGURL'] || '';
-                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, referringUrl);
+                const messagePayload = await AnswerService.prepareMessage(provider, entry.REDACTEDQUESTION, [], lang, context, true, referringUrl, chatId);
                 messagePayload.context = context;
                 return messagePayload;
             }));
@@ -192,7 +192,7 @@ const AnswerService = {
 
             return response.json();
         } catch (error) {
-            console.error('Error in sendBatchMessages:', error);
+            await ClientLoggingService.error(chatId, 'Error in sendBatchMessages:', error);
             throw error;
         }
     },

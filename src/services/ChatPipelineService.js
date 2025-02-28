@@ -3,6 +3,7 @@ import AnswerService from './AnswerService.js';
 import { DataStoreService } from './DataStoreService.js';
 import { urlToSearch } from '../utils/urlToSearch.js';
 import RedactionService from './RedactionService.js';
+import LoggingService from './ClientLoggingService.js';
 
 export const PipelineStatus = {
     REDACTING: 'redacting',
@@ -21,10 +22,10 @@ export const ChatPipelineService = {
     processResponse: async (chatId, userMessage, userMessageId, conversationHistory, lang, department, referringUrl, selectedAI, translationF, onStatusUpdate, searchProvider) => {
         const startTime = Date.now();
         onStatusUpdate(PipelineStatus.MODERATING_QUESTION);
-
-        console.log("➡️ Starting pipeline with data:", userMessage, lang, department, referringUrl, conversationHistory, selectedAI);
+        
         onStatusUpdate(PipelineStatus.REDACTING);
         ChatPipelineService.processRedaction(userMessage);
+        await LoggingService.info(chatId, "Starting pipeline with data:", { userMessage, lang, department, referringUrl, selectedAI });
 
         let context = null;
         // remove error messages
@@ -36,29 +37,29 @@ export const ChatPipelineService = {
         } else {
             // if initial questions or last response type was a question
             onStatusUpdate(PipelineStatus.GETTING_CONTEXT);
-            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider, conversationHistory);
+            context = await ContextService.deriveContext(selectedAI, userMessage, lang, department, referringUrl, searchProvider, conversationHistory, chatId);
         }
-        console.log("➡️ Derived context:", context);
+        await LoggingService.info(chatId, "Derived context:", { context });
 
         onStatusUpdate(PipelineStatus.GENERATING_ANSWER);
 
         // TOOD check about evaluation
-        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl);
-        console.log("➡️ Answer Received:", answer);
+        const answer = await AnswerService.sendMessage(selectedAI, userMessage, conversationHistory, lang, context, false, referringUrl, chatId);
+        await LoggingService.info(chatId, "Answer Received:", { answer });
         let finalCitationUrl, confidenceRating = null;
-        
+
         if (answer.answerType === 'normal') {
             onStatusUpdate(PipelineStatus.VERIFYING_CITATION);
             // Use answer.citationUrl directly
             const citationResult = await ChatPipelineService.verifyCitation(answer.citationUrl, lang, userMessage, department, translationF);
-            
+
             // Extract the URL correctly depending on whether it's a valid URL or a fallback
             finalCitationUrl = citationResult.url || citationResult.fallbackUrl;
             confidenceRating = citationResult.confidenceRating;
-            console.log("➡️ Citation validated:", { 
+            await LoggingService.info(chatId, "Citation validated:", {
                 originalUrl: answer.citationUrl,
-                finalCitationUrl, 
-                confidenceRating 
+                finalCitationUrl,
+                confidenceRating
             });
         }
 
@@ -70,7 +71,8 @@ export const ChatPipelineService = {
 
         const endTime = Date.now();
         const totalResponseTime = endTime - startTime;
-        console.log("➡️ Total response time:", totalResponseTime, "ms");
+        await LoggingService.info(chatId, "Total response time:", { totalResponseTime: `${totalResponseTime} ms` });
+        
         // Log the interaction with both the original and validated URL
         await DataStoreService.persistInteraction(
             selectedAI,
@@ -78,7 +80,7 @@ export const ChatPipelineService = {
             userMessageId,
             referringUrl,
             answer,
-            finalCitationUrl,  
+            finalCitationUrl,
             confidenceRating,
             context,
             chatId,
@@ -88,7 +90,7 @@ export const ChatPipelineService = {
         );
 
         onStatusUpdate(PipelineStatus.MODERATING_ANSWER);
-        console.log("➡️ pipeline complete");
+        await LoggingService.info(chatId, "pipeline complete");
         return {
             answer: answer,
             context: context,
@@ -98,7 +100,6 @@ export const ChatPipelineService = {
         };
     },
     verifyCitation: async (originalCitationUrl, lang, redactedText, selectedDepartment, t) => {
-        
         const validationResult = await urlToSearch.validateAndCheckUrl(
             originalCitationUrl,
             lang,
@@ -106,7 +107,7 @@ export const ChatPipelineService = {
             selectedDepartment,
             t
         );
-        console.log(`✅ Validated URL:`, validationResult);
+        await LoggingService.info(null, "Validated URL:", validationResult);
         return validationResult;
     },
     processRedaction: (userMessage) => {

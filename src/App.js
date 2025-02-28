@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import EvaluationPage from './pages/BatchPage.js';
+import LogPage from './pages/LogPage.js';
 import { GcdsHeader, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsFooter } from '@cdssnc/gcds-components-react';
 import './styles/App.css';
 
@@ -91,7 +92,14 @@ const router = createBrowserRouter(
           path: "/fr/batch",
           element: <EvaluationPage lang="fr" />,
         },
-       
+        {
+          path: "/en/logs",
+          element: <LogPage lang="en" />,
+        },
+        {
+          path: "/fr/logs",
+          element: <LogPage lang="fr" />,
+        },
       ],
     },
   ]

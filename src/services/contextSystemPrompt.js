@@ -2,6 +2,7 @@
 // import { menuStructure_FR } from './systemPrompt/menuStructure_FR.js';
 import { departments_EN } from './systemPrompt/departments_EN.js';
 import { departments_FR } from './systemPrompt/departments_FR.js';
+import LoggingService from './ClientLoggingService.js';
 
 async function loadContextSystemPrompt(language = 'en', department = '') {
   try {
@@ -111,14 +112,11 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 </examples>
     `;
 
-    console.log(`✅ Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    await LoggingService.info('system', `Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
     return fullPrompt;
 
   } catch (error) {
-    console.error('CONTEXT SYSTEM PROMPT ERROR:', {
-      message: error.message,
-      stack: error.stack
-    });
+    await LoggingService.error('system', 'CONTEXT SYSTEM PROMPT ERROR', error);
     return "Default context system prompt";
   }
 }

@@ -29,6 +29,7 @@ import dbVerifyChatSessionHandler from '../api/db-verify-chat-session.js';
 import dbCheckhandler from '../api/db-check.js';
 import dbPersistInteraction from '../api/db-persist-interaction.js';
 import dbPersistFeedback from '../api/db-persist-feedback.js';
+import dbLogHandler from '../api/db-log.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -112,7 +113,8 @@ app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 
 app.get('/api/db-check', dbCheckhandler);
 
-
+app.get('/api/db-log', dbLogHandler);
+app.post('/api/db-log', dbLogHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
