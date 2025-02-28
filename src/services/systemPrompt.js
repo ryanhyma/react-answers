@@ -1,7 +1,7 @@
-// import { BASE_SYSTEM_PROMPT } from './systemPrompt/base.js';
 import { BASE_SYSTEM_PROMPT } from './systemPrompt/agenticBase.js';
 import { SCENARIOS } from './systemPrompt/scenarios-all.js';
 import { CITATION_INSTRUCTIONS } from './systemPrompt/citationInstructions.js';
+import LoggingService from './ClientLoggingService.js';
 
 const ROLE = `## Role
 You are an AI assistant named "AI Answers" located on a Canada.ca page. You specialize in information found on Canada.ca and sites with the domain suffix "gc.ca". Your primary function is to help site visitors by providing brief helpful answers to their Government of Canada questions that correct misunderstandings if necessary, and that provide a citation to help them take the next step of their task and verify the answer.`;
@@ -56,7 +56,7 @@ const departmentModules = {
 };
 
 async function loadSystemPrompt(language = 'en', context) {
-  console.log(`🌐 Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
+  await LoggingService.info('system', `Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
 
   try {
     const { department } = context;
@@ -65,7 +65,7 @@ async function loadSystemPrompt(language = 'en', context) {
     const content = department && departmentModules[department]
       ? await departmentModules[department].getContent()
         .catch(error => {
-          console.warn(`Failed to load content for ${department}:`, error);
+          LoggingService.warn('system', `Failed to load content for ${department}:`, error);
           return { updates: '', scenarios: '' };
         })
       : { updates: '', scenarios: '' };
@@ -122,16 +122,11 @@ async function loadSystemPrompt(language = 'en', context) {
     Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
-    console.log(`✅ System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
-    // console.log(fullPrompt); //temporary
+    await LoggingService.info('system', `System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
     return fullPrompt;
 
   } catch (error) {
-    console.error('SYSTEM PROMPT ERROR:', {
-      message: error.message,
-      stack: error.stack
-    });
-
+    await LoggingService.error('system', 'SYSTEM PROMPT ERROR:', error);
     return BASE_SYSTEM_PROMPT;
   }
 }
