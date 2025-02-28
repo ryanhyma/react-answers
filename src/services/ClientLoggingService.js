@@ -18,11 +18,9 @@ const LoggingService = {
                 })
             });
 
-            if (!response.ok) {
-                console.error('Failed to save log to database:', await response.text());
-            }
+            
         } catch (error) {
-            console.error(`Failed to log ${level}:`, error);
+            //console.error(`Failed to log ${level}:`, error);
         }
     },
 
@@ -50,8 +48,7 @@ const LoggingService = {
         try {
             const queryParams = new URLSearchParams({
                 ...(options.chatId && { chatId: options.chatId }),
-                ...(options.level && { level: options.level }),
-                ...(options.days && { days: options.days })
+                ...(options.level && { level: options.level })
             }).toString();
 
             const response = await fetch(getApiUrl(`db-log?${queryParams}`));
