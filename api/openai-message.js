@@ -30,7 +30,7 @@ async function invokeHandler(req, res) {
       ServerLoggingService.info('OpenAI API request received', chatId);
       ServerLoggingService.debug('Request body:', chatId, { message, systemPrompt, conversationHistoryLength: conversationHistory.length });
 
-      const openAIAgent = await createOpenAIAgent();
+      const openAIAgent = await createOpenAIAgent(chatId);
 
       const messages = [
         {
