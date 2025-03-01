@@ -2,6 +2,7 @@ import { tool } from "@langchain/core/tools";
 import axios from 'axios';
 import { load } from 'cheerio';
 import { Agent } from 'https';
+import ServerLoggingService from '../../services/ServerLoggingService.js';
 
 /**
  * Extracts the content of the body from a cheerio object, including all text and keeping <a> tags,
@@ -39,11 +40,15 @@ function extractBodyContentWithLinks($) {
     return bodyContent.join(' ');
 }
 
-const downloadWebPage = async (url) => {
+const downloadWebPage = async (url, chatId = 'system') => {
     const httpsAgent = new Agent({ rejectUnauthorized: false });
     
     try {
-        console.log(`Downloading webpage: ${url}`);
+        ServerLoggingService.info(`Downloading webpage: ${url}`, chatId, {
+            url,
+            action: 'download_start'
+        });
+        
         const response = await axios.get(url, {
             httpsAgent,
             maxRedirects: 10,
@@ -51,26 +56,42 @@ const downloadWebPage = async (url) => {
             headers: {
                 'User-Agent': process.env.USER_AGENT
             }
-
         });
         
         const $ = load(response.data);
         const bodyContent = extractBodyContentWithLinks($);
-        console.log(`Downloaded webpage: ${url}`);
+        
+        ServerLoggingService.info(`Successfully downloaded webpage: ${url}`, chatId, {
+            url,
+            status: response.status,
+            contentLength: bodyContent.length,
+            action: 'download_complete'
+        });
+        
         return bodyContent;
     } catch (error) {
-        console.error(`Error downloading webpage: ${url}. Details: ${error.message}`);
+        ServerLoggingService.error(`Error downloading webpage: ${url}`, chatId, error);
         return `Failed to download webpage: ${url}`;
     }
 };
 
 const downloadWebPageTool = tool(
-    async (input) => {
-        return await downloadWebPage(input);
+    async ({ url, chatId }) => {
+        return await downloadWebPage(url, chatId);
     },
     {
         name: "downloadWebPage",
-        description: "When information about a URL is needed, use this function to get the web page content. Provide a valid URL as input to download and parse its content. Example input: 'https://example.com'",
+        description: "When information about a URL is needed, use this function to get the web page content. Provide a valid URL.",
+        schema: {
+            type: "object",
+            properties: {
+                url: {
+                    type: "string",
+                    description: "The URL to download and parse content from",
+                }
+            },
+            required: ["url"]
+        },
     }
 );
 
