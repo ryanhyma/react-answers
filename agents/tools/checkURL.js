@@ -1,11 +1,10 @@
 import { tool } from "@langchain/core/tools";
 import axios from 'axios';
 import { Agent } from 'https';
+import ServerLoggingService from '../../services/ServerLoggingService.js';
 
-const checkUrlStatus = async (url) => {
+const checkUrlStatus = async (url, chatId = 'system') => {
     const httpsAgent = new Agent({ rejectUnauthorized: false });
-
-
 
     try {
         const response = await axios.get(url, { 
@@ -13,22 +12,39 @@ const checkUrlStatus = async (url) => {
             maxRedirects: 10,
             timeout: 10000,
         });
-        console.log(response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`);
-        return response.status === 200 ? `URL is live (${url})` : `URL is dead (${url})`;
+        const isLive = response.status === 200;
+        const message = isLive ? `URL is live (${url})` : `URL is dead (${url})`;
+        
+        ServerLoggingService.info(message, chatId, { 
+            url,
+            status: response.status 
+        });
+        
+        return message;
     } catch (getError) {
-        console.log(`Error checking URL with GET request: ${url}. Details: ${getError.message}`);
+        const errorMessage = `Error checking URL with GET request: ${url}. Details: ${getError.message}`;
+        ServerLoggingService.error(errorMessage, chatId, getError);
         return `URL is dead ${url}`;
     }
-
 };
 
 const checkUrlStatusTool = tool(
-    async (input) => {
-        return await checkUrlStatus(input);
+    async ({ url, chatId = 'system' }) => {
+        return await checkUrlStatus(url, chatId);
     },
     {
         name: "checkUrl",
-        description: "Always use this tool to verify the status of a URL. Provide a valid URL as input to check its status. Example input: 'https://example.com'",
+        description: "Always use this tool to verify the status of a URL. Provide a valid URL.",
+        schema: {
+            type: "object",
+            properties: {
+                url: { 
+                    type: "string", 
+                    description: "The URL to check" 
+                }
+            },
+            required: ["url"]
+        }
     }
 );
 
