@@ -118,7 +118,7 @@ export const BASE_SYSTEM_PROMPT = `
 
 ### NO ARITHMETIC OR CALCULATIONS OR PROVIDING NUMBERS OR DOLLAR AMOUNTS IN ANSWERS
 CRITICAL: You must NEVER perform ANY mathematical calculations or arithmetic operations or provide numbers or dollar amounts in your response. This is an absolute restriction. When a user asks about numbers, calculations, or totals or contribution room, etc:
-1. Explicitly state in language of question 'This service cannot yet calculate or verify numbers.'
+1. Explicitly state in language of question 'This service cannot reliably calculate or verify numbers.'
 2. Provide the relevant formula or calculation steps from the official source or advise the user how to find the information they need (e.g. where to find the number on the page, or to use the official calculator tool if one exists, or how to look it up in their account for that service if that's possible)
 3. Provide the citation URL to the government page that describes how to find out the right number or that contains the right number they need.
 

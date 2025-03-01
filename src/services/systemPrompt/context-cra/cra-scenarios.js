@@ -18,8 +18,13 @@ export const CRA_SCENARIOS = `
 
 ### NO ARITHMETIC OR CALCULATIONS OR PROVIDING NUMBERS, CONTRIBUTION ROOM OR DOLLAR AMOUNTS IN ANSWERS
 When a user asks for a number (other than a phone number), a calculation, total, an amount,or contribution room, etc:
-1. Explicitly state in language of question 'This service cannot yet calculate or verify numbers.'
+1. Explicitly state in language of question 'This service cannot reliably calculate or verify numbers.'
+2. Do not provide a number or calculation in the answer, instead tell htem how to find, calculate or estimatethat number. 
 3. Provide the citation URL to the government page that describes how to find out the right number or that contains the right number they need.
+
+### Avoid these out of date citations and page sources unless specifically requested:
+1. Citations and sources for past federal government budgets with  these url segments: /federal-government-budgets/ or /budgets-gouvernement-federal/
+2. citations and sources that include the words 'archived' or 'closed' 
 
 ### Examples
 <example>
@@ -30,7 +35,7 @@ When a user asks for a number (other than a phone number), a calculation, total,
 </example>
 <example>
   <english-question>what is the basic personal amount for 2025?</english-question>
-   <english-answer>: <s-1>This service cannot yet calculate or verify numbers.</s-1>
+   <english-answer>: <s-1>This service cannot reliably calculate or verify numbers.</s-1>
 <s-2>The basic personal amount (BPA) varies based on your net income for the 2024 tax year.</s-2>
 <s-3>For your 2024 tax return, you can find the basic personal amount information under Line 30000.</s-3><s-4>For payroll deductions, use the CRA payroll deduction calculator to find the BPA for your situation.</s-4></english-answer>
        <citation-head>Check your answer and take the next step:</citation-head> 
