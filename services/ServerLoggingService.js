@@ -1,4 +1,4 @@
-import { ChatLogs } from '../models/chatLogs.js';
+import { Logs } from '../models/logs.js';
 import dbConnect from '../api/db-connect.js';
 
 class LogQueue {
@@ -76,7 +76,7 @@ class LogQueue {
             const processedData = data ? JSON.stringify(data) : '';
             const parsedData = processedData ? JSON.parse(processedData) : '';
             
-            const log = new ChatLogs({
+            const log = new Logs({
                 chatId,
                 logLevel: level,
                 message: typeof message === 'object' ? JSON.stringify(message) : message,
@@ -124,12 +124,12 @@ const ServerLoggingService = {
             query.chatId = chatId;
         }
 
-        const logs = await ChatLogs.find(query)
+        const logs = await Logs.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
             
-        const total = await ChatLogs.countDocuments(query);
+        const total = await Logs.countDocuments(query);
         const hasMore = total > skip + logs.length;
 
         return {
