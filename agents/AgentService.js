@@ -9,9 +9,36 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const tools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
+const createToolsWithContext = (chatId = 'system') => {
+  return [
+    {
+      ...downloadWebPageTool,
+      invoke: async (params) => {
+        return downloadWebPageTool.invoke({
+          ...params,
+          args: {
+            ...params.args,
+            chatId
+          }
+        });
+      }
+    },
+    {
+      ...checkUrlStatusTool,
+      invoke: async (params) => {
+        return checkUrlStatusTool.invoke({
+          ...params,
+          args: {
+            ...params.args,
+            chatId
+          }
+        });
+      }
+    }
+  ];
+};
 
-const createOpenAIAgent = async () => {
+const createOpenAIAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('openai');
   const openai = new ChatOpenAI({
     modelName: modelConfig.name,
@@ -22,12 +49,12 @@ const createOpenAIAgent = async () => {
   });
   const agent = await createReactAgent({
     llm: openai,
-    tools: tools,
+    tools: createToolsWithContext(chatId),
   });
   return agent;
 };
 
-const createCohereAgent = async () => {
+const createCohereAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('cohere');
   const cohere = new ChatCohere({
     apiKey: process.env.REACT_APP_COHERE_API_KEY,
@@ -37,12 +64,12 @@ const createCohereAgent = async () => {
   });
   const agent = await createReactAgent({
     llm: cohere,
-    tools: tools,
+    tools: createToolsWithContext(chatId),
   });
   return agent;
 };
 
-const createClaudeAgent = async () => {
+const createClaudeAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('anthropic');
   const claude = new ChatAnthropic({
     apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
@@ -53,13 +80,12 @@ const createClaudeAgent = async () => {
   });
   const agent = await createReactAgent({
     llm: claude,
-    tools: tools,
+    tools: createToolsWithContext(chatId),
   });
   return agent;
 };
 
-const createContextAgent = async (agentType) => {
-  const tools = [];
+const createContextAgent = async (agentType, chatId = 'system') => {
   let llm;
 
   switch (agentType) {
@@ -95,20 +121,16 @@ const createContextAgent = async (agentType) => {
   };
   const agent = await createReactAgent({
     llm: llm,
-    tools: tools,
+    tools: createToolsWithContext(chatId),
   });
   return agent;
 }
 
-
-
-
-
-const createAgents = async () => {
-  const openAIAgent = await createOpenAIAgent();
-  const cohereAgent = null; //await createCohereAgent();
-  const claudeAgent = await createClaudeAgent();
-  const contextAgent = await createContextAgent();
+const createAgents = async (chatId = 'system') => {
+  const openAIAgent = await createOpenAIAgent(chatId);
+  const cohereAgent = null; //await createCohereAgent(chatId);
+  const claudeAgent = await createClaudeAgent(chatId);
+  const contextAgent = await createContextAgent('openai', chatId);
   return { openAIAgent, cohereAgent, claudeAgent, contextAgent };
 };
 
