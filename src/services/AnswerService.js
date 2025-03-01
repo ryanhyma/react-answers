@@ -25,12 +25,14 @@ const AnswerService = {
             message: messageWithReferrer,
             conversationHistory: finalHistory,
             systemPrompt: SYSTEM_PROMPT,
+            chatId: chatId 
         };
     },
 
     sendMessage: async (provider, message, conversationHistory = [], lang = 'en', context, evaluation, referringUrl, chatId) => {
         try {
             const messagePayload = await AnswerService.prepareMessage(provider, message, conversationHistory, lang, context, evaluation, referringUrl, chatId);
+            
             const response = await fetch(getProviderApiUrl(provider, "message"), {
                 method: 'POST',
                 headers: {
