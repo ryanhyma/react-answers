@@ -679,9 +679,10 @@ gcds-container:first-of-type {
     font-size: 0.85em;
 }
 
-.loading-hint-text {
+.loading-hint-text, .mistake-disc p {
     color: var(--gcds-color-blue-850);
     font-size: 18px;
+    font-weight: 400 !important;
 }
 
 /* Add spacing between radio buttons and their labels */
@@ -1580,4 +1581,10 @@ fieldset.gc-chckbxrdio {
 .expert-rating-container .explanation-field label {
   font-weight: 500;
   margin-bottom: 8px;
+}
+
+.mistake-disc {
+    background-color: #F5F5FF;
+    border-radius: 5px;
+    padding: .25em 1em;
 }
