@@ -7,7 +7,7 @@ import { Batch } from '../models/batch/batch.js';
 const openai = new AzureOpenAI({
     azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
     azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
-    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
 });
 
 const MAX_JSONL_SIZE = 50000000; // Set a size limit for JSONL content

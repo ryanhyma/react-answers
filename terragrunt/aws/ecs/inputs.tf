@@ -80,3 +80,18 @@ variable "docdb_uri_arn" {
   description = "ARN of the Document DB URI parameter"
   type        = string
 }
+
+variable "azure_openai_api_key_arn" {
+  description = "ARN of the Azure OpenAI API key parameter"
+  type        = string
+}
+
+variable "azure_openai_endpoint_arn" {
+  description = "ARN of the Azure OpenAI endpoint parameter"
+  type        = string
+}
+
+variable "azure_openai_api_version_arn" {
+  description = "ARN of the Azure OpenAI API version parameter"
+  type        = string
+}
