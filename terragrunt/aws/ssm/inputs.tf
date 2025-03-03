@@ -34,9 +34,3 @@ variable "azure_openai_api_version" {
   type        = string
   default     = "2024-06-01"
 }
-
-variable "billing_code" {
-  description = "The billing code for resource tagging"
-  type        = string
-  default     = "ai-answers"
-}
