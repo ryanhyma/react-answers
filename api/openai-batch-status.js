@@ -1,7 +1,9 @@
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const openai = new AzureOpenAI({
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01'
 });
 
 export default async function handler(req, res) {
@@ -25,7 +27,7 @@ export default async function handler(req, res) {
             });
         }
     } catch (error) {
-        console.error('OpenAI Batch status error:', error);
+        console.error('Azure OpenAI Batch status error:', error);
         return res.status(500).json({ error: 'Failed to get batch status' });
     }
 } 

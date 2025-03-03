@@ -1,10 +1,19 @@
 // api/chatgpt.js
 import { createOpenAIAgent } from '../agents/AgentService.js';
-
+import { AzureOpenAI } from "openai";
+import dotenv from "dotenv";
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
+
+      const openai = new AzureOpenAI({
+        azureApiKey: process.env.AZURE_OPENAI_API_KEY,
+        azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+        azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+      });
+      // Note: Removed listModels function as it may cause the app to get stuck
+      // when using Azure OpenAI without specifying a deployment name
       console.log('OpenAI API request received');
       const { message, systemPrompt, conversationHistory } = req.body;
       console.log('Request body:', req.body);

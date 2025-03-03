@@ -1,13 +1,15 @@
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
 import fs from 'fs';
 import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch/batch.js';
 
 
-const modelConfig = getModelConfig('openai', 'gpt-4o-mini');
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const modelConfig = getModelConfig('openai', 'openai-gpt4o-mini');
+const openai = new AzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_API_KEY,
+    azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
 });
 
 export default async function handler(req, res) {
@@ -54,7 +56,7 @@ export default async function handler(req, res) {
         console.log('Size of JSONL content:', Buffer.byteLength(jsonlContent, 'utf8'), 'bytes');
 
 
-        
+
         const jsonlBuffer = Buffer.from(jsonlContent, 'utf-8');
 
         const jsonlBlob = new Blob([jsonlBuffer], { type: 'application/jsonl' });
@@ -63,11 +65,11 @@ export default async function handler(req, res) {
         formData.append('file', jsonlBlob, 'data.jsonl'); // Filename is important
 
         formData.append('purpose', 'batch');
-        
-        const file = await fetch('https://api.openai.com/v1/files', {
+
+        const file = await fetch(`${process.env.AZURE_OPENAI_ENDPOINT}/openai/files?api-version=2024-06-01`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'api-key': process.env.AZURE_OPENAI_API_KEY,
             },
             body: formData,
         });
@@ -121,4 +123,4 @@ export default async function handler(req, res) {
             details: error.message
         });
     }
-} 
+}

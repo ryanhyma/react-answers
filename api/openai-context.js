@@ -1,37 +1,31 @@
 import { createContextAgent } from '../agents/AgentService.js';
-import {contextSearch} from '../agents/tools/contextSearch.js';
-
 const invokeAgent = async (agentType, systemPrompt, message) => {
   try {
     const contextAgent = await createContextAgent(agentType);
 
-    const searchResults = "<searchResults>" + await contextSearch(message) + "</searchResults>";
-
-    const messages = [
-      {
-        role: "system",
-        content: systemPrompt + searchResults,
-      },
-      {
-        role: "user",
-        content: message,
-      },
-    ];
-
-
-
-    const answer = await contextAgent.invoke({
-      messages: messages,
+    const result = await contextAgent.invoke({
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: message,
+        }
+      ]
     });
 
-    if (Array.isArray(answer.messages) && answer.messages.length > 0) {
-      const lastMessage = answer.messages[answer.messages.length - 1]?.content;
+
+
+    if (Array.isArray(result.messages) && result.messages.length > 0) {
+      const lastMessage = result.messages[result.messages.length - 1]?.content;
       console.log('ContextAgent Response:', {
         content: lastMessage,
-        role: answer.messages[answer.messages.length - 1]?.response_metadata.role,
-        usage: answer.messages[answer.messages.length - 1]?.response_metadata.usage,
+        role: result.messages[result.messages.length - 1]?.response_metadata?.role,
+        usage: result.messages[result.messages.length - 1]?.response_metadata?.usage,
       });
-      return lastMessage + searchResults;
+      return lastMessage;
     } else {
       return "No messages available";
     }
