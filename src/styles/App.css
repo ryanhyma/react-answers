@@ -1411,7 +1411,7 @@ fieldset.gc-chckbxrdio {
     width: 19px
 }
 
-.gc-chckbxrdio .sm-v input[type=checkbox]+label::before,.gc-chckbxrdio input[type=radio]+label::before {
+.gc-chckbxrdio.sm-v input[type=checkbox]+label::before,.gc-chckbxrdio.sm-v input[type=radio]+label::before {
     border: 10px solid #fff;
     height: 16px;
     width: 16px
@@ -1434,6 +1434,9 @@ fieldset.gc-chckbxrdio {
 .gc-chckbxrdio input[type=checkbox]:focus+label::before,.gc-chckbxrdio input[type=radio]:focus+label::before {
     outline: 4px solid #0535d2;
     outline-offset: 4px;
+}
+.gc-chckbxrdio.sm-v input[type=checkbox]:focus:checked+label::after {
+    border-color: #0535d2;
 }
 
 .gc-chckbxrdio input[type=checkbox]:focus + label::before,
@@ -1474,6 +1477,13 @@ fieldset.gc-chckbxrdio {
     height: 16px;
     left: 14px;
     top: 6px;
+    width: 9px
+}
+
+.gc-chckbxrdio.sm-v input[type=checkbox]:checked+label::after {
+    border-width: 0 5px 5px 0;
+    height: 20px;
+    left: 11px;
     width: 9px
 }
 
