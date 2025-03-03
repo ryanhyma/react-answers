@@ -189,7 +189,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
                       onChange={handleCheckboxChange}
                     />
                     <label htmlFor={`sentence${index + 1}-harmful`}>
-                      Harmful
+                      {t('homepage.expertRating.options.harmful')} (0)
                     </label>
                   </li>
                 )}
