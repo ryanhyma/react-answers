@@ -9,6 +9,7 @@ const answerSchema = new mongoose.Schema({
   outputTokens: { type: String, required: false, default: '' },
   model: { type: String, required: false, default: '' },
   answerType: { type: String, required: false, default: '' },
+  tools: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tool' }], // Reference Tool documents instead of storing directly
 },{
   timestamps: true, versionKey: false,
   id: false,
