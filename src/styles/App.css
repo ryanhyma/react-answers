@@ -471,6 +471,8 @@
      --gcds-link-underline-offset: 0.1rem !important;
      --gcds-label-font-desktop: 600 1.45rem / 120% "Lato", sans-serif !important; /* want this to look like heading intentionally */
      --gcds-label-font-mobile: 600 1.3rem / 120% "Lato", sans-serif !important;
+     --gcds-text-size-body-desktop: 400 1.25rem / 160% "Noto Sans", sans-serif !important;
+     --gcds-link-font-small-desktop: 400 1rem / 150% "Noto Sans", sans-serif !important;
 }
 
 /* clean up margins and spacing */
@@ -483,6 +485,7 @@ gcds-button.send-button {
  gcds-details {
      margin-bottom: 0px !important;
 }
+
 .ai-message-content p {
      display: block;
      margin: 0;
@@ -1020,6 +1023,9 @@ summary:focus,
   @media screen and (max-width: 600px) {
     .button-text {
       display: none !important;
+    }
+    .mistake-disc p {
+        font-size: 16px;
     }
     .hint-text {
         font: var(--gcds-font-text-mobile) !important;
