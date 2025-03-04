@@ -56,7 +56,7 @@ const ContextService = {
     }
   },
 
-  contextSearch: async (message, searchProvider, chatId = 'system') => {
+  contextSearch: async (message, searchProvider, lang = 'en', chatId = 'system') => {
     try {
       const searchResponse = await fetch(getApiUrl("search-context"), {
         method: 'POST',
@@ -65,6 +65,7 @@ const ContextService = {
         },
         body: JSON.stringify({
           query: message,
+          lang : lang,
           searchService: searchProvider,
           chatId
         }),
@@ -87,7 +88,7 @@ const ContextService = {
     try {
       await LoggingService.info(chatId, `Context Service: Analyzing question in ${lang.toUpperCase()}`);
       // TODO add referring URL to the context of the search?
-      const searchResults = await ContextService.contextSearch(question, searchProvider, chatId);
+      const searchResults = await ContextService.contextSearch(question, searchProvider, lang, chatId);
       await LoggingService.info(chatId, 'Executed Search:', { query: question, provider: searchProvider });
       return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider, conversationHistory, chatId));
     } catch (error) {
@@ -121,11 +122,11 @@ const ContextService = {
 
       const searchResults = [];
       for (let i = 0; i < entries.length; i++) {
-        if (searchProvider === 'canadaca' && i > 0 && i % 10 === 0) {
-          await LoggingService.info(chatId, 'Pausing for a minute to avoid rate limits for canadaca...');
-          await new Promise(resolve => setTimeout(resolve, 60000));
+        if (searchProvider === 'canadaca') {
+          await LoggingService.info(chatId, 'Pausing for 10 seconds to avoid rate limits for canadaca...');
+          await new Promise(resolve => setTimeout(resolve, 10000));
         }
-        searchResults.push(await ContextService.contextSearch(entries[i]['REDACTEDQUESTION'], searchProvider, chatId));
+        searchResults.push(await ContextService.contextSearch(entries[i]['REDACTEDQUESTION'], searchProvider, lang, chatId));
       }
 
       const requests = await Promise.all(
