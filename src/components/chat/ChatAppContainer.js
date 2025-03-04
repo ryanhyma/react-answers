@@ -4,6 +4,8 @@ import { useTranslations } from '../../hooks/useTranslations.js';
 import { usePageContext, DEPARTMENT_MAPPINGS } from '../../hooks/usePageParam.js';
 import ChatInterface from './ChatInterface.js';
 import { ChatPipelineService, RedactionError } from '../../services/ChatPipelineService.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 
 // Utility functions go here, before the component
@@ -289,6 +291,11 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
             </p>
           ));
         })}
+        <div className="mistake-disc">
+          <p><FontAwesomeIcon icon="wand-magic-sparkles" />&nbsp;
+          {t('homepage.chat.input.loadingHint')}
+        </p>
+       </div>
         {message.interaction.answer.answerType === 'normal' && (message.interaction.answer.citationHead || displayUrl) && (
           <div className="citation-container">
             {message.interaction.answer.citationHead && <p key={`${messageId}-head`} className="citation-head">{message.interaction.answer.citationHead}</p>}
