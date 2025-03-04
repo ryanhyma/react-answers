@@ -1,5 +1,5 @@
 locals {
-  container_secrets = [ 
+  container_secrets = [
     {
       "name"      = "DOCDB_URI"
       "valueFrom" = var.docdb_uri_arn
