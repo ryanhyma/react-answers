@@ -1,9 +1,5 @@
 locals {
-  container_secrets = [
-    {
-      "name"      = "OPENAI_API_KEY"
-      "valueFrom" = var.openai_api_key_arn
-    },
+  container_secrets = [ 
     {
       "name"      = "DOCDB_URI"
       "valueFrom" = var.docdb_uri_arn

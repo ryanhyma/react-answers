@@ -10,12 +10,6 @@ variable "docdb_password" {
   type        = string
 }
 
-variable "openai_api_key" {
-  description = "The openai api key"
-  sensitive   = true
-  type        = string
-}
-
 variable "azure_openai_api_key" {
   description = "The Azure OpenAI API key"
   sensitive   = true

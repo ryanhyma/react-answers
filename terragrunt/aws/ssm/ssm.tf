@@ -20,12 +20,6 @@ resource "aws_ssm_parameter" "docdb_password" {
   }
 }
 
-resource "aws_ssm_parameter" "openai_api_key" {
-  name  = "openai_api_key"
-  type  = "SecureString"
-  value = var.openai_api_key
-}
-
 resource "aws_ssm_parameter" "azure_openai_api_key" {
   name  = "azure_openai_api_key"
   type  = "SecureString"

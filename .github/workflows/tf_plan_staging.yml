@@ -14,7 +14,6 @@ env:
   TERRAGRUNT_VERSION: 0.72.3
   TF_VAR_docdb_username: ${{ secrets.DOCDB_USERNAME}}
   TF_VAR_docdb_password: ${{ secrets.DOCDB_PASSWORD}}
-  TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY}}
   TF_VAR_azure_openai_api_key: ${{ secrets.AZURE_OPENAI_API_KEY}}
   TF_VAR_azure_openai_endpoint: ${{ secrets.AZURE_OPENAI_ENDPOINT}}
   TF_VAR_azure_openai_api_version: ${{ secrets.AZURE_OPENAI_API_VERSION}}

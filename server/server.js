@@ -60,7 +60,6 @@ app.use((req, res, next) => {
 // Environment-aware logging
 if (process.env.REACT_APP_ENV === 'development') {
   console.log('Development environment variables:');
-  console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not Set');
   console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
   console.log('COHERE_API_KEY:', process.env.COHERE_API_KEY ? 'Set' : 'Not Set');
   console.log('DOCDB_URI:', process.env.DOCDB_URI ? 'Set' : 'Not Set');
