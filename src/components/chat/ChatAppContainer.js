@@ -28,7 +28,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
   const [selectedAI, setSelectedAI] = useState('openai'); //Changed from on Jan 10 2025
-  const [selectedSearch, setSelectedSearch] = useState('google'); // Add this line
+  const [selectedSearch, setSelectedSearch] = useState('canadaca'); // Changed from 'google' to 'canadaca'
   const [showFeedback, setShowFeedback] = useState(false);
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');
