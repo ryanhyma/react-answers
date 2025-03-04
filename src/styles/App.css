@@ -971,7 +971,7 @@ summary:focus,
     padding-bottom: 20px;
     display: block;
   }
-  
+
   .field-container:focus-within .hint-text,
   .field-container:focus-within label {
     color: #0535d2;
@@ -1021,7 +1021,15 @@ summary:focus,
     .button-text {
       display: none !important;
     }
-  
+    .hint-text {
+        font: var(--gcds-font-text-mobile) !important;
+    }
+    h2:first-of-type {
+        font: var(--gcds-heading-h4-mobile) !important;
+    }
+    .field-container label {
+        font: var(--gcds-heading-h5-mobile) !important;
+    }
     .btn-primary-send .button-icon,
     .btn-primary-send svg.button-icon {
       display: inline !important;
