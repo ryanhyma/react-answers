@@ -1,23 +1,13 @@
 // config/ai-models.js
 const AI_MODELS = {
   openai: {
-    default: 'gpt-4o-2024-11-20',
+    default: 'openai-gpt4o-mini',
     models: {
-      'gpt-4o-2024-11-20': {
+      'openai-gpt4o-mini': {
         maxTokens: 1024,
         temperature: 0.0,
         timeoutMs: 60000,
-      },
-      'gpt-4o': {
-        maxTokens: 1024,
-        temperature: 0.0,
-        timeoutMs: 60000,
-      },
-      'gpt-4o-mini': {
-        maxTokens: 1024,
-        temperature: 0.0,
-        timeoutMs: 60000,
-    }
+      }
 
     }
   },

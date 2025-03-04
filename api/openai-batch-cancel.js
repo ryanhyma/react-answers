@@ -1,8 +1,10 @@
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 import { Batch } from '../models/batch/batch.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const openai = new AzureOpenAI({
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01', // Use environment variable with fallback
 });
 
 export default async function handler(req, res) {
@@ -11,7 +13,7 @@ export default async function handler(req, res) {
   }
   const { batchId } = req.query;
   try {
-    
+
     if (!batchId) {
       return res.status(400).json({ error: 'Batch ID is required' });
     }

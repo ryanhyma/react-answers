@@ -1,11 +1,13 @@
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 import { getModelConfig } from '../config/ai-models.js';
 import { Readable } from 'stream';
 import dbConnect from './db-connect.js';
 import { Batch } from '../models/batch/batch.js';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const openai = new AzureOpenAI({
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
 });
 
 const MAX_JSONL_SIZE = 50000000; // Set a size limit for JSONL content
@@ -66,10 +68,10 @@ export default async function handler(req, res) {
 
         formData.append('purpose', 'batch');
 
-        const file = await fetch('https://api.openai.com/v1/files', {
+        const file = await fetch(`${process.env.AZURE_OPENAI_ENDPOINT}/openai/files?api-version=2024-06-01`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'api-key': process.env.AZURE_OPENAI_API_KEY,
             },
             body: formData,
         });

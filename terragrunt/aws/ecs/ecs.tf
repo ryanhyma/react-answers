@@ -1,12 +1,20 @@
 locals {
   container_secrets = [
     {
-      "name"      = "OPENAI_API_KEY"
-      "valueFrom" = var.openai_api_key_arn
-    },
-    {
       "name"      = "DOCDB_URI"
       "valueFrom" = var.docdb_uri_arn
+    },
+    {
+      "name"      = "AZURE_OPENAI_API_KEY"
+      "valueFrom" = var.azure_openai_api_key_arn
+    },
+    {
+      "name"      = "AZURE_OPENAI_ENDPOINT"
+      "valueFrom" = var.azure_openai_endpoint_arn
+    },
+    {
+      "name"      = "AZURE_OPENAI_API_VERSION"
+      "valueFrom" = var.azure_openai_api_version_arn
     }
   ]
 }

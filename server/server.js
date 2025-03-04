@@ -60,10 +60,12 @@ app.use((req, res, next) => {
 // Environment-aware logging
 if (process.env.REACT_APP_ENV === 'development') {
   console.log('Development environment variables:');
-  console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not Set');
   console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
   console.log('COHERE_API_KEY:', process.env.COHERE_API_KEY ? 'Set' : 'Not Set');
   console.log('DOCDB_URI:', process.env.DOCDB_URI ? 'Set' : 'Not Set');
+  console.log('AZURE_OPENAI_API_KEY:', process.env.AZURE_OPENAI_API_KEY ? 'Set' : 'Not Set');
+  console.log('AZURE_OPENAI_ENDPOINT:', process.env.AZURE_OPENAI_ENDPOINT ? 'Set' : 'Not Set');
+  console.log('AZURE_OPENAI_API_VERSION:', process.env.AZURE_OPENAI_API_VERSION ? 'Set' : 'Not Set');
 } else {
   console.log('Running in production mode');
 }

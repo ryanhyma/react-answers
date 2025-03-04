@@ -1,8 +1,10 @@
 import { Batch } from '../models/batch/batch.js';
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const openai = new AzureOpenAI({
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01'
 });
 
 const handleOpenAI = async (batch) => {
@@ -13,7 +15,7 @@ const handleOpenAI = async (batch) => {
       throw new Error('No file ID found in the batch result');
     }
     const results = await retrieveJsonlAsJson(fileId);
-    
+
     for await (const result of results) {
       const customId = result.custom_id;
       const entryIndex = batch.entries.findIndex(entry => entry.entry_id === customId);

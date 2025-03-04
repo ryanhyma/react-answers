@@ -56,7 +56,7 @@ dependency "database" {
   mock_outputs_merge_with_state           = true
   mock_outputs = {
     aws_docdb_security_group_id = ""
-    docdb_uri_arn              = "mock_docdb_uri_arn"
+    docdb_uri_arn               = "mock_docdb_uri_arn"
   }
 }
 
@@ -66,7 +66,10 @@ dependency "ssm" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    openai_api_key_arn = ""
+    openai_api_key_arn           = ""
+    azure_openai_api_key_arn     = ""
+    azure_openai_endpoint_arn    = ""
+    azure_openai_api_version_arn = ""
   }
 }
 
@@ -83,6 +86,9 @@ inputs = {
   aws_docdb_security_group_id      = dependency.database.outputs.aws_docdb_security_group_id
   openai_api_key_arn               = dependency.ssm.outputs.openai_api_key_arn
   docdb_uri_arn                    = dependency.database.outputs.docdb_uri_arn
+  azure_openai_api_key_arn         = dependency.ssm.outputs.azure_openai_api_key_arn
+  azure_openai_endpoint_arn        = dependency.ssm.outputs.azure_openai_endpoint_arn
+  azure_openai_api_version_arn     = dependency.ssm.outputs.azure_openai_api_version_arn
 }
 
 include {

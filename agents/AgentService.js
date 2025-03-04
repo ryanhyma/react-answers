@@ -1,28 +1,32 @@
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { ChatOpenAI } from '@langchain/openai';
+import { AzureChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
+import { contextSearchTool } from './tools/contextSearch.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const tools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
+const agentTools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
+const contextTools = [contextSearchTool]; // Tools for context agent
 
 const createOpenAIAgent = async () => {
   const modelConfig = getModelConfig('openai');
-  const openai = new ChatOpenAI({
-    modelName: modelConfig.name,
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+  const openai = new AzureChatOpenAI({
+    apiKey: process.env.AZURE_OPENAI_API_KEY,
+    azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+    azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
-    timeoutMs: modelConfig.timeoutMs,
+    timeout: modelConfig.timeoutMs,
   });
   const agent = await createReactAgent({
     llm: openai,
-    tools: tools,
+    tools: agentTools,
   });
   return agent;
 };
@@ -37,7 +41,7 @@ const createCohereAgent = async () => {
   });
   const agent = await createReactAgent({
     llm: cohere,
-    tools: tools,
+    tools: agentTools,
   });
   return agent;
 };
@@ -53,23 +57,25 @@ const createClaudeAgent = async () => {
   });
   const agent = await createReactAgent({
     llm: claude,
-    tools: tools,
+    tools: agentTools,
   });
   return agent;
 };
 
 const createContextAgent = async (agentType) => {
-  const tools = [];
   let llm;
 
   switch (agentType) {
     case 'openai':
-      llm = new ChatOpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-        modelName: 'gpt-4o-mini',
-        maxTokens: 8192,
-        temperature: 0,
-        timeoutMs: 60000,
+      const modelConfig = getModelConfig('openai');
+      llm = new AzureChatOpenAI({
+        apiKey: process.env.AZURE_OPENAI_API_KEY,
+        azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+        azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+        azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
+        temperature: modelConfig.temperature,
+        maxTokens: modelConfig.maxTokens,
+        timeout: modelConfig.timeoutMs,
       });
       break;
     case 'cohere':
@@ -95,7 +101,7 @@ const createContextAgent = async (agentType) => {
   };
   const agent = await createReactAgent({
     llm: llm,
-    tools: tools,
+    tools: contextTools,
   });
   return agent;
 }
@@ -108,7 +114,7 @@ const createAgents = async () => {
   const openAIAgent = await createOpenAIAgent();
   const cohereAgent = null; //await createCohereAgent();
   const claudeAgent = await createClaudeAgent();
-  const contextAgent = await createContextAgent();
+  const contextAgent = await createContextAgent('openai');
   return { openAIAgent, cohereAgent, claudeAgent, contextAgent };
 };
 
