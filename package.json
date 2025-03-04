@@ -36,6 +36,7 @@
     "flat": "^6.0.1",
     "googleapis": "^144.0.0",
     "install": "^0.13.0",
+    "js-tiktoken": "^1.0.19",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.7",
     "lucide-react": "^0.454.0",
