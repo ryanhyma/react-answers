@@ -1,5 +1,5 @@
-variable "openai_api_key_arn" {
-  description = "The arn of the openai api key parameter"
+variable "azure_openai_api_key_arn" {
+  description = "The arn of the azure openai api key parameter"
   type        = string
 }
 

@@ -66,7 +66,6 @@ dependency "ssm" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    openai_api_key_arn           = ""
     azure_openai_api_key_arn     = ""
     azure_openai_endpoint_arn    = ""
     azure_openai_api_version_arn = ""
@@ -84,7 +83,6 @@ inputs = {
   lb_target_group_arn              = dependency.load_balancer.outputs.lb_target_group_arn
   ai_answers_load_balancer_sg      = dependency.load_balancer.outputs.ai_answers_load_balancer_sg
   aws_docdb_security_group_id      = dependency.database.outputs.aws_docdb_security_group_id
-  openai_api_key_arn               = dependency.ssm.outputs.openai_api_key_arn
   docdb_uri_arn                    = dependency.database.outputs.docdb_uri_arn
   azure_openai_api_key_arn         = dependency.ssm.outputs.azure_openai_api_key_arn
   azure_openai_endpoint_arn        = dependency.ssm.outputs.azure_openai_endpoint_arn

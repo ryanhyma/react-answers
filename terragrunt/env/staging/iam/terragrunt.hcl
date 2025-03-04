@@ -11,9 +11,11 @@ dependency "ssm" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    docdb_username_arn = ""
-    docdb_password_arn = ""
-    openai_api_key_arn = ""
+    docdb_username_arn           = ""
+    docdb_password_arn           = ""
+    azure_openai_api_key_arn     = ""
+    azure_openai_endpoint_arn    = ""
+    azure_openai_api_version_arn = ""
   }
 }
 
@@ -27,10 +29,12 @@ dependency "database" {
 }
 
 inputs = {
-  docdb_password_arn = dependency.ssm.outputs.docdb_password_arn
-  docdb_username_arn = dependency.ssm.outputs.docdb_username_arn
-  openai_api_key_arn = dependency.ssm.outputs.openai_api_key_arn
-  docdb_uri_arn      = dependency.database.outputs.docdb_uri_arn
+  docdb_password_arn           = dependency.ssm.outputs.docdb_password_arn
+  docdb_username_arn           = dependency.ssm.outputs.docdb_username_arn
+  azure_openai_api_key_arn     = dependency.ssm.outputs.azure_openai_api_key_arn
+  azure_openai_endpoint_arn    = dependency.ssm.outputs.azure_openai_endpoint_arn
+  azure_openai_api_version_arn = dependency.ssm.outputs.azure_openai_api_version_arn
+  docdb_uri_arn                = dependency.database.outputs.docdb_uri_arn
 }
 
 include {
