@@ -33,7 +33,8 @@ export default async function handler(req, res) {
             path: 'answer',
             populate: [
               { path: 'sentences' },
-              { path: 'citation' }
+              { path: 'citation' },
+              { path: 'tools' },
             ]
           }
         ]
