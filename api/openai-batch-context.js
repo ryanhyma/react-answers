@@ -7,9 +7,9 @@ import { Batch } from '../models/batch/batch.js';
 
 const modelConfig = getModelConfig('openai', 'openai-gpt4o-mini');
 const openai = new AzureOpenAI({
-    apiKey: process.env.AZURE_OPENAI_API_KEY,
-    azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
 });
 
 export default async function handler(req, res) {
