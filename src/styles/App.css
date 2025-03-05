@@ -1607,7 +1607,7 @@ fieldset.gc-chckbxrdio {
   margin-bottom: 8px;
 }
 
-.mistake-disc {
+.mistake-disc, .loading-hint-text {
     background-color: #F5F5FF;
     border-radius: 5px;
     padding: .25em 1em;
