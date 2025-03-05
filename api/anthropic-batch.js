@@ -53,7 +53,7 @@ export default async function handler(req, res) {
      const savedBatch = new Batch({
          batchId: batch.id,
          type: "question",
-         provider: "anthropic",
+         provider: "openai",
          entries: req.body.requests.map((request, index) => ({
              entry_id: `eval-${index}`,
              ...request.entry

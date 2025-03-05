@@ -7,9 +7,15 @@ const ContextService = {
     try {
       console.log(`🤖 Context Service: Processing message in ${lang.toUpperCase()}`);
 
+      // Hardcoded to always use OpenAI regardless of the provider parameter
+      const hardcodedProvider = 'openai';
+      console.log(
+        `🤖 Context Service: Using hardcoded provider: ${hardcodedProvider} (ignoring: ${provider})`
+      );
+
       const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
 
-      const response = await fetch(getProviderApiUrl(provider, 'context'), {
+      const response = await fetch(getProviderApiUrl(hardcodedProvider, 'context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +67,7 @@ const ContextService = {
     }
   },
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic') => {
+  deriveContextBatch: async (entries, lang = 'en', aiService = 'openai') => {
     try {
       console.log(
         `🤖 Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`
@@ -112,14 +118,20 @@ const ContextService = {
 
   sendBatch: async (requests, aiService) => {
     try {
-      const response = await fetch(getProviderApiUrl(aiService, 'batch-context'), {
+      // Hardcoded to always use OpenAI regardless of the aiService parameter
+      const hardcodedProvider = 'openai';
+      console.log(
+        `🤖 Context Service: Using hardcoded provider for batch: ${hardcodedProvider} (ignoring: ${aiService})`
+      );
+
+      const response = await fetch(getProviderApiUrl(hardcodedProvider, 'batch-context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           requests,
-          aiService,
+          aiService: hardcodedProvider, // Use the hardcoded provider here too
         }),
       });
 
