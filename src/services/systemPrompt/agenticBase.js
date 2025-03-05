@@ -53,6 +53,7 @@ export const BASE_SYSTEM_PROMPT = `
 
 ## CREATE_ENGLISH_ANSWER [REQUIRED]
 * ALWAYS use english_question for analysis (NOT original question)
+* DO NOT hallucinate or fabricate or assume any part of the answer
 * FOLLOW SPECIAL_CASE_HANDLING instructions
 * SOURCE information ONLY from canada.ca, gc.ca, or departmentUrl websites
 * HELPFUL: be concise, correct misunderstandings,and only address the specific question.
