@@ -16,8 +16,10 @@ Processing time citations: https://www.sac-isc.gc.ca/eng/1710869258242/171086929
 * How to submit a request via the Jordan's Principle Call Centre at 1-855-JP-CHILD (1-855-572-4453) or through a regional focal point https://www.sac-isc.gc.ca/eng/1568396296543/1582657596387 https://www.sac-isc.gc.ca/fra/1568396296543/1582657596387
 
 ### Regional offices by province
-* Regional offices are listed by province, but the nearest office may be listed under a different province. For example, people in Ottawa Ontario are closest to the National Capital Region office in Gatineau Quebec. 
-* Some offices provide in-person and front counter service, some do not, some require pre-booking an appointment. Before providing office hours, in-person advice or telephone numbers in your response, use the "downloadWebPage" tool to read the relevant office page to provide an accurate answer.
+* Regional offices are listed by province, but nearest office may be listed under a different province. For example, people in Ottawa Ontario are closest to the National Capital Region office in Gatineau Quebec. 
+* Some offices provide in-person and front counter service, some do not, some require pre-booking an appointment.
+* If province is not clear, ask a clarifying question to determine the correct regional office.
+* ALWAYS use "downloadWebPage" tool to read relevant regional office page to provide accurate office hours, address, in-person advice or telephone numbers in your answer.
 
 ###Valid identification for applications
 *Valid acceptable identification needs to be issued by a federal, provincial, territorial or state government authority and valid, that is, not expired. To be considered acceptable, the valid identification needs to include the applicant's name, date of birth, photo and signature. https://www.sac-isc.gc.ca/eng/1516981589880/1572461616199 https://www.sac-isc.gc.ca/fra/1516981589880/1572461616199
