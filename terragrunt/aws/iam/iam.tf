@@ -25,6 +25,8 @@ data "aws_iam_policy_document" "ai-answers-ssm-policy" {
       var.docdb_password_arn,
       var.docdb_username_arn,
       var.azure_openai_api_key_arn,
+      var.azure_openai_endpoint_arn,
+      var.azure_openai_api_version_arn,
       var.docdb_uri_arn
     ]
   }
