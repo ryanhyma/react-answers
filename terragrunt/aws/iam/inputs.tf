@@ -3,6 +3,16 @@ variable "azure_openai_api_key_arn" {
   type        = string
 }
 
+variable "azure_openai_endpoint_arn" {
+  description = "The arn of the azure openai endpoint parameter"
+  type        = string
+}
+
+variable "azure_openai_api_version_arn" {
+  description = "The arn of the azure openai api version parameter"
+  type        = string
+}
+
 variable "docdb_username_arn" {
   description = "The arn of the document db username parameter"
   type        = string
