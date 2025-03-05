@@ -229,7 +229,6 @@ class RedactionService {
     let match;
     while ((match = this.namePattern.exec(text)) !== null) {
       const fullMatch = match[0];
-      const name = match[2]; // The name part without the prefix
 
       nameMatches.push({
         start: match.index,
