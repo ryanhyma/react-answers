@@ -4,7 +4,7 @@ import { Batch } from '../models/batch/batch.js';
 const openai = new AzureOpenAI({
     azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
     azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
-    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01', // Use environment variable with fallback
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01', // Use environment variable with fallback
 });
 
 export default async function handler(req, res) {

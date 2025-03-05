@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       const openai = new AzureOpenAI({
         azureApiKey: process.env.AZURE_OPENAI_API_KEY,
         azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-        azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+        apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
       });
       // Note: Removed listModels function as it may cause the app to get stuck
       // when using Azure OpenAI without specifying a deployment name

@@ -4,7 +4,7 @@ import { AzureOpenAI } from 'openai';
 const openai = new AzureOpenAI({
     azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
     azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
-    azureApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01'
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01'
 });
 
 const handleOpenAI = async (batch) => {
