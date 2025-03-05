@@ -16,7 +16,10 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferCommands: false,
-      connectTimeoutMS: 30000, // 30 seconds timeout
+      connectTimeoutMS: 30000, // 30 seconds timeout,
+      ssl: true,
+      sslValidate: true,
+      sslCA: '/app/global-bundle.pem'
     };
 
     cached.promise = mongoose.connect(process.env.DOCDB_URI, opts).then((mongoose) => {
