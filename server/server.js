@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
 import openAIHandler from '../api/openai-message.js';
+import azureHandler from '../api/azure-message.js';
 import anthropicAgentHandler from '../api/anthropic-message.js';
 import dbChatLogsHandler from '../api/db-chat-logs.js';
 import anthropicBatchHandler from '../api/anthropic-batch.js';
@@ -48,88 +49,32 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-const mongooseOptions = {
-  tls: true,
-  tlsCAFile: '/app/global-bundle.pem',
-  retryWrites: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-};
-
-mongoose.connect(process.env.DOCDB_URI, mongooseOptions)
-  .then(() => {
-    console.log('MongoDB connected successfully');
-    console.log(`Running in ${process.env.REACT_APP_ENV || 'production'} mode`);
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
-
-// Logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
-  next();
-});
-
-// Environment-aware logging
-if (process.env.REACT_APP_ENV === 'development') {
-  console.log('Development environment variables:');
-  console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'Set' : 'Not Set');
-  console.log('COHERE_API_KEY:', process.env.COHERE_API_KEY ? 'Set' : 'Not Set');
-  console.log('DOCDB_URI:', process.env.DOCDB_URI ? 'Set' : 'Not Set');
-  console.log('AZURE_OPENAI_API_KEY:', process.env.AZURE_OPENAI_API_KEY ? 'Set' : 'Not Set');
-  console.log('AZURE_OPENAI_ENDPOINT:', process.env.AZURE_OPENAI_ENDPOINT ? 'Set' : 'Not Set');
-  console.log('AZURE_OPENAI_API_VERSION:', process.env.AZURE_OPENAI_API_VERSION ? 'Set' : 'Not Set');
-} else {
-  console.log('Running in production mode');
-}
 
 app.post('/api/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db-chat-session', dbChatSessionHandler);
-
 app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);
 app.post("/api/openai-message", openAIHandler);
-
+app.post("/api/azure-message", azureHandler);
 app.post('/api/anthropic-message', anthropicAgentHandler);
-
-
 app.post('/api/anthropic-context', anthropicContextAgentHandler);
-
 app.post('/api/openai-context', openAIContextAgentHandler);
-
 app.get('/api/db-chat-logs', dbChatLogsHandler);
-
 app.post('/api/anthropic-batch', anthropicBatchHandler);
-
 app.post('/api/openai-batch', openAIBatchHandler);
-
 app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
-
 app.get('/api/openai-batch-status', openAIBatchStatusHandler);
-
 app.post('/api/search-context', contextSearchHandler);
-
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
-
 app.get('/api/anthropic-batch-cancel', anthropicBatchCancelHandler);
-
 app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
-
 app.post('/api/openai-batch-context', openAIBatchContextHandler);
-
 app.get('/api/db-batch-list', dbBatchListHandler);
-
 app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
-
 app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
-
 app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
-
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
-
 app.get('/api/db-check', dbCheckhandler);
-
 app.get('/api/db-log', dbLogHandler);
 app.post('/api/db-log', dbLogHandler);
 
