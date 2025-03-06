@@ -1,6 +1,7 @@
 // api/chatgpt.js
 import { createOpenAIAgent } from '../agents/AgentService.js';
 import ServerLoggingService from '../services/ServerLoggingService.js';
+import { ToolTrackingHandler } from '../agents/ToolTrackingHandler.js';
 
 const NUM_RETRIES = 3;
 const BASE_DELAY = 1000; // 1 second
@@ -29,7 +30,8 @@ async function invokeHandler(req, res) {
       const { message, systemPrompt, conversationHistory, chatId = 'system' } = req.body;
       ServerLoggingService.info('OpenAI API request received', chatId);
       ServerLoggingService.debug('Request body:', chatId, { message, systemPrompt, conversationHistoryLength: conversationHistory.length });
-
+      
+      // Create agent (callbacks are automatically attached in AgentService)
       const openAIAgent = await createOpenAIAgent(chatId);
 
       const messages = [
@@ -56,11 +58,25 @@ async function invokeHandler(req, res) {
           });
         });
         const lastMessage = answer.messages[answer.messages.length - 1];
+        
+        // Find the correct tool tracking handler from callbacks
+        let toolTrackingHandler = null;
+        for (const callback of openAIAgent.callbacks) {
+          if (callback instanceof ToolTrackingHandler) {
+            toolTrackingHandler = callback;
+            break;
+          }
+        }
+
+        const toolUsage = toolTrackingHandler ? toolTrackingHandler.getToolUsageSummary() : {};
+        ServerLoggingService.info('Tool usage summary:', chatId, toolUsage);
+
         const response = {
           content: lastMessage.content,
           inputTokens: lastMessage.response_metadata.tokenUsage.promptTokens,
           outputTokens: lastMessage.response_metadata.tokenUsage.completionTokens,
           model: lastMessage.response_metadata.model_name,
+          tools: toolUsage // Include tool usage data in the response
         };
         ServerLoggingService.info('OpenAI API request completed successfully', chatId, response);
         res.json(response);

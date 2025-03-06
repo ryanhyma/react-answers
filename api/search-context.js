@@ -3,21 +3,21 @@ import { contextSearch as googleContextSearch } from '../agents/tools/googleCont
 import { exponentialBackoff } from '../src/utils/backoff.js';
 import ServerLoggingService from '../services/ServerLoggingService.js';
 
-async function performSearch(query, searchService = 'canadaca', chatId = 'system') {
+async function performSearch(query, lang, searchService = 'canadaca', chatId = 'system') {
     const searchFunction = searchService.toLowerCase() === 'google' 
         ? googleContextSearch 
         : canadaContextSearch;
         
-    return await exponentialBackoff(() => searchFunction(query));
+    return await exponentialBackoff(() => searchFunction(query, lang));
 }
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { query, searchService, chatId = 'system' } = req.body;
-        ServerLoggingService.info('Received request to search.', chatId, { query, searchService });
+        const { query, lang, searchService, chatId = 'system' } = req.body;
+        ServerLoggingService.info('Received request to search.', chatId, { query, lang, searchService });
         
         try {
-            const searchResults = await performSearch(query, searchService, chatId);
+            const searchResults = await performSearch(query, lang, searchService, chatId);
             ServerLoggingService.debug('Search results:', chatId, searchResults);
             res.json(searchResults);
         } catch (error) {

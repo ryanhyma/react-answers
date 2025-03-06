@@ -1615,4 +1615,66 @@ fieldset.gc-chckbxrdio {
 
 .mrgn-bttm-lg {
     margin-bottom: 22px;
+
+  /* Metadata and code styling */
+.metadata-content {
+  position: relative;
+}
+
+.expand-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  min-height: auto !important;
+}
+
+/* Syntax highlighting overrides */
+.language-json {
+  color: #000;
+}
+
+.language-json .token.property {
+  color: #2e86de;
+}
+
+.language-json .token.string {
+  color: #10ac84;
+}
+
+.language-json .token.number {
+  color: #ee5253;
+}
+
+.language-json .token.boolean {
+  color: #ff9f43;
+}
+
+.language-json .token.null {
+  color: #8395a7;
+}
+
+.language-xml .token.tag {
+  color: #2e86de;
+}
+
+.language-xml .token.attr-name {
+  color: #10ac84;
+}
+
+.language-xml .token.attr-value {
+  color: #ee5253;
+}
+
+/* Modal styling */
+.metadata-modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.metadata-modal pre {
+  margin: 0;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 4px;
 }

@@ -2,37 +2,61 @@ import { tool } from "@langchain/core/tools";
 import axios from 'axios';
 import { load } from 'cheerio';
 import { Agent } from 'https';
-import ServerLoggingService from '../../services/ServerLoggingService.js';
+import { getEncoding } from "js-tiktoken";
+
+const tokenizer = getEncoding("cl100k_base"); // OpenAI's default tokenizer
 
 /**
  * Extracts the content of the body from a cheerio object, including all text and keeping <a> tags,
  * with newline characters after block elements.
  * @param {object} $ - The cheerio object of the parsed HTML.
+ * @param {number} maxTokens - Maximum number of tokens to extract (default 8000)
  * @returns {string} - The extracted body content with links and formatted text.
  */
-function extractBodyContentWithLinks($) {
+function extractBodyContentWithLinks($, maxTokens = 8000) {
     const bodyContent = [];
     const blockTags = new Set(['p', 'div', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'hr']);
     const mainTag = $('main');
+    let totalTokens = 0;
 
     if (mainTag.length > 0) {
         mainTag.find('*').each((_, element) => {
+            // Check if we've exceeded token limit
+            if (totalTokens >= maxTokens) {
+                return false; // Break the each loop
+            }
+
             const tag = $(element);
+            let content = '';
+
             if (element.type === 'text') {
-                // Strip and add text if not empty
                 const text = tag.text().trim();
-                if (text) bodyContent.push(text);
+                if (text) content = text;
             } else if (element.tagName === 'a') {
-                // Keep the <a> tag as is
-                bodyContent.push($.html(element).trim());
+                content = $.html(element).trim();
             } else if (blockTags.has(element.tagName)) {
-                // Add the text of the block element and a newline
                 const text = tag.text().trim();
-                if (text) bodyContent.push(text + '\n');
+                if (text) content = text + '\n';
             } else {
-                // For other tags, just add their text content
                 const text = tag.text().trim();
-                if (text) bodyContent.push(text);
+                if (text) content = text;
+            }
+
+            if (content) {
+                const tokens = tokenizer.encode(content);
+                if (totalTokens + tokens.length <= maxTokens) {
+                    bodyContent.push(content);
+                    totalTokens += tokens.length;
+                } else {
+                    // Add partial content up to token limit if possible
+                    const remainingTokens = maxTokens - totalTokens;
+                    if (remainingTokens > 0) {
+                        const partialContent = tokenizer.decode(tokens.slice(0, remainingTokens));
+                        bodyContent.push(partialContent);
+                        totalTokens = maxTokens;
+                    }
+                    return false; // Break the each loop
+                }
             }
         });
     }
@@ -42,36 +66,33 @@ function extractBodyContentWithLinks($) {
 
 const downloadWebPage = async (url, chatId = 'system') => {
     const httpsAgent = new Agent({ rejectUnauthorized: false });
+    const DEFAULT_MAX_TOKENS = 8000; // Set a reasonable default token limit
     
     try {
-        ServerLoggingService.info(`Downloading webpage: ${url}`, chatId, {
-            url,
-            action: 'download_start'
-        });
-        
         const response = await axios.get(url, {
             httpsAgent,
             maxRedirects: 10,
-            timeout: 10000, // Set timeout to 10 seconds
+            timeout: 10000,
             headers: {
                 'User-Agent': process.env.USER_AGENT
             }
         });
         
         const $ = load(response.data);
-        const bodyContent = extractBodyContentWithLinks($);
-        
-        ServerLoggingService.info(`Successfully downloaded webpage: ${url}`, chatId, {
-            url,
-            status: response.status,
-            contentLength: bodyContent.length,
-            action: 'download_complete'
-        });
-        
-        return bodyContent;
+        return extractBodyContentWithLinks($, DEFAULT_MAX_TOKENS);
     } catch (error) {
-        ServerLoggingService.error(`Error downloading webpage: ${url}`, chatId, error);
-        return `Failed to download webpage: ${url}`;
+        // Throw error with specific message based on error type
+        if (error.code === 'ECONNREFUSED') {
+            throw new Error(`Connection refused: ${url}`);
+        } else if (error.response?.status === 403) {
+            throw new Error(`Access forbidden (403): ${url}`);
+        } else if (error.response?.status === 404) {
+            throw new Error(`Page not found (404): ${url}`);
+        } else if (error.code === 'ETIMEDOUT') {
+            throw new Error(`Request timed out: ${url}`);
+        } else {
+            throw new Error(`Failed to download webpage: ${url} - ${error.message}`);
+        }
     }
 };
 

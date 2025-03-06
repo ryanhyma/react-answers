@@ -7,14 +7,14 @@ import '../models/expertFeedback.js';
 import '../models/context.js';
 import '../models/chat.js';
 import '../models/batch.js';
-
+import '../models/tool.js';
 
 let cached = global.mongoose;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
-// Does this need to called each time??
+
 async function dbConnect() {
   if (cached.conn) {
     return cached.conn;

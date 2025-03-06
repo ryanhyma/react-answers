@@ -1,7 +1,6 @@
 import { tool } from "@langchain/core/tools";
 import axios from 'axios';
 import { Agent } from 'https';
-import ServerLoggingService from '../../services/ServerLoggingService.js';
 
 const checkUrlStatus = async (url, chatId = 'system') => {
     const httpsAgent = new Agent({ rejectUnauthorized: false });
@@ -13,18 +12,22 @@ const checkUrlStatus = async (url, chatId = 'system') => {
             timeout: 10000,
         });
         const isLive = response.status === 200;
-        const message = isLive ? `URL is live (${url})` : `URL is dead (${url})`;
-        
-        ServerLoggingService.info(message, chatId, { 
-            url,
-            status: response.status 
-        });
-        
-        return message;
-    } catch (getError) {
-        const errorMessage = `Error checking URL with GET request: ${url}. Details: ${getError.message}`;
-        ServerLoggingService.error(errorMessage, chatId, getError);
-        return `URL is dead ${url}`;
+        if (!isLive) {
+            throw new Error(`URL returned status ${response.status}: ${url}`);
+        }
+        return `URL is live (${url})`;
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') {
+            throw new Error(`Connection refused: ${url}`);
+        } else if (error.response?.status === 403) {
+            throw new Error(`Access forbidden (403): ${url}`);
+        } else if (error.response?.status === 404) {
+            throw new Error(`Page not found (404): ${url}`);
+        } else if (error.code === 'ETIMEDOUT') {
+            throw new Error(`Request timed out: ${url}`);
+        } else {
+            throw new Error(`URL check failed: ${url} - ${error.message}`);
+        }
     }
 };
 
