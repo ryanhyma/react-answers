@@ -1613,7 +1613,10 @@ fieldset.gc-chckbxrdio {
     padding: .25em 1em;
 }
 
-/* Metadata and code styling */
+.mrgn-bttm-lg {
+    margin-bottom: 22px;
+
+  /* Metadata and code styling */
 .metadata-content {
   position: relative;
 }

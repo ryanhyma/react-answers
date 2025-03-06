@@ -272,6 +272,20 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
               </div>
             )}
           </div>
+
+          <div className="mrgn-bttm-lg">
+            <label className="expert-citation-url" htmlFor="expert-citation-url">
+              {t('homepage.expertRating.options.betterCitation')}
+              <input
+                type="url"
+                id="expert-citation-url"
+                name="expertCitationUrl"
+                value={expertFeedback.expertCitationUrl}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
+              />
+            </label>
+          </div>
         </details>
       </fieldset>
       <button type="submit" className="btn-primary mrgn-lft-sm">{t('homepage.expertRating.submit')}</button>
