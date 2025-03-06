@@ -2,6 +2,7 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatOpenAI, AzureChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
+import OpenAI from 'openai';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
 import { ToolTrackingHandler } from './ToolTrackingHandler.js';
@@ -9,6 +10,30 @@ import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+// Direct OpenAI client creation for non-LangChain usage
+export const createDirectOpenAIClient = () => {
+    const modelConfig = getModelConfig('openai');
+    return new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+        maxRetries: 3,
+        timeout: modelConfig.timeoutMs,
+    });
+};
+
+// Direct Azure OpenAI client creation for non-LangChain usage
+export const createDirectAzureOpenAIClient = () => {
+    const modelConfig = getModelConfig('openai');
+    const azureConfig = modelConfig.azure;
+    return new OpenAI({
+        apiKey: process.env.AZURE_OPENAI_API_KEY,
+        baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${azureConfig.deploymentName}`,
+        defaultQuery: { 'api-version': azureConfig.apiVersion },
+        defaultHeaders: { 'api-key': process.env.AZURE_OPENAI_API_KEY },
+        maxRetries: 3,
+        timeout: modelConfig.timeoutMs,
+    });
+};
 
 const createTools = (chatId = 'system') => {
   const callbacks = [new ToolTrackingHandler(chatId)];
@@ -186,4 +211,4 @@ const getAgent = (agents, selectedAgent) => {
   }
 };
 
-export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createAzureAgent, createContextAgent };
+export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createAzureAgent, createContextAgent, createDirectOpenAIClient, createDirectAzureOpenAIClient };
