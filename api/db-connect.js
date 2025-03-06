@@ -21,17 +21,23 @@ async function dbConnect() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      tls: true,
-      tlsCAFile: '/app/global-bundle.pem',
-      retryWrites: false,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    const mongoDbOpts = {
       bufferCommands: false,
       connectTimeoutMS: 30000 // 30 seconds timeout
     };
 
-    cached.promise = mongoose.connect(process.env.DOCDB_URI, opts).then((mongoose) => {
+    const docDbOpts = {
+      tls: true,
+      tlsCAFile: '/app/global-bundle.pem',
+      retryWrites: false,
+      bufferCommands: false,
+      connectTimeoutMS: 30000 // 30 seconds timeout
+    };
+
+    const connectionString = process.env.MONGODB_URI || process.env.DOCDB_URI;
+    const opts = process.env.MONGODB_URI ? mongoDbOpts : docDbOpts;
+
+    cached.promise = mongoose.connect(connectionString, opts).then((mongoose) => {
       return mongoose;
     });
   }
