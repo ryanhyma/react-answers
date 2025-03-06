@@ -7,12 +7,15 @@ const getApiUrl = (endpoint) => {
 };
 
 const getProviderApiUrl = (provider, endpoint) => {
-  // TODO read from ModelConfig
+  // Map provider aliases to their actual service names
   if (provider === 'claude') {
     provider = 'anthropic';
   } else if (provider === 'chatgpt') {
     provider = 'openai';
+  } else if (provider === 'azure-openai' || provider === 'azure') {
+    provider = 'azure';
   }
+
   const baseUrl =
     process.env.NODE_ENV === 'production'
       ? window.location.origin
@@ -20,6 +23,6 @@ const getProviderApiUrl = (provider, endpoint) => {
   return `${baseUrl}/api/${provider}-${endpoint}`;
 };
 
-const providerOrder = ['openai', 'anthropic', 'cohere'];
+const providerOrder = ['openai', 'azure', 'anthropic', 'cohere'];
 
 export { getApiUrl, getProviderApiUrl, providerOrder };
