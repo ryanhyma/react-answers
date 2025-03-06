@@ -42,7 +42,17 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-mongoose.connect(process.env.DOCDB_URI)
+const mongooseOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  bufferCommands: false,
+  connectTimeoutMS: 30000,
+  ssl: true,
+  sslValidate: true,
+  sslCA: '/app/global-bundle.pem'
+};
+
+mongoose.connect(process.env.DOCDB_URI, mongooseOptions)
   .then(() => {
     console.log('MongoDB connected successfully');
     console.log(`Running in ${process.env.REACT_APP_ENV || 'production'} mode`);
