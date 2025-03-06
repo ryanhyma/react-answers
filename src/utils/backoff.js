@@ -1,4 +1,4 @@
-export async function exponentialBackoff(fn, retries = 0, initialDelay = 0) {
+export async function exponentialBackoff(fn, retries = 10, initialDelay = 1000) {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
