@@ -32,3 +32,13 @@ output "azure_openai_api_version_arn" {
   description = "ARN of the Azure OpenAI API version parameter"
   value       = aws_ssm_parameter.azure_openai_api_version.arn
 }
+
+output "canada_ca_search_uri_arn" {
+  description = "ARN of the Canada.ca search URI parameter"
+  value       = aws_ssm_parameter.canada_ca_search_uri.arn
+}
+
+output "canada_ca_search_api_key_arn" {
+  description = "ARN of the Canada.ca search API key parameter"
+  value       = aws_ssm_parameter.canada_ca_search_api_key.arn
+}

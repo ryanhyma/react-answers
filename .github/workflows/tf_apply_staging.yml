@@ -19,6 +19,8 @@ env:
   TF_VAR_azure_openai_api_key: ${{ secrets.AZURE_OPENAI_API_KEY}}
   TF_VAR_azure_openai_endpoint: ${{ secrets.AZURE_OPENAI_ENDPOINT}}
   TF_VAR_azure_openai_api_version: ${{ secrets.AZURE_OPENAI_API_VERSION}}
+  TF_VAR_canada_ca_search_uri: ${{ secrets.CANADA_CA_SEARCH_URI}}
+  TF_VAR_canada_ca_search_api_key: ${{ secrets.CANADA_CA_SEARCH_API_KEY}}
   TF_VAR_sentinel_customer_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
   TF_VAR_sentinel_shared_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 

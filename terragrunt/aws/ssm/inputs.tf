@@ -28,3 +28,15 @@ variable "azure_openai_api_version" {
   type        = string
   default     = "2024-06-01"
 }
+
+variable "canada_ca_search_uri" {
+  description = "The URI of the Canada.ca search API"
+  sensitive   = true
+  type        = string
+}
+
+variable "canada_ca_search_api_key" {
+  description = "The API key of the Canada.ca search API"
+  sensitive   = true
+  type        = string
+}
