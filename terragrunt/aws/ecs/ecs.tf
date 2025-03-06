@@ -9,7 +9,7 @@ locals {
       "valueFrom" = var.canada_ca_search_uri
     },
     {
-       "name"      = "CANADA_CA_SEARCH_API_KEY"
+      "name"      = "CANADA_CA_SEARCH_API_KEY"
       "valueFrom" = var.canada_ca_search_api_key
     },
     {
