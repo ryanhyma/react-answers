@@ -231,29 +231,28 @@ export const menuStructure_FR = {
   Santé: {
     url: 'https://www.canada.ca/fr/services/sante.html',
     topics: {
-      'Aliments et nutrition': 'https://www.canada.ca/fr/services/sante/aliments-et-nutrition.html',
-      'Maladies et affections': 'https://www.canada.ca/fr/sante-publique/services/maladies.html',
-      'Vaccins et immunisation':
-        'https://www.canada.ca/fr/sante-publique/sujets/immunisation-et-vaccins.html',
-      'Médicaments et produits de santé':
-        'https://www.canada.ca/fr/services/sante/medicaments-et-produits-sante.html',
-      'Sécurité des produits': 'https://www.canada.ca/fr/services/sante/securite-produits.html',
-      'Sécurité et risque pour la santé':
-        'https://www.canada.ca/fr/services/sante/securite-et-risque-pour-sante.html',
-      'Vie saine': 'https://www.canada.ca/fr/services/sante/vie-saine.html',
-      'Santé des Autochtones': 'https://www.canada.ca/fr/services/sante/sante-autochtones.html',
-      'Système et services de santé':
-        'https://www.canada.ca/fr/services/sante/systeme-et-services-sante.html',
-      'Science, recherche et données':
-        'https://www.canada.ca/fr/services/sante/science-recherche-et-donnees.html',
+      "Aliments et nutrition": "https://www.canada.ca/fr/services/sante/aliments-et-nutrition.html",
+      "Maladies et affections": "https://www.canada.ca/fr/sante-publique/services/maladies.html",
+      "Vaccins et immunisation": "https://www.canada.ca/fr/sante-publique/sujets/immunisation-et-vaccins.html",
+      "Médicaments et produits de santé": "https://www.canada.ca/fr/services/sante/medicaments-et-produits-sante.html",
+      "Sécurité des produits": "https://www.canada.ca/fr/services/sante/securite-produits.html",
+      "Sécurité et risque pour la santé": "https://www.canada.ca/fr/services/sante/securite-et-risque-pour-sante.html",
+      "Vie saine": "https://www.canada.ca/fr/services/sante/vie-saine.html",
+      "Santé des Autochtones": "https://www.canada.ca/fr/services/sante/sante-autochtones.html",
+      "Système et services de santé": "https://www.canada.ca/fr/services/sante/systeme-et-services-sante.html",
+      "Science, recherche et données": "https://www.canada.ca/fr/services/sante/science-recherche-et-donnees.html",
+      "Aide médicale à mourir ": "https://www.canada.ca/fr/sante-canada/services/services-avantages-lies-sante/aide-medicale-mourir.html"
     },
     mostRequested: {
-      'Guide alimentaire Canada': 'https://guide-alimentaire.canada.ca/fr/',
-      'Rappels et avis de sécurité': 'https://recalls-rappels.canada.ca/fr',
-      "Soutien en santé mentale : Demander de l'aide":
-        'https://www.canada.ca/fr/sante-publique/services/services-sante-mentale/sante-mentale-obtenir-aide.html',
-      Rougeole: 'https://www.canada.ca/fr/sante-publique/services/maladies/rougeole.html',
-    },
+      "Guide alimentaire Canada": "https://guide-alimentaire.canada.ca/fr/",
+      "Rappels et avis de sécurité pour les aliments, les allergènes non déclarés, les produits de santé et les produits de consommation": "https://recalls-rappels.canada.ca/fr",
+      "Soutien en santé mentale : Demander de l'aide": "https://www.canada.ca/fr/sante-publique/services/services-sante-mentale/sante-mentale-obtenir-aide.html",
+      "Rougeole": "https://www.canada.ca/fr/sante-publique/services/maladies/rougeole.html",
+      "Virus respiratoire syncytial (VRS)": "https://www.canada.ca/fr/sante-publique/services/maladies/virus-respiratoire-syncytial-vrs.html",
+      "Maladie du coronavirus (COVID-19)": "https://www.canada.ca/fr/sante-publique/services/maladies/maladie-coronavirus-covid-19.html",
+      "Régime canadien de soins dentaires": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires.html",
+      "Maladies respiratoires infectieuses : Réduire la propagation grâce à des mesures de protection individuelle": "https://www.canada.ca/fr/sante-publique/services/maladies/maladies-respiratoires-infectieuses-reduire-propagation-protection-individuelle.html"
+    }
   },
   Impôts: {
     url: 'https://www.canada.ca/fr/services/impots.html',
@@ -374,18 +373,14 @@ export const menuStructure_FR = {
         'https://www.canada.ca/fr/services/culture/commerce-investissement-culturels.html',
     },
     mostRequested: {
-      'Visitez le Mémorial virtuel de guerre du Canada':
-        'https://www.veterans.gc.ca/fra/remembrance/memorials/canadian-virtual-war-memorial',
-      'Hymnes et symboles du Canada':
-        'https://www.canada.ca/fr/services/culture/identite-canadienne-societe/hymnes-symboles.html',
-      'Trouvez une décision du CRTC': 'https://crtc.gc.ca/fra/8045/d2018.htm',
-      'Faites des recherches sur votre histoire familiale':
-        'https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/Pages/genealogie-histoire-famille.aspx',
-      'Cherchez des documents de recensement':
-        'https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/recensements/Pages/recensements.aspx',
-      'Lieux et attraits dans la capitale du Canada':
-        'https://www.canada.ca/fr/services/culture/attraits-culturels/attraits-capitale-canada.html',
-    },
+      "Visitez le Mémorial virtuel de guerre du Canada": "https://www.veterans.gc.ca/fra/remembrance/memorials/canadian-virtual-war-memorial",
+      "Hymnes et symboles du Canada": "https://www.canada.ca/fr/services/culture/identite-canadienne-societe/hymnes-symboles.html",
+      "Trouvez une décision du CRTC": "https://crtc.gc.ca/fra/8045/d2018.htm",
+      "Faites des recherches sur votre histoire familiale (genealogie)": "https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/Pages/genealogie-histoire-famille.aspx",
+      "Cherchez des documents de recensement": "https://bibliotheque-archives.canada.ca/fra/collection/aide-recherche/genealogie-histoire-famille/recensements/Pages/recensements.aspx",
+      "Recherchez des documents dans les collections de la Bibliothèque et des Archives du Canada": "https://library-archives.canada.ca/fra/collection/Pages/collection.aspx",
+      "Lieux et attraits dans la capitale du Canada": "https://www.canada.ca/fr/services/culture/attraits-culturels/attraits-capitale-canada.html",
+    }
   },
   'Services de police, justice et urgences': {
     url: 'https://www.canada.ca/fr/services/police.html',
@@ -423,20 +418,17 @@ export const menuStructure_FR = {
       Infrastructure: 'https://tc.canada.ca/fr/services/infrastructures.html',
     },
     mostRequested: {
-      'Véhicules zéro émission':
-        'https://www.canada.ca/fr/services/transport/vehicules-zero-emission.html',
-      'Sécurité des drones': 'https://tc.canada.ca/fr/aviation/securite-drones',
-      "Articles interdits à bord d'un avion":
-        'https://tc.canada.ca/fr/aviation/surete-aerienne/ce-que-vous-ne-pouvez-pas-apporter-dans-avion',
-      'Immatriculer votre bâtiment':
-        'https://tc.canada.ca/fr/transport-maritime/permis-immatriculation-batiments',
-      "Sécurité des sièges d'auto pour enfants":
-        'https://tc.canada.ca/fr/transport-routier/securite-sieges-auto-enfants',
-      'Transporter des marchandises dangereuses - Règlements':
-        'https://tc.canada.ca/fr/marchandises-dangereuses/table-matieres',
-      "Règlement de l'aviation canadien":
-        'https://tc.canada.ca/fr/services-generaux/lois-reglements/liste-reglements/reglement-aviation-canadien-dors-96-433',
-    },
+      "Véhicules zéro émission": "https://www.canada.ca/fr/services/transport/vehicules-zero-emission.html",
+      "Sécurité des drones": "https://tc.canada.ca/fr/aviation/securite-drones",
+      "Articles interdits à bord d'un avion": "https://tc.canada.ca/fr/aviation/surete-aerienne/ce-que-vous-ne-pouvez-pas-apporter-dans-avion",
+      "Immatriculer votre bâtiment": "https://tc.canada.ca/fr/transport-maritime/permis-immatriculation-batiments",
+      "Sécurité des sièges d'auto pour enfants": "https://tc.canada.ca/fr/transport-routier/securite-sieges-auto-enfants",
+      "Transporter des marchandises dangereuses - Règlements": "https://tc.canada.ca/fr/marchandises-dangereuses/table-matieres",
+      "Règlement de l'aviation canadien": "https://tc.canada.ca/fr/services-generaux/lois-reglements/liste-reglements/reglement-aviation-canadien-dors-96-433",
+      "Rappels des véhicules, des pneus et des sièges d’auto pour enfant":"https://tc.canada.ca/fr/transport-routier/defauts-rappels-vehicules-pneus-sieges-auto-enfant/consulter-rappels-vehicules-pneus-sieges-auto-enfant",
+      "Demander ou gérer un permis d’embarcation de plaisance":"https://tc.canada.ca/fr/transport-maritime/permis-immatriculation-batiments/permis-embarcation-plaisance/demander-gerer-permis-embarcation-plaisance/demander-gerer-permis-embarcation-plaisance",
+      "Delivrance des licences de pilotes et personnel de l'aviation":"https://tc.canada.ca/fr/aviation/delivrance-licences-pilotes-personnel"
+    }
   },
   'Canada et le monde': {
     url: 'https://www.international.gc.ca/world-monde/index.aspx?lang=fra',
@@ -634,11 +626,10 @@ export const menuStructure_FR = {
       'Gestion des urgences': 'https://www.sac-isc.gc.ca/fra/1309369889599',
     },
     mostRequested: {
-      'Obtenez, renouvelez ou remplacez une carte de statut':
-        'https://www.sac-isc.gc.ca/fra/1100100032380/1572461388012',
-      'Traverser la frontière canado-américaine avec une carte de statut':
-        'https://www.sac-isc.gc.ca/fra/1100100032399/1572459562067',
-    },
+      "Renouvelez votre carte de statut sécurisé - comment, quand, vérifier l'éligibilité": "https://www.sac-isc.gc.ca/fra/1695840367366/1695840394948",
+      "Obtenez, renouvelez ou remplacez une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032380/1572461388012",
+      "Traverser la frontière canado-américaine avec une carte de statut": "https://www.sac-isc.gc.ca/fra/1100100032399/1572459562067"
+    }
   },
   'Vétérans et militaires': {
     url: 'https://www.canada.ca/fr/services/veterans-militaire.html',

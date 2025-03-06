@@ -4,16 +4,40 @@ import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
+import { ToolTrackingHandler } from './ToolTrackingHandler.js';
 import { contextSearchTool } from './tools/contextSearch.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const agentTools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
-const contextTools = [contextSearchTool]; // Tools for context agent
+const createTools = (chatId = 'system') => {
+  const callbacks = [new ToolTrackingHandler(chatId)];
+  
+  // Wrap tools with callbacks to ensure consistent tracking
+  const wrapToolWithCallbacks = (tool) => ({
+    ...tool,
+    invoke: async (params) => {
+      return tool.invoke({
+        ...params,
+        args: {
+          ...params.args,
+          chatId
+        }
+      }, { callbacks });
+    }
+  });
 
-const createOpenAIAgent = async () => {
+  return {
+    tools: [
+      wrapToolWithCallbacks(downloadWebPageTool),
+      wrapToolWithCallbacks(checkUrlStatusTool)
+    ],
+    callbacks
+  };
+};
+
+const createOpenAIAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('openai');
   const openai = new AzureChatOpenAI({
     apiKey: process.env.AZURE_OPENAI_API_KEY,
@@ -24,14 +48,14 @@ const createOpenAIAgent = async () => {
     maxTokens: modelConfig.maxTokens,
     timeout: modelConfig.timeoutMs,
   });
-  const agent = await createReactAgent({
-    llm: openai,
-    tools: agentTools,
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: openai, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
-const createCohereAgent = async () => {
+const createCohereAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('cohere');
   const cohere = new ChatCohere({
     apiKey: process.env.REACT_APP_COHERE_API_KEY,
@@ -39,14 +63,14 @@ const createCohereAgent = async () => {
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
   });
-  const agent = await createReactAgent({
-    llm: cohere,
-    tools: agentTools,
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: cohere, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
-const createClaudeAgent = async () => {
+const createClaudeAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('anthropic');
   const claude = new ChatAnthropic({
     apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
@@ -55,14 +79,14 @@ const createClaudeAgent = async () => {
     maxTokens: modelConfig.maxTokens,
     beta: modelConfig.beta,
   });
-  const agent = await createReactAgent({
-    llm: claude,
-    tools: agentTools,
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: claude, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
-const createContextAgent = async (agentType) => {
+const createContextAgent = async (agentType, chatId = 'system') => {
   let llm;
 
   switch (agentType) {
@@ -87,7 +111,7 @@ const createContextAgent = async (agentType) => {
         timeoutMs: 60000,
       });
       break;
-    case 'claude':
+    case 'anthropic':
       llm = new ChatAnthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
         modelName: 'claude-3-5-haiku-20241022',
@@ -99,22 +123,19 @@ const createContextAgent = async (agentType) => {
     default:
       throw new Error(`Unknown agent type: ${agentType}`);
   };
-  const agent = await createReactAgent({
-    llm: llm,
-    tools: contextTools,
-  });
+
+  // Context agent doesn't need tools, just callbacks for tracking
+  const callbacks = [new ToolTrackingHandler(chatId)];
+  const agent = await createReactAgent({ llm, tools: [] });
+  agent.callbacks = callbacks;
   return agent;
 }
 
-
-
-
-
-const createAgents = async () => {
-  const openAIAgent = await createOpenAIAgent();
-  const cohereAgent = null; //await createCohereAgent();
-  const claudeAgent = await createClaudeAgent();
-  const contextAgent = await createContextAgent('openai');
+const createAgents = async (chatId = 'system') => {
+  const openAIAgent = await createOpenAIAgent(chatId);
+  const cohereAgent = null; //await createCohereAgent(chatId);
+  const claudeAgent = await createClaudeAgent(chatId);
+  const contextAgent = await createContextAgent('openai', chatId);
   return { openAIAgent, cohereAgent, claudeAgent, contextAgent };
 };
 

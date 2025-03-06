@@ -197,29 +197,28 @@ export const menuStructure_EN = {
   Health: {
     url: 'https://www.canada.ca/en/services/health.html',
     topics: {
-      'Food and nutrition': 'https://www.canada.ca/en/services/health/food-nutrition.html',
-      'Diseases and conditions': 'https://www.canada.ca/en/public-health/services/diseases.html',
-      'Vaccines and immunization':
-        'https://www.canada.ca/en/public-health/topics/immunization-vaccines.html',
-      'Drug and health products':
-        'https://www.canada.ca/en/services/health/drug-health-products.html',
-      'Product safety': 'https://www.canada.ca/en/services/health/product-safety.html',
-      'Health risks and safety':
-        'https://www.canada.ca/en/services/health/health-risks-safety.html',
-      'Healthy living': 'https://www.canada.ca/en/services/health/healthy-living.html',
-      'Indigenous health': 'https://www.canada.ca/en/services/health/aboriginal-health.html',
-      'Health system and services':
-        'https://www.canada.ca/en/services/health/health-system-services.html',
-      'Science, research and data':
-        'https://www.canada.ca/en/services/health/science-research-data.html',
+      "Food and nutrition": "https://www.canada.ca/en/services/health/food-nutrition.html",
+      "Diseases and conditions": "https://www.canada.ca/en/public-health/services/diseases.html",
+      "Vaccines and immunization": "https://www.canada.ca/en/public-health/topics/immunization-vaccines.html",
+      "Drug and health products": "https://www.canada.ca/en/services/health/drug-health-products.html",
+      "Product safety": "https://www.canada.ca/en/services/health/product-safety.html",
+      "Health risks and safety": "https://www.canada.ca/en/services/health/health-risks-safety.html",
+      "Healthy living": "https://www.canada.ca/en/services/health/healthy-living.html",
+      "Indigenous health": "https://www.canada.ca/en/services/health/aboriginal-health.html",
+      "Health system and services": "https://www.canada.ca/en/services/health/health-system-services.html",
+      "Medical assistance in dying": "https://www.canada.ca/en/health-canada/services/health-services-benefits/medical-assistance-dying.html",
+      "Science, research and data": "https://www.canada.ca/en/services/health/science-research-data.html"
     },
     mostRequested: {
-      "Canada's food guide": 'https://food-guide.canada.ca/en/',
-      'Recalls and safety alerts': 'http://recalls-rappels.canada.ca/en',
-      'Mental health support: Get help':
-        'http://www.canada.ca/en/public-health/services/mental-health-services/mental-health-get-help.html',
-      Measles: 'https://www.canada.ca/en/public-health/services/diseases/measles.html',
-    },
+      "Canada's food guide": "https://food-guide.canada.ca/en/",
+      "Recalls and safety alerts for food, undeclared allergens, health and consumer products": "http://recalls-rappels.canada.ca/en",
+      "Mental health support: Get help": "http://www.canada.ca/en/public-health/services/mental-health-services/mental-health-get-help.html",
+      "Measles": "https://www.canada.ca/en/public-health/services/diseases/measles.html",
+      "RSV: Symptoms and treatment": "https://www.canada.ca/en/public-health/services/diseases/respiratory-syncytial-virus-rsv.html",
+      "Coronavirus disease (COVID-19)": "hhttps://www.canada.ca/en/public-health/services/diseases/coronavirus-disease-covid-19.html",
+      "Canadian Dental Care Plan": "https://www.canada.ca/en/services/benefits/dental/dental-care-plan.html",
+      "Respiratory infectious diseases: How to reduce the spread with personal protective measures": "https://www.canada.ca/en/public-health/services/diseases/respiratory-infectious-diseases-reduce-spread-personal-protective-measures.html"
+    }
   },
   Taxes: {
     url: 'https://www.canada.ca/en/services/taxes.html',
@@ -346,18 +345,14 @@ export const menuStructure_EN = {
         'https://www.canada.ca/en/services/culture/cultural-trade-investment.html',
     },
     mostRequested: {
-      'Visit the Canadian Virtual War Memorial':
-        'https://www.veterans.gc.ca/eng/remembrance/memorials/canadian-virtual-war-memorial',
-      'Anthems and symbols of Canada':
-        'https://www.canada.ca/en/services/culture/canadian-identity-society/anthems-symbols.html',
-      'Find a CRTC decision': 'https://crtc.gc.ca/eng/8045/d2018.htm',
-      'Research your family history':
-        'https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/Pages/genealogy-family-history.aspx',
-      'Search census records':
-        'https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/censuses/Pages/censuses.aspx',
-      "Landmarks and attractions in Canada's capital":
-        'https://www.canada.ca/en/services/culture/cultural-attractions/attractions-canada-capital.html',
-    },
+      "Visit the Canadian Virtual War Memorial": "https://www.veterans.gc.ca/eng/remembrance/memorials/canadian-virtual-war-memorial",
+      "Anthems and symbols of Canada": "https://www.canada.ca/en/services/culture/canadian-identity-society/anthems-symbols.html",
+      "Find a CRTC decision": "https://crtc.gc.ca/eng/8045/d2018.htm",
+      "Research your family history (genealogy)": "https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/Pages/genealogy-family-history.aspx",
+      "Search census records": "https://library-archives.canada.ca/eng/collection/research-help/genealogy-family-history/censuses/Pages/censuses.aspx",
+      "Search Library and Archives Canada's collections and research help": "https://library-archives.canada.ca/eng/collection/Pages/collection.aspx",
+      "Landmarks and attractions in Canada's capital": "https://www.canada.ca/en/services/culture/cultural-attractions/attractions-canada-capital.html"
+    }
   },
   'Policing, justice and emergencies': {
     url: 'https://www.canada.ca/en/services/policing.html',
@@ -394,19 +389,17 @@ export const menuStructure_EN = {
       Infrastructure: 'https://tc.canada.ca/en/infrastructure',
     },
     mostRequested: {
-      'Zero-emission vehicles':
-        'https://www.canada.ca/en/services/transport/zero-emission-vehicles.html',
-      'Drone safety': 'https://tc.canada.ca/en/aviation/drone-safety',
-      "What you can't bring on an airplane":
-        'https://tc.canada.ca/en/aviation/aviation-security/what-you-can-t-bring-plane',
-      'Register your vessel':
-        'https://tc.canada.ca/en/marine-transportation/vessel-licensing-registration',
-      'Child car seat safety': 'https://tc.canada.ca/en/road-transportation/child-car-seat-safety',
-      'Transporting dangerous goods - Regulations':
-        'https://tc.canada.ca/en/dangerous-goods/table-contents',
-      'Canadian Aviation Regulations':
-        'https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433',
-    },
+      "Zero-emission vehicles": "https://www.canada.ca/en/services/transport/zero-emission-vehicles.html",
+      "Drone safety": "https://tc.canada.ca/en/aviation/drone-safety",
+      "What you can't bring on an airplane": "https://tc.canada.ca/en/aviation/aviation-security/what-you-can-t-bring-plane",
+      "Register your vessel": "https://tc.canada.ca/en/marine-transportation/vessel-licensing-registration",
+      "Child car seat safety": "https://tc.canada.ca/en/road-transportation/child-car-seat-safety",
+      "Transporting dangerous goods - Regulations": "https://tc.canada.ca/en/dangerous-goods/table-contents",
+      "Canadian Aviation Regulations": "https://tc.canada.ca/en/corporate-services/acts-regulations/list-regulations/canadian-aviation-regulations-sor-96-433",
+      "Recalls of vehicles, tires and child car seats":"https://tc.canada.ca/en/road-transportation/defects-recalls-vehicles-tires-child-car-seats/stay-informed-about-recalls-vehicles-tires-child-car-seats",
+      "Apply for or manage a Pleasure Craft Licence (PCL)":"https://tc.canada.ca/en/marine-transportation/vessel-licensing-registration/licensing-pleasure-craft/apply-manage-pleasure-craft-licence-pcl/apply-manage-pleasure-craft-licence-pcl",
+      "Licensing aviation pilots and personnel":"https://tc.canada.ca/en/aviation/licensing-pilots-personnel"
+    }
   },
   'Canada and the world': {
     url: 'https://www.international.gc.ca/world-monde/index.aspx?lang=eng',
@@ -599,11 +592,10 @@ export const menuStructure_EN = {
       'Emergency management': 'https://www.sac-isc.gc.ca/eng/1309369889599',
     },
     mostRequested: {
-      'Get, renew or replace a status card':
-        'https://www.sac-isc.gc.ca/eng/1100100032380/1572461388012',
-      'Crossing the Canada-U.S. border with a status card':
-        'https://www.sac-isc.gc.ca/eng/1100100032399/1572459562067',
-    },
+      "Renew your secure status card - how, when, check eligibility": "https://www.sac-isc.gc.ca/eng/1695840367366/1695840394948",
+      "Get, renew or replace a status card": "https://www.sac-isc.gc.ca/eng/1100100032380/1572461388012",
+      "Crossing the Canada-U.S. border with a status card": "https://www.sac-isc.gc.ca/eng/1100100032399/1572459562067"
+    }
   },
   'Veterans and military': {
     url: 'https://www.canada.ca/en/government/publicservice/benefitsmilitary.html',

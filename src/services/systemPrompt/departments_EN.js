@@ -34,6 +34,9 @@ export const departments_EN = [
     abbr: 'OAG',
   },
   {
+    "name": "Bank of Canada",
+    "url": "https://www.bankofcanada.ca/",
+    "abbr": null
     name: 'Bank of Canada',
     url: 'http://www.bankofcanada.ca/',
     abbr: null,
@@ -64,6 +67,9 @@ export const departments_EN = [
     abbr: null,
   },
   {
+    "name": "Canada Border Services Agency",
+    "url": "https://www.cbsa-asfc.gc.ca/menu-eng.html",
+    "abbr": "CBSA"
     name: 'Canada Border Services Agency',
     url: 'http://www.cbsa-asfc.gc.ca/menu-eng.html',
     abbr: 'CBSA',
@@ -164,9 +170,9 @@ export const departments_EN = [
     abbr: 'CA',
   },
   {
-    name: 'Canadian Centre for Occupational Health and Safety',
-    url: 'http://www.ccohs.ca/',
-    abbr: 'CCOHS',
+    "name": "Canadian Centre for Occupational Health and Safety",
+    "url": "https://www.ccohs.ca/",
+    "abbr": "CCOHS"
   },
   {
     name: 'Canadian Coast Guard',
@@ -174,9 +180,9 @@ export const departments_EN = [
     abbr: 'CCG',
   },
   {
-    name: 'Canadian Commercial Corporation',
-    url: 'http://www.ccc.ca/en',
-    abbr: 'CCC',
+    "name": "Canadian Commercial Corporation",
+    "url": "https://www.ccc.ca/en",
+    "abbr": "CCC"
   },
   {
     name: 'Canadian Conservation Institute',
@@ -189,14 +195,19 @@ export const departments_EN = [
     abbr: 'CCPERB',
   },
   {
-    name: 'Canadian Dairy Commission',
-    url: 'https://cdc-ccl.ca/en/node/672',
-    abbr: 'CDC',
+    "name": "Canadian Dairy Commission",
+    "url": "https://cdc-ccl.ca/en/node/672",
+    "abbr": "CDC"
   },
   {
-    name: 'Canada Energy Regulator',
-    url: 'https://www.cer-rec.gc.ca/index-eng.html',
-    abbr: 'CER',
+    "name": "Canadian Digital Service",
+    "url": "https://digital.canada.ca/about/",
+    "abbr": "CDS"
+  },
+  {
+    "name": "Canada Energy Regulator",
+    "url": "https://www.cer-rec.gc.ca/index-eng.html",
+    "abbr": "CER"
   },
   {
     name: 'Chief Accessibility Officer (Office of the)',
@@ -249,9 +260,9 @@ export const departments_EN = [
     abbr: 'CIPO',
   },
   {
-    name: 'Canadian Intergovernmental Conference Secretariat',
-    url: 'http://www.scics.ca/en/',
-    abbr: 'CICS',
+    "name": "Canadian Intergovernmental Conference Secretariat",
+    "url": "https://www.scics.ca/en/",
+    "abbr": "CICS"
   },
   {
     name: 'Canadian International Trade Tribunal',
@@ -269,29 +280,29 @@ export const departments_EN = [
     abbr: 'CMHR',
   },
   {
-    name: 'Canadian Museum of History',
-    url: 'http://www.historymuseum.ca/',
-    abbr: 'CMH',
+    "name": "Canadian Museum of History",
+    "url": "https://www.historymuseum.ca/",
+    "abbr": "CMH"
   },
   {
-    name: 'Canadian Museum of Immigration at Pier 21',
-    url: 'http://www.pier21.ca/home',
-    abbr: 'CMIP',
+    "name": "Canadian Museum of Immigration at Pier 21",
+    "url": "https://www.pier21.ca/home",
+    "abbr": "CMIP"
   },
   {
-    name: 'Canadian Museum of Nature',
-    url: 'http://nature.ca/en/home',
-    abbr: 'CMN',
+    "name": "Canadian Museum of Nature",
+    "url": "https://nature.ca/en/home",
+    "abbr": "CMN"
   },
   {
-    name: 'Canadian Northern Economic Development Agency',
-    url: 'http://www.cannor.gc.ca/eng/1351104567432/1351104589057',
-    abbr: 'CanNor',
+    "name": "Canadian Northern Economic Development Agency",
+    "url": "https://www.cannor.gc.ca/eng/1351104567432/1351104589057",
+    "abbr": "CanNor"
   },
   {
-    name: 'Canadian Nuclear Safety Commission',
-    url: 'http://www.nuclearsafety.gc.ca/eng/',
-    abbr: 'CNSC',
+    "name": "Canadian Nuclear Safety Commission",
+    "url": "https://www.nuclearsafety.gc.ca/eng/",
+    "abbr": "CNSC"
   },
   {
     name: 'Canadian Pari-Mutuel Agency',
@@ -304,14 +315,14 @@ export const departments_EN = [
     abbr: 'CPC',
   },
   {
-    name: 'Canadian Race Relations Foundation',
-    url: 'http://www.crrf-fcrr.ca/en/',
-    abbr: 'CRRF',
+    "name": "Canadian Race Relations Foundation",
+    "url": "https://www.crrf-fcrr.ca/en/",
+    "abbr": "CRRF"
   },
   {
-    name: 'Canadian Radio-Television and Telecommunications Commission',
-    url: 'http://www.crtc.gc.ca/eng/home-accueil.htm',
-    abbr: 'CRTC',
+    "name": "Canadian Radio-Television and Telecommunications Commission",
+    "url": "https://www.crtc.gc.ca/eng/home-accueil.htm",
+    "abbr": "CRTC"
   },
   {
     name: 'Canadian Security Intelligence Service',
@@ -334,9 +345,9 @@ export const departments_EN = [
     abbr: 'DC',
   },
   {
-    name: 'Canadian Trade Commissioner Service',
-    url: 'http://tradecommissioner.gc.ca/index.aspx?lang=eng',
-    abbr: 'TCS',
+    "name": "Canadian Trade Commissioner Service",
+    "url": "https://tradecommissioner.gc.ca/index.aspx?lang=eng",
+    "abbr": "TCS"
   },
   {
     name: 'Canadian Transportation Agency',
@@ -344,14 +355,14 @@ export const departments_EN = [
     abbr: 'CTA',
   },
   {
-    name: 'Canadian War Museum',
-    url: 'http://www.warmuseum.ca/',
-    abbr: null,
+    "name": "Canadian War Museum",
+    "url": "https://www.warmuseum.ca/",
+    "abbr": null
   },
   {
-    name: 'CBC/Radio-Canada',
-    url: 'http://www.cbc.radio-canada.ca/en/',
-    abbr: 'CBC',
+    "name": "CBC/Radio-Canada",
+    "url": "https://www.cbc.radio-canada.ca/en/",
+    "abbr": "CBC"
   },
   {
     name: 'Civilian Review and Complaints Commission for the RCMP',
@@ -359,9 +370,9 @@ export const departments_EN = [
     abbr: 'CRCC',
   },
   {
-    name: 'Commissioner for Federal Judicial Affairs Canada (Office of the)',
-    url: 'http://www.fja.gc.ca/home-accueil/index-eng.html',
-    abbr: 'FJA',
+    "name": "Commissioner for Federal Judicial Affairs Canada (Office of the)",
+    "url": "https://www.fja.gc.ca/home-accueil/index-eng.html",
+    "abbr": "FJA"
   },
   {
     name: 'Commissioner of Lobbying of Canada (Office of the)',
@@ -424,9 +435,9 @@ export const departments_EN = [
     abbr: 'CSC',
   },
   {
-    name: 'Courts Administration Service',
-    url: 'http://www.cas-satj.gc.ca/en/home.shtml',
-    abbr: 'CAS',
+    "name": "Courts Administration Service",
+    "url": "https://www.cas-satj.gc.ca/en/home.shtml",
+    "abbr": "CAS"
   },
   {
     name: 'Court Martial Appeal Court of Canada',
@@ -439,9 +450,9 @@ export const departments_EN = [
     abbr: 'CIRNAC',
   },
   {
-    name: 'Bank of Canada Museum',
-    url: 'http://www.bankofcanadamuseum.ca/',
-    abbr: null,
+    "name": "Bank of Canada Museum",
+    "url": "https://www.bankofcanadamuseum.ca/",
+    "abbr": null
   },
   {
     name: 'Defence Construction Canada',
@@ -469,9 +480,9 @@ export const departments_EN = [
     abbr: 'EPTC',
   },
   {
-    name: 'Elections Canada',
-    url: 'http://www.elections.ca/home.aspx',
-    abbr: 'Elections',
+    "name": "Elections Canada",
+    "url": "https://www.elections.ca/home.aspx",
+    "abbr": "Elections"
   },
   {
     name: 'Employment and Social Development Canada',
@@ -504,9 +515,9 @@ export const departments_EN = [
     abbr: 'FPCC',
   },
   {
-    name: 'Federal Bridge Corporation',
-    url: 'http://www.federalbridge.ca/',
-    abbr: 'FBCL',
+    "name": "Federal Bridge Corporation",
+    "url": "https://www.federalbridge.ca/",
+    "abbr": "FBCL"
   },
   {
     name: 'Federal Court of Appeal',
@@ -549,14 +560,14 @@ export const departments_EN = [
     abbr: 'FINTRAC',
   },
   {
-    name: 'Fisheries and Oceans Canada',
-    url: 'http://www.dfo-mpo.gc.ca/index-eng.htm',
-    abbr: 'DFO',
+    "name": "Fisheries and Oceans Canada",
+    "url": "https://www.dfo-mpo.gc.ca/index-eng.htm",
+    "abbr": "DFO"
   },
   {
-    name: 'Freshwater Fish Marketing Corporation',
-    url: 'http://www.freshwaterfish.com/',
-    abbr: 'FFMC',
+    "name": "Freshwater Fish Marketing Corporation",
+    "url": "https://www.freshwaterfish.com/",
+    "abbr": "FFMC"
   },
   {
     name: 'Global Affairs Canada',
@@ -614,9 +625,9 @@ export const departments_EN = [
     abbr: 'IRPDA',
   },
   {
-    name: 'Indian Oil and Gas Canada',
-    url: 'http://www.pgic-iogc.gc.ca/eng/1100110010002/1100110010005',
-    abbr: null,
+    "name": "Indian Oil and Gas Canada",
+    "url": "https://www.pgic-iogc.gc.ca/eng/1100110010002/1100110010005",
+    "abbr": null
   },
   {
     name: 'Indigenous Services Canada',
@@ -659,9 +670,9 @@ export const departments_EN = [
     abbr: 'JCCBI',
   },
   {
-    name: 'Judicial Compensation and Benefits Commission',
-    url: 'http://quadcom.gc.ca/pg_JcJc_QC_01-eng.php',
-    abbr: null,
+    "name": "Judicial Compensation and Benefits Commission",
+    "url": "https://quadcom.gc.ca/pg_JcJc_QC_01-eng.php",
+    "abbr": null
   },
   {
     name: 'Justice Canada (Department of)',
@@ -674,9 +685,9 @@ export const departments_EN = [
     abbr: null,
   },
   {
-    name: 'Laurentian Pilotage Authority Canada',
-    url: 'http://www.pilotagestlaurent.gc.ca/en/index.html',
-    abbr: 'LPA',
+    "name": "Laurentian Pilotage Authority Canada",
+    "url": "https://www.pilotagestlaurent.gc.ca/en/index.html",
+    "abbr": "LPA"
   },
   {
     name: 'Law Commission of Canada',
@@ -699,9 +710,9 @@ export const departments_EN = [
     abbr: 'MAB',
   },
   {
-    name: 'Marine Atlantic',
-    url: 'http://www.marineatlantic.ca/en/',
-    abbr: 'MarineAtlantic',
+    "name": "Marine Atlantic",
+    "url": "https://www.marineatlantic.ca/en/",
+    "abbr": "MarineAtlantic"
   },
   {
     name: 'Measurement Canada',
@@ -719,9 +730,9 @@ export const departments_EN = [
     abbr: 'MPCC',
   },
   {
-    name: 'National Arts Centre',
-    url: 'http://nac-cna.ca/en/',
-    abbr: 'NAC',
+    "name": "National Arts Centre",
+    "url": "https://nac-cna.ca/en/",
+    "abbr": "NAC"
   },
   {
     name: 'National Battlefields Commission',
@@ -729,9 +740,9 @@ export const departments_EN = [
     abbr: 'NBC',
   },
   {
-    name: 'National Capital Commission',
-    url: 'http://www.ncc-ccn.gc.ca/',
-    abbr: 'NCC',
+    "name": "National Capital Commission",
+    "url": "https://www.ncc-ccn.gc.ca/",
+    "abbr": "NCC"
   },
   {
     name: 'National Defence',
@@ -754,9 +765,9 @@ export const departments_EN = [
     abbr: 'NFB',
   },
   {
-    name: 'National Gallery of Canada',
-    url: 'http://www.gallery.ca/',
-    abbr: 'NGC',
+    "name": "National Gallery of Canada",
+    "url": "https://www.gallery.ca/",
+    "abbr": "NGC"
   },
   {
     name: 'Canada Science and Technology Museum',
@@ -819,9 +830,9 @@ export const departments_EN = [
     abbr: 'PBC',
   },
   {
-    name: 'Parliament of Canada',
-    url: 'http://www.parl.ca/?Language=E',
-    abbr: null,
+    "name": "Parliament of Canada",
+    "url": "https://www.parl.ca/?Language=E",
+    "abbr": null
   },
   {
     name: 'Passport Program',
@@ -844,9 +855,9 @@ export const departments_EN = [
     abbr: 'PrairiesCan',
   },
   {
-    name: 'Prime Minister of Canada',
-    url: 'http://pm.gc.ca/eng',
-    abbr: null,
+    "name": "Prime Minister of Canada",
+    "url": "https://pm.gc.ca/eng",
+    "abbr": null
   },
   {
     name: 'Privacy Commissioner of Canada (Office of the)',
@@ -869,9 +880,9 @@ export const departments_EN = [
     abbr: 'PHAC',
   },
   {
-    name: 'Public Prosecution Service of Canada',
-    url: 'http://www.ppsc-sppc.gc.ca/eng/index.html',
-    abbr: 'PPSC',
+    "name": "Public Prosecution Service of Canada",
+    "url": "https://www.ppsc-sppc.gc.ca/eng/index.html",
+    "abbr": "PPSC"
   },
   {
     name: 'Public Safety Canada',
@@ -924,9 +935,9 @@ export const departments_EN = [
     abbr: 'Mint',
   },
   {
-    name: 'Royal Canadian Mounted Police',
-    url: 'http://www.rcmp-grc.gc.ca/en/home',
-    abbr: 'RCMP',
+    "name": "Royal Canadian Mounted Police",
+    "url": "https://www.rcmp-grc.gc.ca/en/home",
+    "abbr": "RCMP"
   },
   {
     name: 'Royal Canadian Mounted Police External Review Committee',
@@ -944,9 +955,9 @@ export const departments_EN = [
     abbr: 'RMCC',
   },
   {
-    name: 'Secretariat of the National Security and Intelligence Committee of Parliamentarians',
-    url: 'https://www.canada.ca/en/secretariat-national-security-intelligence-committee-parliamentarians.html',
-    abbr: 'NSICOP',
+    "name": "Secretariat of the National Security and Intelligence Committee of Parliamentarians",
+    "url": "https://www.canada.ca/en/secretariat-national-security-intelligence-committee-parliamentarians.html",
+    "abbr": "NSICOP"
   },
   {
     name: 'Service Canada',
@@ -954,9 +965,9 @@ export const departments_EN = [
     abbr: 'ServCan',
   },
   {
-    name: 'Shared Services Canada',
-    url: 'https://www.canada.ca/en/shared-services.html',
-    abbr: 'SSC',
+    "name": "Shared Services Canada",
+    "url": "https://www.canada.ca/en/shared-services.html",
+    "abbr": "SSC"
   },
   {
     name: 'Social Sciences and Humanities Research Council of Canada',
@@ -994,9 +1005,9 @@ export const departments_EN = [
     abbr: 'OSFI',
   },
   {
-    name: 'Supreme Court of Canada',
-    url: 'http://www.scc-csc.ca/home-accueil/index-eng.aspx',
-    abbr: 'SCC',
+    "name": "Supreme Court of Canada",
+    "url": "https://www.scc-csc.ca/home-accueil/index-eng.aspx",
+    "abbr": "SCC"
   },
   {
     name: 'Tax Court of Canada',
@@ -1009,9 +1020,9 @@ export const departments_EN = [
     abbr: 'OTO',
   },
   {
-    name: 'Telefilm Canada',
-    url: 'http://www.telefilm.ca/en/?q=en',
-    abbr: null,
+    "name": "Telefilm Canada",
+    "url": "https://www.telefilm.ca/en/?q=en",
+    "abbr": null
   },
   {
     name: 'Translation Bureau',
@@ -1054,9 +1065,9 @@ export const departments_EN = [
     abbr: 'VRAB',
   },
   {
-    name: 'VIA Rail Canada',
-    url: 'http://www.viarail.ca/en',
-    abbr: 'VIA Rail',
+    "name": "VIA Rail Canada",
+    "url": "https://www.viarail.ca/en",
+    "abbr": "VIA Rail"
   },
   {
     name: 'Windsor-Detroit Bridge Authority',
