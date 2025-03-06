@@ -43,13 +43,11 @@ app.get('*', (req, res, next) => {
 });
 
 const mongooseOptions = {
+  tls: true,
+  tlsCAFile: '/app/global-bundle.pem',
+  retryWrites: false,
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  bufferCommands: false,
-  connectTimeoutMS: 30000,
-  ssl: true,
-  sslValidate: true,
-  sslCA: '/app/global-bundle.pem'
+  useUnifiedTopology: true
 };
 
 mongoose.connect(process.env.DOCDB_URI, mongooseOptions)
