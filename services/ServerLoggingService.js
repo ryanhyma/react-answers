@@ -1,4 +1,4 @@
-import { Logs } from '../models/logs.js';
+import { Logs } from '../../models/logs.js';
 import dbConnect from '../api/db-connect.js';
 
 class LogQueue {

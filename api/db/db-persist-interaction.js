@@ -1,11 +1,11 @@
 import dbConnect from './db-connect.js';
-import { Chat } from '../models/chat.js';
-import { Interaction } from '../models/interaction.js';
-import { Context } from '../models/context.js';
-import { Question } from '../models/question.js';
-import { Citation } from '../models/citation.js';
-import { Answer } from '../models/answer.js';
-import { Tool } from '../models/tool.js';
+import { Chat } from '../../models/chat.js';
+import { Interaction } from '../../models/interaction.js';
+import { Context } from '../../models/context.js';
+import { Question } from '../../models/question.js';
+import { Citation } from '../../models/citation.js';
+import { Answer } from '../../models/answer.js';
+import { Tool } from '../../models/tool.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

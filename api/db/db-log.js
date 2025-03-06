@@ -1,4 +1,4 @@
-import ServerLoggingService from '../services/ServerLoggingService.js';
+import ServerLoggingService from '../../services/ServerLoggingService.js';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {

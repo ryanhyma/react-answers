@@ -5,6 +5,8 @@ import { ChatCohere } from '@langchain/cohere';
 import OpenAI from 'openai';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
+import googleContextSearchTool from './tools/googleContextSearch.js';
+import canadaCaContextSearchTool from './tools/canadaCaContextSearch.js';
 import { ToolTrackingHandler } from './ToolTrackingHandler.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
