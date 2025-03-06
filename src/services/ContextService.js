@@ -4,8 +4,20 @@ import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 import LoggingService from './ClientLoggingService.js';
 
 const ContextService = {
-  prepareMessage: async (message, lang = 'en', department = '', referringUrl = '', searchResults = null, searchProvider = null, conversationHistory = [], chatId = 'system') => {
-    await LoggingService.info(chatId, `Context Service: Processing message in ${lang.toUpperCase()}`);
+  prepareMessage: async (
+    message,
+    lang = 'en',
+    department = '',
+    referringUrl = '',
+    searchResults = null,
+    searchProvider = null,
+    conversationHistory = [],
+    chatId = 'system'
+  ) => {
+    await LoggingService.info(
+      chatId,
+      `Context Service: Processing message in ${lang.toUpperCase()}`
+    );
 
     const SYSTEM_PROMPT = await loadContextSystemPrompt(lang, department);
     const messageWithReferrer = `${message}${referringUrl ? `\n<referring-url>${referringUrl}</referring-url>` : ''}`;
@@ -17,11 +29,21 @@ const ContextService = {
       searchProvider,
       conversationHistory,
       referringUrl,
-      chatId
+      chatId,
     };
   },
 
-  sendMessage: async (aiProvider, message, lang = 'en', department = '', referringUrl, searchResults, searchProvider, conversationHistory = [], chatId = 'system') => {
+  sendMessage: async (
+    aiProvider,
+    message,
+    lang = 'en',
+    department = '',
+    referringUrl,
+    searchResults,
+    searchProvider,
+    conversationHistory = [],
+    chatId = 'system'
+  ) => {
     try {
       const messagePayload = await ContextService.prepareMessage(
         message,
@@ -34,7 +56,7 @@ const ContextService = {
         chatId
       );
 
-      const response = await fetch(getProviderApiUrl(aiProvider, "context"), {
+      const response = await fetch(getProviderApiUrl(aiProvider, 'context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +71,6 @@ const ContextService = {
       }
 
       return await response.json();
-
     } catch (error) {
       await LoggingService.error(chatId, 'Error calling Context API:', error);
       throw error;
@@ -58,16 +79,16 @@ const ContextService = {
 
   contextSearch: async (message, searchProvider, lang = 'en', chatId = 'system') => {
     try {
-      const searchResponse = await fetch(getApiUrl("search-context"), {
+      const searchResponse = await fetch(getApiUrl('search-context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           query: message,
-          lang : lang,
+          lang: lang,
           searchService: searchProvider,
-          chatId
+          chatId,
         }),
       });
 
@@ -82,15 +103,46 @@ const ContextService = {
       await LoggingService.error(chatId, 'Error searching context:', error);
       throw error;
     }
-
   },
-  deriveContext: async (aiProvider, question, lang = 'en', department = '', referringUrl, searchProvider, conversationHistory = [], chatId = 'system') => {
+  deriveContext: async (
+    aiProvider,
+    question,
+    lang = 'en',
+    department = '',
+    referringUrl,
+    searchProvider,
+    conversationHistory = [],
+    chatId = 'system'
+  ) => {
     try {
-      await LoggingService.info(chatId, `Context Service: Analyzing question in ${lang.toUpperCase()}`);
+      await LoggingService.info(
+        chatId,
+        `Context Service: Analyzing question in ${lang.toUpperCase()}`
+      );
       // TODO add referring URL to the context of the search?
-      const searchResults = await ContextService.contextSearch(question, searchProvider, lang, chatId);
-      await LoggingService.info(chatId, 'Executed Search:', { query: question, provider: searchProvider });
-      return ContextService.parseContext(await ContextService.sendMessage(aiProvider, question, lang, department, referringUrl, searchResults.results, searchProvider, conversationHistory, chatId));
+      const searchResults = await ContextService.contextSearch(
+        question,
+        searchProvider,
+        lang,
+        chatId
+      );
+      await LoggingService.info(chatId, 'Executed Search:', {
+        query: question,
+        provider: searchProvider,
+      });
+      return ContextService.parseContext(
+        await ContextService.sendMessage(
+          aiProvider,
+          question,
+          lang,
+          department,
+          referringUrl,
+          searchResults.results,
+          searchProvider,
+          conversationHistory,
+          chatId
+        )
+      );
     } catch (error) {
       await LoggingService.error(chatId, 'Error deriving context:', error);
       throw error;
@@ -101,7 +153,6 @@ const ContextService = {
     const topicUrlMatch = context.message.match(/<topicUrl>([\s\S]*?)<\/topicUrl>/);
     const departmentMatch = context.message.match(/<department>([\s\S]*?)<\/department>/);
     const departmentUrlMatch = context.message.match(/<departmentUrl>([\s\S]*?)<\/departmentUrl>/);
-
 
     return {
       topic: topicMatch ? topicMatch[1] : null,
@@ -116,17 +167,37 @@ const ContextService = {
     };
   },
 
-  deriveContextBatch: async (entries, lang = 'en', aiService = 'anthropic', batchName, searchProvider = 'google', chatId = 'batch') => {
+  deriveContextBatch: async (
+    entries,
+    lang = 'en',
+    aiService = 'anthropic',
+    batchName,
+    searchProvider = 'google',
+    chatId = 'batch'
+  ) => {
     try {
-      await LoggingService.info(chatId, `Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`);
+      await LoggingService.info(
+        chatId,
+        `Context Service: Processing batch of ${entries.length} entries in ${lang.toUpperCase()}`
+      );
 
       const searchResults = [];
       for (let i = 0; i < entries.length; i++) {
         if (searchProvider === 'canadaca') {
-          await LoggingService.info(chatId, 'Pausing for 10 seconds to avoid rate limits for canadaca...');
-          await new Promise(resolve => setTimeout(resolve, 10000));
+          await LoggingService.info(
+            chatId,
+            'Pausing for 10 seconds to avoid rate limits for canadaca...'
+          );
+          await new Promise((resolve) => setTimeout(resolve, 10000));
         }
-        searchResults.push(await ContextService.contextSearch(entries[i]['REDACTEDQUESTION'], searchProvider, lang, chatId));
+        searchResults.push(
+          await ContextService.contextSearch(
+            entries[i]['REDACTEDQUESTION'],
+            searchProvider,
+            lang,
+            chatId
+          )
+        );
       }
 
       const requests = await Promise.all(
@@ -134,7 +205,7 @@ const ContextService = {
           return ContextService.prepareMessage(
             entry['REDACTEDQUESTION'],
             lang,
-            '',  // department not provided in batch
+            '', // department not provided in batch
             entry['REFERRINGURL'] || '',
             searchResults[index],
             searchProvider,
@@ -158,7 +229,7 @@ const ContextService = {
   sendBatch: async (requests, aiService, batchName, lang) => {
     try {
       await LoggingService.info('batch', `Context Service: Sending batch to ${aiService}`);
-      const response = await fetch(getProviderApiUrl(aiService, "batch-context"), {
+      const response = await fetch(getProviderApiUrl(aiService, 'batch-context'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

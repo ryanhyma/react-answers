@@ -56,27 +56,30 @@ const departmentModules = {
 };
 
 async function loadSystemPrompt(language = 'en', context) {
-  await LoggingService.info('system', `Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`);
+  await LoggingService.info(
+    'system',
+    `Loading system prompt for language: ${language.toUpperCase()}, context: ${context}`
+  );
 
   try {
     const { department } = context;
 
     // Load department content or use defaults
-    const content = department && departmentModules[department]
-      ? await departmentModules[department].getContent()
-        .catch(error => {
-          LoggingService.warn('system', `Failed to load content for ${department}:`, error);
-          return { updates: '', scenarios: '' };
-        })
-      : { updates: '', scenarios: '' };
-    
+    const content =
+      department && departmentModules[department]
+        ? await departmentModules[department].getContent().catch((error) => {
+            LoggingService.warn('system', `Failed to load content for ${department}:`, error);
+            return { updates: '', scenarios: '' };
+          })
+        : { updates: '', scenarios: '' };
+
     const citationInstructions = CITATION_INSTRUCTIONS;
 
     // Inform LLM about the current page language
-    const languageContext = language === 'fr' 
-      ? "Language context: French.  The question was asked on the official French AI Answers page."
-      : "Language context: English.  The question was asked on the official English AI Answers page.";
-
+    const languageContext =
+      language === 'fr'
+        ? 'Language context: French.  The question was asked on the official French AI Answers page.'
+        : 'Language context: English.  The question was asked on the official English AI Answers page.';
 
     // Add current date information
     const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
@@ -120,7 +123,10 @@ async function loadSystemPrompt(language = 'en', context) {
     Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
-    await LoggingService.info('system', `System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    await LoggingService.info(
+      'system',
+      `System prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`
+    );
     return fullPrompt;
   } catch (error) {
     await LoggingService.error('system', 'SYSTEM PROMPT ERROR:', error);

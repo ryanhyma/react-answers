@@ -70,7 +70,7 @@ class RedactionService {
     try {
       const [responseEn, responseFr] = await Promise.all([
         fetch(profanityListEn),
-        fetch(profanityListFr),
+        fetch(profanityListFr)
       ]);
 
       const [textEn, textFr] = await Promise.all([
@@ -134,7 +134,7 @@ class RedactionService {
         .replace(/[\u0300-\u036f]/g, '')
         .trim()
       )
-      .filter((word) => word.length > 0);
+      .filter(word => word.length > 0);
   }
 
   /**
@@ -142,7 +142,7 @@ class RedactionService {
    */
   async initializeProfanityPattern() {
     const words = await this.loadProfanityLists();
-    const pattern = words.map((word) => `\\b${word}\\b`).join('|');
+    const pattern = words.map(word => `\\b${word}\\b`).join('|');
     this.profanityPattern = new RegExp(`(${pattern})`, 'gi');
   }
 
@@ -163,11 +163,11 @@ class RedactionService {
       ...manipulationEn.suspiciousWords,
       ...manipulationEn.manipulationPhrases,
       ...manipulationFr.suspiciousWords,
-      ...manipulationFr.manipulationPhrases,
+      ...manipulationFr.manipulationPhrases
     ];
 
     const pattern = manipulationWords
-      .map((word) => {
+      .map(word => {
         const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         return `\\b${escaped}\\b`;
       })
@@ -281,21 +281,20 @@ class RedactionService {
   get privatePatterns() {
     return [
       {
-        pattern:
-          /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
-        description: 'Phone numbers (including international formats and extensions)',
+        pattern: /((\+\d{1,2}\s?)?1?[-.]?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}|(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?)/g,
+        description: 'Phone numbers (including international formats and extensions)'
       },
       {
         pattern: /[A-Za-z]\s*\d\s*[A-Za-z]\s*[ -]?\s*\d\s*[A-Za-z]\s*\d/g,
-        description: 'Canadian postal codes (with flexible spacing)',
+        description: 'Canadian postal codes (with flexible spacing)'
       },
       {
         pattern: /([a-zA-Z0-9_\-.]+)\s*@([\sa-zA-Z0-9_\-.]+)[.,]([a-zA-Z]{1,5})/g,
-        description: 'Email addresses (with flexible spacing and punctuation)',
+        description: 'Email addresses (with flexible spacing and punctuation)'
       },
       {
         pattern: /\b([A-Za-z]{2}\s*\d{6})\b/g,
-        description: 'Passport Numbers',
+        description: 'Passport Numbers'
       },
       {
         pattern: /\b(?<!\$)(?=[A-Z0-9-]*[0-9])(?=[A-Z0-9-]*[A-Z])[A-Z0-9-]{5,}\b/gi,
@@ -303,32 +302,31 @@ class RedactionService {
       },
       {
         pattern: /(?<=\b(name\s+is|nom\s+est|name:|nom:)\s+)([A-Za-z]+(?:\s+[A-Za-z]+)?)\b/gi,
-        description: 'Name patterns in EN/FR',
+        description: 'Name patterns in EN/FR'
       },
       {
-        pattern:
-          /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
-        description: 'Street addresses',
+        pattern: /\d+\s+([A-Za-z]+\s+){1,3}(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Parkway|Pkwy|Square|Sq|Terrace|Ter|Place|Pl|circle|cir|Loop)\b/gi,
+        description: 'Street addresses'
       },
       {
         pattern: /\b\d{5}(?:-\d{4})?\b/g,
-        description: 'US ZIP codes',
+        description: 'US ZIP codes'
       },
       {
         pattern: /\b(apt|bldg|dept|fl|hngr|lot|pier|rm|ste|slip|trlr|unit|#)\.? *\d+[a-z]?\b/gi,
-        description: 'Apartment addresses',
+        description: 'Apartment addresses'
       },
       {
         pattern: /P\.? ?O\.? *Box +\d+/gi,
-        description: 'PO Box',
+        description: 'PO Box'
       },
       {
         pattern: /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi,
-        description: 'IP addresses',
+        description: 'IP addresses'
       },
       {
         pattern: /([^\s:/?#]+):\/\/([^/?#\s]*)([^?#\s]*)(\?([^#\s]*))?(#([^\s]*))?/g,
-        description: 'URLs',
+        description: 'URLs'
       },
       {
         pattern: /(?<!\$)(?!\d{4}\b)\b\d{5,}\b/g,
@@ -375,16 +373,16 @@ class RedactionService {
       ...this.privatePatterns.map(pattern => ({ pattern, type: 'private' })),
       {
         pattern: this.profanityPattern,
-        type: 'profanity',
+        type: 'profanity'
       },
       {
         pattern: this.threatPattern,
-        type: 'threat',
+        type: 'threat'
       },
       {
         pattern: this.manipulationPattern,
-        type: 'manipulation',
-      },
+        type: 'manipulation'
+      }
     ];
   }
 
@@ -446,4 +444,14 @@ class RedactionService {
 
 // Create and export a singleton instance
 const redactionService = new RedactionService();
+
+// Add a method to ensure the service is initialized before use
+redactionService.ensureInitialized = async function() {
+  if (!this.isInitialized) {
+    console.log('RedactionService not initialized, initializing now...');
+    await this.initialize();
+  }
+  return this.isInitialized;
+};
+
 export default redactionService;

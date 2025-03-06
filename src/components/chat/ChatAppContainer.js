@@ -97,7 +97,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
 
   const clearInput = useCallback(() => {
     setInputText('');
-    setTextareaKey((prevKey) => prevKey + 1);
+    setTextareaKey(prevKey => prevKey + 1);
   }, []);
 
 
@@ -156,6 +156,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
             error: true
           }
         ]);
+        setIsLoading(false);
         return;
       }
       const userMessageId = messageIdCounter.current++;
@@ -220,8 +221,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
                   (error.redactedText.includes('XXX') ? t('homepage.chat.messages.privateContent') : t('homepage.chat.messages.blockedContent'))
               }} />,
               sender: 'system',
-              error: true,
-            },
+              error: true
+            }
           ]);
           clearInput();
           setIsLoading(false);
@@ -348,9 +349,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
       t={t}
       lang={lang}
       privacyMessage={t('homepage.chat.messages.privacy')}
-      getLabelForInput={() =>
-        turnCount >= 1 ? t('homepage.chat.input.followUp') : t('homepage.chat.input.initial')
-      }
+      getLabelForInput={() => turnCount >= 1 ? t('homepage.chat.input.followUp') : t('homepage.chat.input.initial')}
       extractSentences={extractSentences}
       chatId={chatId}
     />

@@ -5,7 +5,6 @@ import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
 import { ToolTrackingHandler } from './ToolTrackingHandler.js';
-import { contextSearchTool } from './tools/contextSearch.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
@@ -31,7 +30,9 @@ const createTools = (chatId = 'system') => {
   return {
     tools: [
       wrapToolWithCallbacks(downloadWebPageTool),
-      wrapToolWithCallbacks(checkUrlStatusTool)
+      wrapToolWithCallbacks(checkUrlStatusTool),
+      wrapToolWithCallbacks(googleContextSearchTool),
+      wrapToolWithCallbacks(canadaCaContextSearchTool)
     ],
     callbacks
   };

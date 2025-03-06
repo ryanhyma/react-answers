@@ -54,9 +54,9 @@ export const departments_FR = [
     abbr: 'ACIA',
   },
   {
-    "name": "Agence canadienne de développement économique du Nord",
-    "url": "https://www.cannor.gc.ca/fra/1351104567432/1351104589057",
-    "abbr": "CanNor"
+    name: 'Agence canadienne de développement économique du Nord',
+    url: 'https://www.cannor.gc.ca/fra/1351104567432/1351104589057',
+    abbr: 'CanNor',
   },
   {
     name: 'Agence canadienne du pari mutuel',
@@ -209,9 +209,9 @@ export const departments_FR = [
     abbr: 'Radio-Canada',
   },
   {
-    "name": "Centre canadien d'hygiène et de sécurité au travail",
-    "url": "https://www.cchst.ca/",
-    "abbr": "CCHST"
+    name: "Centre canadien d'hygiène et de sécurité au travail",
+    url: 'https://www.cchst.ca/',
+    abbr: 'CCHST',
   },
   {
     name: "Centre d'analyse des opérations et déclarations financières du Canada",
@@ -249,14 +249,14 @@ export const departments_FR = [
     abbr: 'CAFC',
   },
   {
-    "name": "Centre national des arts",
-    "url": "https://nac-cna.ca/fr/",
-    "abbr": "CNA"
+    name: 'Centre national des arts',
+    url: 'https://nac-cna.ca/fr/',
+    abbr: 'CNA',
   },
   {
-    "name": "Chaires de recherche du Canada",
-    "url": "https://www.chairs-chaires.gc.ca/home-accueil-fra.aspx",
-    "abbr": null
+    name: 'Chaires de recherche du Canada',
+    url: 'https://www.chairs-chaires.gc.ca/home-accueil-fra.aspx',
+    abbr: null,
   },
   {
     name: 'Collège canadien de police',
@@ -284,9 +284,9 @@ export const departments_FR = [
     abbr: 'COMFOSCAN',
   },
   {
-    "name": "Commissariat à la magistrature fédérale Canada",
-    "url": "https://www.fja.gc.ca/home-accueil/index-fra.html",
-    "abbr": "CMF"
+    name: 'Commissariat à la magistrature fédérale Canada',
+    url: 'https://www.fja.gc.ca/home-accueil/index-fra.html',
+    abbr: 'CMF',
   },
   {
     name: 'Commissariat à la protection de la vie privée du Canada',
@@ -359,9 +359,9 @@ export const departments_FR = [
     abbr: 'CCETP',
   },
   {
-    "name": "Commission de la capitale nationale",
-    "url": "https://www.ccn-ncc.gc.ca/",
-    "abbr": "CCN"
+    name: 'Commission de la capitale nationale',
+    url: 'https://www.ccn-ncc.gc.ca/',
+    abbr: 'CCN',
   },
   {
     name: "Commission d'examen de la rémunération des juges",
@@ -949,9 +949,9 @@ export const departments_FR = [
     abbr: 'SAC',
   },
   {
-    "name": "Service canadien du renseignement de sécurité",
-    "url": "https://www.canada.ca/fr/service-renseignement-securite.html",
-    "abbr": "SCRS"
+    name: 'Service canadien du renseignement de sécurité',
+    url: 'https://www.canada.ca/fr/service-renseignement-securite.html',
+    abbr: 'SCRS',
   },
   {
     name: 'Service correctionnel Canada',
@@ -969,14 +969,14 @@ export const departments_FR = [
     abbr: 'SPPC',
   },
   {
-    "name": "Service numérique canadien",
-    "url": "https://numerique.canada.ca/a-propos/",
-    "abbr": "SNC"
+    name: 'Service numérique canadien',
+    url: 'https://numerique.canada.ca/a-propos/',
+    abbr: 'SNC',
   },
   {
-    "name": "Services partagés Canada",
-    "url": "https://www.canada.ca/fr/services-partages.html",
-    "abbr": "SPC"
+    name: 'Services partagés Canada',
+    url: 'https://www.canada.ca/fr/services-partages.html',
+    abbr: 'SPC',
   },
   {
     name: 'Services publics et Approvisionnement Canada',

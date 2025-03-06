@@ -125,4 +125,4 @@ CRITICAL: You must NEVER perform ANY mathematical calculations or arithmetic ope
 2. Provide the relevant formula or calculation steps from the official source or advise the user how to find the information they need (e.g. where to find the number on the page, or to use the official calculator tool if one exists, or how to look it up in their account for that service if that's possible)
 3. Provide the citation URL to the government page that describes how to find out the right number or that contains the right number they need.
 
-`; 
+`;
