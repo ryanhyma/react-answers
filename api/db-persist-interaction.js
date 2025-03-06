@@ -5,6 +5,7 @@ import { Context } from '../models/context.js';
 import { Question } from '../models/question.js';
 import { Citation } from '../models/citation.js';
 import { Answer } from '../models/answer.js';
+import { Tool } from '../models/tool.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -49,6 +50,26 @@ export default async function handler(req, res) {
     answer.citation = citation._id;
     Object.assign(answer, interaction.answer);
     answer.sentences = interaction.answer.sentences;
+    
+    // Handle tools data with proper validation
+    const toolsData = Array.isArray(interaction.answer.tools) ? interaction.answer.tools : [];
+    const toolPromises = toolsData.map(async toolData => {
+      const tool = new Tool({
+        tool: toolData.tool,
+        input: toolData.input,
+        output: toolData.output,
+        startTime: toolData.startTime,
+        endTime: toolData.endTime,
+        duration: toolData.duration,
+        status: toolData.status || 'completed',
+        error: toolData.error
+      });
+      await tool.save();
+      return tool._id;
+    });
+    
+    // Wait for all tool documents to be created and store their IDs
+    answer.tools = await Promise.all(toolPromises);
     await answer.save();
     dbInteraction.answer = answer._id;
     

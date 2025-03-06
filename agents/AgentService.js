@@ -4,38 +4,36 @@ import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
+import { ToolTrackingHandler } from './ToolTrackingHandler.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const createToolsWithContext = (chatId = 'system') => {
-  return [
-    {
-      ...downloadWebPageTool,
-      invoke: async (params) => {
-        return downloadWebPageTool.invoke({
-          ...params,
-          args: {
-            ...params.args,
-            chatId
-          }
-        });
-      }
-    },
-    {
-      ...checkUrlStatusTool,
-      invoke: async (params) => {
-        return checkUrlStatusTool.invoke({
-          ...params,
-          args: {
-            ...params.args,
-            chatId
-          }
-        });
-      }
+const createTools = (chatId = 'system') => {
+  const callbacks = [new ToolTrackingHandler(chatId)];
+  
+  // Wrap tools with callbacks to ensure consistent tracking
+  const wrapToolWithCallbacks = (tool) => ({
+    ...tool,
+    invoke: async (params) => {
+      return tool.invoke({
+        ...params,
+        args: {
+          ...params.args,
+          chatId
+        }
+      }, { callbacks });
     }
-  ];
+  });
+
+  return {
+    tools: [
+      wrapToolWithCallbacks(downloadWebPageTool),
+      wrapToolWithCallbacks(checkUrlStatusTool)
+    ],
+    callbacks
+  };
 };
 
 const createOpenAIAgent = async (chatId = 'system') => {
@@ -47,10 +45,10 @@ const createOpenAIAgent = async (chatId = 'system') => {
     maxTokens: modelConfig.maxTokens,
     timeoutMs: modelConfig.timeoutMs,
   });
-  const agent = await createReactAgent({
-    llm: openai,
-    tools: createToolsWithContext(chatId),
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: openai, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
@@ -62,10 +60,10 @@ const createCohereAgent = async (chatId = 'system') => {
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
   });
-  const agent = await createReactAgent({
-    llm: cohere,
-    tools: createToolsWithContext(chatId),
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: cohere, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
@@ -78,10 +76,10 @@ const createClaudeAgent = async (chatId = 'system') => {
     maxTokens: modelConfig.maxTokens,
     beta: modelConfig.beta,
   });
-  const agent = await createReactAgent({
-    llm: claude,
-    tools: createToolsWithContext(chatId),
-  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: claude, tools });
+  agent.callbacks = callbacks;
   return agent;
 };
 
@@ -119,10 +117,11 @@ const createContextAgent = async (agentType, chatId = 'system') => {
     default:
       throw new Error(`Unknown agent type: ${agentType}`);
   };
-  const agent = await createReactAgent({
-    llm: llm,
-    tools: createToolsWithContext(chatId),
-  });
+
+  // Context agent doesn't need tools, just callbacks for tracking
+  const callbacks = [new ToolTrackingHandler(chatId)];
+  const agent = await createReactAgent({ llm, tools: [] });
+  agent.callbacks = callbacks;
   return agent;
 }
 
