@@ -13,6 +13,14 @@ variable "azure_openai_api_version_arn" {
   type        = string
 }
 
+variable "canada_ca_search_uri_arn" {
+  description = "The arn of the canada search uri parameter"
+  type        = string
+}
+variable "canada_ca_search_api_key_arn" {
+  description = "The arn of the canada search api parameter"
+  type        = string
+}
 variable "docdb_username_arn" {
   description = "The arn of the document db username parameter"
   type        = string

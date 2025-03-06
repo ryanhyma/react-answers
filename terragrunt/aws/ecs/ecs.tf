@@ -5,6 +5,14 @@ locals {
       "valueFrom" = var.docdb_uri_arn
     },
     {
+      "name"      = "CANADA_CA_SEARCH_URI"
+      "valueFrom" = var.canada_ca_search_uri_arn
+    },
+    {
+      "name"      = "CANADA_CA_SEARCH_API_KEY"
+      "valueFrom" = var.canada_ca_search_api_key_arn
+    },
+    {
       "name"      = "AZURE_OPENAI_API_KEY"
       "valueFrom" = var.azure_openai_api_key_arn
     },

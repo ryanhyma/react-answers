@@ -90,3 +90,13 @@ variable "azure_openai_api_version_arn" {
   description = "ARN of the Azure OpenAI API version parameter"
   type        = string
 }
+
+variable "canada_ca_search_uri_arn" {
+  description = "ARN of the Canada.ca search URI parameter"
+  type        = string
+}
+
+variable "canada_ca_search_api_key_arn" {
+  description = "ARN of the Canada.ca search API key parameter"
+  type        = string
+}
