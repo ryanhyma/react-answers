@@ -1,6 +1,6 @@
 // config/ai-models.js
 const AI_MODELS = {
-  openai: {
+  azure: {
     default: 'openai-gpt4o-mini',
     models: {
       'openai-gpt4o-mini': {
@@ -9,6 +9,16 @@ const AI_MODELS = {
         timeoutMs: 60000,
       }
 
+    }
+  },
+  openai: {
+    default: 'gpt-4o-mini',
+    models: {
+      'gpt-4o-mini': {
+        maxTokens: 1024,
+        temperature: 0.0,
+        timeoutMs: 60000,
+      }
     }
   },
   anthropic: {
