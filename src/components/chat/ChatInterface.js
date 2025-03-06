@@ -385,6 +385,18 @@ const ChatInterface = ({
                     />
                     <label htmlFor="openai">{t('homepage.chat.options.aiSelection.openai')}</label>
                   </div>
+                  <div className="ai-toggle_option">
+                    <input
+                      type="radio"
+                      id="azure"
+                      name="ai-selection"
+                      value="azure"
+                      checked={selectedAI === 'azure'}
+                      onChange={handleAIToggle}
+                      className="ai-toggle_radio-input"
+                    />
+                    <label htmlFor="azure">{t('homepage.chat.options.aiSelection.azure')}</label>
+                  </div>
                 </div>
               </fieldset>
             </div>
