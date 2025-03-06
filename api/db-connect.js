@@ -13,13 +13,13 @@ async function dbConnect() {
 
   if (!cached.promise) {
     const opts = {
+      tls: true,
+      tlsCAFile: '/app/global-bundle.pem',
+      retryWrites: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferCommands: false,
-      connectTimeoutMS: 30000, // 30 seconds timeout,
-      ssl: true,
-      sslValidate: true,
-      sslCA: '/app/global-bundle.pem'
+      connectTimeoutMS: 30000 // 30 seconds timeout
     };
 
     cached.promise = mongoose.connect(process.env.DOCDB_URI, opts).then((mongoose) => {
