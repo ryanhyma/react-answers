@@ -1,14 +1,14 @@
 const getApiUrl = (endpoint) => {
   const baseUrl =
     process.env.NODE_ENV === 'production'
-      ? '' // Base URL for production (assuming relative paths)
+      ? process.env.REACT_APP_API_BASE_URL || '' // Use environment variable or fallback to relative paths
       : 'http://localhost:3001';
 
   return `${baseUrl}/api/${endpoint}`;
 };
 
 const getProviderApiUrl = (provider, endpoint) => {
-  // TOOD read from ModelConfig
+  // TODO read from ModelConfig
   if (provider === 'claude') {
     provider = 'anthropic';
   } else if (provider === 'chatgpt') {
@@ -16,7 +16,7 @@ const getProviderApiUrl = (provider, endpoint) => {
   }
   const baseUrl =
     process.env.NODE_ENV === 'production'
-      ? '' // Base URL for production (assuming relative paths)
+      ? process.env.REACT_APP_API_BASE_URL || '' // Use environment variable or fallback to relative paths
       : 'http://localhost:3001';
 
   return `${baseUrl}/api/${provider}-${endpoint}`;

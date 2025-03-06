@@ -44,7 +44,7 @@ const AnswerService = {
         context
       );
 
-      const response = await fetch(getProviderApiUrl(provider, 'message'), {
+      const response = await fetch(getProviderApiUrl('openai', 'message'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
