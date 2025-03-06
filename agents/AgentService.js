@@ -1,5 +1,5 @@
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { AzureChatOpenAI } from '@langchain/openai';
+import { ChatOpenAI, AzureChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatCohere } from '@langchain/cohere';
 import downloadWebPageTool from './tools/downloadWebPage.js';
@@ -38,13 +38,30 @@ const createTools = (chatId = 'system') => {
   };
 };
 
+const createAzureAgent = async (chatId = 'system') => {
+  const modelConfig = getModelConfig('azure');
+  const openai = new AzureChatOpenAI({
+    azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+    azureOpenAIApiDeploymentName: modelConfig.deploymentName,
+    azureOpenAIApiVersion: modelConfig.apiVersion,
+    azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT?.replace('https://', '').replace('.openai.azure.com', ''),
+    modelName: modelConfig.name,
+    temperature: modelConfig.temperature,
+    maxTokens: modelConfig.maxTokens,
+    timeout: modelConfig.timeoutMs,
+  });
+
+  const { tools, callbacks } = createTools(chatId);
+  const agent = await createReactAgent({ llm: openai, tools });
+  agent.callbacks = callbacks;
+  return agent;
+};
+
 const createOpenAIAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('openai');
-  const openai = new AzureChatOpenAI({
-    apiKey: process.env.AZURE_OPENAI_API_KEY,
-    azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
-    azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-    azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
+  const openai = new ChatOpenAI({
+    openAIApiKey: process.env.OPENAI_API_KEY,
+    modelName: modelConfig.name,
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
     timeout: modelConfig.timeoutMs,
@@ -92,15 +109,26 @@ const createContextAgent = async (agentType, chatId = 'system') => {
 
   switch (agentType) {
     case 'openai':
-      const modelConfig = getModelConfig('openai');
+      const openaiConfig = getModelConfig('openai');
+      llm = new ChatOpenAI({
+        openAIApiKey: process.env.OPENAI_API_KEY,
+        modelName: openaiConfig.name,
+        temperature: openaiConfig.temperature,
+        maxTokens: openaiConfig.maxTokens,
+        timeout: openaiConfig.timeoutMs,
+      });
+      break;
+    case 'azure':
+      const azureConfig = getModelConfig('azure');
       llm = new AzureChatOpenAI({
-        apiKey: process.env.AZURE_OPENAI_API_KEY,
-        azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
-        azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-        azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
-        temperature: modelConfig.temperature,
-        maxTokens: modelConfig.maxTokens,
-        timeout: modelConfig.timeoutMs,
+        azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+        azureOpenAIApiDeploymentName: azureConfig.deploymentName,
+        azureOpenAIApiVersion: azureConfig.apiVersion,
+        azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT?.replace('https://', '').replace('.openai.azure.com', ''),
+        modelName: azureConfig.name,
+        temperature: azureConfig.temperature,
+        maxTokens: azureConfig.maxTokens,
+        timeout: azureConfig.timeoutMs,
       });
       break;
     case 'cohere':
@@ -134,16 +162,19 @@ const createContextAgent = async (agentType, chatId = 'system') => {
 
 const createAgents = async (chatId = 'system') => {
   const openAIAgent = await createOpenAIAgent(chatId);
+  const azureAgent = await createAzureAgent(chatId);
   const cohereAgent = null; //await createCohereAgent(chatId);
   const claudeAgent = await createClaudeAgent(chatId);
   const contextAgent = await createContextAgent('openai', chatId);
-  return { openAIAgent, cohereAgent, claudeAgent, contextAgent };
+  return { openAIAgent, azureAgent, cohereAgent, claudeAgent, contextAgent };
 };
 
 const getAgent = (agents, selectedAgent) => {
   switch (selectedAgent) {
     case 'openai':
       return agents.openAIAgent;
+    case 'azure':
+      return agents.azureAgent;
     case 'cohere':
       return agents.cohereAgent;
     case 'claude':
@@ -155,4 +186,4 @@ const getAgent = (agents, selectedAgent) => {
   }
 };
 
-export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createContextAgent };
+export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createAzureAgent, createContextAgent };
