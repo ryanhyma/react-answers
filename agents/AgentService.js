@@ -38,10 +38,11 @@ const createDirectAzureOpenAIClient = () => {
         const modelConfig = getModelConfig('openai');
         const azureConfig = modelConfig.azure;
         return new OpenAI({
-            apiKey: process.env.AZURE_OPENAI_API_KEY,
-            baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${azureConfig.deploymentName}`,
-            defaultQuery: { 'api-version': azureConfig.apiVersion },
-            defaultHeaders: { 'api-key': process.env.AZURE_OPENAI_API_KEY },
+
+          azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+          azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+          apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+          
             maxRetries: 3,
             timeout: modelConfig.timeoutMs,
         });
