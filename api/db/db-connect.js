@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
-import '../models/interaction.js';
-import '../models/question.js';
-import '../models/answer.js';
-import '../models/citation.js';
-import '../models/expertFeedback.js';
-import '../models/context.js';
-import '../models/chat.js';
-import '../models/batch.js';
-import '../models/tool.js';
+import '../../models/interaction.js';
+import '../../models/question.js';
+import '../../models/answer.js';
+import '../../models/citation.js';
+import '../../models/expertFeedback.js';
+import '../../models/context.js';
+import '../../models/chat.js';
+import '../../models/batch.js';
+import '../../models/tool.js';
 
 let cached = global.mongoose;
 
