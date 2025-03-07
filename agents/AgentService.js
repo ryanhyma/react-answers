@@ -39,9 +39,10 @@ const createDirectAzureOpenAIClient = () => {
         const azureConfig = modelConfig.azure;
         return new OpenAI({
 
-          azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
-          azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
-          apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+          apiKey: process.env.AZURE_OPENAI_API_KEY,
+          azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+          azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+          azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
           
             maxRetries: 3,
             timeout: modelConfig.timeoutMs,
@@ -161,10 +162,10 @@ const createContextAgent = async (agentType, chatId = 'system') => {
     case 'azure':
       const azureConfig = getModelConfig('azure');
       llm = new AzureChatOpenAI({
-        azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
-        azureOpenAIApiDeploymentName: azureConfig.deploymentName,
-        azureOpenAIApiVersion: azureConfig.apiVersion,
-        azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT?.replace('https://', '').replace('.openai.azure.com', ''),
+        apiKey: process.env.AZURE_OPENAI_API_KEY,
+        azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+        azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+        azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
         modelName: azureConfig.name,
         temperature: azureConfig.temperature,
         maxTokens: azureConfig.maxTokens,

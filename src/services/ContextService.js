@@ -55,8 +55,8 @@ const ContextService = {
         conversationHistory,
         chatId
       );
-
-      const response = await fetch(getProviderApiUrl(aiProvider, 'context'), {
+      let url = getProviderApiUrl(aiProvider, 'context');
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

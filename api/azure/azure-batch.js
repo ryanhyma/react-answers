@@ -56,4 +56,44 @@ export default async function handler(req, res) {
             referringUrl: req.body.referringUrl,
         });
 
-        // ...existing code...
+        for (const [index, request] of req.body.requests.entries()) {
+            const context = new Context({
+                ...request.context,
+            });
+            await context.save();
+
+            // Create Question document
+            const question = new Question({
+                redactedQuestion: request.message
+            });
+            await question.save();
+
+            // Create Interaction with references
+            let interaction = new Interaction({
+                interactionId: `batch-${index}`,
+                question: question._id,
+                context: context._id
+            });
+            await interaction.save();
+
+            // Add interaction reference to batch
+            savedBatch.interactions.push(interaction._id);
+        }
+        await savedBatch.save();
+        console.log('Batch saved:', savedBatch);
+
+        return res.status(200).json({ batchId: batch.id });
+    } catch (error) {
+        console.error('GPT Batch creation error:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status,
+            headers: error.response?.headers,
+            stack: error.stack
+        });
+        return res.status(500).json({
+            error: error.message,
+            details: error.response?.data || 'No additional details available'
+        });
+    }
+}

@@ -7,6 +7,8 @@ import { dirname } from 'path';
 import dotenv from 'dotenv';
 import openAIHandler from '../api/openai/openai-message.js';
 import azureHandler from '../api/azure/azure-message.js';
+import azureContextHandler from '../api/azure/azure-context.js';
+import azureBatchProcessResultsHandler from '../api/azure/azure-batch-process-results.js';
 import anthropicAgentHandler from '../api/anthropic/anthropic-message.js';
 import dbChatLogsHandler from '../api/db/db-chat-logs.js';
 import anthropicBatchHandler from '../api/anthropic/anthropic-batch.js';
@@ -39,6 +41,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
 app.use(express.static(path.join(__dirname, '../build')));
 app.get('*', (req, res, next) => {
   if (req.url.startsWith('/api')) {
@@ -48,28 +51,33 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-
 app.post('/api/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db-chat-session', dbChatSessionHandler);
 app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);
 app.post("/api/openai-message", openAIHandler);
-app.post("/api/azure-message", azureHandler);
+app.post("/api/azure-message", azureHandler);  // Updated Azure endpoint
 app.post('/api/anthropic-message', anthropicAgentHandler);
 app.post('/api/anthropic-context', anthropicContextAgentHandler);
-app.post('/api/openai-context', openAIContextAgentHandler);
+app.post("/api/openai/openai-context", azureContextHandler);
+app.post("/api/azure-context", azureContextHandler);
 app.get('/api/db-chat-logs', dbChatLogsHandler);
 app.post('/api/anthropic-batch', anthropicBatchHandler);
 app.post('/api/openai-batch', openAIBatchHandler);
-app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
-app.get('/api/openai-batch-status', openAIBatchStatusHandler);
+//app.post('/api/azure/azure-batch', azureBatchHandler);
+//app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
+//app.get('/api/openai-batch-status', openAIBatchStatusHandler);
+//app.get('/api/azure/azure-batch-status', azureBatchStatusHandler);
 app.post('/api/search-context', contextSearchHandler);
 app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
+//app.post('/api/azure/azure-batch-context', azureBatchContextHandler);
 app.get('/api/anthropic-batch-cancel', anthropicBatchCancelHandler);
 app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
+//app.get('/api/azure/azure-batch-cancel', azureBatchCancelHandler);
 app.post('/api/openai-batch-context', openAIBatchContextHandler);
 app.get('/api/db-batch-list', dbBatchListHandler);
 app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
+app.get('/api/azure/azure-batch-process-results', azureBatchProcessResultsHandler);
 app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
 app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
