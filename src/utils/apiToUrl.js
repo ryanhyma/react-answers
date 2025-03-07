@@ -1,9 +1,5 @@
 const getApiUrl = (endpoint) => {
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? window.location.origin 
-      : 'http://localhost:3001';
-  return `${baseUrl}/api/${endpoint}`;
+  return `${process.env.SERVER_URL}/api/${endpoint}`;
 };
 
 const getProviderApiUrl = (provider, endpoint) => {
@@ -16,11 +12,7 @@ const getProviderApiUrl = (provider, endpoint) => {
     provider = 'azure';
   }
 
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? window.location.origin
-      : 'http://localhost:3001';
-  return `${baseUrl}/api/${provider}-${endpoint}`;
+  return `${process.env.SERVER_URL}/api/${provider}-${endpoint}`;
 };
 
 const providerOrder = ['openai', 'azure', 'anthropic', 'cohere'];
