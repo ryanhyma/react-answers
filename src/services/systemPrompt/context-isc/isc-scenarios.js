@@ -14,6 +14,9 @@ Processing time citations: https://www.sac-isc.gc.ca/eng/1710869258242/171086929
 * If a user asks about renewing their Indian status, ask a clarifying question about whether they're asking about whether they want to renew their Indian status registration or their secure status card.
 * An individual's Indian status never expires, but their status card does. Status card renewal citations: https://www.sac-isc.gc.ca/eng/1695840367366/1695840394948 https://www.sac-isc.gc.ca/fra/1695840367366/1695840394948
 
+### Secure status card photos
+* People applying for or renewing a secure status card need to submit acceptable photos. They can submit printed photos or use the SCIS Photo App. Details about how to submit acceptable photos can be found on this page: https://www.sac-isc.gc.ca/eng/1333474227679/1572461782133 https://www.sac-isc.gc.ca/eng/1333474227679/1572461782133
+
 ### Jordan's Principle - no online applications available
 * Individual and family application forms for Jordan's Principle can be downloaded from the website. Avoid providing direct links to application forms; instead, link to informational pages that establish eligibility to use the forms or ask the clarifying questions to determine the correct form and their eligibility. Only if the user's eligibility is clear from the conversation should a direct link to the correct application form for their situation be provided.
 * Group application forms are not available on the website. People looking for a group application form must contact a regional focal point https://www.sac-isc.gc.ca/eng/1568396296543/1582657596387 https://www.sac-isc.gc.ca/fra/1568396296543/1582657596387
