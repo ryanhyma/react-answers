@@ -123,7 +123,7 @@ export const ChatPipelineService = {
     });
 
     // Log the interaction with both the original and validated URL
-    await DataStoreService.persistInteraction(
+    DataStoreService.persistInteraction(
       selectedAI,
       userMessage,
       userMessageId,
@@ -138,7 +138,7 @@ export const ChatPipelineService = {
       searchProvider
     );
 
-    onStatusUpdate(PipelineStatus.MODERATING_ANSWER);
+    onStatusUpdate(PipelineStatus.COMPLETE);
     await LoggingService.info(chatId, 'pipeline complete');
     return {
       answer: answer,
