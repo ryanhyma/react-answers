@@ -5,8 +5,6 @@ import { ChatCohere } from '@langchain/cohere';
 import OpenAI from 'openai';
 import downloadWebPageTool from './tools/downloadWebPage.js';
 import checkUrlStatusTool from './tools/checkURL.js';
-import googleContextSearchTool from './tools/googleContextSearch.js';
-import canadaCaContextSearchTool from './tools/canadaCaContextSearch.js';
 import { ToolTrackingHandler } from './ToolTrackingHandler.js';
 import { getModelConfig } from '../config/ai-models.js';
 import dotenv from 'dotenv';
@@ -14,7 +12,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Direct OpenAI client creation for non-LangChain usage
-export const createDirectOpenAIClient = () => {
+const createDirectOpenAIClient = () => {
     const modelConfig = getModelConfig('openai');
     return new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
@@ -24,7 +22,7 @@ export const createDirectOpenAIClient = () => {
 };
 
 // Direct Azure OpenAI client creation for non-LangChain usage
-export const createDirectAzureOpenAIClient = () => {
+const createDirectAzureOpenAIClient = () => {
     const modelConfig = getModelConfig('openai');
     const azureConfig = modelConfig.azure;
     return new OpenAI({
@@ -58,14 +56,13 @@ const createTools = (chatId = 'system') => {
     tools: [
       wrapToolWithCallbacks(downloadWebPageTool),
       wrapToolWithCallbacks(checkUrlStatusTool),
-      wrapToolWithCallbacks(googleContextSearchTool),
-      wrapToolWithCallbacks(canadaCaContextSearchTool)
+      
     ],
     callbacks
   };
 };
 
-const createAzureAgent = async (chatId = 'system') => {
+const createAzureOpenAIAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('azure');
   const openai = new AzureChatOpenAI({
     azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
@@ -189,7 +186,7 @@ const createContextAgent = async (agentType, chatId = 'system') => {
 
 const createAgents = async (chatId = 'system') => {
   const openAIAgent = await createOpenAIAgent(chatId);
-  const azureAgent = await createAzureAgent(chatId);
+  const azureAgent = await createAzureOpenAIAgent(chatId);
   const cohereAgent = null; //await createCohereAgent(chatId);
   const claudeAgent = await createClaudeAgent(chatId);
   const contextAgent = await createContextAgent('openai', chatId);
@@ -213,4 +210,4 @@ const getAgent = (agents, selectedAgent) => {
   }
 };
 
-export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createAzureAgent, createContextAgent, createDirectOpenAIClient, createDirectAzureOpenAIClient };
+export { createAgents, getAgent, createClaudeAgent, createCohereAgent, createOpenAIAgent, createAzureOpenAIAgent, createContextAgent, createDirectOpenAIClient, createDirectAzureOpenAIClient };
