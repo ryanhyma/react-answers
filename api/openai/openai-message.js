@@ -30,7 +30,7 @@ async function invokeHandler(req, res) {
 
     
       console.log('OpenAI API request received');
-      const { message, systemPrompt, conversationHistory } = req.body;
+      const { message, systemPrompt, conversationHistory, chatId } = req.body;
       console.log('Request body:', req.body);
 
 

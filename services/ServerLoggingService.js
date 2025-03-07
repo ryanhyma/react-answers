@@ -1,5 +1,5 @@
-import { Logs } from '../../models/logs.js';
-import dbConnect from '../api/db-connect.js';
+import { Logs } from '../models/logs.js';
+import dbConnect from '../api/db//db-connect.js';
 
 class LogQueue {
     constructor() {
