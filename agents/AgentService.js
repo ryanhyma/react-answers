@@ -82,10 +82,9 @@ const createTools = (chatId = 'system') => {
 const createAzureOpenAIAgent = async (chatId = 'system') => {
   const modelConfig = getModelConfig('azure');
   const openai = new AzureChatOpenAI({
-    azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
-    azureOpenAIApiDeploymentName: modelConfig.deploymentName,
-    azureOpenAIApiVersion: modelConfig.apiVersion,
-    azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT?.replace('https://', '').replace('.openai.azure.com', ''),
+    azureApiKey: process.env.AZURE_OPENAI_API_KEY,  // Azure API Key
+    azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
     modelName: modelConfig.name,
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
