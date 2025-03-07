@@ -6,7 +6,7 @@ import { Context } from '../../models/context.js';
 import { Question } from '../../models/question.js';
 import { createDirectOpenAIClient } from '../../agents/AgentService.js';
 
-const modelConfig = getModelConfig('openai', 'gpt4o-mini');
+const modelConfig = getModelConfig('openai', 'gpt-4o-mini');
 const openai = createDirectOpenAIClient();
 
 export default async function handler(req, res) {
