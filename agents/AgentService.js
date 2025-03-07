@@ -13,26 +13,42 @@ dotenv.config();
 
 // Direct OpenAI client creation for non-LangChain usage
 const createDirectOpenAIClient = () => {
-    const modelConfig = getModelConfig('openai');
-    return new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-        maxRetries: 3,
-        timeout: modelConfig.timeoutMs,
-    });
+    try {
+        if (!process.env.OPENAI_API_KEY) {
+            return null;
+        }
+        const modelConfig = getModelConfig('openai');
+        return new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+            maxRetries: 3,
+            timeout: modelConfig.timeoutMs,
+        });
+    } catch (error) {
+        console.error('Error creating OpenAI client:', error);
+        return null;
+    }
 };
 
 // Direct Azure OpenAI client creation for non-LangChain usage
 const createDirectAzureOpenAIClient = () => {
-    const modelConfig = getModelConfig('openai');
-    const azureConfig = modelConfig.azure;
-    return new OpenAI({
-        apiKey: process.env.AZURE_OPENAI_API_KEY,
-        baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${azureConfig.deploymentName}`,
-        defaultQuery: { 'api-version': azureConfig.apiVersion },
-        defaultHeaders: { 'api-key': process.env.AZURE_OPENAI_API_KEY },
-        maxRetries: 3,
-        timeout: modelConfig.timeoutMs,
-    });
+    try {
+        if (!process.env.AZURE_OPENAI_API_KEY || !process.env.AZURE_OPENAI_ENDPOINT) {
+            return null;
+        }
+        const modelConfig = getModelConfig('openai');
+        const azureConfig = modelConfig.azure;
+        return new OpenAI({
+            apiKey: process.env.AZURE_OPENAI_API_KEY,
+            baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${azureConfig.deploymentName}`,
+            defaultQuery: { 'api-version': azureConfig.apiVersion },
+            defaultHeaders: { 'api-key': process.env.AZURE_OPENAI_API_KEY },
+            maxRetries: 3,
+            timeout: modelConfig.timeoutMs,
+        });
+    } catch (error) {
+        console.error('Error creating Azure OpenAI client:', error);
+        return null;
+    }
 };
 
 const createTools = (chatId = 'system') => {
