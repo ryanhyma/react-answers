@@ -132,22 +132,25 @@ const AnswerService = {
         // Check for special tags in either english-answer or answer content
         // These can appear in any order and don't need to wrap the entire content
         const specialTags = {
-            'not-gc': /<not-gc>[\s\S]*?<\/not-gc>/,
-            'pt-muni': /<pt-muni>[\s\S]*?<\/pt-muni>/,
-            'clarifying-question': /<clarifying-question>[\s\S]*?<\/clarifying-question>/
+            'not-gc': /<not-gc>([\s\S]*?)<\/not-gc>/,
+            'pt-muni': /<pt-muni>([\s\S]*?)<\/pt-muni>/,
+            'clarifying-question': /<clarifying-question>([\s\S]*?)<\/clarifying-question>/
         };
 
-        // Check each special tag type and strip them
+        // Check each special tag type and extract their content
         for (const [type, regex] of Object.entries(specialTags)) {
             // Check both englishAnswer and content for the tag
-            if (regex.test(englishAnswer) || regex.test(content)) {
+            const englishMatch = englishAnswer && regex.exec(englishAnswer);
+            const contentMatch = content && regex.exec(content);
+            
+            if (englishMatch || contentMatch) {
                 answerType = type;
-                // Strip this tag type from both englishAnswer and content
-                if (englishAnswer) {
-                    englishAnswer = englishAnswer.replace(new RegExp(regex, 'g'), '').trim();
+                // Preserve the content inside the tags
+                if (englishMatch) {
+                    englishAnswer = englishMatch[1].trim();
                 }
-                if (content) {
-                    content = content.replace(new RegExp(regex, 'g'), '').trim();
+                if (contentMatch) {
+                    content = contentMatch[1].trim();
                 }
                 break; // First matching tag type wins
             }
