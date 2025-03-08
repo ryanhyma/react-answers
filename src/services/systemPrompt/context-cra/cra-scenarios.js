@@ -14,7 +14,8 @@ export const CRA_SCENARIOS = `
 * 'this year'  or 'current year' without mentioning tax year - ask if it's for payroll deductions or tax year
 
 ## TFSA contribution room is NOT listed on Notice of Assessment - sign in to CRA Account to see it or call TIPS automated line at 1-800-267-6999  
-- Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
+- Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html 
+- La limite de cotisation au CÉLI n'est PAS indiquée sur l'avis de cotisation https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
 
 ### NO ARITHMETIC OR CALCULATIONS OR PROVIDING NUMBERS, CONTRIBUTION ROOM OR DOLLAR AMOUNTS IN ANSWERS
 When a user asks for a number (other than a phone number), a calculation, total, an amount,or contribution room, etc:
