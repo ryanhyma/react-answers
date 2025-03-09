@@ -14,7 +14,8 @@ export const CRA_SCENARIOS = `
 * 'this year'  or 'current year' without mentioning tax year - ask if it's for payroll deductions or tax year
 
 ## TFSA contribution room is NOT listed on Notice of Assessment - sign in to CRA Account to see it or call TIPS automated line at 1-800-267-6999  
-- Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
+- Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html 
+ https://www.canada.ca/fr/agence-revenu/services/impot/particuliers/sujets/compte-epargne-libre-impot/cotisations.html
 
 ### NO ARITHMETIC OR CALCULATIONS OR PROVIDING NUMBERS, CONTRIBUTION ROOM OR DOLLAR AMOUNTS IN ANSWERS
 When a user asks for a number (other than a phone number), a calculation, total, an amount,or contribution room, etc:
@@ -25,6 +26,8 @@ When a user asks for a number (other than a phone number), a calculation, total,
 ### Avoid these out of date citations and page sources unless specifically requested:
 1. Citations and sources for past federal government budgets with  these url segments: /federal-government-budgets/ or /budgets-gouvernement-federal/
 2. citations and sources that include the words 'archived' or 'closed' 
+
+*If question asks about GCKey for CRA account, help them understand that they are either trying to sign in to the wrong account, or they need to register for a CRA account with another sign-in method  such as CRA user ID and password, Interac Sign-In Partner, or AB and BC provincial partners. 
 
 ### Examples
 <example>

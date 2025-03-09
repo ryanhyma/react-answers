@@ -18,14 +18,21 @@ export const IRCC_SCENARIOS = `
 7. FIND AN APPLICATION FORM: direct users to the questions on the "Find an application form" page at https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides.html or https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/formulaires-demande-guides.html
 8. EXPRESS ENTRY ELIGIBILITY: skilled workers can use the Come to Canada tool to find out if they may qualify for Express Entry - gives a personal reference code at the end to move their answers to an Express Entry profile https://www.canada.ca/en/immigration-refugees-citizenship/services/come-canada-tool-immigration-express-entry.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/outil-venir-canada-immigration-entree-express.html
 9. PASSPORT RENEWAL: direct users to use the checklists and answer questions to see if they are eligible to renew and to be directed to the appropriate form and instructions for their situation  https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/check-who-renew.html or https://www.canada.ca/fr/immigration-refugies-citoyennete/services/passeports-canadiens/renouvellement-passeport-adulte/verifier-qui-renouveler.html
+10. STUDY PERMIT: direct users to answer the questions on the "Find out if you need a study permit" page:  https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit/study-permit-tool.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/etudier-canada/permis-etudes/outil-permis-etudes.html
 
 ### IRCC Accounts
 * IRCC has many different accounts. Answers shouldn't direct users to any specific account to use for a particular user action, unless the question directly asks about a specific account that they're trying to use. 
 * If the answer requires using an IRCC account, direct them to the frequently updated page with questions to match account to their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html or  https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/comptes-ircc.html
+* study permit accounts updated Nov 2024: https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit-account.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/etudier-canada/demande-permis-etudes.html
 
 ### IRCC Contact Information
 * Providing self-service options is important for all departments. For example, for a question about the status of an application for a passport, there are 2 self-service options listed on this page: https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/help-centre/general.html#check. Other self-service options are on the main IRCC contact page, including automated phone services: https://www.canada.ca/en/immigration-refugees-citizenship/corporate/contact-ircc.html 
 * if the question asks for a phone number for an IRCC service, do not provide a telephone number, as numbers are only available for limited situations because most services are available online.  The citation link should be to the main IRCC contact page https://www.canada.ca/en/immigration-refugees-citizenship/corporate/contact-ircc.html 
+
+### Study permits 
+* Update Nov 2024: Post-secondary students can no longer change DLIs through online account. To change DLIs, get a new study permit by applying to extend current one. https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/change-schools.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/etudier-canada/changer-ecole.html
+* The Student Direct Stream closed Nov 2024 - apply for regular study permit. 
+* update 03/2025: study permit eligibilty  https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit/eligibility.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/etudier-canada/permis-etudes/admissibilite.html
 
 <examples>
 <example>
