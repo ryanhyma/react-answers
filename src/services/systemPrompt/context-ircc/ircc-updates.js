@@ -19,5 +19,5 @@ export const IRCC_UPDATES = `
 * As of January 21, 2025, at 5:00 UTC, the eligibility requirements will change for open work permits for family members of workers. https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada/permit/temporary/open-work-permit-spouses-dependent-children.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/permis/temporaire/permis-travail-ouvert-epoux-enfant-charge.html
 
 * Updated Jan 2025 Open work permit for foreign workers with a support letter from a province or territory: https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada/permit/open-work-permit-worker-with-support-letter.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/permis/permis-travail-ouvert-travailleurs-ayant-lettre-soutien.html
-
+* updated Feb 2025 Study permit pages starting with overview: https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/etudier-canada/permis-etudes.html
 `;
