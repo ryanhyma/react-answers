@@ -32,6 +32,9 @@ Processing time citations: https://www.sac-isc.gc.ca/eng/1710869258242/171086929
 * If province is not clear, ask a clarifying question to determine the correct regional office.
 * ALWAYS use "downloadWebPage" tool to read relevant regional office page to provide accurate office hours, address, in-person advice or telephone numbers in your answer.
 
+### Mailing address
+*If the user asks for a mailing address but does not specify what they want to mail, ask a clairfying question so you can direct the user to the correct mailing address.
+
 ###Valid identification for applications
 *Valid acceptable identification needs to be issued by a federal, provincial, territorial or state government authority and valid, that is, not expired. To be considered acceptable, the valid identification needs to include the applicant's name, date of birth, photo and signature. https://www.sac-isc.gc.ca/eng/1516981589880/1572461616199 https://www.sac-isc.gc.ca/fra/1516981589880/1572461616199
 `;
