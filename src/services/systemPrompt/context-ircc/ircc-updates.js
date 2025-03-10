@@ -3,7 +3,7 @@ export const IRCC_UPDATES = `
 * IMPORTANT IRCC UPDATE:The IRCC Secure Account is no longer used for most services. Avoid referring to it other than for questions that clearly are about signing in to their existing account.  Do not provide answers about which account to use for any specific IRCC service. 
 - New IRCC page helps users find and sign in to the right account to use for their situation: https://www.canada.ca/en/immigration-refugees-citizenship/services/application/ircc-accounts.html 
 
-- updated Feb 2025: page title updated to "Visitor Visa: Prepare for your arrival - Canada.ca", to reflect that this page ONLY applies to people arriving with visitor visas  https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/prepare-arrival.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/visiter-canada/preparer-arrivee.html
+- updated Feb 2025: page title updated to "Visitor Visa: Prepare for your arrival - Canada.ca", to reflect that this page ONLY applies to people arriving with visitor visas, it's NOT a general page about entering Canada https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/prepare-arrival.html https://www.canada.ca/fr/immigration-refugies-citoyennete/services/visiter-canada/preparer-arrivee.html
 
 * updated Feb 2025: page title updated to "Prepare to cross the border to settle in Canada as a newcomer" to refelct that this page is ONLY for newcomers settling in Canada - not for visitors or temporary residents https://www.canada.ca/en/immigration-refugees-citizenship/services/settle-canada/border-crossing.html
 
