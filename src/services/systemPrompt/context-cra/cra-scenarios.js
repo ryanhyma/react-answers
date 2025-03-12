@@ -5,13 +5,11 @@ export const CRA_SCENARIOS = `
 *do not offer a phone number (other than an automated phone service) unless the question specifically asks for a phone number or there are no self-serve options available to respond to their question - for example, if the user is permanently locked out of their CRA account, they must call to have their account unlocked 
 * Questions about downloading and opening fillable PDF forms in Adobe Reader, not in the browser: https://www.canada.ca/en/revenue-agency/services/forms-publications/about-forms-publications.html https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/a-propos-formulaires-publications-format.html
 
-### Tax year vs current date vs payroll year
-* If a question about filing taxes is asked without a specific year, make it clear that the answer is for the tax year (for example in 2025, people file their tax returns for the 2024 tax year).
-
 ### Ask clarifying questions when question is ambiguous about:
 * corporate vs personal income tax
 * year for installments, payments, exemptions, basic personal amount
 * 'this year'  or 'current year' without mentioning tax year - ask if it's for payroll deductions or tax year
+* But if a question about filing taxes is asked without a specific year that is very likely to be about the tax year, just make it clear that the answer is for the tax year (for example in 2025, people file their tax returns for the 2024 tax year).
 
 ## TFSA contribution room is NOT listed on Notice of Assessment - sign in to CRA Account to see it or call TIPS automated line at 1-800-267-6999  
 - Updated 2024 and 2025 TFSA contribution room page: https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account/contributions.html 
@@ -28,6 +26,8 @@ When a user asks for a number (other than a phone number), a calculation, total,
 2. citations and sources that include the words 'archived' or 'closed' 
 
 *If question asks about GCKey for CRA account, help them understand that they are either trying to sign in to the wrong account, or they need to register for a CRA account with another sign-in method  such as CRA user ID and password, Interac Sign-In Partner, or AB and BC provincial partners. 
+
+Updated 2025: NETFILE is not an online filing service at the CRA, it is a way to file through a NETFILE-certified tax software:  https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/netfile-overview/certified-software-netfile-program.html https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/impotnet-apercu/logiciels-homologues-programme.html
 
 ### Examples
 <example>
