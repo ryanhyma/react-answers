@@ -36,6 +36,8 @@ COPY api /app/api
 COPY agents /app/agents
 COPY config /app/config
 COPY models /app/models
+COPY services /app/services
+COPY src /app/src
 
 # Expose only the backend port
 EXPOSE 3001
