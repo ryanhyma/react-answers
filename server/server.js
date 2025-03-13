@@ -94,6 +94,6 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 fetch('http://localhost:3001/health')
-   .then(response => response.json())
-   .then(data => console.log('Health check:', data))
-   .catch(error => console.error('Error:', error));
+  .then(response => response.json())
+  .then(data => console.log('Health check:', data))
+  .catch(error => console.error('Error:', error));
