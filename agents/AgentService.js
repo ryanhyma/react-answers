@@ -92,8 +92,7 @@ const createAzureOpenAIAgent = async (chatId = "system") => {
     azureApiKey: process.env.AZURE_OPENAI_API_KEY, // Azure API Key
     azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT, // Azure endpoint
     apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
-
-    deployment_name: `openai-${modelConfig.name}`,
+    modelName: modelConfig.name,
     temperature: modelConfig.temperature,
     maxTokens: modelConfig.maxTokens,
     timeout: modelConfig.timeoutMs,
