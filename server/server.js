@@ -44,8 +44,35 @@ app.use(express.json({ limit: '10mb' }));
 
 app.use(express.static(path.join(__dirname, '../build')));
 
+// Function to mask environment variables - shows only first 3 and last 3 characters
+const maskEnvValue = (value) => {
+  if (!value || typeof value !== 'string') return 'undefined';
+  if (value.length <= 6) return value; // Don't mask if too short
+  
+  const firstThree = value.substring(0, 3);
+  const lastThree = value.substring(value.length - 3);
+  const middleLength = value.length - 6;
+  const maskedMiddle = '*'.repeat(Math.min(middleLength, 10)); // Limit number of asterisks
+  
+  return `${firstThree}${maskedMiddle}${lastThree}`;
+};
+
+// Get masked environment variables
+const getMaskedEnvVars = () => {
+  const maskedEnv = {};
+  Object.keys(process.env).forEach(key => {
+    maskedEnv[key] = maskEnvValue(process.env[key]);
+  });
+  return maskedEnv;
+};
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'Healthy' });
+});
+
+// Endpoint to view masked environment variables (for debugging purposes)
+app.get('/api/env-debug', (req, res) => {
+  res.status(200).json(getMaskedEnvVars());
 });
 
 app.get('*', (req, res, next) => {
@@ -91,7 +118,17 @@ app.get('/api/db-log', dbLogHandler);
 app.post('/api/db-log', dbLogHandler);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  
+  // Print masked environment variables to console
+  console.log('\nEnvironment Variables (masked):');
+  const maskedEnv = getMaskedEnvVars();
+  Object.keys(maskedEnv).sort().forEach(key => {
+    console.log(`${key}: ${maskedEnv[key]}`);
+  });
+  console.log('\n');
+});
 
 fetch('http://localhost:3001/health')
   .then(response => response.json())
