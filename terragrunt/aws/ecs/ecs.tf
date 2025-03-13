@@ -23,6 +23,14 @@ locals {
     {
       "name"      = "AZURE_OPENAI_API_VERSION"
       "valueFrom" = var.azure_openai_api_version_arn
+    },
+    {
+      "name"      = "USER_AGENT"
+      "valueFrom" = var.user_agent_arn
+    },
+    {
+      "name"      = "JWT_SECRET_KEY"
+      "valueFrom" = var.jwt_secret_key_arn
     }
   ]
 }

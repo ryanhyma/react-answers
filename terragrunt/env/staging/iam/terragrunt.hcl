@@ -18,6 +18,8 @@ dependency "ssm" {
     azure_openai_api_version_arn = ""
     canada_ca_search_api_key_arn = ""
     canada_ca_search_uri_arn     = ""
+    user_agent_arn               = ""
+    jwt_secret_key_arn           = ""
   }
 }
 
@@ -39,6 +41,8 @@ inputs = {
   docdb_uri_arn                = dependency.database.outputs.docdb_uri_arn
   canada_ca_search_api_key_arn = dependency.ssm.outputs.canada_ca_search_api_key_arn
   canada_ca_search_uri_arn     = dependency.ssm.outputs.canada_ca_search_uri_arn
+  user_agent_arn               = dependency.ssm.outputs.user_agent_arn
+  jwt_secret_key_arn           = dependency.ssm.outputs.jwt_secret_key_arn
 }
 
 include {

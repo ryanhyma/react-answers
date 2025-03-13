@@ -42,3 +42,13 @@ output "canada_ca_search_api_key_arn" {
   description = "ARN of the Canada.ca search API key parameter"
   value       = aws_ssm_parameter.canada_ca_search_api_key.arn
 }
+
+output "user_agent_arn" {
+  description = "ARN of the user agent parameter"
+  value       = aws_ssm_parameter.user_agent.arn
+}
+
+output "jwt_secret_key_arn" {
+  description = "ARN of the JWT secret key parameter"
+  value       = aws_ssm_parameter.jwt_secret_key.arn
+}

@@ -40,3 +40,13 @@ variable "canada_ca_search_api_key" {
   sensitive   = true
   type        = string
 }
+variable "user_agent" {
+  description = "The user agent for the AI Answers service"
+  sensitive   = true
+  type        = string
+}
+variable "jwt_secret_key" {
+  description = "The secret key for the JWT token"
+  sensitive   = true
+  type        = string
+}
