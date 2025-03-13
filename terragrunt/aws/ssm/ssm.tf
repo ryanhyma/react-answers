@@ -49,3 +49,15 @@ resource "aws_ssm_parameter" "canada_ca_search_api_key" {
   type  = "SecureString"
   value = var.canada_ca_search_api_key
 }
+
+resource "aws_ssm_parameter" "user_agent" {
+  name  = "user_agent"
+  type  = "SecureString"
+  value = var.user_agent
+}
+
+resource "aws_ssm_parameter" "jwt_secret_key" {
+  name  = "jwt_secret_key"
+  type  = "SecureString"
+  value = var.jwt_secret_key
+}

@@ -21,6 +21,14 @@ variable "canada_ca_search_api_key_arn" {
   description = "The arn of the canada search api parameter"
   type        = string
 }
+variable "user_agent_arn" {
+  description = "The arn of the user agent parameter"
+  type        = string
+}
+variable "jwt_secret_key_arn" {
+  description = "The arn of the jwt secret key parameter"
+  type        = string
+}
 variable "docdb_username_arn" {
   description = "The arn of the document db username parameter"
   type        = string

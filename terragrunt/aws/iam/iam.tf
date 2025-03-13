@@ -29,6 +29,8 @@ data "aws_iam_policy_document" "ai-answers-ssm-policy" {
       var.azure_openai_api_version_arn,
       var.canada_ca_search_uri_arn,
       var.canada_ca_search_api_key_arn,
+      var.user_agent_arn,
+      var.jwt_secret_key_arn,
       var.docdb_uri_arn
     ]
   }

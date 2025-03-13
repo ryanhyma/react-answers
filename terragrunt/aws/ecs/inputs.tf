@@ -100,3 +100,11 @@ variable "canada_ca_search_api_key_arn" {
   description = "ARN of the Canada.ca search API key parameter"
   type        = string
 }
+variable "user_agent_arn" {
+  description = "ARN of the User Agent parameter"
+  type        = string
+}
+variable "jwt_secret_key_arn" {
+  description = "ARN of the JWT Secret Key parameter"
+  type        = string
+}
