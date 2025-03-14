@@ -246,5 +246,42 @@
       "failed": "Signup failed",
       "loginLink": "log in to your account"
     }
+  },
+  "login": {
+    "title": "Login",
+    "messages": {
+      "success": "Login successful",
+      "failed": "Login failed. Please try again.",
+      "signupLink": "Don't have an account? Sign up"
+    },
+    "form": {
+      "username": "Username",
+      "password": "Password",
+      "submit": "Login",
+      "submitting": "Logging in...",
+      "signupLink": "Need an account? Sign up here"
+    }
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log In",
+    "invalidCredentials": "Invalid email or password",
+    "form": {
+      "submitting": "Logging in..."
+    }
+  },
+  "signup": {
+    "title": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Sign Up",
+    "passwordMismatch": "Passwords do not match",
+    "errorOccurred": "An error occurred during signup",
+    "form": {
+      "submitting": "Creating account..."
+    }
   }
 }

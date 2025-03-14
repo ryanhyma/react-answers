@@ -248,5 +248,42 @@
       "failed": "L'inscription a échoué",
       "loginLink": "vous connecter à votre compte"
     }
+  },
+  "login": {
+    "title": "Connexion",
+    "messages": {
+      "success": "Connexion réussie",
+      "failed": "Échec de la connexion. Veuillez réessayer.",
+      "signupLink": "Vous n'avez pas de compte ? Inscrivez-vous"
+    },
+    "form": {
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion en cours...",
+      "signupLink": "Besoin d'un compte ? Inscrivez-vous ici"
+    }
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "invalidCredentials": "Courriel ou mot de passe invalide",
+    "form": {
+      "submitting": "Connexion en cours..."
+    }
+  },
+  "signup": {
+    "title": "Inscription",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "submit": "S'inscrire",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "errorOccurred": "Une erreur est survenue lors de l'inscription",
+    "form": {
+      "submitting": "Création du compte..."
+    }
   }
 }
