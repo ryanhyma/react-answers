@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/api/openai/:path*", "destination": "/api/:path*" },
-    { "source": "/api/anthropic/:path*", "destination": "/api/:path*" },
-    { "source": "/api/azure/:path*", "destination": "/api/:path*" },
-    { "source": "/api/db/:path*", "destination": "/api/:path*" },
-    { "source": "/api/search/:path*", "destination": "/api/:path*" }
-  ]
-}
