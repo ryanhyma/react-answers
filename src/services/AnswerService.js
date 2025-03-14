@@ -83,6 +83,7 @@ const AnswerService = {
             return { answerType: 'normal', content: '', preliminaryChecks: null, englishAnswer: null };
         }
 
+      
         let answerType = 'normal';
         let content = text;
         let preliminaryChecks = null;
@@ -129,6 +130,7 @@ const AnswerService = {
         }
         content = content.replace(/<citation-head>[\s\S]*?<\/citation-head>/s, '').trim();
         content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
+        content = content.replace(/<confidence>(.*?)<\/confidence>/s, '').trim();
 
         // Check response types
         if (content.includes('<not-gc>')) {
@@ -148,7 +150,7 @@ const AnswerService = {
             confidenceRating = confidenceMatch[1].trim();
         }
 
-        const paragraphs = content.split(/\n+/);
+        const paragraphs = content.split(/\n+/).map(paragraph => paragraph.trim()).filter(paragraph => paragraph !== '');
         const sentences = AnswerService.parseSentences(content);
 
         return { 
