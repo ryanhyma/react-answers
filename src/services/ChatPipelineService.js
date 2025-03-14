@@ -1,6 +1,6 @@
 import ContextService from './ContextService.js';
 import AnswerService from './AnswerService.js';
-import { DataStoreService } from './DataStoreService.js';
+import DataStoreService from './DataStoreService.js';
 import { urlToSearch } from '../utils/urlToSearch.js';
 import RedactionService from './RedactionService.js';
 import LoggingService from './ClientLoggingService.js';
