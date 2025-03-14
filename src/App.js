@@ -31,20 +31,16 @@ const AppLayout = () => {
       <section className="alpha-top">
         <div className="container">
           <small>
-            <span className="alpha-label">Alpha</span>&nbsp;&nbsp; 
-            {currentLang === 'en' ? 'Experimental page - not public.' : 'Page expérimentale - non publique.'}
+            <span className="alpha-label">Alpha</span>&nbsp;&nbsp;
+            {currentLang === 'en'
+              ? 'Experimental page - not public.'
+              : 'Page expérimentale - non publique.'}
           </small>
         </div>
       </section>
-      
-      <GcdsHeader 
-        lang={currentLang}
-        langHref={alternateLangHref}
-        skipToHref="#main-content"
-      >
-        <GcdsBreadcrumbs slot="breadcrumb">
-          {/* Add breadcrumb items as needed */}
-        </GcdsBreadcrumbs>
+
+      <GcdsHeader lang={currentLang} langHref={alternateLangHref} skipToHref="#main-content">
+        <GcdsBreadcrumbs slot="breadcrumb">{/* Add breadcrumb items as needed */}</GcdsBreadcrumbs>
       </GcdsHeader>
 
       <main id="main-content">
@@ -52,10 +48,7 @@ const AppLayout = () => {
         <Outlet />
       </main>
 
-      <GcdsFooter 
-        display='compact'
-        lang={currentLang}
-      />
+      <GcdsFooter display="compact" lang={currentLang} />
     </>
   );
 };
@@ -115,9 +108,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

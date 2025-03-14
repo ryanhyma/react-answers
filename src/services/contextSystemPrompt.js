@@ -9,50 +9,52 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
     // Validate base imports
     if (!departments_EN || !departments_FR) {
       throw new Error('Required imports are undefined');
-    } 
+    }
 
     // Select language-specific content
     // const menuStructure = language === 'fr' ? menuStructure_FR : menuStructure_EN;
     const departmentsList = language === 'fr' ? departments_FR : departments_EN;
-    
-//     // Convert menu structure object to formatted string
-//     const menuStructureString = Object.entries(menuStructure)
-//       .map(([category, data]) => {
-//         const topics = Object.entries(data.topics || {})
-//           .map(([name, url]) => `    ${name}: ${url}`)
-//           .join('\n');
-        
-//         const mostRequested = Object.entries(data.mostRequested || {})
-//           .map(([name, url]) => `    ${name}: ${url}`)
-//           .join('\n');
 
-//         return `
-// ${category} (${data.url})
-//   Topics:
-// ${topics}
-//   Most Requested:
-// ${mostRequested}`;
-//       })
-//       .join('\n\n');
+    //     // Convert menu structure object to formatted string
+    //     const menuStructureString = Object.entries(menuStructure)
+    //       .map(([category, data]) => {
+    //         const topics = Object.entries(data.topics || {})
+    //           .map(([name, url]) => `    ${name}: ${url}`)
+    //           .join('\n');
+
+    //         const mostRequested = Object.entries(data.mostRequested || {})
+    //           .map(([name, url]) => `    ${name}: ${url}`)
+    //           .join('\n');
+
+    //         return `
+    // ${category} (${data.url})
+    //   Topics:
+    // ${topics}
+    //   Most Requested:
+    // ${mostRequested}`;
+    //       })
+    //       .join('\n\n');
 
     // Convert departments array to formatted string
     const departmentsString = departmentsList
-      .map(dept => `${dept.name} (${dept.abbr || 'No abbreviation'})\n  ${dept.url}`)
+      .map((dept) => `${dept.name} (${dept.abbr || 'No abbreviation'})\n  ${dept.url}`)
       .join('\n\n');
-    
+
     // // Add debug logging
-    // console.log('Menu Structure:', menuStructureString.substring(0, 200) + '...'); 
-    // console.log('Departments String:', departmentsString.substring(0, 200) + '...'); 
+    // console.log('Menu Structure:', menuStructureString.substring(0, 200) + '...');
+    // console.log('Departments String:', departmentsString.substring(0, 200) + '...');
 
     const fullPrompt = `
       ## Role
       You are a department matching expert for the AI Answers application on Canada.ca. Your role is to match user questions to departments listed in the departments_list section below, following a specific matching algorithm. This will help narrow in to the department most likely to hold the answer to the user's question.
 
-      ${language === 'fr' 
-        ? `## Language Context: French
+      ${
+        language === 'fr'
+          ? `## Language Context: French
         User asked their question on the official French AI Answers page`
-        : `## Language Context: English
-        User asked their question on the official English AI Answers page`}
+          : `## Language Context: English
+        User asked their question on the official English AI Answers page`
+      }
 
 <departments_list>
 ## List of Government of Canada departments and agencies labelled by name, matching url, and abbreviation, in the official language context. - MUST SELECT FROM THIS LIST 
@@ -112,12 +114,14 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 </examples>
     `;
 
-    await LoggingService.info('system', `Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`);
+    await LoggingService.info(
+      'system',
+      `Context system prompt successfully loaded in ${language.toUpperCase()} (${fullPrompt.length} chars)`
+    );
     return fullPrompt;
-
   } catch (error) {
     await LoggingService.error('system', 'CONTEXT SYSTEM PROMPT ERROR', error);
-    return "Default context system prompt";
+    return 'Default context system prompt';
   }
 }
 
