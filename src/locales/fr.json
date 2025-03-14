@@ -15,7 +15,7 @@
       "aiServices": {
         "claude": "Service d'IA Claude : Claude 3.7 Sonnet d'Anthropic, connaissances jusqu'en février 2025",
         "chatgpt": "Service d'IA ChatGPT : GPT-4o d'OpenAI, connaissances jusqu'en novembre 2024",
-        "cohere": "Autres services peuvent être ajoutés dans le futur."
+        "azure": "Service d'IA Azure : Microsoft Azure OpenAI"
       },
       "systemPrompt": "Lire l'invite système",
       "contact": "Le développement est toujours en cours — Contactez lisa.fast@cds-snc.ca pour plus d'informations."
@@ -63,7 +63,7 @@
           "label": "IA :",
           "anthropic": "Anthropic",
           "openai": "OpenAI",
-          "cohere": "Cohere"
+          "azure": "Azure"
         },
         "searchSelection": {
           "label": "Recherche :",
