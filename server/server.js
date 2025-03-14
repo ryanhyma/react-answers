@@ -56,46 +56,46 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 // small change to force reployment
-app.post('/api/db-persist-feedback', dbPersistFeedback);
-app.post('/api/db-persist-interaction', dbPersistInteraction);
-app.get('/api/db-chat-session', dbChatSessionHandler);
-app.get('/api/db-verify-chat-session', dbVerifyChatSessionHandler);
-app.get('/api/db-batch-list', dbBatchListHandler);
-app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
-app.get('/api/db-check', dbCheckhandler);
-app.post('/api/db-log', dbLogHandler);
-app.get('/api/db-log', dbLogHandler);
-app.get('/api/db-chat-logs', dbChatLogsHandler);
+app.post('/api/db/db-persist-feedback', dbPersistFeedback);
+app.post('/api/db/db-persist-interaction', dbPersistInteraction);
+app.get('/api/db/db-chat-session', dbChatSessionHandler);
+app.get('/api/db/db-verify-chat-session', dbVerifyChatSessionHandler);
+app.get('/api/db/db-batch-list', dbBatchListHandler);
+app.get('/api/db/db-batch-retrieve', dbBatchRetrieveHandler);
+app.get('/api/db/db-check', dbCheckhandler);
+app.post('/api/db/db-log', dbLogHandler);
+app.get('/api/db/db-log', dbLogHandler);
+app.get('/api/db/db-chat-logs', dbChatLogsHandler);
 
 
 
-app.post("/api/openai-message", openAIHandler);
-app.post("/api/openai-context", openAIContextAgentHandler);
-app.post('/api/openai-batch', openAIBatchHandler);
-app.post('/api/openai-batch-context', openAIBatchContextHandler);
-app.get('/api/openai-batch-process-results', openAIBatchProcessResultsHandler);
-app.get('/api/openai-batch-status', openAIBatchStatusHandler);
-app.get('/api/openai-batch-cancel', openAIBatchCancelHandler);
+app.post("/api/openai/openai-message", openAIHandler);
+app.post("/api/openai/openai-context", openAIContextAgentHandler);
+app.post('/api/openai/openai-batch', openAIBatchHandler);
+app.post('/api/openai/openai-batch-context', openAIBatchContextHandler);
+app.get('/api/openai/openai-batch-process-results', openAIBatchProcessResultsHandler);
+app.get('/api/openai/openai-batch-status', openAIBatchStatusHandler);
+app.get('/api/openai/openai-batch-cancel', openAIBatchCancelHandler);
 
 
-app.post('/api/anthropic-message', anthropicAgentHandler);
-app.post('/api/anthropic-context', anthropicContextAgentHandler);
-app.post('/api/anthropic-batch', anthropicBatchHandler);
-app.post('/api/anthropic-batch-context', anthropicBatchContextHandler);
-app.get('/api/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
-app.get('/api/anthropic-batch-status', anthropicBatchStatusHandler);
-app.get('/api/anthropic-batch-cancel', anthropicBatchCancelHandler);
+app.post('/api/anthropic/anthropic-message', anthropicAgentHandler);
+app.post('/api/anthropic/anthropic-context', anthropicContextAgentHandler);
+app.post('/api/anthropic/anthropic-batch', anthropicBatchHandler);
+app.post('/api/anthropic/anthropic-batch-context', anthropicBatchContextHandler);
+app.get('/api/anthropic/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
+app.get('/api/anthropic/anthropic-batch-status', anthropicBatchStatusHandler);
+app.get('/api/anthropic/anthropic-batch-cancel', anthropicBatchCancelHandler);
 
 
-app.post("/api/azure-message", azureHandler);  // Updated Azure endpoint
-app.post("/api/azure-context", azureContextHandler);
+app.post("/api/azure/azure-message", azureHandler);  // Updated Azure endpoint
+app.post("/api/azure/azure-context", azureContextHandler);
 //app.post('/api/azure/azure-batch', azureBatchHandler);
 //app.get('/api/azure/azure-batch-status', azureBatchStatusHandler);
 //app.post('/api/azure/azure-batch-context', azureBatchContextHandler);
 //app.get('/api/azure/azure-batch-cancel', azureBatchCancelHandler);
 //app.get('/api/azure-batch-process-results', azureBatchProcessResultsHandler);
 
-app.post('/api/search-context', contextSearchHandler);
+app.post('/api/search/search-context', contextSearchHandler);
 
 
 
