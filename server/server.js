@@ -64,6 +64,7 @@ app.get('/api/db-batch-list', dbBatchListHandler);
 app.get('/api/db-batch-retrieve', dbBatchRetrieveHandler);
 app.get('/api/db-check', dbCheckhandler);
 app.post('/api/db-log', dbLogHandler);
+app.get('/api/db-log', dbLogHandler);
 app.get('/api/db-chat-logs', dbChatLogsHandler);
 
 

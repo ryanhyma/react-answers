@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         }
     } else if (req.method === 'GET') {
         try {
-            const { chatId, days = 1, level, skip = 0, limit = 1000 } = req.query;
+            const { chatId, level, skip = 0, limit = 1000 } = req.query;
             const logs = await ServerLoggingService.getLogs({ 
                 chatId, 
                 level,
