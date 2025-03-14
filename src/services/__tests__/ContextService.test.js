@@ -1,5 +1,5 @@
-import ContextService from '../ContextService';
-import { getProviderApiUrl, getApiUrl } from '../../utils/apiToUrl';
+import ContextService from '../ContextService.js';
+import { getProviderApiUrl, getApiUrl } from '../../utils/apiToUrl.js';
 
 // Mock fetch globally
 global.fetch = jest.fn();
