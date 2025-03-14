@@ -32,7 +32,11 @@ import dbCheckhandler from '../api/db/db-check.js';
 import dbPersistInteraction from '../api/db/db-persist-interaction.js';
 import dbPersistFeedback from '../api/db/db-persist-feedback.js';
 import dbLogHandler from '../api/db/db-log.js';
-import signupHandler from '../api/auth-signup.js';
+import signupHandler from '../api/db/db-auth-signup.js';
+import loginHandler from '../api/db/db-auth-login.js';
+import { connectDB } from '../api/db/db-connect.js';
+import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
+import { User } from '../models/user.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,15 +47,8 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('MongoDB connected successfully');
-    console.log(`Running in ${process.env.REACT_APP_ENV || 'production'} mode`);
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
+// Connect to MongoDB
+connectDB();
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -59,6 +56,57 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Healthy' });
+});
+
+app.get('*', (req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    next();
+    return;
+  }
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
+
+// Auth routes
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const token = generateToken(user);
+    res.json({ token, user: { email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/auth/signup', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (await User.findOne({ email })) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const user = new User({ email, password });
+    await user.save();
+
+    const token = generateToken(user);
+    res.status(201).json({ token, user: { email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Protected routes
+app.use('/api/admin/*', authMiddleware, adminMiddleware);
+app.use('/api/batch/*', authMiddleware);
+app.use('/api/logs/*', authMiddleware);
 
 // small change to force reployment
 app.post('/api/db/db-persist-feedback', dbPersistFeedback);
@@ -71,8 +119,8 @@ app.get('/api/db/db-check', dbCheckhandler);
 app.post('/api/db/db-log', dbLogHandler);
 app.get('/api/db/db-log', dbLogHandler);
 app.get('/api/db/db-chat-logs', dbChatLogsHandler);
-
-
+app.post('/api/db/db-auth-signup', signupHandler);
+app.post('/api/db/db-auth-login', loginHandler);
 
 app.post("/api/openai/openai-message", openAIHandler);
 app.post("/api/openai/openai-context", openAIContextAgentHandler);
@@ -82,7 +130,6 @@ app.get('/api/openai/openai-batch-process-results', openAIBatchProcessResultsHan
 app.get('/api/openai/openai-batch-status', openAIBatchStatusHandler);
 app.get('/api/openai/openai-batch-cancel', openAIBatchCancelHandler);
 
-
 app.post('/api/anthropic/anthropic-message', anthropicAgentHandler);
 app.post('/api/anthropic/anthropic-context', anthropicContextAgentHandler);
 app.post('/api/anthropic/anthropic-batch', anthropicBatchHandler);
@@ -90,7 +137,6 @@ app.post('/api/anthropic/anthropic-batch-context', anthropicBatchContextHandler)
 app.get('/api/anthropic/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
 app.get('/api/anthropic/anthropic-batch-status', anthropicBatchStatusHandler);
 app.get('/api/anthropic/anthropic-batch-cancel', anthropicBatchCancelHandler);
-
 
 app.post("/api/azure/azure-message", azureHandler);  // Updated Azure endpoint
 app.post("/api/azure/azure-context", azureContextHandler);
@@ -101,15 +147,6 @@ app.post("/api/azure/azure-context", azureContextHandler);
 //app.get('/api/azure-batch-process-results', azureBatchProcessResultsHandler);
 
 app.post('/api/search/search-context', contextSearchHandler);
-
-
-
-
-
-
-
-
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
