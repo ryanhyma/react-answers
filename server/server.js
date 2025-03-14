@@ -55,7 +55,7 @@ app.get('*', (req, res, next) => {
   }
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
-
+// small change to force reployment
 app.post('/api/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db-chat-session', dbChatSessionHandler);
