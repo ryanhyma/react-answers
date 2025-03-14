@@ -58,11 +58,6 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    if (expertFeedback.expertCitationUrl && !isValidGovernmentUrl(expertFeedback.expertCitationUrl)) {
-      console.error(t('homepage.expertRating.errors.invalidUrl'));
-      return;
-    }
-    
     const totalScore = computeTotalScore(expertFeedback);
     const feedbackWithScore = {
       ...expertFeedback,
@@ -71,16 +66,6 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
     
     console.log('Submitting expert feedback:', feedbackWithScore);
     onSubmit(feedbackWithScore);
-  };
-
-  const isValidGovernmentUrl = (url) => {
-    try {
-      const urlObject = new URL(url);
-      return urlObject.hostname.includes('canada.ca') || 
-             urlObject.hostname.includes('gc.ca');
-    } catch {
-      return false;
-    }
   };
 
   const computeTotalScore = (feedback) => {
@@ -273,7 +258,7 @@ const ExpertRatingComponent = ({ onSubmit, onClose, lang = 'en', sentenceCount =
             )}
           </div>
 
-          <div>
+          <div className="mrgn-bttm-lg">
             <label className="expert-citation-url" htmlFor="expert-citation-url">
               {t('homepage.expertRating.options.betterCitation')}
               <input

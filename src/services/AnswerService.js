@@ -93,7 +93,6 @@ const AnswerService = {
         let confidenceRating = null;
         let englishQuestion = "";
         
-
         // Extract preliminary checks - this regex needs to capture multiline content
         let questionLanguage = "";
         const preliminaryMatch = /<preliminary-checks>([\s\S]*?)<\/preliminary-checks>/s.exec(text);
@@ -117,14 +116,14 @@ const AnswerService = {
         }
 
         // Extract English answer first
-        const englishMatch = /<english-answer>(.*?)<\/english-answer>/s.exec(content);
+        const englishMatch = /<english-answer>([\s\S]*?)<\/english-answer>/s.exec(content);
         if (englishMatch) {
             englishAnswer = englishMatch[1].trim();
             content = englishAnswer;  // Use English answer as content for English questions
         }
 
         // Extract main answer if it exists
-        const answerMatch = /<answer>(.*?)<\/answer>/s.exec(text);
+        const answerMatch = /<answer>([\s\S]*?)<\/answer>/s.exec(text);
         if (answerMatch) {
             content = answerMatch[1].trim();
         }
@@ -132,17 +131,33 @@ const AnswerService = {
         content = content.replace(/<citation-url>[\s\S]*?<\/citation-url>/s, '').trim();
         content = content.replace(/<confidence>(.*?)<\/confidence>/s, '').trim();
 
-        // Check response types
-        if (content.includes('<not-gc>')) {
-            answerType = 'not-gc';
-            content = content.replace(/<\/?not-gc>/g, '').trim();
-        } else if (content.includes('<pt-muni>')) {
-            answerType = 'pt-muni';
-            content = content.replace(/<\/?p?-?pt-muni>/g, '').trim();
-        } else if (content.includes('<clarifying-question>')) {
-            answerType = 'question';
-            content = content.replace(/<\/?clarifying-question>/g, '').trim();
+        // Check for special tags in either english-answer or answer content
+        // These can appear in any order and don't need to wrap the entire content
+        const specialTags = {
+            'not-gc': /<not-gc>([\s\S]*?)<\/not-gc>/,
+            'pt-muni': /<pt-muni>([\s\S]*?)<\/pt-muni>/,
+            'clarifying-question': /<clarifying-question>([\s\S]*?)<\/clarifying-question>/
+        };
+
+        // Check each special tag type and extract their content
+        for (const [type, regex] of Object.entries(specialTags)) {
+            // Check both englishAnswer and content for the tag
+            const englishMatch = englishAnswer && regex.exec(englishAnswer);
+            const contentMatch = content && regex.exec(content);
+            
+            if (englishMatch || contentMatch) {
+                answerType = type;
+                // Preserve the content inside the tags
+                if (englishMatch) {
+                    englishAnswer = englishMatch[1].trim();
+                }
+                if (contentMatch) {
+                    content = contentMatch[1].trim();
+                }
+                break; // First matching tag type wins
+            }
         }
+
         const confidenceRatingRegex = /<confidence>(.*?)<\/confidence>/s;
         const confidenceMatch = text.match(confidenceRatingRegex);
 
