@@ -10,7 +10,7 @@ const getProviderApiUrl = (provider, endpoint) => {
   // Map provider aliases to their actual service names
   if (provider === "claude") {
     provider = "anthropic";
-  } else if (provider === "chatgpt") {
+  } else if (provider === "openai") {
     provider = "openai";
   } else if (provider === "azure-openai" || provider === "azure") {
     provider = "azure";
