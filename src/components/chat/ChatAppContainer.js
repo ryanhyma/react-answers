@@ -29,7 +29,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('openai'); //Changed from on Jan 10 2025
+  const [selectedAI, setSelectedAI] = useState('openai'); 
   const [selectedSearch, setSelectedSearch] = useState('google'); 
   const [showFeedback, setShowFeedback] = useState(false);
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
@@ -156,6 +156,7 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
             error: true
           }
         ]);
+        setIsLoading(false);
         return;
       }
       const userMessageId = messageIdCounter.current++;

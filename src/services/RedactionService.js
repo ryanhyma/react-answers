@@ -444,4 +444,14 @@ class RedactionService {
 
 // Create and export a singleton instance
 const redactionService = new RedactionService();
+
+// Add a method to ensure the service is initialized before use
+redactionService.ensureInitialized = async function() {
+  if (!this.isInitialized) {
+    console.log('RedactionService not initialized, initializing now...');
+    await this.initialize();
+  }
+  return this.isInitialized;
+};
+
 export default redactionService;

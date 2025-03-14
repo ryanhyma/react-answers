@@ -8,7 +8,6 @@ import DT from 'datatables.net-dt';
 import ExportService from '../../services/ExportService.js';
 DataTable.use(DT);
 
-
 const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
@@ -24,7 +23,7 @@ const ChatLogsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(getApiUrl("db-chat-logs?days=") + timeRange);
+      const response = await fetch(getApiUrl('db-chat-logs?days=') + timeRange);
       const data = await response.json();
       console.log('API Response:', data);
 
@@ -45,7 +44,6 @@ const ChatLogsDashboard = () => {
     let name = 'chat-logs-' + timeRange + '-' + new Date().toISOString();
     return name + '.' + ext;
   };
-
 
   const downloadJSON = () => {
     const json = JSON.stringify(logs, null, 2);
@@ -81,10 +79,7 @@ const ChatLogsDashboard = () => {
 
       <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
-          <label
-            htmlFor="timeRange"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="timeRange" className="block text-sm font-medium text-gray-700 mb-1">
             Time range
           </label>
           <select
@@ -143,13 +138,20 @@ const ChatLogsDashboard = () => {
           </div>
         ) : logs.length > 0 ? (
           <div className="p-4">
-            <p className="mb-4 text-gray-600">Found {logs.length} chat interactions. Download the logs to see the full set and details.</p>
+            <p className="mb-4 text-gray-600">
+              Found {logs.length} chat interactions. Download the logs to see the full set and
+              details.
+            </p>
             <DataTable
               data={logs}
               columns={[
-                { title: 'Date', data: 'createdAt', render: (data) => data ? data : '' },
-                { title: 'Chat ID', data: 'chatId', render: (data) => data ? data : '' },
-                { title: 'Interactions', data: 'interactions', render: (data) => data ? data.length : 0 },
+                { title: 'Date', data: 'createdAt', render: (data) => (data ? data : '') },
+                { title: 'Chat ID', data: 'chatId', render: (data) => (data ? data : '') },
+                {
+                  title: 'Interactions',
+                  data: 'interactions',
+                  render: (data) => (data ? data.length : 0),
+                },
               ]}
               options={{
                 paging: true,
@@ -161,7 +163,9 @@ const ChatLogsDashboard = () => {
           </div>
         ) : (
           <div className="p-4">
-            <p className="text-gray-500">Select a time range and click 'Get logs' to view chat history</p>
+            <p className="text-gray-500">
+              Select a time range and click 'Get logs' to view chat history
+            </p>
           </div>
         )}
       </div>

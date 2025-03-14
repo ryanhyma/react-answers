@@ -6,7 +6,12 @@ import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import EvaluationPage from './pages/BatchPage.js';
 import LogPage from './pages/LogPage.js';
-import { GcdsHeader, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsFooter } from '@cdssnc/gcds-components-react';
+import {
+  GcdsHeader,
+  GcdsBreadcrumbs,
+  GcdsBreadcrumbsItem,
+  GcdsFooter,
+} from '@cdssnc/gcds-components-react';
 import './styles/App.css';
 
 // Helper function to get alternate language path
@@ -30,20 +35,16 @@ const AppLayout = () => {
       <section className="alpha-top">
         <div className="container">
           <small>
-            <span className="alpha-label">Alpha</span>&nbsp;&nbsp; 
-            {currentLang === 'en' ? 'Experimental page - not public.' : 'Page expérimentale - non publique.'}
+            <span className="alpha-label">Alpha</span>&nbsp;&nbsp;
+            {currentLang === 'en'
+              ? 'Experimental page - not public.'
+              : 'Page expérimentale - non publique.'}
           </small>
         </div>
       </section>
-      
-      <GcdsHeader 
-        lang={currentLang}
-        langHref={alternateLangHref}
-        skipToHref="#main-content"
-      >
-        <GcdsBreadcrumbs slot="breadcrumb">
-          {/* Add breadcrumb items as needed */}
-        </GcdsBreadcrumbs>
+
+      <GcdsHeader lang={currentLang} langHref={alternateLangHref} skipToHref="#main-content">
+        <GcdsBreadcrumbs slot="breadcrumb">{/* Add breadcrumb items as needed */}</GcdsBreadcrumbs>
       </GcdsHeader>
 
       <main id="main-content">
@@ -51,64 +52,57 @@ const AppLayout = () => {
         <Outlet />
       </main>
 
-      <GcdsFooter 
-        display='compact'
-        lang={currentLang}
-      />
+      <GcdsFooter display="compact" lang={currentLang} />
     </>
   );
 };
 
-const router = createBrowserRouter(
-  [
-    {
-      element: <AppLayout />,
-      children: [
-        {
-          path: "/",
-          element: <HomePage lang="en" />,
-        },
-        {
-          path: "/en",
-          element: <HomePage lang="en" />,
-        },
-        {
-          path: "/en/admin",
-          element: <AdminPage lang="en" />,
-        },
-        {
-          path: "/en/batch",
-          element: <EvaluationPage lang="en" />,
-        },
-        {
-          path: "/fr",
-          element: <HomePage lang="fr" />,
-        },
-        {
-          path: "/fr/admin",
-          element: <AdminPage lang="fr" />,
-        },
-        {
-          path: "/fr/batch",
-          element: <EvaluationPage lang="fr" />,
-        },
-        {
-          path: "/en/logs",
-          element: <LogPage lang="en" />,
-        },
-        {
-          path: "/fr/logs",
-          element: <LogPage lang="fr" />,
-        },
-      ],
-    },
-  ]
-);
+const router = createBrowserRouter([
+  {
+    element: <AppLayout />,
+    children: [
+      {
+        path: '/',
+        element: <HomePage lang="en" />,
+      },
+      {
+        path: '/en',
+        element: <HomePage lang="en" />,
+      },
+      {
+        path: '/en/admin',
+        element: <AdminPage lang="en" />,
+      },
+      {
+        path: '/en/batch',
+        element: <EvaluationPage lang="en" />,
+      },
+      {
+        path: '/fr',
+        element: <HomePage lang="fr" />,
+      },
+      {
+        path: '/fr/admin',
+        element: <AdminPage lang="fr" />,
+      },
+      {
+        path: '/fr/batch',
+        element: <EvaluationPage lang="fr" />,
+      },
+      {
+        path: '/en/logs',
+        element: <LogPage lang="en" />,
+      },
+      {
+        path: '/fr/logs',
+        element: <LogPage lang="fr" />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

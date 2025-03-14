@@ -22,7 +22,7 @@ const LogPage = () => {
   const tableRef = useRef(null);
   const dataTableRef = useRef(null);
   const [expandedMetadata, setExpandedMetadata] = useState(null);
-  
+
   // Auto-refresh once on initial mount
   useEffect(() => {
     const storedChatId = localStorage.getItem('chatId');
@@ -39,50 +39,48 @@ const LogPage = () => {
         dataTableRef.current.destroy();
         dataTableRef.current = null;
       }
-      
+
       // Initialize DataTable
       dataTableRef.current = $(tableRef.current).DataTable({
         data: logs, // Directly provide data during initialization
         columns: [
-          { 
-            title: 'Created At', 
+          {
+            title: 'Created At',
             data: 'createdAt',
-            render: data => {
+            render: (data) => {
               const date = new Date(data);
               return date.toLocaleString();
-            }
+            },
           },
-          { 
-            title: 'Level', 
+          {
+            title: 'Level',
             data: 'logLevel',
-            render: data => data ?? ''
+            render: (data) => data ?? '',
           },
-          { 
-            title: 'Message', 
+          {
+            title: 'Message',
             data: 'message',
-            render: data => data ?? ''
+            render: (data) => data ?? '',
           },
-          { 
-            title: 'Metadata', 
+          {
+            title: 'Metadata',
             data: 'metadata',
             className: 'metadata-column',
-            
+
             render: (data, type, row, meta) => {
               if (!data) {
                 data = {}; // Default to empty object for consistent formatting
               }
-              
+
               try {
                 let formattedContent = '';
                 let isXML = false;
-                
+
                 if (typeof data === 'string') {
                   // Check if it looks like XML
                   if (data.trim().startsWith('<') && data.trim().endsWith('>')) {
                     isXML = true;
-                    formattedContent = data.replace(/></g, '>\n<')
-                                         .replace(/\s+/g, ' ')
-                                         .trim();
+                    formattedContent = data.replace(/></g, '>\n<').replace(/\s+/g, ' ').trim();
                   } else {
                     // Try parsing as JSON if it's not XML
                     try {
@@ -95,7 +93,7 @@ const LogPage = () => {
                 } else {
                   formattedContent = JSON.stringify(data, null, 2);
                 }
-                
+
                 const escapedContent = formattedContent
                   .replace(/&/g, '&amp;')
                   .replace(/</g, '&lt;')
@@ -116,73 +114,75 @@ const LogPage = () => {
                     </div>
                   </div>`;
               } catch (e) {
-                console.error("Error formatting metadata:", e);
+                console.error('Error formatting metadata:', e);
                 return String(data);
               }
-            }
-          }
+            },
+          },
         ],
         order: [[0, 'desc']],
         scrollX: true, // Enable horizontal scrolling for the whole table
         // Add styling options for the table
-        drawCallback: function() {
+        drawCallback: function () {
           Prism.highlightAll();
-          
+
           // Update styling for metadata containers
           $('.metadata-wrapper').css({
-            'position': 'relative',
+            position: 'relative',
             'min-height': '50px',
             'max-height': '200px',
-            'display': 'flex',
+            display: 'flex',
             'flex-direction': 'column',
-            'width': '750px' // Match the column width
+            width: '750px', // Match the column width
           });
-          
+
           $('.metadata-content').css({
-            'flex': '1',
+            flex: '1',
             'overflow-y': 'auto',
             'overflow-x': 'auto',
-            'position': 'relative',
+            position: 'relative',
             'background-color': '#f5f5f5',
             'border-radius': '4px',
-            'max-width': '900px' // Match the column width
+            'max-width': '900px', // Match the column width
           });
 
           $('.metadata-content pre').css({
-            'margin': '0',
-            'padding': '8px',
+            margin: '0',
+            padding: '8px',
             'min-width': 'fit-content',
-            'width': 'max-content'
+            width: 'max-content',
           });
-          
+
           $('.metadata-content code').css({
             'font-family': 'monospace',
             'font-size': '13px',
             'line-height': '1.4',
-            'white-space': 'pre'
+            'white-space': 'pre',
           });
 
           $('.metadata-actions').css({
-            'padding': '4px 0',
-            'text-align': 'right'
+            padding: '4px 0',
+            'text-align': 'right',
           });
 
           $('.expand-button').css({
             'margin-top': '4px',
             'font-size': '14px',
-            'padding': '4px 8px'
+            padding: '4px 8px',
           });
 
           // Add click handler for expand buttons
-          $('.expand-button').off('click').on('click', function(e) {
-            e.stopPropagation();
-            const rowIdx = $(this).closest('tr').index();
-            const rowData = dataTableRef.current.row(rowIdx).data();
-            setExpandedMetadata(rowData.metadata);
-          });
-        }
+          $('.expand-button')
+            .off('click')
+            .on('click', function (e) {
+              e.stopPropagation();
+              const rowIdx = $(this).closest('tr').index();
+              const rowData = dataTableRef.current.row(rowIdx).data();
+              setExpandedMetadata(rowData.metadata);
+            });
+        },
       });
-      
+
       // No need to add rows here as we're providing the data during initialization
     }
 
@@ -196,39 +196,39 @@ const LogPage = () => {
 
   const handleChatIdChange = (e) => {
     const newValue = e.target ? e.target.value : e;
-    
+
     // If chat ID changes, stop polling and clear the data table
     if (newValue !== chatId) {
       if (isPolling && pollingInterval) {
-        console.log("Stopping polling due to chat ID change");
+        console.log('Stopping polling due to chat ID change');
         clearInterval(pollingInterval);
         setIsPolling(false);
         setPollingInterval(null);
       }
-      
+
       // Properly cleanup DataTable before clearing logs
       if (dataTableRef.current) {
-        console.log("Destroying DataTable instance before changing chat ID");
+        console.log('Destroying DataTable instance before changing chat ID');
         dataTableRef.current.destroy();
         dataTableRef.current = null;
       }
-      
+
       // Clear logs when chat ID changes
       setLogs([]);
     }
-    
+
     setChatId(newValue);
   };
 
   // Explicitly refresh the chat ID from localStorage when button is clicked
   const handleRefreshChatId = () => {
-    console.log("Refreshing chat ID from localStorage");
+    console.log('Refreshing chat ID from localStorage');
     const storedChatId = localStorage.getItem('chatId');
     if (storedChatId) {
-      console.log("Found chat ID in localStorage:", storedChatId);
+      console.log('Found chat ID in localStorage:', storedChatId);
       setChatId(storedChatId);
     } else {
-      console.log("No chat ID found in localStorage");
+      console.log('No chat ID found in localStorage');
     }
   };
 
@@ -239,27 +239,27 @@ const LogPage = () => {
   const fetchLogs = () => {
     // Always use the current state value - never auto-refresh from localStorage
     if (!chatId) {
-      console.log("No chat ID available, cannot fetch logs");
+      console.log('No chat ID available, cannot fetch logs');
       return;
     }
-    
-    console.log("Fetching logs for chat ID:", chatId);
+
+    console.log('Fetching logs for chat ID:', chatId);
     fetch(getApiUrl(`db-log?chatId=${chatId}`))
-      .then(response => response.json())
-      .then(data => {
-        console.log("Logs fetched successfully:", data.logs?.length || 0, "entries");
-        
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Logs fetched successfully:', data.logs?.length || 0, 'entries');
+
         // Simply update the logs state - the useEffect will handle recreating the table
         setLogs(data.logs || []);
       })
-      .catch(error => console.error('Error fetching logs:', error));
+      .catch((error) => console.error('Error fetching logs:', error));
   };
 
   const handleStartStopLogging = () => {
     const newIsPolling = !isPolling;
-    console.log(newIsPolling ? "Starting" : "Stopping", "logging with chat ID:", chatId);
+    console.log(newIsPolling ? 'Starting' : 'Stopping', 'logging with chat ID:', chatId);
     setIsPolling(newIsPolling);
-    
+
     if (!newIsPolling && pollingInterval) {
       clearInterval(pollingInterval);
       setPollingInterval(null);
@@ -300,7 +300,7 @@ const LogPage = () => {
   return (
     <>
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-        <h1 className='mb-400'>Logs Dashboard</h1>
+        <h1 className="mb-400">Logs Dashboard</h1>
         <nav className="mb-400">
           <GcdsText>
             <GcdsLink href={`/${lang}/admin`}>Back to Admin</GcdsLink>
@@ -310,7 +310,9 @@ const LogPage = () => {
         <section className="mb-600">
           <div className="mb-400">
             <div className="">
-              <label htmlFor="chatIdInput" className="block mb-2">Enter Chat ID:</label>
+              <label htmlFor="chatIdInput" className="block mb-2">
+                Enter Chat ID:
+              </label>
               <input
                 id="chatIdInput"
                 name="chatId"
@@ -321,11 +323,7 @@ const LogPage = () => {
                 className="form-control p-2 border rounded w-full"
               />
             </div>
-            <GcdsButton
-              type="button"
-              onClick={handleRefreshChatId}
-              className="mt-4"
-            >
+            <GcdsButton type="button" onClick={handleRefreshChatId} className="mt-4">
               Refresh Chat ID from localStorage
             </GcdsButton>
           </div>
@@ -350,7 +348,9 @@ const LogPage = () => {
                   {isPolling ? t('logging.pause') : t('logging.start')}
                 </GcdsButton>
                 {isPolling && (
-                  <div className="text-green-600 font-medium">Polling active for chat ID: {chatId}</div>
+                  <div className="text-green-600 font-medium">
+                    Polling active for chat ID: {chatId}
+                  </div>
                 )}
               </div>
             )}
@@ -383,8 +383,8 @@ const LogPage = () => {
 
       {/* Modal for expanded metadata */}
       {expandedMetadata && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4" 
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
           style={{
             position: 'fixed',
             top: 0,
@@ -395,10 +395,13 @@ const LogPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 9999,
-            padding: '2rem'
+            padding: '2rem',
           }}
         >
-          <div className="bg-white rounded-lg w-full max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col" style={{ position: 'relative' }}>
+          <div
+            className="bg-white rounded-lg w-full max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col"
+            style={{ position: 'relative' }}
+          >
             <div className="p-4 border-b flex justify-between items-center">
               <h2 className="text-xl font-semibold">Metadata Details</h2>
               <GcdsButton
@@ -410,15 +413,20 @@ const LogPage = () => {
               </GcdsButton>
             </div>
             <div className="p-6 overflow-auto flex-grow">
-              <pre className="whitespace-pre-wrap break-words" style={{ maxWidth: '100%', fontSize: '14px', lineHeight: '1.5' }}>
-                <code className={`language-${
-                  typeof expandedMetadata === 'string' && 
-                  expandedMetadata.trim().startsWith('<') && 
-                  expandedMetadata.trim().endsWith('>') 
-                    ? 'xml' 
-                    : 'json'
-                }`}>
-                  {typeof expandedMetadata === 'string' 
+              <pre
+                className="whitespace-pre-wrap break-words"
+                style={{ maxWidth: '100%', fontSize: '14px', lineHeight: '1.5' }}
+              >
+                <code
+                  className={`language-${
+                    typeof expandedMetadata === 'string' &&
+                    expandedMetadata.trim().startsWith('<') &&
+                    expandedMetadata.trim().endsWith('>')
+                      ? 'xml'
+                      : 'json'
+                  }`}
+                >
+                  {typeof expandedMetadata === 'string'
                     ? expandedMetadata.replace(/\\n/g, '\n')
                     : JSON.stringify(expandedMetadata || {}, null, 2).replace(/\\n/g, '\n')}
                 </code>

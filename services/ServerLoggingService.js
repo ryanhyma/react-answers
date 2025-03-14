@@ -1,5 +1,5 @@
 import { Logs } from '../models/logs.js';
-import dbConnect from '../api/db-connect.js';
+import dbConnect from '../api/db//db-connect.js';
 
 class LogQueue {
     constructor() {
@@ -45,8 +45,8 @@ class LogQueue {
             while (this.queue.length > 0) {
                 const entry = this.queue[0];
                 try {
-                    await this.processLogEntry(entry);
-                    this.queue.shift(); // Remove only after successful processing
+                     await this.processLogEntry(entry);
+                     this.queue.shift(); // Remove only after successful processing
                 } catch (error) {
                     console.error('Error processing log entry:', error);
                     // Move failed entry to end of queue to retry later
