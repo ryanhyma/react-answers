@@ -29,8 +29,8 @@ const ChatAppContainer = ({ lang = 'en', chatId }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [textareaKey, setTextareaKey] = useState(0);
-  const [selectedAI, setSelectedAI] = useState('azure'); //Changed from on Jan 10 2025
-  const [selectedSearch, setSelectedSearch] = useState('canadaca'); 
+  const [selectedAI, setSelectedAI] = useState('openai'); 
+  const [selectedSearch, setSelectedSearch] = useState('google'); 
   const [showFeedback, setShowFeedback] = useState(false);
   const [referringUrl, setReferringUrl] = useState(pageUrl || '');
   const [selectedDepartment, setSelectedDepartment] = useState(urlDepartment || '');

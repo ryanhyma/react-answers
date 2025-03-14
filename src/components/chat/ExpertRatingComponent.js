@@ -63,14 +63,6 @@ const ExpertRatingComponent = ({
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (
-      expertFeedback.expertCitationUrl &&
-      !isValidGovernmentUrl(expertFeedback.expertCitationUrl)
-    ) {
-      console.error(t('homepage.expertRating.errors.invalidUrl'));
-      return;
-    }
-
     const totalScore = computeTotalScore(expertFeedback);
     const feedbackWithScore = {
       ...expertFeedback,
@@ -79,15 +71,6 @@ const ExpertRatingComponent = ({
 
     console.log('Submitting expert feedback:', feedbackWithScore);
     onSubmit(feedbackWithScore);
-  };
-
-  const isValidGovernmentUrl = (url) => {
-    try {
-      const urlObject = new URL(url);
-      return urlObject.hostname.includes('canada.ca') || urlObject.hostname.includes('gc.ca');
-    } catch {
-      return false;
-    }
   };
 
   const computeTotalScore = (feedback) => {
