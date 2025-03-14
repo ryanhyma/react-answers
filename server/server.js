@@ -30,6 +30,7 @@ import dbCheckhandler from '../api/db-check.js';
 import dbPersistInteraction from '../api/db-persist-interaction.js';
 import dbPersistFeedback from '../api/db-persist-feedback.js';
 import dbLogHandler from '../api/db-log.js';
+import signupHandler from '../api/auth-signup.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -67,6 +68,10 @@ if (process.env.REACT_APP_ENV === 'development') {
   console.log('Running in production mode');
 }
 
+// Auth routes
+app.post('/api/signup', signupHandler);
+
+// Existing routes
 app.post('/api/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db-chat-session', dbChatSessionHandler);
