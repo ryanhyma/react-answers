@@ -34,7 +34,7 @@ import dbPersistFeedback from '../api/db/db-persist-feedback.js';
 import dbLogHandler from '../api/db/db-log.js';
 import signupHandler from '../api/db/db-auth-signup.js';
 import loginHandler from '../api/db/db-auth-login.js';
-import { connectDB } from '../api/db/db-connect.js';
+import dbConnect from '../api/db/db-connect.js';
 import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
 import { User } from '../models/user.js';
 
@@ -48,7 +48,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // Connect to MongoDB
-connectDB();
+dbConnect();
 
 // Logging middleware
 app.use((req, res, next) => {
