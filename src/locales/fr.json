@@ -233,5 +233,20 @@
     "chatLogs": {
       "title": "Journaux d'interaction de chat"
     }
+  },
+  "signup": {
+    "title": "S'inscrire",
+    "form": {
+      "username": "Nom d'utilisateur :",
+      "password": "Mot de passe :",
+      "submit": "S'inscrire",
+      "submitting": "Inscription en cours..."
+    },
+    "messages": {
+      "success": "Inscription réussie ! Vous pouvez maintenant",
+      "error": "Une erreur s'est produite lors de l'inscription",
+      "failed": "L'inscription a échoué",
+      "loginLink": "vous connecter à votre compte"
+    }
   }
 }

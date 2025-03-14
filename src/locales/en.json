@@ -231,5 +231,20 @@
     "chatLogs": {
       "title": "Chat interaction logs"
     }
+  },
+  "signup": {
+    "title": "Sign Up",
+    "form": {
+      "username": "Username:",
+      "password": "Password:",
+      "submit": "Sign Up",
+      "submitting": "Signing up..."
+    },
+    "messages": {
+      "success": "Signup successful! You can now",
+      "error": "An error occurred during signup",
+      "failed": "Signup failed",
+      "loginLink": "log in to your account"
+    }
   }
 }
