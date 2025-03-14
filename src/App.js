@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import EvaluationPage from './pages/BatchPage.js';
 import LogPage from './pages/LogPage.js';
+import SignupPage from './pages/SignupPage.js';
 import { GcdsHeader, GcdsBreadcrumbs, GcdsBreadcrumbsItem, GcdsFooter } from '@cdssnc/gcds-components-react';
 import './styles/App.css';
 
@@ -73,6 +74,10 @@ const router = createBrowserRouter(
           element: <HomePage lang="en" />,
         },
         {
+          path: "/en/signup",
+          element: <SignupPage lang="en" />,
+        },
+        {
           path: "/en/admin",
           element: <AdminPage lang="en" />,
         },
@@ -91,6 +96,10 @@ const router = createBrowserRouter(
         {
           path: "/fr/batch",
           element: <EvaluationPage lang="fr" />,
+        },
+        {
+          path: "/fr/signup",
+          element: <SignupPage lang="fr" />,
         },
         {
           path: "/en/logs",
