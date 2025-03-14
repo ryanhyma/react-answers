@@ -5,10 +5,5 @@
     { "source": "/api/azure/:path*", "destination": "/api/:path*" },
     { "source": "/api/db/:path*", "destination": "/api/:path*" },
     { "source": "/api/search/:path*", "destination": "/api/:path*" }
-  ],
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "@vercel/node@18"
-    }
-  }
+  ]
 }
