@@ -71,11 +71,11 @@ class DataStoreService {
 
   static async persistInteraction(interactionData) {
     try {
+      
       const response = await fetch(getApiUrl('db-persist-interaction'), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          ...AuthService.getAuthHeader()
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(interactionData)
       });
@@ -93,8 +93,7 @@ class DataStoreService {
       const response = await fetch(getApiUrl('db-persist-feedback'), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          ...AuthService.getAuthHeader()
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(feedbackData)
       });
