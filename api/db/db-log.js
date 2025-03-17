@@ -1,6 +1,11 @@
 import ServerLoggingService from '../../services/ServerLoggingService.js';
+import { authMiddleware, adminMiddleware } from '../../middleware/auth.js';
 
 export default async function handler(req, res) {
+    // Verify authentication and admin status
+    if (!await authMiddleware(req, res)) return;
+    if (!adminMiddleware(req, res)) return;
+
     if (req.method === 'POST') {
         try {
             const { chatId, logLevel, message, metadata } = req.body;
