@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage.js';
 import { GcdsHeader, GcdsBreadcrumbs, GcdsFooter } from '@cdssnc/gcds-components-react';
 import AuthService from './services/AuthService.js';
 import './styles/App.css';
+import UsersPage from './pages/UsersPage.js';
 
 // Helper function to get alternate language path
 const getAlternatePath = (currentPath, currentLang) => {
@@ -126,6 +127,14 @@ const router = createBrowserRouter([
       {
         path: "/fr/logs",
         element: <ProtectedRoute element={<LogPage lang="fr" />} />,
+      },
+      {
+        path: "/en/users",
+        element: <ProtectedRoute element={<UsersPage lang="en" />} />,
+      },
+      {
+        path: "/fr/users",
+        element: <ProtectedRoute element={<UsersPage lang="fr" />} />,
       },
     ],
   },
