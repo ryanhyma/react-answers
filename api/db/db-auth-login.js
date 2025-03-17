@@ -1,10 +1,11 @@
 import { User } from '../../models/user.js';
 import { generateToken } from '../../middleware/auth.js';
+import dbConnect from './db-connect.js';
 
 const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    await dbConnect();
     // Basic validation
     if (!email || !password) {
       return res.status(400).json({ 
@@ -19,6 +20,14 @@ const loginHandler = async (req, res) => {
       return res.status(401).json({ 
         success: false, 
         message: 'Invalid credentials' 
+      });
+    }
+
+    // Check if user is active
+    if (!user.active) {
+      return res.status(403).json({
+        success: false,
+        message: 'Account is deactivated'
       });
     }
 
@@ -42,6 +51,7 @@ const loginHandler = async (req, res) => {
       user: {
         email: user.email,
         role: user.role,
+        active: user.active,
         createdAt: user.createdAt
       }
     });
