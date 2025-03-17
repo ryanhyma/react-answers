@@ -11,11 +11,12 @@ export const generateToken = (user) => {
   );
 };
 
-export const authMiddleware = async (req, res, next) => {
+const verifyAuth = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'No token provided' });
+      res.status(401).json({ message: 'No token provided' });
+      return false;
     }
 
     const token = authHeader.split(' ')[1];
@@ -23,19 +24,35 @@ export const authMiddleware = async (req, res, next) => {
     
     const user = await User.findById(decoded.userId);
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      res.status(401).json({ message: 'User not found' });
+      return false;
     }
 
     req.user = decoded;
-    next();
+    return true;
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
+    res.status(401).json({ message: 'Invalid token' });
+    return false;
   }
 };
 
-export const adminMiddleware = (req, res, next) => {
+const verifyAdmin = (req, res) => {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access required' });
+    res.status(403).json({ message: 'Admin access required' });
+    return false;
   }
-  next();
+  return true;
 };
+
+export const withProtection = (handler, ...middleware) => {
+  return async (req, res) => {
+    for (const mw of middleware) {
+      const result = await mw(req, res);
+      if (!result) return;
+    }
+    return handler(req, res);
+  };
+};
+
+export const authMiddleware = verifyAuth;
+export const adminMiddleware = verifyAdmin;
