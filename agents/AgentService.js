@@ -165,7 +165,6 @@ const createContextAgent = async (agentType, chatId = 'system') => {
         apiKey: process.env.AZURE_OPENAI_API_KEY,
         azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
         azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-        azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || 'openai-gpt4o-mini',
         modelName: azureConfig.name,
         temperature: azureConfig.temperature,
         maxTokens: azureConfig.maxTokens,
