@@ -9,16 +9,33 @@ class AuthService {
     return localStorage.getItem('token');
   }
 
+  static setUser(user) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  static getUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  }
+
   static removeToken() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   static isAuthenticated() {
-    return !!this.getToken();
+    const token = this.getToken();
+    const user = this.getUser();
+    return !!token && !!user && user.active;
+  }
+
+  static isAdmin() {
+    const user = this.getUser();
+    return !!user && user.role === 'admin';
   }
 
   static async signup(email, password) {
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetch(getApiUrl('db-auth-signup'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,11 +49,12 @@ class AuthService {
 
     const data = await response.json();
     this.setToken(data.token);
+    this.setUser(data.user);
     return data;
   }
 
   static async login(email, password) {
-    const response = await fetch('/api/auth/login', {
+    const response = await fetch(getApiUrl('db-auth-login'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,6 +68,7 @@ class AuthService {
 
     const data = await response.json();
     this.setToken(data.token);
+    this.setUser(data.user);
     return data;
   }
 

@@ -1,4 +1,4 @@
-import { getApiUrl } from '../utils/apiToUrl.js';
+import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 import AuthService from './AuthService.js';
 
 class DataStoreService {
@@ -131,6 +131,76 @@ class DataStoreService {
       return await response.json();
     } catch (error) {
       console.error('Error getting chat logs:', error);
+      throw error;
+    }
+  }
+
+  static async getLogs(chatId) {
+    try {
+      const response = await fetch(getApiUrl(`db-log?chatId=${chatId}`), {
+        headers: AuthService.getAuthHeader()
+      });
+      
+      if (!response.ok) throw new Error('Failed to get logs');
+      return await response.json();
+    } catch (error) {
+      console.error('Error getting logs:', error);
+      throw error;
+    }
+  }
+
+  static async getBatchStatus(batchId, aiProvider) {
+    try {
+      const response = await fetch(
+        getProviderApiUrl(aiProvider, `batch-status?batchId=${batchId}`),
+        {
+          headers: AuthService.getAuthHeader()
+        }
+      );
+      const data = await response.json();
+      return { batchId, status: data.status };
+    } catch (error) {
+      console.error(`Error fetching status for batch ${batchId}:`, error);
+      return { batchId, status: 'Error' };
+    }
+  }
+
+  static async cancelBatch(batchId, aiProvider) {
+    try {
+      const response = await fetch(
+        getProviderApiUrl(aiProvider, `batch-cancel?batchId=${batchId}`),
+        {
+          headers: AuthService.getAuthHeader()
+        }
+      );
+      if (!response.ok) throw new Error('Failed to cancel batch');
+      return await response.json();
+    } catch (error) {
+      console.error('Error canceling batch:', error);
+      throw error;
+    }
+  }
+
+  static async getBatchStatuses(batches) {
+    try {
+      const statusPromises = batches.map(async (batch) => {
+        if (!batch.status || batch.status !== 'processed') {
+          const statusResult = await this.getBatchStatus(batch.batchId, batch.aiProvider);
+          if (statusResult.status === 'not_found') {
+            await this.cancelBatch(batch.batchId, batch.aiProvider);
+          }
+          return statusResult;
+        } else {
+          return Promise.resolve({ batchId: batch.batchId, status: batch.status });
+        }
+      });
+      const statusResults = await Promise.all(statusPromises);
+      return batches.map((batch) => {
+        const statusResult = statusResults.find((status) => status.batchId === batch.batchId);
+        return { ...batch, status: statusResult ? statusResult.status : 'Unknown' };
+      });
+    } catch (error) {
+      console.error('Error fetching statuses:', error);
       throw error;
     }
   }

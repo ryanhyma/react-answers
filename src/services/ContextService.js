@@ -2,6 +2,7 @@
 import loadContextSystemPrompt from './contextSystemPrompt.js';
 import { getProviderApiUrl, getApiUrl } from '../utils/apiToUrl.js';
 import LoggingService from './ClientLoggingService.js';
+import AuthService from './AuthService.js';
 
 const ContextService = {
   prepareMessage: async (
@@ -233,6 +234,7 @@ const ContextService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...AuthService.getAuthHeader()
         },
         body: JSON.stringify({
           requests,
