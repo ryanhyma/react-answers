@@ -223,55 +223,17 @@
     "pause": "Pause"
   },
   "admin": {
-    "title": "Administration",
+    "title": "Tableau de bord d'administration",
     "navigation": {
-      "ariaLabel": "Sur cette page",
-      "title": "Sur cette page",
-      "viewLogs": "Voir les journaux",
-      "useApp": "Utiliser l'application"
+      "ariaLabel": "Navigation administrateur",
+      "title": "Menu administrateur",
+      "aiAnswers": "Réponses IA",
+      "batches": "Lots",
+      "users": "Gestion des utilisateurs",
+      "logs": "Journaux de chat"
     },
     "chatLogs": {
-      "title": "Journaux d'interaction de chat"
-    }
-  },
-  "signup": {
-    "title": "S'inscrire",
-    "form": {
-      "username": "Nom d'utilisateur :",
-      "password": "Mot de passe :",
-      "submit": "S'inscrire",
-      "submitting": "Inscription en cours..."
-    },
-    "messages": {
-      "success": "Inscription réussie ! Vous pouvez maintenant",
-      "error": "Une erreur s'est produite lors de l'inscription",
-      "failed": "L'inscription a échoué",
-      "loginLink": "vous connecter à votre compte"
-    }
-  },
-  "login": {
-    "title": "Connexion",
-    "messages": {
-      "success": "Connexion réussie",
-      "failed": "Échec de la connexion. Veuillez réessayer.",
-      "signupLink": "Vous n'avez pas de compte ? Inscrivez-vous"
-    },
-    "form": {
-      "username": "Nom d'utilisateur",
-      "password": "Mot de passe",
-      "submit": "Se connecter",
-      "submitting": "Connexion en cours...",
-      "signupLink": "Besoin d'un compte ? Inscrivez-vous ici"
-    }
-  },
-  "login": {
-    "title": "Connexion",
-    "email": "Courriel",
-    "password": "Mot de passe",
-    "submit": "Se connecter",
-    "invalidCredentials": "Courriel ou mot de passe invalide",
-    "form": {
-      "submitting": "Connexion en cours..."
+      "title": "Interactions de chat récentes"
     }
   },
   "signup": {
@@ -283,7 +245,44 @@
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "errorOccurred": "Une erreur est survenue lors de l'inscription",
     "form": {
-      "submitting": "Création du compte..."
+      "submitting": "Création du compte...",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe"
+    },
+    "messages": {
+      "success": "Inscription réussie ! Vous pouvez maintenant",
+      "error": "Une erreur s'est produite lors de l'inscription",
+      "failed": "L'inscription a échoué",
+      "loginLink": "vous connecter à votre compte"
+    }
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "invalidCredentials": "Courriel ou mot de passe invalide",
+    "form": {
+      "submitting": "Connexion en cours...",
+      "signupLink": "Besoin d'un compte ? Inscrivez-vous ici"
+    }
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "columns": {
+      "email": "Courriel",
+      "role": "Rôle",
+      "status": "Statut",
+      "createdAt": "Créé le",
+      "action": "Action"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "actions": {
+      "activate": "Activer",
+      "deactivate": "Désactiver"
     }
   }
 }
