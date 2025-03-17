@@ -221,45 +221,17 @@
     "pause": "Pause"
   },
   "admin": {
-    "title": "Admin",
+    "title": "Admin Dashboard",
     "navigation": {
-      "ariaLabel": "On this page",
-      "title": "On this page",
-      "viewLogs": "View Logs",
-      "useApp": "Use the app"
+      "ariaLabel": "Admin Navigation",
+      "title": "Admin Menu",
+      "aiAnswers": "AI Answers",
+      "batches": "Batches",
+      "users": "User Management", 
+      "logs": "Chat Logs"
     },
     "chatLogs": {
-      "title": "Chat interaction logs"
-    }
-  },
-  "signup": {
-    "title": "Sign Up",
-    "form": {
-      "username": "Username:",
-      "password": "Password:",
-      "submit": "Sign Up",
-      "submitting": "Signing up..."
-    },
-    "messages": {
-      "success": "Signup successful! You can now",
-      "error": "An error occurred during signup",
-      "failed": "Signup failed",
-      "loginLink": "log in to your account"
-    }
-  },
-  "login": {
-    "title": "Login",
-    "messages": {
-      "success": "Login successful",
-      "failed": "Login failed. Please try again.",
-      "signupLink": "Don't have an account? Sign up"
-    },
-    "form": {
-      "username": "Username",
-      "password": "Password",
-      "submit": "Login",
-      "submitting": "Logging in...",
-      "signupLink": "Need an account? Sign up here"
+      "title": "Recent Chat Interactions"
     }
   },
   "login": {
@@ -269,7 +241,8 @@
     "submit": "Log In",
     "invalidCredentials": "Invalid email or password",
     "form": {
-      "submitting": "Logging in..."
+      "submitting": "Logging in...",
+      "signupLink": "Need an account? Sign up here"
     }
   },
   "signup": {
@@ -281,7 +254,34 @@
     "passwordMismatch": "Passwords do not match",
     "errorOccurred": "An error occurred during signup",
     "form": {
+      "username": "Username:",
+      "password": "Password:",
+      "submit": "Sign Up",
       "submitting": "Creating account..."
+    },
+    "messages": {
+      "success": "Signup successful! You can now",
+      "error": "An error occurred during signup",
+      "failed": "Signup failed",
+      "loginLink": "log in to your account"
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "columns": {
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created At",
+      "action": "Action"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     }
   }
 }
