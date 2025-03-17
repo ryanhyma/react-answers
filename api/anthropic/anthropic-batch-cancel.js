@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Batch } from '../../models/batch.js';
 import dbConnect from '../../api/db/db-connect.js';
-
+import { authMiddleware, adminMiddleware } from '../../middleware/auth.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -14,9 +14,13 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Verify authentication and admin status
+  if (!await authMiddleware(req, res)) return;
+  if (!await adminMiddleware(req, res)) return;
+
   const { batchId } = req.query;
   try {
-    
     if (!batchId) {
       return res.status(400).json({ error: 'Batch ID is required' });
     }
