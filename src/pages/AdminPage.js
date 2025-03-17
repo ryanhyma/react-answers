@@ -1,35 +1,45 @@
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations.js';
-import { GcdsContainer, GcdsText, GcdsLink } from '@cdssnc/gcds-components-react';
+import { GcdsContainer, GcdsLink } from '@cdssnc/gcds-components-react';
 import { usePageContext } from '../hooks/usePageParam.js';
 import ChatLogsDashboard from '../components/admin/ChatLogsDashboard.js';
 
 const AdminPage = () => {
   const { t } = useTranslations();
-  const { lang } = usePageContext();
+  const { language } = usePageContext();
 
   return (
     <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
-      <h1 className="mb-400">{t('admin.title', 'Admin')}</h1>
-      <nav className="mb-400" aria-label={t('admin.navigation.ariaLabel', 'On this page')}>
-        <h2 className="mt-400 mb-400">{t('admin.navigation.title', 'On this page')}</h2>
-        <ul>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href={`/${lang}/logs`}>
-                {t('admin.navigation.viewLogs', 'View Logs')}
-              </GcdsLink>
-            </GcdsText>
+      <h1 className="mb-400">{t('admin.title', 'Admin Dashboard')}</h1>
+      
+      <nav className="mb-400" aria-label={t('admin.navigation.ariaLabel', 'Admin Navigation')}>
+        <h2 className="mt-400 mb-400">{t('admin.navigation.title', 'Admin Menu')}</h2>
+        <ul className="list-none p-0">
+          <li className="">
+            <GcdsLink href={`/${language}`}>
+              {t('admin.navigation.aiAnswers', 'AI Answers')}
+            </GcdsLink>
           </li>
-          <li className="mb-400">
-            <GcdsText>
-              <GcdsLink href={`/${lang}`}>{t('admin.navigation.useApp', 'Use the app')}</GcdsLink>
-            </GcdsText>
+          <li className="">
+            <GcdsLink href={`/${language}/batch`}>
+              {t('admin.navigation.batches', 'Batches')}
+            </GcdsLink>
+          </li>
+          <li className="">
+            <GcdsLink href={`/${language}/users`}>
+              {t('admin.navigation.users', 'User Management')}
+            </GcdsLink>
+          </li>
+          <li className="">
+            <GcdsLink href={`/${language}/logs`}>
+              {t('admin.navigation.logs', 'Chat Logs')}
+            </GcdsLink>
           </li>
         </ul>
       </nav>
+
       <section id="chat-logs" className="mb-600">
-        <h2 className="mt-400 mb-400">{t('admin.chatLogs.title', 'Chat interaction logs')}</h2>
+        <h2 className="mt-400 mb-400">{t('admin.chatLogs.title', 'Recent Chat Interactions')}</h2>
         <ChatLogsDashboard />
       </section>
     </GcdsContainer>

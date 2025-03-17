@@ -5,12 +5,15 @@ import BatchList from '../components/batch/BatchList.js';
 import { getApiUrl, getProviderApiUrl } from '../utils/apiToUrl.js';
 import { useTranslations } from '../hooks/useTranslations.js';
 import ExportService from '../services/ExportService.js';
+import AuthService from '../services/AuthService.js';
 
 const BatchPage = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
   const handleDownloadClick = async (batchId, type) => {
     console.log('Button clicked for batch:', batchId);
-    const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`));
+    const response = await fetch(getApiUrl(`db-batch-retrieve?batchId=${batchId}`), {
+      headers: AuthService.getAuthHeader()
+    });
     const batch = await response.json();
     const batches = [batch];
     const fileName = `${batch.name}-${batch.type}.${type === 'excel' ? 'xlsx' : 'csv'}`;
@@ -20,10 +23,14 @@ const BatchPage = ({ lang = 'en' }) => {
   const handleCompleteCancelClick = async (batchId, action, provider) => {
     if (action === 'cancel') {
       console.log('Button clicked to cancel batch:', batchId);
-      await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`));
+      await fetch(getProviderApiUrl(provider, `batch-cancel?batchId=${batchId}`), {
+        headers: AuthService.getAuthHeader()
+      });
     } else {
       console.log('Button clicked to complete batch:', batchId);
-      await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`));
+      await fetch(getProviderApiUrl(provider, `batch-process-results?batchId=${batchId}`), {
+        headers: AuthService.getAuthHeader()
+      });
     }
   };
 
