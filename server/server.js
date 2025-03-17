@@ -63,8 +63,8 @@ app.post("/api/openai-message", openAIHandler);
 app.post("/api/azure-message", azureHandler); // Updated Azure endpoint
 app.post("/api/anthropic-message", anthropicAgentHandler);
 app.post("/api/anthropic-context", anthropicContextAgentHandler);
-app.post("/api/openai/openai-context", azureContextHandler);
-app.post("/api/azure-context", azureContextHandler);
+app.post("/api/openai/openai-context", openAIContextAgentHandler);
+app.post("/api/azure/azure-context", azureContextHandler);
 app.get("/api/db-chat-logs", dbChatLogsHandler);
 app.post("/api/anthropic-batch", anthropicBatchHandler);
 app.post("/api/openai-batch", openAIBatchHandler);
