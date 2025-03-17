@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthService from '../services/AuthService.js';
 import { useTranslations } from '../hooks/useTranslations.js';
-import '../styles/auth.css';
+import styles from '../styles/auth.module.css';
 
 const LoginPage = ({ lang = 'en' }) => {
   const { t } = useTranslations(lang);
@@ -26,11 +26,11 @@ const LoginPage = ({ lang = 'en' }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className={styles.login_container}>
       <h1>{t('login.title')}</h1>
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className={styles.error_message}>{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className={styles.form_group}>
           <label htmlFor="email">{t('login.email')}</label>
           <input
             type="email"
@@ -41,7 +41,7 @@ const LoginPage = ({ lang = 'en' }) => {
             disabled={isLoading}
           />
         </div>
-        <div className="form-group">
+        <div className={styles.form_group}>
           <label htmlFor="password">{t('login.password')}</label>
           <input
             type="password"
@@ -52,12 +52,12 @@ const LoginPage = ({ lang = 'en' }) => {
             disabled={isLoading}
           />
         </div>
-        <button type="submit" disabled={isLoading}>
+        <button type="submit" disabled={isLoading} className={styles.submit_button}>
           {isLoading ? t('login.form.submitting') : t('login.submit')}
         </button>
       </form>
-      <div className="auth-links">
-        <Link to={`/${lang}/signup`}>{t('login.signupLink')}</Link>
+      <div className={styles['auth-links']}>
+        <Link to={`/${lang}/signup`}>{t('login.form.signupLink')}</Link>
       </div>
     </div>
   );
