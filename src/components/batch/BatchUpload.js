@@ -5,7 +5,6 @@ import { GcdsContainer, GcdsHeading, GcdsText } from '@cdssnc/gcds-components-re
 import MessageService from '../../services/AnswerService.js';
 import ContextService from '../../services/ContextService.js';
 import '../../styles/App.css';
-import AdminCodeInput from '../admin/AdminCodeInput.js';
 import * as XLSX from 'xlsx';
 
 const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
@@ -19,11 +18,8 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
   const [batchId, setBatchId] = useState(null);
   const [batchStatus, setBatchStatus] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [adminCode, setAdminCode] = useState('');
   const [batchName, setBatchName] = useState('');
   const [selectedSearch, setSelectedSearch] = useState('google');
-
-  const correctAdminCode = '2024';
 
   const handleFileChange = (event) => {
     setError(null);
@@ -56,10 +52,6 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
     setSelectedLanguage(e.target.value);
   };
 
-  const handleAdminCodeChange = (e) => {
-    setAdminCode(e.target.value);
-  };
-
   const handleBatchNameChange = (e) => {
     setBatchName(e.target.value);
   };
@@ -69,6 +61,11 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
     if (!processing) {
       if (!file) {
         setError('Please select a file first');
+        return;
+      }
+
+      if (!batchName.trim()) {
+        setError(t('batch.upload.error.nameRequired') || 'Please enter a batch name');
         return;
       }
 
@@ -260,12 +257,6 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
           </ul>
 
           <form onSubmit={handleUpload} className="mt-400">
-            <AdminCodeInput
-              code={adminCode}
-              onChange={handleAdminCodeChange}
-              correctCode={correctAdminCode}
-              label={t('batch.upload.adminCode')}
-            />
             <div className="mrgn-bttm-20">
               <label htmlFor="batchName" className="mrgn-bttm-10 display-block">
                 {t('batch.upload.batchName')}
@@ -276,6 +267,8 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
                 value={batchName}
                 onChange={handleBatchNameChange}
                 className="mrgn-bttm-10"
+                required
+                aria-required="true"
               />
             </div>
 
@@ -406,11 +399,7 @@ const BatchUpload = ({ lang, selectedEntries, ...otherProps }) => {
             {error && <div className="error-message mrgn-bttm-10 red">{error}</div>}
 
             {file && !fileUploaded && (
-              <button
-                type="submit"
-                className="primary-button force-style-button"
-                disabled={adminCode !== correctAdminCode}
-              >
+              <button type="submit" className="primary-button force-style-button">
                 {t('batch.upload.buttons.upload')}
               </button>
             )}
