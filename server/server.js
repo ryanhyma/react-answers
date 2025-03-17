@@ -35,6 +35,7 @@ import dbLogHandler from '../api/db/db-log.js';
 import signupHandler from '../api/db/db-auth-signup.js';
 import loginHandler from '../api/db/db-auth-login.js';
 import dbConnect from '../api/db/db-connect.js';
+import dbUsersHandler from '../api/db/db-users.js';
 import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
 import { User } from '../models/user.js';
 
@@ -68,47 +69,6 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-// Auth routes
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const token = generateToken(user);
-    res.json({ token, user: { email: user.email, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-app.post('/api/auth/signup', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    if (await User.findOne({ email })) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    const user = new User({ email, password });
-    await user.save();
-
-    const token = generateToken(user);
-    res.status(201).json({ token, user: { email: user.email, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Protected routes
-app.use('/api/admin/*', authMiddleware, adminMiddleware);
-app.use('/api/batch/*', authMiddleware);
-app.use('/api/logs/*', authMiddleware);
-
-// small change to force reployment
 app.post('/api/db/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db/db-chat-session', dbChatSessionHandler);
@@ -121,6 +81,7 @@ app.get('/api/db/db-log', dbLogHandler);
 app.get('/api/db/db-chat-logs', dbChatLogsHandler);
 app.post('/api/db/db-auth-signup', signupHandler);
 app.post('/api/db/db-auth-login', loginHandler);
+app.all('/api/db/db-users', dbUsersHandler);
 
 app.post("/api/openai/openai-message", openAIHandler);
 app.post("/api/openai/openai-context", openAIContextAgentHandler);
