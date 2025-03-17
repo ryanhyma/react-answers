@@ -5,6 +5,7 @@ import AnswerService from '../../src/services/AnswerService.js';
 import { Answer } from '../../models/answer.js';
 import { Context } from '../../models/context.js';
 import { createDirectAzureOpenAIClient } from '../../agents/AgentService.js';
+import { authMiddleware, adminMiddleware } from '../../middleware/auth.js';
 
 const handleAzure = async (batch) => {
   let logString = '';
@@ -38,6 +39,10 @@ const handleAzure = async (batch) => {
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
+    // Verify authentication and admin status
+    if (!await authMiddleware(req, res)) return;
+    if (!await adminMiddleware(req, res)) return;
+
     try {
       const { batchId } = req.query;
 
