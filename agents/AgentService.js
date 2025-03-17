@@ -162,10 +162,10 @@ const createContextAgent = async (agentType, chatId = 'system') => {
     case 'azure':
       const azureConfig = getModelConfig('azure');
       llm = new AzureChatOpenAI({
-        apiKey: process.env.AZURE_OPENAI_API_KEY,
-        azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
-        azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
-        modelName: azureConfig.name,
+        azureApiKey: process.env.AZURE_OPENAI_API_KEY,
+        azureEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+        apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-06-01',
+        deployment_name: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || `openai-${azureConfig.name}`,
         temperature: azureConfig.temperature,
         maxTokens: azureConfig.maxTokens,
         timeout: azureConfig.timeoutMs,
