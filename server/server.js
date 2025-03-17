@@ -65,6 +65,8 @@ app.post("/api/anthropic-message", anthropicAgentHandler);
 app.post("/api/anthropic-context", anthropicContextAgentHandler);
 app.post("/api/openai/openai-context", openAIContextAgentHandler);
 app.post("/api/azure/azure-context", azureContextHandler);
+app.post("/api/openai/openai-context", azureContextHandler);
+app.post("/api/azure-context", azureContextHandler);
 app.get("/api/db-chat-logs", dbChatLogsHandler);
 app.post("/api/anthropic-batch", anthropicBatchHandler);
 app.post("/api/openai-batch", openAIBatchHandler);
@@ -100,7 +102,6 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
 
 fetch("http://localhost:3001/health")
   .then((response) => response.json())
