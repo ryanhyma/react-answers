@@ -96,9 +96,11 @@ app.get("/api/db-log", dbLogHandler);
 app.post("/api/db-log", dbLogHandler);
 
 const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 fetch("http://localhost:3001/health")
   .then((response) => response.json())
