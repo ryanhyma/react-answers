@@ -1,8 +1,11 @@
 import { User } from '../../models/user.js';
 import { generateToken } from '../../middleware/auth.js';
+import dbConnect from './db-connect.js';
 
 const signupHandler = async (req, res) => {
   try {
+
+    await dbConnect();
     const { email, password } = req.body;
 
     // Basic validation
@@ -22,8 +25,17 @@ const signupHandler = async (req, res) => {
       });
     }
 
-    // Create new user
-    const user = new User({ email, password });
+    // Check if this is the first user
+    const userCount = await User.countDocuments();
+    const isFirstUser = userCount === 0;
+
+    // Create new user (automatically active if first user)
+    const user = new User({ 
+      email, 
+      password,
+      role: "admin",
+      active: isFirstUser // First user is automatically active
+    });
     await user.save();
 
     // Generate JWT token
@@ -32,11 +44,14 @@ const signupHandler = async (req, res) => {
     // Return success with token and user data
     res.status(201).json({
       success: true,
-      message: 'User created successfully',
+      message: isFirstUser 
+        ? 'User created successfully as admin.' 
+        : 'User created successfully. Account requires activation by an administrator.',
       token,
       user: {
         email: user.email,
         role: user.role,
+        active: user.active,
         createdAt: user.createdAt
       }
     });
