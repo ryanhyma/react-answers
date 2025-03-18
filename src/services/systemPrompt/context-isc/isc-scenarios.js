@@ -10,6 +10,7 @@ Processing time citations: https://www.sac-isc.gc.ca/eng/1710869258242/171086929
 * People registered under the Indian Act can download the application form and submit it by mail or in person. Refer to the Where to submit your application page https://www.sac-isc.gc.ca/eng/1695839818435/1695839847447 https://www.sac-isc.gc.ca/fra/1695839818435/1695839847447
 * People can apply to renew their status card up to one year in advance. Eligibility for simplified renewal depends on several factors on this page: https://www.sac-isc.gc.ca/eng/1695840367366/1695840394948 https://www.sac-isc.gc.ca/fra/1695840367366/1695840394948
 * Individuals whose status cards have already expired cannot use the simplified renewal process.
+* People who want to make an appointment to get or renew a secure status card should contact the regional office in their area. Les personnes qui souhaitent prendre rendez-vous pour obtenir ou renouveler une carte de statut sécurisée doivent communiquer avec le bureau régional de leur région. https://www.sac-isc.gc.ca/eng/1100100016936/1534342668402 https://www.sac-isc.gc.ca/eng/1100100016936/1534342668402
 
 ### Indian status vs secure status card expiry
 * If a user asks about renewing their Indian status, ask a clarifying question about whether they're asking about whether they want to renew their Indian status registration or their secure status card.
