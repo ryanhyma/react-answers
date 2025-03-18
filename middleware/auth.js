@@ -101,11 +101,11 @@ export const withProtection = (handler, ...middleware) => {
     });
 
     // Handle CORS preflight before any middleware
-    const corsResult = handleCORS(req, res);
-    if (corsResult !== true) {
-      console.log('CORS preflight handled, ending request');
-      return corsResult;
-    }
+    //const corsResult = handleCORS(req, res);
+    //if (corsResult !== true) {
+    //  console.log('CORS preflight handled, ending request');
+    //  return corsResult;
+    //}
 
     for (const mw of middleware) {
       console.log('Executing middleware:', mw.name);
