@@ -36,8 +36,7 @@ import signupHandler from '../api/db/db-auth-signup.js';
 import loginHandler from '../api/db/db-auth-login.js';
 import dbConnect from '../api/db/db-connect.js';
 import dbUsersHandler from '../api/db/db-users.js';
-import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
-import { User } from '../models/user.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
