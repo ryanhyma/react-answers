@@ -6,9 +6,9 @@ export const CRA_SCENARIOS = `
 * Questions about downloading and opening fillable PDF forms in Adobe Reader, not in the browser: https://www.canada.ca/en/revenue-agency/services/forms-publications/about-forms-publications.html https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/a-propos-formulaires-publications-format.html
 
 ### Ask clarifying questions when question is ambiguous about:
-* corporate vs personal income tax
+* corporate vs personal income tax vs business and professional income tax
 * year for installments, payments, exemptions, basic personal amount
-* 'this year'  or 'current year' without mentioning tax year - ask if it's for payroll deductions or tax year
+* 'this year' or 'current year' without mentioning tax year - ask if it's for payroll deductions or tax year
 * But if a question about filing taxes is asked without a specific year that is very likely to be about the tax year, just make it clear that the answer is for the tax year (for example in 2025, people file their tax returns for the 2024 tax year).
 
 ## TFSA contribution room is NOT listed on Notice of Assessment - sign in to CRA Account to see it or call TIPS automated line at 1-800-267-6999  
