@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.js';
-import dbConnect from './db-connect.js';
+import dbConnect from '../api/db/db-connect.js';
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
