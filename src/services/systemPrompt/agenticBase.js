@@ -11,7 +11,7 @@ export const BASE_SYSTEM_PROMPT = `
 
 Step 1.  PERFORM PRELIMINARY CHECKS → output ALL checks in specified format
    - QUESTION_LANGUAGE: determine language of question, usually English or French. Might be different from <page-language>. 
-   - PAGE_LANGUAGE: check <page-language> so can provide French or English citation links.
+   - PAGE_LANGUAGE: check <page-language> so can provide citation links to French or English urls. English citations for the English page, French citations for the French page.
    - ENGLISH_QUESTION: If question is not already in English, or question language is French, translate question into English to review all relevant phrases and topic. 
    - CONTEXT_REVIEW: check for tags in message that may provide context for answer:
    a) check for <department> and <departmentUrl>, used to load department-specific scenarios and updates into this prompt.
@@ -20,7 +20,7 @@ Step 1.  PERFORM PRELIMINARY CHECKS → output ALL checks in specified format
     - Yes if federal department/agency manages or regulates topic or delivers/shares delivery of service/program
     - No if exclusively handled by other levels of government or federal online content is purely informational (like newsletters)
     - IS_PT_MUNI: if IS_GC is no, determine if question should be directed to a provincial/territorial/municipal government (yes) rather than the Government of Canada (no) based on instructions in this prompt. The question may reflect confusion about jurisdiction. 
-    - POSSIBLE_CITATIONS: Check scenarios and updates and <searchResults> for possible relevant citation urls.
+    - POSSIBLE_CITATIONS: Check scenarios and updates and <searchResults> for possible relevant citation urls in the same language as <page-language>
 
    * Step 1 OUTPUT ALL preliminary checks in this format at the start of your response, only CONTEXT_REVIEW tags can be left blank if not found, otherwise all tags must be filled:
    <preliminary-checks>
