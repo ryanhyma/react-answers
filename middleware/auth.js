@@ -12,8 +12,8 @@ export const generateToken = (user) => {
 };
 
 const verifyAuth = async (req, res) => {
-  /*try {
-    return true;
+  try {
+    
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
       res.status(401).json({ message: 'No token provided' });
@@ -34,16 +34,16 @@ const verifyAuth = async (req, res) => {
   } catch (error) {
     res.status(401).json({ message: 'Invalid token' });
     return false;
-  }*/
-  return true;
+  }
+  
 };
 
 const verifyAdmin = (req, res) => {
-  /*
+  
   if (req.user.role !== 'admin') {
     res.status(403).json({ message: 'Admin access required' });
     return false;
-  }*/
+  }
   return true;
 };
 
