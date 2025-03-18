@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.js';
+import { dbConnect } from '../api/db/db-connect.js';
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
@@ -58,7 +59,7 @@ const verifyAuth = async (req, res) => {
     console.log('Attempting to verify token');
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log('Token verified successfully:', { userId: decoded.userId, role: decoded.role });
-    
+    await dbConnect();
     const user = await User.findById(decoded.userId);
     if (!user) {
       console.log('Auth failed: User not found in database:', decoded.userId);
