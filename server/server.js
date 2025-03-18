@@ -42,11 +42,11 @@ import { User } from '../models/user.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
 
 // Connect to MongoDB
 dbConnect();
@@ -57,16 +57,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Healthy' });
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "Healthy" });
 });
 
-app.get('*', (req, res, next) => {
-  if (req.url.startsWith('/api')) {
+app.get("*", (req, res, next) => {
+  if (req.url.startsWith("/api")) {
     next();
     return;
   }
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
 
 app.post('/api/db/db-persist-feedback', dbPersistFeedback);
@@ -110,9 +110,12 @@ app.post("/api/azure/azure-context", azureContextHandler);
 app.post('/api/search/search-context', contextSearchHandler);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-fetch('http://localhost:3001/health')
-  .then(response => response.json())
-  .then(data => console.log('Health check:', data))
-  .catch(error => console.error('Error:', error));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+fetch("http://localhost:3001/health")
+  .then((response) => response.json())
+  .then((data) => console.log("Health check:", data))
+  .catch((error) => console.error("Error:", error));
