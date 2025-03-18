@@ -32,30 +32,43 @@ import dbCheckhandler from '../api/db/db-check.js';
 import dbPersistInteraction from '../api/db/db-persist-interaction.js';
 import dbPersistFeedback from '../api/db/db-persist-feedback.js';
 import dbLogHandler from '../api/db/db-log.js';
+import signupHandler from '../api/db/db-auth-signup.js';
+import loginHandler from '../api/db/db-auth-login.js';
+import dbConnect from '../api/db/db-connect.js';
+import dbUsersHandler from '../api/db/db-users.js';
+import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
+import { User } from '../models/user.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
 
-app.use(express.static(path.join(__dirname, '../build')));
+// Connect to MongoDB
+dbConnect();
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Healthy' });
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
+  next();
 });
 
-app.get('*', (req, res, next) => {
-  if (req.url.startsWith('/api')) {
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "Healthy" });
+});
+
+app.get("*", (req, res, next) => {
+  if (req.url.startsWith("/api")) {
     next();
     return;
   }
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
-// small change to force reployment
+
 app.post('/api/db/db-persist-feedback', dbPersistFeedback);
 app.post('/api/db/db-persist-interaction', dbPersistInteraction);
 app.get('/api/db/db-chat-session', dbChatSessionHandler);
@@ -66,8 +79,9 @@ app.get('/api/db/db-check', dbCheckhandler);
 app.post('/api/db/db-log', dbLogHandler);
 app.get('/api/db/db-log', dbLogHandler);
 app.get('/api/db/db-chat-logs', dbChatLogsHandler);
-
-
+app.post('/api/db/db-auth-signup', signupHandler);
+app.post('/api/db/db-auth-login', loginHandler);
+app.all('/api/db/db-users', dbUsersHandler);
 
 app.post("/api/openai/openai-message", openAIHandler);
 app.post("/api/openai/openai-context", openAIContextAgentHandler);
@@ -77,7 +91,6 @@ app.get('/api/openai/openai-batch-process-results', openAIBatchProcessResultsHan
 app.get('/api/openai/openai-batch-status', openAIBatchStatusHandler);
 app.get('/api/openai/openai-batch-cancel', openAIBatchCancelHandler);
 
-
 app.post('/api/anthropic/anthropic-message', anthropicAgentHandler);
 app.post('/api/anthropic/anthropic-context', anthropicContextAgentHandler);
 app.post('/api/anthropic/anthropic-batch', anthropicBatchHandler);
@@ -85,7 +98,6 @@ app.post('/api/anthropic/anthropic-batch-context', anthropicBatchContextHandler)
 app.get('/api/anthropic/anthropic-batch-process-results', anthropicBatchProcessResultsHandler);
 app.get('/api/anthropic/anthropic-batch-status', anthropicBatchStatusHandler);
 app.get('/api/anthropic/anthropic-batch-cancel', anthropicBatchCancelHandler);
-
 
 app.post("/api/azure/azure-message", azureHandler);  // Updated Azure endpoint
 app.post("/api/azure/azure-context", azureContextHandler);
@@ -97,19 +109,13 @@ app.post("/api/azure/azure-context", azureContextHandler);
 
 app.post('/api/search/search-context', contextSearchHandler);
 
-
-
-
-
-
-
-
-
-
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-fetch('http://localhost:3001/health')
-  .then(response => response.json())
-  .then(data => console.log('Health check:', data))
-  .catch(error => console.error('Error:', error));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+fetch("http://localhost:3001/health")
+  .then((response) => response.json())
+  .then((data) => console.log("Health check:", data))
+  .catch((error) => console.error("Error:", error));

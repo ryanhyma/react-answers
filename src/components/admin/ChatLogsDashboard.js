@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
 import '../../styles/App.css';
-import AdminCodeInput from './AdminCodeInput.js';
-import { getApiUrl } from '../../utils/apiToUrl.js';
+import DataStoreService from '../../services/DataStoreService.js';
 import DataTable from 'datatables.net-react';
 import DT from 'datatables.net-dt';
 import ExportService from '../../services/ExportService.js';
@@ -12,21 +11,11 @@ const ChatLogsDashboard = () => {
   const [timeRange, setTimeRange] = useState('1');
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [adminCode, setAdminCode] = useState('');
-  // TODO this is in plain site we need an admin module
-  const correctAdminCode = 'noPII';
 
   const fetchLogs = async () => {
-    if (adminCode !== correctAdminCode) {
-      return;
-    }
-
     setLoading(true);
     try {
-      const response = await fetch(getApiUrl('db-chat-logs?days=') + timeRange);
-      const data = await response.json();
-      console.log('API Response:', data);
-
+      const data = await DataStoreService.getChatLogs({ days: timeRange });
       if (data.success) {
         setLogs(data.logs || []);
       } else {
@@ -64,19 +53,8 @@ const ChatLogsDashboard = () => {
     ExportService.export(logs, filename('xlsx'));
   };
 
-  const handleAdminCodeChange = (e) => {
-    setAdminCode(e.target.value);
-  };
-
   return (
     <div className="space-y-6">
-      <AdminCodeInput
-        code={adminCode}
-        onChange={handleAdminCodeChange}
-        correctCode={correctAdminCode}
-        label="Enter Admin Code to view chat logs:"
-      />
-
       <div className="flex items-center gap-4 flex-wrap">
         <div className="w-48">
           <label htmlFor="timeRange" className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,13 +75,13 @@ const ChatLogsDashboard = () => {
 
         <GcdsButton
           onClick={fetchLogs}
-          disabled={loading || adminCode !== correctAdminCode}
+          disabled={loading}
           className="me-400 hydrated mrgn-tp-1r"
         >
           {loading ? 'Loading...' : 'Get logs'}
         </GcdsButton>
 
-        {logs.length > 0 && adminCode === correctAdminCode && (
+        {logs.length > 0 && (
           <>
             <GcdsButton
               onClick={downloadJSON}
@@ -157,7 +135,7 @@ const ChatLogsDashboard = () => {
                 paging: true,
                 searching: true,
                 ordering: true,
-                order: [[0, 'desc']], // Order by Date (column index 0) descending
+                order: [[0, 'desc']],
               }}
             />
           </div>

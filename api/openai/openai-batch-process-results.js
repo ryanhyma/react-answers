@@ -5,6 +5,7 @@ import AnswerService from '../../src/services/AnswerService.js';
 import { Answer } from '../../models/answer.js';
 import { Context } from '../../models/context.js';
 import { createDirectOpenAIClient } from '../../agents/AgentService.js';
+import { authMiddleware, adminMiddleware } from '../../middleware/auth.js';
 
 const handleOpenAI = async (batch) => {
   let logString = '';
@@ -111,6 +112,10 @@ const handleOpenAI = async (batch) => {
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
+    // Verify authentication and admin status
+    if (!await authMiddleware(req, res)) return;
+    if (!await adminMiddleware(req, res)) return;
+
     try {
       const { batchId } = req.query;
 
@@ -119,7 +124,6 @@ export default async function handler(req, res) {
       }
       await dbConnect();
       
-            
       const batch = await Batch.findOne({ batchId });
       if (!batch) {
         throw new Error('Batch not found');

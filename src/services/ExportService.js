@@ -1,7 +1,67 @@
 import * as XLSX from 'xlsx';
 import { flatten } from 'flat';
-const ExportService = {
-  jsonToFlatTable: (data, headers) => {
+import { getApiUrl } from '../utils/apiToUrl.js';
+import AuthService from './AuthService.js';
+
+class ExportService {
+  static async exportChatLogs(format = 'json', filters = {}) {
+    try {
+      const queryParams = new URLSearchParams({
+        ...filters,
+        format
+      }).toString();
+      
+      const response = await fetch(getApiUrl(`db-chat-logs/export?${queryParams}`), {
+        headers: AuthService.getAuthHeader()
+      });
+      
+      if (!response.ok) throw new Error('Failed to export chat logs');
+      
+      const blob = await response.blob();
+      const filename = `chat-logs-${new Date().toISOString()}.${format}`;
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting chat logs:', error);
+      throw error;
+    }
+  }
+
+  static async exportBatchResults(batchId, format = 'json') {
+    try {
+      const response = await fetch(getApiUrl(`db-batch-retrieve/export?batchId=${batchId}&format=${format}`), {
+        headers: AuthService.getAuthHeader()
+      });
+      
+      if (!response.ok) throw new Error('Failed to export batch results');
+      
+      const blob = await response.blob();
+      const filename = `batch-${batchId}-${new Date().toISOString()}.${format}`;
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting batch results:', error);
+      throw error;
+    }
+  }
+
+  static jsonToFlatTable(data, headers) {
     // Ensure data is an array and not null/undefined
     if (!Array.isArray(data) || data.length === 0) {
       console.error('jsonToFlatTable: Received invalid or empty data', data);
@@ -23,9 +83,9 @@ const ExportService = {
     const rows = flattenedItems.map((item) => headers.map((header) => item[header] ?? ''));
 
     return rows;
-  },
+  }
 
-  getHeaders: (data) => {
+  static getHeaders(data) {
     if (!Array.isArray(data) || data.length === 0) {
       console.error('getHeaders: Received invalid or empty data', data);
       return [];
@@ -40,9 +100,9 @@ const ExportService = {
 
     const flattenedItems = validItems.map((obj) => flatten(obj));
     return [...new Set(flattenedItems.flatMap(Object.keys))];
-  },
+  }
 
-  worksheetDataToCSV(worksheetData, filename) {
+  static worksheetDataToCSV(worksheetData, filename) {
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Batch Data');
@@ -56,9 +116,9 @@ const ExportService = {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  },
+  }
 
-  worksheetDataToExcel(worksheetData, filename) {
+  static worksheetDataToExcel(worksheetData, filename) {
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
     // Bold the headings
@@ -95,9 +155,9 @@ const ExportService = {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  },
+  }
 
-  toSpreadsheet: async (chats, headerOrder, type = 'excel', filename) => {
+  static async toSpreadsheet(chats, headerOrder, type = 'excel', filename) {
     const worksheetData = [];
     const headersSet = new Set(
       chats.flatMap((chat) => ExportService.getHeaders(chat.interactions))
@@ -157,9 +217,9 @@ const ExportService = {
     } else if (type === 'csv') {
       ExportService.worksheetDataToCSV(worksheetData, filename);
     }
-  },
+  }
 
-  export: (items, filename) => {
+  static export(items, filename) {
     const headerOrder = [
       { dataLabel: 'uniqueID', outputLabel: 'uniqueID' },
       { dataLabel: 'chatId', outputLabel: 'chatId' },
@@ -232,6 +292,7 @@ const ExportService = {
     ];
     const type = filename.endsWith('.csv') ? 'csv' : filename.endsWith('.xlsx') ? 'xlsx' : 'xlsx';
     return ExportService.toSpreadsheet(items, headerOrder, type, filename);
-  },
-};
+  }
+}
+
 export default ExportService;

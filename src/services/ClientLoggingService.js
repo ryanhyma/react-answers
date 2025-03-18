@@ -1,15 +1,18 @@
 import { getApiUrl } from '../utils/apiToUrl.js';
+import AuthService from './AuthService.js';
 
-// Unified logging service for both client and server-side logging
-const LoggingService = {
-  async _logToServer(chatId, level, message, metadata = null, emoji = 'ℹ️') {
+class ClientLoggingService {
+  static async logMessage(chatId, message, level = 'info', metadata = {}, emoji = 'ℹ️') {
     // Client-side console logging
     console[level](`${emoji} ${message}`, metadata);
 
     try {
-      await fetch(getApiUrl('db-log'), {
+      const response = await fetch(getApiUrl('db-log'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...AuthService.getAuthHeader()
+        },
         body: JSON.stringify({
           chatId,
           logLevel: level,
@@ -17,41 +20,45 @@ const LoggingService = {
           metadata,
         }),
       });
+      return response.ok;
     } catch (error) {
-      //console.error(`Failed to log ${level}:`, error);
+      console.error(`Failed to log ${level}:`, error);
+      return false;
     }
-  },
+  }
 
-  async info(chatId, message, metadata = null) {
-    return this._logToServer(chatId, 'info', message, metadata, 'ℹ️');
-  },
+  static async info(chatId, message, metadata = null) {
+    return this.logMessage(chatId, message, 'info', metadata, 'ℹ️');
+  }
 
-  async debug(chatId, message, metadata = null) {
-    return this._logToServer(chatId, 'debug', message, metadata, '🔍');
-  },
+  static async debug(chatId, message, metadata = null) {
+    return this.logMessage(chatId, message, 'debug', metadata, '🔍');
+  }
 
-  async warn(chatId, message, metadata = null) {
-    return this._logToServer(chatId, 'warn', message, metadata, '⚠️');
-  },
+  static async warn(chatId, message, metadata = null) {
+    return this.logMessage(chatId, message, 'warn', metadata, '⚠️');
+  }
 
-  async error(chatId, message, error = null) {
+  static async error(chatId, message, error = null) {
     const metadata = error
       ? {
           error: error?.message || error,
           stack: error?.stack,
         }
       : null;
-    return this._logToServer(chatId, 'error', message, metadata, '❌');
-  },
+    return this.logMessage(chatId, message, 'error', metadata, '❌');
+  }
 
-  async getLogs(options = {}) {
+  static async getLogs(options = {}) {
     try {
       const queryParams = new URLSearchParams({
         ...(options.chatId && { chatId: options.chatId }),
         ...(options.level && { level: options.level }),
       }).toString();
 
-      const response = await fetch(getApiUrl(`db-log?${queryParams}`));
+      const response = await fetch(getApiUrl(`db-log?${queryParams}`), {
+        headers: AuthService.getAuthHeader()
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch logs');
       }
@@ -60,7 +67,7 @@ const LoggingService = {
       console.error('Error fetching logs:', error);
       throw error;
     }
-  },
-};
+  }
+}
 
-export default LoggingService;
+export default ClientLoggingService;

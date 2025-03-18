@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unused-modules */
-import React, { useState } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
+import React from 'react';
+import { createBrowserRouter, RouterProvider, Outlet, useLocation, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import EvaluationPage from './pages/BatchPage.js';
 import LogPage from './pages/LogPage.js';
-import {
-  GcdsHeader,
-  GcdsBreadcrumbs,
-  GcdsBreadcrumbsItem,
-  GcdsFooter,
-} from '@cdssnc/gcds-components-react';
+import SignupPage from './pages/SignupPage.js';
+import LoginPage from './pages/LoginPage.js';
+import { GcdsHeader, GcdsBreadcrumbs, GcdsFooter } from '@cdssnc/gcds-components-react';
+import AuthService from './services/AuthService.js';
 import './styles/App.css';
+import UsersPage from './pages/UsersPage.js';
 
 // Helper function to get alternate language path
 const getAlternatePath = (currentPath, currentLang) => {
@@ -23,6 +22,18 @@ const getAlternatePath = (currentPath, currentLang) => {
   // Remove leading language identifier if it exists and add new one
   const pathWithoutLang = currentPath.replace(/^\/(en|fr)/, '');
   return `/${newLang}${pathWithoutLang}`;
+};
+
+// Protected Route component to handle authentication
+const ProtectedRoute = ({ element }) => {
+  const location = useLocation();
+  const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
+
+  if (!AuthService.isAuthenticated()) {
+    // Redirect to login page with return url
+    return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
+  }
+  return element;
 };
 
 const AppLayout = () => {
@@ -42,16 +53,19 @@ const AppLayout = () => {
           </small>
         </div>
       </section>
-
-      <GcdsHeader lang={currentLang} langHref={alternateLangHref} skipToHref="#main-content">
-        <GcdsBreadcrumbs slot="breadcrumb">{/* Add breadcrumb items as needed */}</GcdsBreadcrumbs>
+      <GcdsHeader 
+        lang={currentLang} 
+        langHref={alternateLangHref} 
+        skipToHref="#main-content"
+      >
+        <GcdsBreadcrumbs slot="breadcrumb">
+          {/* Add breadcrumb items as needed */}
+        </GcdsBreadcrumbs>
       </GcdsHeader>
-
       <main id="main-content">
         {/* Outlet will be replaced by the matching route's element */}
         <Outlet />
       </main>
-
       <GcdsFooter display="compact" lang={currentLang} />
     </>
   );
@@ -62,47 +76,70 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: <HomePage lang="en" />,
       },
       {
-        path: '/en',
+        path: "/en",
         element: <HomePage lang="en" />,
       },
       {
-        path: '/en/admin',
-        element: <AdminPage lang="en" />,
-      },
-      {
-        path: '/en/batch',
-        element: <EvaluationPage lang="en" />,
-      },
-      {
-        path: '/fr',
+        path: "/fr",
         element: <HomePage lang="fr" />,
       },
       {
-        path: '/fr/admin',
-        element: <AdminPage lang="fr" />,
+        path: "/en/signup",
+        element: <SignupPage lang="en" />,
       },
       {
-        path: '/fr/batch',
-        element: <EvaluationPage lang="fr" />,
+        path: "/fr/signup",
+        element: <SignupPage lang="fr" />,
       },
       {
-        path: '/en/logs',
-        element: <LogPage lang="en" />,
+        path: "/en/login",
+        element: <LoginPage lang="en" />,
       },
       {
-        path: '/fr/logs',
-        element: <LogPage lang="fr" />,
+        path: "/fr/login",
+        element: <LoginPage lang="fr" />,
+      },
+      // Protected routes
+      {
+        path: "/en/admin",
+        element: <ProtectedRoute element={<AdminPage lang="en" />} />,
+      },
+      {
+        path: "/fr/admin",
+        element: <ProtectedRoute element={<AdminPage lang="fr" />} />,
+      },
+      {
+        path: "/en/batch",
+        element: <ProtectedRoute element={<EvaluationPage lang="en" />} />,
+      },
+      {
+        path: "/fr/batch",
+        element: <ProtectedRoute element={<EvaluationPage lang="fr" />} />,
+      },
+      {
+        path: "/en/logs",
+        element: <ProtectedRoute element={<LogPage lang="en" />} />,
+      },
+      {
+        path: "/fr/logs",
+        element: <ProtectedRoute element={<LogPage lang="fr" />} />,
+      },
+      {
+        path: "/en/users",
+        element: <ProtectedRoute element={<UsersPage lang="en" />} />,
+      },
+      {
+        path: "/fr/users",
+        element: <ProtectedRoute element={<UsersPage lang="fr" />} />,
       },
     ],
   },
 ]);
 
-function App() {
+export default function App() {
   return <RouterProvider router={router} />;
 }
-
-export default App;
