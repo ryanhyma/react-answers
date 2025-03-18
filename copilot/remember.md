@@ -1,0 +1,2 @@
+- The app needs to deploy in both a container and in Vercel. See #server.js for container deployment setup
+- Imports of javascript modules in this project need to have the .js postfix to work

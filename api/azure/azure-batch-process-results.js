@@ -1,15 +1,13 @@
 import { Batch } from '../../models/batch.js';
 import dbConnect from '../../api/db/db-connect.js';
-import { Citation } from '../../models/citation.js';
-import AnswerService from '../../src/services/AnswerService.js';
-import { Answer } from '../../models/answer.js';
-import { Context } from '../../models/context.js';
 import { createDirectAzureOpenAIClient } from '../../agents/AgentService.js';
+import { authMiddleware, adminMiddleware, withProtection } from '../../middleware/auth.js';
+
+const openai = createDirectAzureOpenAIClient();
 
 const handleAzure = async (batch) => {
   let logString = '';
   try {
-    const openai = createDirectAzureOpenAIClient();
     logString += 'Starting batch processing...\n';
     const result = await openai.batches.retrieve(batch.batchId);
     logString += 'Retrieved batch from Azure OpenAI.\n';
@@ -36,31 +34,34 @@ const handleAzure = async (batch) => {
   }
 };
 
-export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    try {
-      const { batchId } = req.query;
-
-      if (!batchId) {
-        throw new Error('Batch ID is required');
-      }
-      await dbConnect();
-      
-      const batch = await Batch.findOne({ batchId });
-      if (!batch) {
-        throw new Error('Batch not found');
-      }
-
-      const result = await handleAzure(batch);
-
-      return res.status(200).json(result);
-
-    } catch (error) {
-      console.error('Error handling request:', error);
-      return res.status(500).json({ error: 'Error handling request', details: error.message });
-    }
-  } else {
+async function batchProcessHandler(req, res) {
+  if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+
+  try {
+    const { batchId } = req.query;
+
+    if (!batchId) {
+      throw new Error('Batch ID is required');
+    }
+    await dbConnect();
+    
+    const batch = await Batch.findOne({ batchId });
+    if (!batch) {
+      throw new Error('Batch not found');
+    }
+
+    const result = await handleAzure(batch);
+    return res.status(200).json(result);
+
+  } catch (error) {
+    console.error('Error handling request:', error);
+    return res.status(500).json({ error: 'Error handling request', details: error.message });
+  }
+}
+
+export default function handler(req, res) {
+  return withProtection(batchProcessHandler, authMiddleware, adminMiddleware)(req, res);
 }

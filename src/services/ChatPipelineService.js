@@ -1,6 +1,6 @@
 import ContextService from './ContextService.js';
 import AnswerService from './AnswerService.js';
-import { DataStoreService } from './DataStoreService.js';
+import DataStoreService from './DataStoreService.js';
 import { urlToSearch } from '../utils/urlToSearch.js';
 import RedactionService from './RedactionService.js';
 import LoggingService from './ClientLoggingService.js';
@@ -52,7 +52,7 @@ export const ChatPipelineService = {
     if (
       conversationHistory.length > 0 &&
       conversationHistory[conversationHistory.length - 1].interaction.answer.answerType !==
-        'question'
+      'question'
     ) {
       const lastMessage = conversationHistory[conversationHistory.length - 1];
       context = lastMessage.interaction.context;
@@ -123,9 +123,9 @@ export const ChatPipelineService = {
     });
 
     // Log the interaction with both the original and validated URL
-    DataStoreService.persistInteraction(
+    DataStoreService.persistInteraction({
       selectedAI,
-      userMessage,
+      question: userMessage,
       userMessageId,
       referringUrl,
       answer,
@@ -136,7 +136,7 @@ export const ChatPipelineService = {
       lang,
       totalResponseTime,
       searchProvider
-    );
+    });
 
     onStatusUpdate(PipelineStatus.COMPLETE);
     await LoggingService.info(chatId, 'pipeline complete');
@@ -162,7 +162,7 @@ export const ChatPipelineService = {
   processRedaction: async (userMessage) => {
     // Ensure RedactionService is initialized before using it
     await RedactionService.ensureInitialized();
-    
+
     const { redactedText, redactedItems } = RedactionService.redactText(userMessage);
 
     // Check for blocked content (# for profanity/threats/manipulation, XXX for private info)

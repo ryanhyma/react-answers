@@ -76,10 +76,10 @@ async function loadSystemPrompt(language = 'en', context) {
     const citationInstructions = CITATION_INSTRUCTIONS;
 
     // Inform LLM about the current page language
-    const languageContext =
-      language === 'fr'
-        ? 'Language context: French.  The question was asked on the official French AI Answers page.'
-        : 'Language context: English.  The question was asked on the official English AI Answers page.';
+    const languageContext = language === 'fr' 
+      ? "<page-language>French</page-language>"
+      : "<page-language>English</page-language>";
+
 
     // Add current date information
     const currentDate = new Date().toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {

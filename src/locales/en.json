@@ -221,15 +221,67 @@
     "pause": "Pause"
   },
   "admin": {
-    "title": "Admin",
+    "title": "Admin Dashboard",
     "navigation": {
-      "ariaLabel": "On this page",
-      "title": "On this page",
-      "viewLogs": "View Logs",
-      "useApp": "Use the app"
+      "ariaLabel": "Admin Navigation",
+      "title": "Admin Menu",
+      "aiAnswers": "AI Answers",
+      "batches": "Batches",
+      "users": "User Management", 
+      "logs": "Chat Logs"
     },
     "chatLogs": {
-      "title": "Chat interaction logs"
+      "title": "Recent Chat Interactions"
+    }
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log In",
+    "invalidCredentials": "Invalid email or password",
+    "form": {
+      "submitting": "Logging in...",
+      "signupLink": "Need an account? Sign up here"
+    }
+  },
+  "signup": {
+    "title": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Sign Up",
+    "passwordMismatch": "Passwords do not match",
+    "errorOccurred": "An error occurred during signup",
+    "form": {
+      "username": "Username:",
+      "password": "Password:",
+      "submit": "Sign Up",
+      "submitting": "Creating account..."
+    },
+    "messages": {
+      "success": "Signup successful! You can now",
+      "error": "An error occurred during signup",
+      "failed": "Signup failed",
+      "loginLink": "log in to your account"
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "columns": {
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created At",
+      "action": "Action"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     }
   }
 }

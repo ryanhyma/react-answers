@@ -605,7 +605,7 @@ export const departments_EN = [
   },
   {
     name: 'Immigration, Refugees and Citizenship Canada',
-    url: 'https://www.canada.ca/en/immigration-refugees-citizenship.html?_ga=2.154721784.1999166723.1511794548-2057276988.1508789311',
+    url: 'https://www.canada.ca/en/immigration-refugees-citizenship.html',
     abbr: 'IRCC',
   },
   {

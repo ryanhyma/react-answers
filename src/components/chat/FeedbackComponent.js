@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ExpertRatingComponent from './ExpertRatingComponent.js';
 import '../../styles/App.css';
 import { useTranslations } from '../../hooks/useTranslations.js';
-import { DataStoreService } from '../../services/DataStoreService.js';
+import DataStoreService from '../../services/DataStoreService.js';
 
 const FeedbackComponent = ({
   lang = 'en',

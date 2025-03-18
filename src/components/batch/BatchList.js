@@ -4,8 +4,8 @@ import DataTable from 'datatables.net-react';
 import 'datatables.net-dt/css/dataTables.dataTables.css';
 import DT from 'datatables.net-dt';
 import { GcdsButton } from '@cdssnc/gcds-components-react';
-import { getApiUrl, getProviderApiUrl } from '../../utils/apiToUrl.js';
 import { useTranslations } from '../../hooks/useTranslations.js';
+import DataStoreService from '../../services/DataStoreService.js';
 
 DataTable.use(DT);
 
@@ -14,41 +14,10 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
   const [searchText] = useState('');
   const { t } = useTranslations(lang); // TODO: Pass actual language from props/context
 
-  // Fetch batch status
-  const fetchStatus = async (batchId, aiProvider) => {
-    try {
-      const response = await fetch(
-        getProviderApiUrl(aiProvider, `batch-status?batchId=${batchId}`)
-      );
-      const data = await response.json();
-      return { batchId, status: data.status };
-    } catch (error) {
-      console.error(`Error fetching status for batch ${batchId}:`, error);
-      return { batchId, status: 'Error' };
-    }
-  };
-
   // Fetch all statuses
   const fetchStatuses = useCallback(async (batches) => {
     try {
-      const statusPromises = batches.map(async (batch) => {
-        if (!batch.status || batch.status !== 'processed') {
-          const statusResult = await fetchStatus(batch.batchId, batch.aiProvider);
-          if (statusResult.status === 'not_found') {
-            await fetch(
-              getProviderApiUrl(batch.aiProvider, `batch-cancel?batchId=${batch.batchId}`)
-            );
-          }
-          return statusResult;
-        } else {
-          return Promise.resolve({ batchId: batch.batchId, status: batch.status });
-        }
-      });
-      const statusResults = await Promise.all(statusPromises);
-      return batches.map((batch) => {
-        const statusResult = statusResults.find((status) => status.batchId === batch.batchId);
-        return { ...batch, status: statusResult ? statusResult.status : 'Unknown' };
-      });
+      return await DataStoreService.getBatchStatuses(batches);
     } catch (error) {
       console.error('Error fetching statuses:', error);
     }
@@ -76,10 +45,9 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await fetch(getApiUrl('db-batch-list'));
-        let batches = await response.json();
-        batches = await fetchStatuses(batches);
-        setBatches(batches);
+        const batches = await DataStoreService.getBatchList();
+        const updatedBatches = await fetchStatuses(batches);
+        setBatches(updatedBatches);
       } catch (error) {
         console.error('Error fetching batches:', error);
       }
@@ -144,15 +112,6 @@ const BatchList = ({ buttonAction, batchStatus, lang }) => {
                       }}
                     >
                       {t('batch.list.actions.excel')}
-                    </GcdsButton>
-                    <GcdsButton
-                      size="small"
-                      onClick={() => {
-                        handleButtonClick(batchId, 'cancel', aiProvider);
-                        setClicked(true);
-                      }}
-                    >
-                      {t('batch.list.actions.cancel')}
                     </GcdsButton>
                   </div>
                 );

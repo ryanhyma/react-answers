@@ -2,23 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GcdsContainer, GcdsText, GcdsLink, GcdsButton } from '@cdssnc/gcds-components-react';
 import { useTranslations } from '../hooks/useTranslations.js';
 import { usePageContext } from '../hooks/usePageParam.js';
-import AdminCodeInput from '../components/admin/AdminCodeInput.js';
-import { getApiUrl } from '../utils/apiToUrl.js';
 import $ from 'jquery';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-json.js';
 import 'prismjs/components/prism-xml-doc.js';
+import DataStoreService from '../services/DataStoreService.js';
 
 const LogPage = () => {
   const { t } = useTranslations();
-  const { lang } = usePageContext();
+  const { language } = usePageContext();
   const [chatId, setChatId] = useState('');
   const [logs, setLogs] = useState([]);
   const [isPolling, setIsPolling] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(null);
-  const [adminCode, setAdminCode] = useState('');
-  const correctAdminCode = '2024';
   const tableRef = useRef(null);
   const dataTableRef = useRef(null);
   const [expandedMetadata, setExpandedMetadata] = useState(null);
@@ -232,27 +229,21 @@ const LogPage = () => {
     }
   };
 
-  const handleAdminCodeChange = (e) => {
-    setAdminCode(e.target.value);
-  };
-
-  const fetchLogs = () => {
-    // Always use the current state value - never auto-refresh from localStorage
+  const fetchLogs = async () => {
     if (!chatId) {
       console.log('No chat ID available, cannot fetch logs');
       return;
     }
 
     console.log('Fetching logs for chat ID:', chatId);
-    fetch(getApiUrl(`db-log?chatId=${chatId}`))
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Logs fetched successfully:', data.logs?.length || 0, 'entries');
-
-        // Simply update the logs state - the useEffect will handle recreating the table
-        setLogs(data.logs || []);
-      })
-      .catch((error) => console.error('Error fetching logs:', error));
+    try {
+      const data = await DataStoreService.getLogs(chatId);
+      console.log('Logs fetched successfully:', data.logs?.length || 0, 'entries');
+      setLogs(data.logs || []);
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setLogs([]);
+    }
   };
 
   const handleStartStopLogging = () => {
@@ -295,15 +286,13 @@ const LogPage = () => {
     };
   }, [expandedMetadata]);
 
-  const canStartLogging = adminCode === correctAdminCode && chatId;
-
   return (
     <>
       <GcdsContainer size="xl" mainContainer centered tag="main" className="mb-600">
         <h1 className="mb-400">Logs Dashboard</h1>
         <nav className="mb-400">
           <GcdsText>
-            <GcdsLink href={`/${lang}/admin`}>Back to Admin</GcdsLink>
+            <GcdsLink href={`/${language}/admin`}>Back to Admin</GcdsLink>
           </GcdsText>
         </nav>
 
@@ -329,33 +318,22 @@ const LogPage = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <AdminCodeInput
-                code={adminCode}
-                onChange={handleAdminCodeChange}
-                correctCode={correctAdminCode}
-                label="Enter Admin Code to view database logs:"
-              />
+            <div className="flex gap-4 items-center">
+              <GcdsButton
+                type="button"
+                disabled={!chatId}
+                onClick={handleStartStopLogging}
+              >
+                {isPolling ? t('logging.pause') : t('logging.start')}
+              </GcdsButton>
+              {isPolling && (
+                <div className="text-green-600 font-medium">
+                  Polling active for chat ID: {chatId}
+                </div>
+              )}
             </div>
 
-            {adminCode === correctAdminCode && (
-              <div className="flex gap-4 items-center">
-                <GcdsButton
-                  type="button"
-                  disabled={!canStartLogging}
-                  onClick={handleStartStopLogging}
-                >
-                  {isPolling ? t('logging.pause') : t('logging.start')}
-                </GcdsButton>
-                {isPolling && (
-                  <div className="text-green-600 font-medium">
-                    Polling active for chat ID: {chatId}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {canStartLogging && logs && (
+            {chatId && logs && (
               <div className="bg-white shadow rounded-lg">
                 {logs?.length > 0 ? (
                   <div className="p-4">
