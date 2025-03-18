@@ -5,18 +5,14 @@ import { Interaction } from '../../models/interaction.js';
 import { Context } from '../../models/context.js';
 import { Question } from '../../models/question.js';
 import { createDirectAzureOpenAIClient } from '../../agents/AgentService.js';
-import { authMiddleware, adminMiddleware } from '../../middleware/auth.js';
+import { authMiddleware, adminMiddleware, withProtection } from '../../middleware/auth.js';
 
 const MAX_JSONL_SIZE = 50000000; // Set a size limit for JSONL content
 
-export default async function handler(req, res) {
+async function batchHandler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
-
-    // Verify authentication and admin status
-    if (!await authMiddleware(req, res)) return;
-    if (!await adminMiddleware(req, res)) return;
 
     try {
         const openai = createDirectAzureOpenAIClient();
@@ -27,9 +23,8 @@ export default async function handler(req, res) {
             firstRequestSample: req.body.requests?.[0]?.message.substring(0, 100)
         });
 
-        // ...existing code...
-
-        const jsonlRequests = requests.map((request, index) => ({
+        // ...existing code for processing batch requests...
+        const jsonlRequests = req.body.requests.map((request, index) => ({
             custom_id: `batch-${index}`,
             method: "POST",
             url: "/v1/chat/completions",
@@ -50,8 +45,11 @@ export default async function handler(req, res) {
             }
         }));
 
-        // ...existing code...
+        // Create batch in Azure OpenAI
+        const batch = await openai.batches.create(jsonlRequests);
 
+        // Save to database
+        await dbConnect();
         const savedBatch = new Batch({
             name: req.body.batchName,
             batchId: batch.id,
@@ -67,13 +65,11 @@ export default async function handler(req, res) {
             });
             await context.save();
 
-            // Create Question document
             const question = new Question({
                 redactedQuestion: request.message
             });
             await question.save();
 
-            // Create Interaction with references
             let interaction = new Interaction({
                 interactionId: `batch-${index}`,
                 question: question._id,
@@ -101,4 +97,8 @@ export default async function handler(req, res) {
             details: error.response?.data || 'No additional details available'
         });
     }
+}
+
+export default function handler(req, res) {
+    return withProtection(batchHandler, authMiddleware, adminMiddleware)(req, res);
 }
