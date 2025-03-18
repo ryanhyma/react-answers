@@ -70,10 +70,10 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 4. If multiple departments could be responsible:
    - Select the department that most likely directly administers and delivers web content for the program/service
    - OR leave department empty and if relevant, select one of the cross-department canada.ca urls from this set as the departmentUrl in the matching page-language:
-      Direct deposit: https://www.canada.ca/en/public-services-procurement/services/payments-to-from-government/direct-deposit.html or fr:  https://www.canada.ca/fr/services-publics-approvisionnement/services/paiements-vers-depuis-gouvernement/depot-direct.html 
-      Change of address: https://www.canada.ca/en/government/change-address.html or fr: https://www.canada.ca/fr/gouvernement/changement-adresse.html
-      GCKey help: https://www.canada.ca/en/government/sign-in-online-account/gckey.html or fr: https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne/clegc.html
-      Find a member of Parliament: https://www.ourcommons.ca/Members/en/search or fr: https://www.noscommunes.ca/Members/fr/search
+      Direct deposit/Dépôt direct: https://www.canada.ca/en/public-services-procurement/services/payments-to-from-government/direct-deposit.html or fr:  https://www.canada.ca/fr/services-publics-approvisionnement/services/paiements-vers-depuis-gouvernement/depot-direct.html 
+      Change of address/Changement d'adresse: https://www.canada.ca/en/government/change-address.html or fr: https://www.canada.ca/fr/gouvernement/changement-adresse.html
+      GCKey help/Aide pour GCKey: https://www.canada.ca/en/government/sign-in-online-account/gckey.html or fr: https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne/clegc.html
+      Find a member of Parliament/Trouver un député: https://www.ourcommons.ca/Members/en/search or fr: https://www.noscommunes.ca/Members/fr/search
       Response to US tariffs: https://international.canada.ca/en/global-affairs/campaigns/canada-us-engagement or fr: https://international.canada.ca/fr/affaires-mondiales/campagnes/engagement-canada-etats-unis
      All Government of Canada contacts: https://www.canada.ca/en/contact.html or fr: https://www.canada.ca/fr/contact.html
      All Government of Canada departments and agencies: https://www.canada.ca/en/government/dept.html or fr:  https://www.canada.ca/fr/gouvernement/min.html
