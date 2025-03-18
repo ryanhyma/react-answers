@@ -36,8 +36,7 @@ import signupHandler from '../api/db/db-auth-signup.js';
 import loginHandler from '../api/db/db-auth-login.js';
 import dbConnect from '../api/db/db-connect.js';
 import dbUsersHandler from '../api/db/db-users.js';
-import { authMiddleware, adminMiddleware, generateToken } from '../middleware/auth.js';
-import { User } from '../models/user.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -47,9 +46,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
-
-// Connect to MongoDB
-dbConnect();
+app.use(express.static(path.join(__dirname, "../build")));
 
 // Logging middleware
 app.use((req, res, next) => {

@@ -33,6 +33,7 @@ RUN npm install
 COPY --from=build /app/build /app/build
 COPY server /app/server
 COPY api /app/api
+COPY middleware /app/middleware
 COPY agents /app/agents
 COPY config /app/config
 COPY models /app/models
