@@ -53,13 +53,17 @@ const departmentModules = {
       ]);
       return { updates: IRCC_UPDATES, scenarios: IRCC_SCENARIOS };
     },
-  },
-  // French abbreviations
-  ARC: departmentModules.CRA,
-  EDSC: departmentModules.ESDC,
-  SAC: departmentModules.ISC,
-  SPAC: departmentModules.PSPC,
+  }
+};
+
+// Create a mapping for French department abbreviations
+const frenchDepartmentMap = {
+  ARC: 'CRA',
+  EDSC: 'ESDC',
+  SAC: 'ISC',
+  SPAC: 'PSPC',
   // IRCC stays the same in French
+  IRCC: 'IRCC'
 };
 
 async function loadSystemPrompt(language = 'en', context) {
@@ -70,12 +74,17 @@ async function loadSystemPrompt(language = 'en', context) {
 
   try {
     const { department } = context;
+    
+    // Get the appropriate department key based on language
+    const departmentKey = language === 'fr' && frenchDepartmentMap[department] 
+      ? frenchDepartmentMap[department] 
+      : department;
 
     // Load department content or use defaults
     const content =
-      department && departmentModules[department]
-        ? await departmentModules[department].getContent().catch((error) => {
-            LoggingService.warn('system', `Failed to load content for ${department}:`, error);
+      departmentKey && departmentModules[departmentKey]
+        ? await departmentModules[departmentKey].getContent().catch((error) => {
+            LoggingService.warn('system', `Failed to load content for ${departmentKey}:`, error);
             return { updates: '', scenarios: '' };
           })
         : { updates: '', scenarios: '' };
