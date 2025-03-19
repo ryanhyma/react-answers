@@ -204,6 +204,24 @@ class DataStoreService {
       throw error;
     }
   }
+
+  static async deleteChat(chatId) {
+    try {
+      const response = await fetch(getApiUrl(`db-delete-chat?chatId=${chatId}`), {
+        method: 'DELETE',
+        headers: AuthService.getAuthHeader()
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to delete chat');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+      throw error;
+    }
+  }
 }
 
 export default DataStoreService;

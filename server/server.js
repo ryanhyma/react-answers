@@ -36,6 +36,7 @@ import signupHandler from '../api/db/db-auth-signup.js';
 import loginHandler from '../api/db/db-auth-login.js';
 import dbConnect from '../api/db/db-connect.js';
 import dbUsersHandler from '../api/db/db-users.js';
+import deleteChatHandler from '../api/db/db-delete-chat.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -79,6 +80,7 @@ app.get('/api/db/db-chat-logs', dbChatLogsHandler);
 app.post('/api/db/db-auth-signup', signupHandler);
 app.post('/api/db/db-auth-login', loginHandler);
 app.all('/api/db/db-users', dbUsersHandler);
+app.delete('/api/db/db-delete-chat', deleteChatHandler);
 
 app.post("/api/openai/openai-message", openAIHandler);
 app.post("/api/openai/openai-context", openAIContextAgentHandler);

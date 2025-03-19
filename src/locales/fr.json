@@ -234,6 +234,16 @@
     },
     "chatLogs": {
       "title": "Interactions de chat récentes"
+    },
+    "deleteChat": {
+      "title": "Supprimer la conversation",
+      "idLabel": "ID de la conversation",
+      "button": "Supprimer",
+      "confirm": "Confirmer la suppression",
+      "cancel": "Annuler",
+      "loading": "Suppression en cours...",
+      "success": "Conversation supprimée avec succès",
+      "error": "Échec de la suppression de la conversation : "
     }
   },
   "signup": {
