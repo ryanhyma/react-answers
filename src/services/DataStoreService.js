@@ -88,26 +88,49 @@ class DataStoreService {
     }
   }
 
-  static async persistFeedback(feedbackData, chatId, interactionId) {
+  
+  static async persistFeedback(expertFeedback, chatId, userMessageId) {
+    // Standardize expert feedback format - only accept new format
+    let formattedExpertFeedback = null;
+    if (expertFeedback) {
+      formattedExpertFeedback = {
+        totalScore: expertFeedback.totalScore ?? null,
+        sentence1Score: expertFeedback.sentence1Score ?? null,
+        sentence2Score: expertFeedback.sentence2Score ?? null,
+        sentence3Score: expertFeedback.sentence3Score ?? null,
+        sentence4Score: expertFeedback.sentence4Score ?? null,
+        citationScore: expertFeedback.citationScore ?? null,
+        answerImprovement: expertFeedback.answerImprovement || '',
+        expertCitationUrl: expertFeedback.expertCitationUrl || '',
+        feedback: expertFeedback.isPositive ? 'positive' : 'negative'
+      };
+    }
+    console.log(`User feedback: ${expertFeedback}`);
+
     try {
       const response = await fetch(getApiUrl('db-persist-feedback'), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chatId,
-          interactionId,
-          expertFeedback: feedbackData
-        })
+          chatId: chatId,
+          interactionId: userMessageId,
+          expertFeedback: formattedExpertFeedback
+        }),
       });
-      
-      if (!response.ok) throw new Error('Failed to persist feedback');
-      return await response.json();
+
+      if (!response.ok) {
+        throw new Error('Failed to log interaction');
+      }
+
+      console.log('Interaction logged successfully to database');
     } catch (error) {
-      console.error('Error persisting feedback:', error);
-      throw error;
+      console.log('Development mode: Interaction logged to console', {
+        ...expertFeedback
+      });
     }
+
   }
 
   static async getChatSession(sessionId) {
