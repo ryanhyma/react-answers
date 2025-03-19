@@ -232,6 +232,16 @@
     },
     "chatLogs": {
       "title": "Recent Chat Interactions"
+    },
+    "deleteChat": {
+      "title": "Delete Chat",
+      "idLabel": "Chat ID",
+      "button": "Delete Chat",
+      "confirm": "Confirm Delete",
+      "cancel": "Cancel",
+      "loading": "Deleting...",
+      "success": "Chat deleted successfully",
+      "error": "Failed to delete chat: "
     }
   },
   "login": {
