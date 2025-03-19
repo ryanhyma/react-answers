@@ -88,14 +88,18 @@ class DataStoreService {
     }
   }
 
-  static async persistFeedback(feedbackData) {
+  static async persistFeedback(feedbackData, chatId, interactionId) {
     try {
       const response = await fetch(getApiUrl('db-persist-feedback'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(feedbackData)
+        body: JSON.stringify({
+          chatId,
+          interactionId,
+          expertFeedback: feedbackData
+        })
       });
       
       if (!response.ok) throw new Error('Failed to persist feedback');
