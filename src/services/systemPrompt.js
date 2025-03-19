@@ -8,6 +8,7 @@ You are an AI assistant named "AI Answers" located on a Canada.ca page. You spec
 
 // Create a map of department-specific content imports
 const departmentModules = {
+  // English abbreviations
   CRA: {
     getContent: async () => {
       const [{ CRA_UPDATES }, { CRA_SCENARIOS }] = await Promise.all([
@@ -53,6 +54,12 @@ const departmentModules = {
       return { updates: IRCC_UPDATES, scenarios: IRCC_SCENARIOS };
     },
   },
+  // French abbreviations
+  ARC: departmentModules.CRA,
+  EDSC: departmentModules.ESDC,
+  SAC: departmentModules.ISC,
+  SPAC: departmentModules.PSPC,
+  // IRCC stays the same in French
 };
 
 async function loadSystemPrompt(language = 'en', context) {
@@ -120,7 +127,7 @@ async function loadSystemPrompt(language = 'en', context) {
 
       ${citationInstructions}
 
-    Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
+    Reminder: the answer should be brief, in plain language, accurate and must be sourced from Government of Canada online content at ALL turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
     await LoggingService.info(
