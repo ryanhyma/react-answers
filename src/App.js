@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unused-modules */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, useLocation, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
@@ -29,10 +29,16 @@ const ProtectedRoute = ({ element }) => {
   const location = useLocation();
   const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
 
+  // Check for authentication that handles token expiration internally
   if (!AuthService.isAuthenticated()) {
-    // Redirect to login page with return url
-    return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
+    // When token is expired, isAuthenticated already calls logout() which performs a redirect
+    // Only when the token is invalid but not expired (e.g., missing or inactive user) do we need to redirect
+    if (!AuthService.getToken() || !AuthService.getUser() || !AuthService.getUser().active) {
+      return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
+    }
+    return null; // If we get here, logout() was called and browser is already redirecting
   }
+  
   return element;
 };
 
@@ -40,6 +46,17 @@ const AppLayout = () => {
   const location = useLocation();
   const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
   const alternateLangHref = getAlternatePath(location.pathname, currentLang);
+
+  // Set up token expiration checker when the app layout mounts
+  useEffect(() => {
+    // Set up the auth expiration checker on component mount
+    const intervalId = AuthService.setupAuthExpirationChecker();
+    
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <>
