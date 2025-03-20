@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unused-modules */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, useLocation, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
@@ -29,10 +29,15 @@ const ProtectedRoute = ({ element }) => {
   const location = useLocation();
   const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
 
+  // Simple check for authentication status
   if (!AuthService.isAuthenticated()) {
-    // Redirect to login page with return url
+    // At this point, if the token was expired, isAuthenticated() has already
+    // called logout() which will handle the redirect on its own
+    
+    // For all other authentication failures, redirect to login
     return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
   }
+  
   return element;
 };
 
@@ -40,6 +45,17 @@ const AppLayout = () => {
   const location = useLocation();
   const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
   const alternateLangHref = getAlternatePath(location.pathname, currentLang);
+
+  // Set up token expiration checker when the app layout mounts
+  useEffect(() => {
+    // Set up the auth expiration checker on component mount
+    const intervalId = AuthService.setupAuthExpirationChecker();
+    
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <>
