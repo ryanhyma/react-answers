@@ -29,14 +29,13 @@ const ProtectedRoute = ({ element }) => {
   const location = useLocation();
   const currentLang = location.pathname.startsWith('/fr') ? 'fr' : 'en';
 
-  // Check for authentication that handles token expiration internally
+  // Simple check for authentication status
   if (!AuthService.isAuthenticated()) {
-    // When token is expired, isAuthenticated already calls logout() which performs a redirect
-    // Only when the token is invalid but not expired (e.g., missing or inactive user) do we need to redirect
-    if (!AuthService.getToken() || !AuthService.getUser() || !AuthService.getUser().active) {
-      return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
-    }
-    return null; // If we get here, logout() was called and browser is already redirecting
+    // At this point, if the token was expired, isAuthenticated() has already
+    // called logout() which will handle the redirect on its own
+    
+    // For all other authentication failures, redirect to login
+    return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
   }
   
   return element;
