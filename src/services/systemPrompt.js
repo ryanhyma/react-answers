@@ -8,6 +8,7 @@ You are an AI assistant named "AI Answers" located on a Canada.ca page. You spec
 
 // Create a map of department-specific content imports
 const departmentModules = {
+  // English abbreviations
   CRA: {
     getContent: async () => {
       const [{ CRA_UPDATES }, { CRA_SCENARIOS }] = await Promise.all([
@@ -52,7 +53,17 @@ const departmentModules = {
       ]);
       return { updates: IRCC_UPDATES, scenarios: IRCC_SCENARIOS };
     },
-  },
+  }
+};
+
+// Create a mapping for French department abbreviations
+const frenchDepartmentMap = {
+  ARC: 'CRA',
+  EDSC: 'ESDC',
+  SAC: 'ISC',
+  SPAC: 'PSPC',
+  // IRCC stays the same in French
+  IRCC: 'IRCC'
 };
 
 async function loadSystemPrompt(language = 'en', context) {
@@ -63,12 +74,17 @@ async function loadSystemPrompt(language = 'en', context) {
 
   try {
     const { department } = context;
+    
+    // Get the appropriate department key based on language
+    const departmentKey = language === 'fr' && frenchDepartmentMap[department] 
+      ? frenchDepartmentMap[department] 
+      : department;
 
     // Load department content or use defaults
     const content =
-      department && departmentModules[department]
-        ? await departmentModules[department].getContent().catch((error) => {
-            LoggingService.warn('system', `Failed to load content for ${department}:`, error);
+      departmentKey && departmentModules[departmentKey]
+        ? await departmentModules[departmentKey].getContent().catch((error) => {
+            LoggingService.warn('system', `Failed to load content for ${departmentKey}:`, error);
             return { updates: '', scenarios: '' };
           })
         : { updates: '', scenarios: '' };
@@ -120,7 +136,7 @@ async function loadSystemPrompt(language = 'en', context) {
 
       ${citationInstructions}
 
-    Reminder: the answer should be brief, in plain language, accurate and must be sourced from Canada.ca or gc.ca at all turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
+    Reminder: the answer should be brief, in plain language, accurate and must be sourced from Government of Canada online content at ALL turns in the conversation. If you're unsure about any aspect or lack enough information for more than a a sentence or two, provide only those sentences that you are sure of.
     `;
 
     await LoggingService.info(
