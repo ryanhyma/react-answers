@@ -2,6 +2,7 @@ import { OpenAIEmbeddings } from '@langchain/openai';
 import { getEmbeddingModelConfig } from '../config/ai-models.js';
 import ServerLoggingService from './ServerLoggingService.js';
 import dotenv from 'dotenv';
+import cosineSimilarity from 'compute-cosine-similarity';
 
 dotenv.config();
 
@@ -56,6 +57,13 @@ const createEmbeddingClient = (provider = 'openai', modelName = null) => {
   }
 };
 
+function cleanTextForEmbedding(text) {
+  return text
+    .replace(/<s-\d+>|<\/s-\d+>/g, '') // remove <s-1>, </s-1>, etc.
+    .replace(/\\n/g, ' ')              // replace \n with space
+    .trim();
+}
+
 /**
  * Embeds a single text using the embedding client
  * @param {string} text - The text to embed
@@ -64,13 +72,14 @@ const createEmbeddingClient = (provider = 'openai', modelName = null) => {
  * @returns {Promise<number[]>} - The embedding vector
  */
 const embedText = async (text, provider = 'openai', modelName = null) => {
+  const cleanedText = cleanTextForEmbedding(text);
   const embeddings = createEmbeddingClient(provider, modelName);
   if (!embeddings) {
     throw new Error('Failed to create embedding client');
   }
   
   try {
-    return await embeddings.embedQuery(text);
+    return await embeddings.embedQuery(cleanedText);
   } catch (error) {
     ServerLoggingService.error('Error embedding text', 'embedding-service', error);
     throw error;
@@ -98,8 +107,40 @@ const embedDocuments = async (documents, provider = 'openai', modelName = null) 
   }
 };
 
+/**
+ * Calculate similarity between two answers at the sentence level using embeddings
+ * @param {Answer} answer1 - First answer with sentence embeddings
+ * @param {Answer} answer2 - Second answer with sentence embeddings
+ * @returns {number} Average similarity score across best-matching sentences
+ */
+const calculateSentenceSimilarity = (answer1, answer2) => {
+  if (!answer1?.sentenceEmbeddings?.length || !answer2?.sentenceEmbeddings?.length) {
+    return 0;
+  }
+
+  try {
+    // Create similarity matrix using sentence embeddings
+    const similarityMatrix = answer1.sentenceEmbeddings.map(embedding1 =>
+      answer2.sentenceEmbeddings.map(embedding2 => 
+        cosineSimilarity(embedding1, embedding2)
+      )
+    );
+
+    // Calculate average of best matches for each sentence
+    const bestMatches = similarityMatrix.map(row =>
+      Math.max(...row)
+    );
+
+    return bestMatches.reduce((a, b) => a + b, 0) / bestMatches.length;
+  } catch (error) {
+    ServerLoggingService.error('Error calculating sentence similarity', 'embedding-service', error);
+    return 0;
+  }
+};
+
 export {
   createEmbeddingClient,
   embedText,
-  embedDocuments
+  embedDocuments,
+  calculateSentenceSimilarity
 };
