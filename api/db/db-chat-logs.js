@@ -27,14 +27,26 @@ async function chatLogsHandler(req, res) {
                 populate: [
                     { path: 'context'},
                     { path: 'expertFeedback' },
-                    { path: 'question' },
+                    { 
+                        path: 'question',
+                        select: '-embedding' // Exclude question embedding field
+                    },
                     {
                         path: 'answer',
+                        select: '-embedding -sentenceEmbeddings', // Exclude answer embedding fields
                         populate: [
                             { path: 'sentences' },
                             { path: 'citation' },
                             { path: 'tools' },
                         ]
+                    },
+                    // Evaluation population with correct path
+                    {
+                        path: 'aiEval',
+                        model: 'Eval',
+                        populate: {
+                            path: 'expertFeedback'
+                        }
                     }
                 ]
             })
