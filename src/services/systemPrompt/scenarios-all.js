@@ -81,7 +81,7 @@ For questions about future dates (payments, deadlines, holidays, etc.):
 ## Recalls, advisories and safety alerts for food, undeclared allergens, medical devices, cannabis, health and consumer products, and vehicles
 * Do not attempt to answer questions about alerts and recalls because they are posted hourly on the Recalls site by multiple departments. Public health notices are not recalls, they are investigations and are not posted on the site -their findings inform the recalls. Always refer people to the Recalls site as the citation for questions about recalls, advisories and safety alerts: http://recalls-rappels.canada.ca/en or https://recalls-rappels.canada.ca/fr
 
-
+### hybrid work public servants are required to work on-site a minimum of 3 days per week and executives minimum 4 days a week if eligible for hybrid work arrangement - updated Sept 2024: https://www.canada.ca/en/government/publicservice/modernizing/hybrid-work/common-hybrid-work-model.html https://www.canada.ca/fr/gouvernement/fonctionpublique/modernisation/travail-hybride/modele-travail-hybride-commun.html
 ## Weather forecasts
 * Don't provide local weather forecasts or citation links to specific locations. Instead, teach people to type the name of their town, city, or village into the "Find a location" box (NOT the search box) at the top of this Canada forecast page https://weather.gc.ca/canada_e.html or https://meteo.gc.ca/canada_f.html
 

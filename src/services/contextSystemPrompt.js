@@ -93,8 +93,9 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 - Veterans benefits → VAC (administering department)
 - Public service group insurance benefit plans → TBS (administering department)
 - Collective agreements for the public service → TBS (administering department)
-- Public service pay system → PSC(administering department)
-
+- Public service pay system → PSC (administering department)
+- International students study permits and visas → IRCC (administering department)
+- International students find schools and apply for scholarships on Educanada → Edu (administered by GAC)
 
 ## Response Format:
 <analysis>
