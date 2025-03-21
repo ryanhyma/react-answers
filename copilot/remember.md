@@ -8,3 +8,4 @@
 - When writing commands remember you are on Windows 11
 - When adding new files to the /api/ folder, remember to add the new api call to server.js
 - Use test drive development - TDD, write the test first before adding feature. If it is a fix, verify the test works and update if needed.
+- dbConnect is needed in the class if doing database calls

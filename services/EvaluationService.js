@@ -4,6 +4,7 @@ import { Interaction } from '../models/interaction.js';
 import { Eval } from '../models/eval.js';
 import ServerLoggingService from './ServerLoggingService.js';
 import cosineSimilarity from 'compute-cosine-similarity';
+import dbConnect from '../api/db/db-connect.js';
 
 class EvaluationService {
     // Use compute-cosine-similarity package
@@ -42,6 +43,7 @@ class EvaluationService {
 
     // Find similar questions and check for existing expert feedback
     async findSimilarQuestionsWithFeedback(questionEmbedding, similarityThreshold = 0.85, chatId) {
+        await dbConnect();
         if (!questionEmbedding || !questionEmbedding.length) {
             ServerLoggingService.warn('No question embedding provided for similarity search', chatId);
             return [];
@@ -136,6 +138,7 @@ class EvaluationService {
 
     // Main method to evaluate an interaction and create eval entry if similar content found
     async evaluateInteraction(interaction, chatId) {
+        await dbConnect();
         try {
             // Ensure we have a valid interaction with a question
             if (!interaction || !interaction.question) {
@@ -268,6 +271,7 @@ class EvaluationService {
 
     // Process multiple interactions in a batch
     async batchEvaluateInteractions(limit = 50, skipExisting = true) {
+        await dbConnect();
         try {
             // Find interactions that have both question and answer
             const query = {
@@ -322,6 +326,7 @@ class EvaluationService {
 
     // Check if an interaction already has an evaluation
     async hasExistingEvaluation(interactionId) {
+        await dbConnect();
         try {
             const interaction = await Interaction.findById(interactionId).populate('aiEval');
             ServerLoggingService.debug(`Checked for existing evaluation`, interactionId.toString(), {
@@ -336,6 +341,7 @@ class EvaluationService {
 
     // Get evaluation for a specific interaction
     async getEvaluationForInteraction(interactionId) {
+        await dbConnect();
         try {
             const interaction = await Interaction.findById(interactionId).populate('aiEval');
             const evaluation = interaction?.aiEval;
