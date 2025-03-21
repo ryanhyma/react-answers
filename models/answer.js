@@ -4,6 +4,8 @@ const answerSchema = new mongoose.Schema({
   englishAnswer: { type: String, required: false, default: '' },
   content: { type: String, required: false, default: '' },
   sentences: [{ type: String, required: false, default: '' }],
+  embedding: { type: [Number], required: false, index: true, sparse: true }, // Vector representation of the complete answer
+  sentenceEmbeddings: [{ type: [Number], required: false }], // Vector representations for each sentence
   citation: { type: mongoose.Schema.Types.ObjectId, ref: 'Citation' },
   inputTokens: { type: String, required: false, default: '' },
   outputTokens: { type: String, required: false, default: '' },
