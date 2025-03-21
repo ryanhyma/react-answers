@@ -3,6 +3,7 @@
 - Localizations are stored in en.json and fr.json
 - If working on the client side, logging should be done by ClientSideLogging.js
 - If working on the server side, logging should be done by the ServerSideLogging.js
+- Server-side logging should use ServerLoggingService.js with appropriate log levels (info, debug, warn, error) and include chatId when available
 - Client side database calls should be put in DataStoreService.js
 - When writing commands remember you are on Windows 11
 - When adding new files to the /api/ folder, remember to add the new api call to server.js
