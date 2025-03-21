@@ -32,7 +32,13 @@ const evalSchema = new Schema({
         type: Number,
         required: false,
         default: 0
-    }
+    },
+    sentenceMatches: [{
+        sourceIndex: { type: Number, required: true },  // Index of the sentence in the current answer
+        mappedFeedbackIndex: { type: Number, required: true },  // Which expert feedback sentence this maps to (1-4)
+        similarity: { type: Number, required: true },  // Similarity score for this sentence match
+        score: { type: Number, required: false }  // Score from expert feedback for this sentence
+    }]
 }, { 
     timestamps: true, 
     versionKey: false,

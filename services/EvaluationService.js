@@ -136,34 +136,167 @@ class EvaluationService {
         }
     }
 
-    // Main method to evaluate an interaction and create eval entry if similar content found
+    async validateInteractionAndCheckExisting(interaction, chatId) {
+        if (!interaction || !interaction.question) {
+            ServerLoggingService.warn('Invalid interaction or missing question', chatId);
+            return null;
+        }
+
+        const existingEval = await Eval.findOne({ interaction: interaction._id });
+        if (existingEval) {
+            ServerLoggingService.info('Evaluation already exists for interaction', chatId);
+            return existingEval;
+        }
+
+        return true;
+    }
+
+    async getQuestionWithEmbedding(interaction, chatId) {
+        const question = await Question.findById(interaction.question);
+        if (!question || !question.embedding || !question.embedding.length) {
+            ServerLoggingService.warn('Question not found or missing embedding', chatId);
+            return null;
+        }
+        return question;
+    }
+
+    async compareAnswers(currentAnswer, compareAnswer) {
+        if (!currentAnswer || !compareAnswer) return null;
+
+        let answerSimilarity = 0;
+        let sentenceSimilarity = 0;
+        let sentenceMatches = [];
+
+        if (currentAnswer.embedding && compareAnswer.embedding) {
+            answerSimilarity = this.calculateCosineSimilarity(
+                currentAnswer.embedding,
+                compareAnswer.embedding
+            );
+        }
+
+        if (currentAnswer.sentenceEmbeddings?.length && compareAnswer.sentenceEmbeddings?.length) {
+            const similarityMatrix = currentAnswer.sentenceEmbeddings.map(embedding1 =>
+                compareAnswer.sentenceEmbeddings.map(embedding2 => 
+                    this.calculateCosineSimilarity(embedding1, embedding2)
+                )
+            );
+
+            const maxSentences = Math.min(4, currentAnswer.sentenceEmbeddings.length);
+            let usedTargetIndices = new Set();
+
+            for (let i = 0; i < maxSentences; i++) {
+                let bestSimilarity = 0;
+                let bestTargetIndex = -1;
+
+                similarityMatrix[i].forEach((similarity, targetIdx) => {
+                    if (!usedTargetIndices.has(targetIdx) && similarity > bestSimilarity) {
+                        bestSimilarity = similarity;
+                        bestTargetIndex = targetIdx;
+                    }
+                });
+
+                if (bestTargetIndex !== -1) {
+                    sentenceMatches.push({
+                        sentenceIndex: i + 1,
+                        similarity: bestSimilarity
+                    });
+                    usedTargetIndices.add(bestTargetIndex);
+                }
+            }
+
+            sentenceSimilarity = sentenceMatches.reduce((sum, match) => 
+                sum + match.similarity, 0) / sentenceMatches.length;
+        }
+
+        const combinedSimilarity = (answerSimilarity * 0.6) + (sentenceSimilarity * 0.4);
+
+        return {
+            answerSimilarity,
+            sentenceSimilarity,
+            sentenceMatches,
+            combinedSimilarity
+        };
+    }
+
+    async createEvaluation(interaction, bestMatch, chatId) {
+        const newExpertFeedback = new ExpertFeedback({
+            totalScore: bestMatch.expertFeedback.totalScore,
+            citationScore: bestMatch.expertFeedback.citationScore,
+            citationExplanation: bestMatch.expertFeedback.citationExplanation,
+            answerImprovement: bestMatch.expertFeedback.answerImprovement,
+            expertCitationUrl: bestMatch.expertFeedback.expertCitationUrl,
+            feedback: bestMatch.expertFeedback.feedback
+        });
+
+        bestMatch.sentenceMatches
+            .sort((a, b) => a.sentenceIndex - b.sentenceIndex)
+            .forEach((match, idx) => {
+                const feedbackIdx = match.sentenceIndex;
+                const targetIdx = idx + 1;
+
+                newExpertFeedback[`sentence${targetIdx}Score`] = 
+                    bestMatch.expertFeedback[`sentence${feedbackIdx}Score`] || -1;
+                newExpertFeedback[`sentence${targetIdx}Explanation`] = 
+                    bestMatch.expertFeedback[`sentence${feedbackIdx}Explanation`] || '';
+                newExpertFeedback[`sentence${targetIdx}Harmful`] = 
+                    bestMatch.expertFeedback[`sentence${feedbackIdx}Harmful`] || false;
+            });
+
+        const savedFeedback = await newExpertFeedback.save();
+
+        const newEval = new Eval({
+            interaction: interaction._id,
+            expertFeedback: savedFeedback._id,
+            similarityScore: bestMatch.similarity,
+            answerSimilarity: bestMatch.answerSimilarity || 0,
+            sentenceSimilarity: bestMatch.sentenceSimilarity || 0,
+            combinedSimilarity: bestMatch.combinedSimilarity || 0,
+            sentenceMatches: bestMatch.sentenceMatches.map((match, idx) => ({
+                sourceIndex: match.sentenceIndex - 1,
+                mappedFeedbackIndex: idx + 1,
+                similarity: match.similarity,
+                score: bestMatch.expertFeedback[`sentence${match.sentenceIndex}Score`] || -1
+            })).sort((a, b) => b.similarity - a.similarity)
+        });
+
+        const savedEval = await newEval.save();
+
+        await Interaction.findByIdAndUpdate(
+            interaction._id,
+            { aiEval: savedEval._id },
+            { new: true }
+        );
+
+        ServerLoggingService.info('Created evaluation with rearranged feedback', chatId, {
+            evaluationId: savedEval._id,
+            feedbackId: savedFeedback._id,
+            interactionId: interaction._id,
+            similarityScores: {
+                question: bestMatch.similarity,
+                answer: bestMatch.answerSimilarity,
+                sentence: bestMatch.sentenceSimilarity,
+                combined: bestMatch.combinedSimilarity
+            },
+            sentenceMatches: savedEval.sentenceMatches
+        });
+
+        return savedEval;
+    }
+
     async evaluateInteraction(interaction, chatId) {
         await dbConnect();
         try {
-            // Ensure we have a valid interaction with a question
-            if (!interaction || !interaction.question) {
-                ServerLoggingService.warn('Invalid interaction or missing question', chatId);
-                return null;
+            const validationResult = await this.validateInteractionAndCheckExisting(interaction, chatId);
+            if (validationResult !== true) {
+                return validationResult; // Returns null or existing eval
             }
 
-            // Check if evaluation already exists for this interaction
-            const existingEval = await Eval.findOne({ interaction: interaction._id });
-            if (existingEval) {
-                ServerLoggingService.info('Evaluation already exists for interaction', chatId);
-                return existingEval;
-            }
+            const question = await this.getQuestionWithEmbedding(interaction, chatId);
+            if (!question) return null;
 
-            // Get the full question object with embedding
-            const question = await Question.findById(interaction.question);
-            if (!question || !question.embedding || !question.embedding.length) {
-                ServerLoggingService.warn('Question not found or missing embedding', chatId);
-                return null;
-            }
-
-            // Find similar questions with expert feedback
             const similarResults = await this.findSimilarQuestionsWithFeedback(
                 question.embedding,
-                0.85, // similarity threshold
+                0.85,
                 chatId
             );
 
@@ -172,94 +305,34 @@ class EvaluationService {
                 return null;
             }
 
-            // If we have an answer, check both overall and sentence-level similarity
             let bestMatch = null;
             if (interaction.answer) {
-                // Get the answer from the current interaction
                 const currentAnswer = await mongoose.model('Answer').findById(interaction.answer);
 
                 if (currentAnswer) {
                     ServerLoggingService.debug('Processing answer similarities', chatId);
 
-                    // For each similar question, compare the answers
                     for (const result of similarResults) {
                         if (!result.interaction.answer) continue;
 
                         const compareAnswer = await mongoose.model('Answer').findById(result.interaction.answer);
+                        if (!compareAnswer) continue;
 
-                        if (compareAnswer) {
-                            // Compare answers using cosine similarity if embeddings exist
-                            let answerSimilarity = 0;
-                            let sentenceSimilarity = 0;
-
-                            if (currentAnswer.embedding && compareAnswer.embedding) {
-                                answerSimilarity = this.calculateCosineSimilarity(
-                                    currentAnswer.embedding,
-                                    compareAnswer.embedding
-                                );
-                            }
-
-                            // Calculate sentence-level similarity using precalculated sentence embeddings
-                            if (currentAnswer.sentenceEmbeddings?.length && compareAnswer.sentenceEmbeddings?.length) {
-                                sentenceSimilarity = this.calculateSentenceSimilarity(
-                                    currentAnswer.sentenceEmbeddings,
-                                    compareAnswer.sentenceEmbeddings
-                                );
-                            }
-
-                            // Combined similarity score - weigh both vector and sentence similarity
-                            const combinedSimilarity = (answerSimilarity * 0.6) + (sentenceSimilarity * 0.4);
-
-                            // If combined similarity is high enough
-                            if (combinedSimilarity > 0.7) {
-                                // If this is a better match than what we've found so far
-                                if (!bestMatch || combinedSimilarity > bestMatch.combinedSimilarity) {
-                                    bestMatch = {
-                                        ...result,
-                                        answerSimilarity,
-                                        sentenceSimilarity,
-                                        combinedSimilarity
-                                    };
-                                }
+                        const comparison = await this.compareAnswers(currentAnswer, compareAnswer);
+                        if (comparison && comparison.combinedSimilarity > 0.7 && comparison.sentenceMatches.length > 0) {
+                            if (!bestMatch || comparison.combinedSimilarity > bestMatch.combinedSimilarity) {
+                                bestMatch = {
+                                    ...result,
+                                    ...comparison
+                                };
                             }
                         }
                     }
                 }
             }
 
-            // If we found a good match, create an Eval entry
             if (bestMatch) {
-                // Create new Eval entry with the expert feedback and similarity scores
-                const newEval = new Eval({
-                    interaction: interaction._id,
-                    expertFeedback: bestMatch.expertFeedback._id,
-                    similarityScore: bestMatch.similarity,
-                    answerSimilarity: bestMatch.answerSimilarity || 0,
-                    sentenceSimilarity: bestMatch.sentenceSimilarity || 0,
-                    combinedSimilarity: bestMatch.combinedSimilarity || 0
-                });
-
-                const savedEval = await newEval.save();
-
-                // Update the interaction with the new evaluation reference
-                await Interaction.findByIdAndUpdate(
-                    interaction._id, 
-                    { aiEval: savedEval._id },
-                    { new: true }
-                );
-
-                ServerLoggingService.info('Created evaluation and updated interaction reference', chatId, {
-                    evaluationId: savedEval._id,
-                    interactionId: interaction._id,
-                    similarityScores: {
-                        question: bestMatch.similarity,
-                        answer: bestMatch.answerSimilarity,
-                        sentence: bestMatch.sentenceSimilarity,
-                        combined: bestMatch.combinedSimilarity
-                    }
-                });
-
-                return savedEval;
+                return await this.createEvaluation(interaction, bestMatch, chatId);
             }
 
             return null;
