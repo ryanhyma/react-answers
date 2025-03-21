@@ -48,13 +48,7 @@ const AppLayout = () => {
 
   // Set up token expiration checker when the app layout mounts
   useEffect(() => {
-    // Set up the auth expiration checker on component mount
-    const intervalId = AuthService.setupAuthExpirationChecker();
-    
-    // Clean up the interval when the component unmounts
-    return () => {
-      clearInterval(intervalId);
-    };
+    // Removed the auth expiration checker setup
   }, []);
 
   return (
