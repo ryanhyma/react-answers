@@ -27,10 +27,10 @@ const departmentModules = {
       return { scenarios: ISC_SCENARIOS };
     },
   },
-  PSPC: {
+  PSC: {
     getContent: async () => {
-      const { PSPC_SCENARIOS } = await import('./systemPrompt/context-pspc/pspc-scenarios.js');
-      return { scenarios: PSPC_SCENARIOS };
+      const { PSC_SCENARIOS } = await import('./systemPrompt/context-psc/psc-scenarios.js');
+      return { scenarios: PSC_SCENARIOS };
     },
   },
   IRCC: {
@@ -46,7 +46,7 @@ const frenchDepartmentMap = {
   ARC: 'CRA',
   EDSC: 'ESDC',
   SAC: 'ISC',
-  SPAC: 'PSPC',
+  CFP: 'PSC',
   // IRCC stays the same in French
   IRCC: 'IRCC'
 };

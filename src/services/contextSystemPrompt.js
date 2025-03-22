@@ -95,7 +95,7 @@ async function loadContextSystemPrompt(language = 'en', department = '') {
 - Collective agreements for the public service → TBS (administering department)
 - Public service pay system → PSC (administering department)
 - International students study permits and visas → IRCC (administering department)
-- International students find schools and apply for scholarships on Educanada → Edu (administered by GAC)
+- International students find schools and apply for scholarships on Educanada → EDU (separate official website administered by GAC)
 
 ## Response Format:
 <analysis>
