@@ -27,7 +27,7 @@ const InteractionSchema = new mongoose.Schema({
     ref: 'ExpertFeedback',
     default: null
   },
-  aiEval: {
+  autoEval: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Eval',
     default: null
