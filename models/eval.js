@@ -3,9 +3,12 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const evalSchema = new Schema({
-    interaction: { 
-        type: Schema.Types.ObjectId,
-        ref: 'Interaction',
+    chatId: { 
+        type: String,
+        required: true 
+    },
+    interactionId: { 
+        type: String,
         required: true 
     },
     expertFeedback: { 
@@ -13,32 +16,18 @@ const evalSchema = new Schema({
         ref: 'ExpertFeedback',
         required: false
     },
-    similarityScore: {
-        type: Number,
-        required: false,
-        default: 0
+    usedExpertFeedbackId: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'ExpertFeedback',
+        required: false
     },
-    answerSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
+    similarityScores: {
+        question: { type: Number, required: false, default: 0 }, // Similarity score for the question
+        answer: { type: Number, required: false, default: 0 }, // Similarity score for the answer
+        questionAnswer: { type: Number, required: false, default: 0 }, // Combined similarity score for question and answer
+        sentences: [{ type: Number, required: false, default: 0 }] // Array of similarity scores
     },
-    sentenceSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
-    },
-    combinedSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
-    },
-    sentenceMatches: [{
-        sourceIndex: { type: Number, required: true },  // Index of the sentence in the current answer
-        mappedFeedbackIndex: { type: Number, required: true },  // Which expert feedback sentence this maps to (1-4)
-        similarity: { type: Number, required: true },  // Similarity score for this sentence match
-        score: { type: Number, required: false }  // Score from expert feedback for this sentence
-    }]
+
 }, { 
     timestamps: true, 
     versionKey: false,
