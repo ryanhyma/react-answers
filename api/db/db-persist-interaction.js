@@ -6,79 +6,11 @@ import { Question } from '../../models/question.js';
 import { Citation } from '../../models/citation.js';
 import { Answer } from '../../models/answer.js';
 import { Tool } from '../../models/tool.js';
-import { embedDocuments } from '../../services/EmbeddingService.js';
+import EmbeddingService from '../../services/EmbeddingService.js';
 import ServerLoggingService from '../../services/ServerLoggingService.js';
 import EvaluationService from '../../services/EvaluationService.js';
 
-/**
- * Process all embeddings in a single batch to optimize API calls
- * @param {string} questionText - The question text to embed
- * @param {string} answerContent - The answer content to embed
- * @param {string[]} sentences - The individual sentences to embed
- * @param {string} chatId - Chat ID for logging purposes
- * @returns {Object} Object containing all generated embeddings
- */
-async function batchProcessEmbeddings(questionText, answerContent, sentences, chatId) {
-  try {
-    // Prepare a single array with all texts that need embeddings
-    let allTexts = [];
-    const textMap = {};
-    let currentIndex = 0;
-    
-    // Add question text
-    if (questionText) {
-      allTexts.push(questionText);
-      textMap.questionIndex = currentIndex++;
-    }
-    
-    // Add answer content
-    if (answerContent) {
-      allTexts.push(answerContent);
-      textMap.answerIndex = currentIndex++;
-    }
-    
-    // Add sentence texts
-    if (sentences && sentences.length > 0) {
-      textMap.sentencesStartIndex = currentIndex;
-      textMap.sentencesEndIndex = currentIndex + sentences.length - 1;
-      allTexts.push(...sentences);
-    }
 
-    // Remove empty elements from the allTexts array
-    allTexts = allTexts.filter(text => text && text.trim().length > 0);
-    
-    // If no texts to embed, return empty object
-    if (allTexts.length === 0) {
-      return {};
-    }
-    
-    // Execute a single embedding operation for all texts
-    const allEmbeddings = await embedDocuments(allTexts);
-    
-    // Organize results into a structured object
-    const result = {};
-    if ('questionIndex' in textMap) {
-      result.questionEmbedding = allEmbeddings[textMap.questionIndex];
-    }
-    
-    if ('answerIndex' in textMap) {
-      result.answerEmbedding = allEmbeddings[textMap.answerIndex];
-    }
-    
-    if ('sentencesStartIndex' in textMap && 'sentencesEndIndex' in textMap) {
-      result.sentenceEmbeddings = allEmbeddings.slice(
-        textMap.sentencesStartIndex,
-        textMap.sentencesEndIndex + 1
-      );
-    }
-    
-    return result;
-  } catch (error) {
-    ServerLoggingService.error('Failed to generate embeddings batch', chatId, error);
-    // Return empty object on error
-    return {};
-  }
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -126,25 +58,7 @@ export default async function handler(req, res) {
     question.language = interaction.answer.questionLanguage;
     question.englishQuestion = interaction.answer.englishQuestion;
 
-    // Process all embeddings as a single batch using embedDocuments
-    const embeddings = await batchProcessEmbeddings(
-      interaction.question,
-      interaction.answer.content,
-      answer.sentences,
-      interaction.chatId
-    );
-
-    // Assign embeddings to their respective objects if available
-    if (embeddings.questionEmbedding) {
-      question.embedding = embeddings.questionEmbedding;
-    }
-    if (embeddings.answerEmbedding) {
-      answer.embedding = embeddings.answerEmbedding;
-    }
-    if (embeddings.sentenceEmbeddings) {
-      answer.sentenceEmbeddings = embeddings.sentenceEmbeddings;
-    }
-
+    
     // Handle tools data with proper validation
     const toolsData = Array.isArray(interaction.answer.tools) ? interaction.answer.tools : [];
     const toolObjects = toolsData.map(toolData => new Tool({
@@ -182,7 +96,11 @@ export default async function handler(req, res) {
     chat.interactions.push(dbInteraction._id);
     await chat.save();
 
-    // 5. Perform evaluation on the saved interaction
+    // 5. Generate embeddings for the interaction
+    await EmbeddingService.createEmbedding(dbInteraction);
+ 
+
+    // 6. Perform evaluation on the saved interaction
     try {
       const evaluationResult = await EvaluationService.evaluateInteraction(dbInteraction, chatId);
       if (evaluationResult) {
