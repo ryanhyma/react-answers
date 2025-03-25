@@ -71,13 +71,13 @@ class EmbeddingService {
   async createEmbedding(interaction, provider = 'openai', modelName = null) {
     try {
       const populatedInteraction = await interaction.populate('question answer');
-      
+
       if (!populatedInteraction.question || !populatedInteraction.answer) {
         throw new Error('Interaction must have both question and answer');
       }
 
-      const chat = await Chat.findOne({ 
-        interactions: { $elemMatch: { $eq: interaction._id } } 
+      const chat = await Chat.findOne({
+        interactions: { $elemMatch: { $eq: interaction._id } }
       }).populate({
         path: 'interactions',
         populate: {
@@ -89,61 +89,78 @@ class EmbeddingService {
         throw new Error('Chat not found for this interaction');
       }
 
-      const previousAndCurrentTexts = [];
-      
-      for (const chatInteraction of chat.interactions) {
-        if (chatInteraction._id.toString() === interaction._id.toString()) {
-          break;
+      // Find the current interaction index
+      const currentInteractionIndex = chat.interactions.findIndex(
+        i => i._id.toString() === interaction._id.toString()
+      );
+
+      if (currentInteractionIndex === -1) {
+        throw new Error('Interaction not found in chat');
+      }
+
+      // Collect all previous questions with labels (excluding current)
+      const labeledQuestions = [];
+      let questionCounter = 1;
+
+      // Handle previous questions (if any)
+      for (let i = 0; i < currentInteractionIndex; i++) {
+        const chatInteraction = chat.interactions[i];
+        if (chatInteraction.question) {
+          const cleanedQuestion = this.cleanTextForEmbedding(chatInteraction.question.englishQuestion || chatInteraction.question.redactedQuestion);
+          if (cleanedQuestion.trim()) {
+            const labeledQuestion = `Question ${questionCounter}: ${cleanedQuestion}`;
+            labeledQuestions.push(labeledQuestion);
+            questionCounter++;
+          }
         }
-        
-        if (chatInteraction.question && chatInteraction.question.englishQuestion) {
-          previousAndCurrentTexts.push(this.cleanTextForEmbedding(chatInteraction.question.englishQuestion));
-        }
       }
-      
-      if (populatedInteraction.question.englishQuestion) {
-        previousAndCurrentTexts.push(this.cleanTextForEmbedding(populatedInteraction.question.englishQuestion));
-      }
-      
-      if (populatedInteraction.answer.englishAnswer) {
-        previousAndCurrentTexts.push(this.cleanTextForEmbedding(populatedInteraction.answer.englishAnswer));
-      }
-      
-      const questionText = this.cleanTextForEmbedding(populatedInteraction.question.englishQuestion || '');
-      const answerText = this.cleanTextForEmbedding(populatedInteraction.answer.englishAnswer || '');
-      
+
+      // Process current question
+      const questionText = this.cleanTextForEmbedding(populatedInteraction.question.englishQuestion || populatedInteraction.question.redactedQuestion);
+      const answerText = this.cleanTextForEmbedding(populatedInteraction.answer.englishAnswer || populatedInteraction.answer.content);
+
+      // The current question/answer number is based on previous questions count + 1
+      const currentQuestionNumber = questionCounter;
+      const labeledQuestionText = `Question ${currentQuestionNumber}: ${questionText}`;
+      const labeledAnswerText = answerText.trim() ? `Answer ${currentQuestionNumber}: ${answerText}` : '';
+
+      // Process sentences
       const sentences = populatedInteraction.answer.sentences || [];
       const cleanedSentences = sentences
-        .map(sentence => this.cleanTextForEmbedding(sentence))
-        .filter(cleaned => cleaned.trim().length > 0);
-      
+        .map((sentence, index) => {
+          const cleaned = this.cleanTextForEmbedding(sentence);
+          return cleaned.trim() ? `Sentence ${index + 1}: ${cleaned}` : null;
+        })
+        .filter(Boolean);
+
+      // Create properly formatted texts for embedding
       const textsToEmbed = [
-        questionText,
-        answerText,
-        previousAndCurrentTexts.join(' '),
+        labeledQuestionText.trim(),  // For questionEmbedding
+        labeledQuestions.length > 0
+          ? [...labeledQuestions, labeledQuestionText].join('\n')
+          : labeledQuestionText.trim(),  // For questionsEmbedding - all previous questions + current question
+        labeledAnswerText.trim(),    // For answerEmbedding
+        [...labeledQuestions, labeledQuestionText, labeledAnswerText].filter(text => text.trim()).join('\n'), // For questionsAnswerEmbedding with newlines
         ...cleanedSentences
-      ];
-      
-      const embeddings = await this.embedDocuments(
-        textsToEmbed.filter(text => text.trim().length > 0),
-        provider,
-        modelName
-      );
-      
+      ].filter(text => text.trim());
+
+      const embeddings = await this.embedDocuments(textsToEmbed, provider, modelName);
+
       const embeddingDoc = {
         chatId: chat._id,
         interactionId: interaction._id,
         questionId: populatedInteraction.question._id,
         answerId: populatedInteraction.answer._id,
-        questionsEmbedding: embeddings[0],
-        answerEmbedding: embeddings[1],
-        questionsAnswerEmbedding: embeddings[2],
-        sentenceEmbeddings: embeddings.slice(3, 3 + cleanedSentences.length)
+        questionEmbedding: embeddings[0],
+        questionsEmbedding: embeddings[1],
+        answerEmbedding: embeddings[2],
+        questionsAnswerEmbedding: embeddings[3],
+        sentenceEmbeddings: embeddings.slice(4, 4 + cleanedSentences.length)
       };
       await dbConnect();
       const newEmbedding = await Embedding.create(embeddingDoc);
       ServerLoggingService.info('Embedding successfully created and saved', 'embedding-service');
-      
+
       return newEmbedding;
     } catch (error) {
       ServerLoggingService.error('Error creating embeddings for interaction', 'embedding-service', error);
