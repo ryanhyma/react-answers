@@ -230,7 +230,9 @@
       "aiAnswers": "Réponses IA",
       "batches": "Lots",
       "users": "Gestion des utilisateurs",
-      "logs": "Journaux de chat"
+      "logs": "Journaux de chat",
+      "database": "Gestion de la base de données",
+      "eval": "Outils d'évaluation"
     },
     "chatLogs": {
       "title": "Interactions de chat récentes"

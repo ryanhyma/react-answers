@@ -227,8 +227,10 @@
       "title": "Admin Menu",
       "aiAnswers": "AI Answers",
       "batches": "Batches",
-      "users": "User Management", 
-      "logs": "Chat Logs"
+      "users": "User Management",
+      "logs": "Chat Logs",
+      "database": "Database Management",
+      "eval": "Evaluation Tools"
     },
     "chatLogs": {
       "title": "Recent Chat Interactions"
