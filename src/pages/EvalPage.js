@@ -241,7 +241,7 @@ const EvalPage = () => {
             <li><strong>Finding Similar Content:</strong> Searches for interactions with:
               <ul>
                 <li>Existing expert feedback</li>
-                <li>Question+answer similarity above threshold (0.85)</li>
+                <li>Question(s)+answer similarity above threshold (0.85)</li>
                 <li>Returns up to 20 closest matches</li>
               </ul>
             </li>
@@ -268,6 +268,7 @@ const EvalPage = () => {
                 <li>Updates the interaction with the new evaluation reference</li>
               </ul>
             </li>
+            
           </ol>
         </GcdsDetails>
         <br/>
