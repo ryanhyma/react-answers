@@ -160,7 +160,7 @@ class EvaluationService {
 
             if (feedbackIdx >= 1 && feedbackIdx <= 4) {
                 newExpertFeedback[`sentence${newIdx}Score`] = 
-                    expertFeedback[`sentence${feedbackIdx}Score`] || -1;
+                    expertFeedback[`sentence${feedbackIdx}Score`] || null;
                 newExpertFeedback[`sentence${newIdx}Explanation`] = 
                     expertFeedback[`sentence${feedbackIdx}Explanation`] || '';
                 newExpertFeedback[`sentence${newIdx}Harmful`] = 
