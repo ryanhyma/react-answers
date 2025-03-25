@@ -32,8 +32,18 @@ const AdminPage = () => {
             </GcdsLink>
           </li>
           <li className="">
-            <GcdsLink href={`/${language}/logs`}>
-              {t('admin.navigation.logs', 'Chat Logs')}
+            <GcdsLink href={`/${language}/chat-viewer`}>
+              {t('admin.navigation.chatViewer')}
+            </GcdsLink>
+          </li>
+          <li className="">
+            <GcdsLink href={`/${language}/database`}>
+              {t('admin.navigation.database', 'Database Management')}
+            </GcdsLink>
+          </li>
+          <li className="">
+            <GcdsLink href={`/${language}/eval`}>
+              {t('admin.navigation.eval', 'Evaluation Tools')}
             </GcdsLink>
           </li>
         </ul>

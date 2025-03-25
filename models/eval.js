@@ -3,36 +3,31 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const evalSchema = new Schema({
-    interaction: { 
-        type: Schema.Types.ObjectId,
-        ref: 'Interaction',
-        required: true 
+    chatId: { 
+        type: String,
+        required: false 
+    },
+    interactionId: { 
+        type: String,
+        required: false 
     },
     expertFeedback: { 
         type: Schema.Types.ObjectId, 
         ref: 'ExpertFeedback',
         required: false
     },
-    similarityScore: {
-        type: Number,
-        required: false,
-        default: 0
+    usedExpertFeedbackId: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'ExpertFeedback',
+        required: false
     },
-    answerSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
+    similarityScores: {
+        question: { type: Number, required: false, default: 0 }, // Similarity score for the question
+        answer: { type: Number, required: false, default: 0 }, // Similarity score for the answer
+        questionAnswer: { type: Number, required: false, default: 0 }, // Combined similarity score for question and answer
+        sentences: [{ type: Number, required: false, default: 0 }] // Array of similarity scores
     },
-    sentenceSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
-    },
-    combinedSimilarity: {
-        type: Number,
-        required: false,
-        default: 0
-    }
+
 }, { 
     timestamps: true, 
     versionKey: false,
