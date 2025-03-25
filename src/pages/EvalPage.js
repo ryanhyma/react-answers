@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { getApiUrl } from '../utils/apiToUrl.js';
 import { GcdsContainer, GcdsText, GcdsButton } from '@cdssnc/gcds-components-react';
-
 
 const EvalPage = () => {
   const [embeddingProgress, setEmbeddingProgress] = useState(null);
@@ -9,34 +8,31 @@ const EvalPage = () => {
   const [isAutoProcessingEmbeddings, setIsAutoProcessingEmbeddings] = useState(false);
   const [isAutoProcessingEvals, setIsAutoProcessingEvals] = useState(false);
   const [evalLastProcessedId, setEvalLastProcessedId] = useState(null);
-  const embeddingIntervalRef = useRef(null);
-  const evalIntervalRef = useRef(null);
+  const [isRegeneratingAll, setIsRegeneratingAll] = useState(false);
+  const [isRegeneratingEmbeddings, setIsRegeneratingEmbeddings] = useState(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
+  const [isEvalRequestInProgress, setIsEvalRequestInProgress] = useState(false);
 
-  // Clean up intervals on component unmount
-  useEffect(() => {
-    return () => {
-      if (embeddingIntervalRef.current) clearInterval(embeddingIntervalRef.current);
-      if (evalIntervalRef.current) clearInterval(evalIntervalRef.current);
-    };
-  }, []);
-
-  const handleGenerateEmbeddings = async (isAutoProcess = false) => {
-    if (!isAutoProcess) {
-      // Clear any existing interval when manually triggered
-      if (embeddingIntervalRef.current) {
-        clearInterval(embeddingIntervalRef.current);
-        embeddingIntervalRef.current = null;
-      }
-      setIsAutoProcessingEmbeddings(false);
+  const handleGenerateEmbeddings = async (isAutoProcess = false, regenerateAll = false, lastId = null) => {
+    if (isRequestInProgress) {
+      return; // Skip if a request is already in progress
     }
 
-    setEmbeddingProgress(prev => ({ ...prev, loading: true }));
     try {
+      setIsRequestInProgress(true);
+      if (!isAutoProcess) {
+        setIsAutoProcessingEmbeddings(true);
+      }
+
       const response = await fetch(getApiUrl('db-generate-embeddings'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ 
+          lastProcessedId: lastId,
+          regenerateAll: regenerateAll 
+        })
       });
 
       if (!response.ok) {
@@ -44,72 +40,64 @@ const EvalPage = () => {
       }
 
       const result = await response.json();
-      setEmbeddingProgress({
-        completed: result.completed,
-        total: result.total,
-        remaining: result.remaining,
-        duration: result.duration,
-        loading: false
-      });
       
-      if (result.remaining > 0) {
-        if (!isAutoProcess) {
-          // If not already auto-processing, ask user if they want to continue
-          const shouldContinue = window.confirm(
-            `Processed ${result.completed} interactions in ${result.duration} seconds. ${result.remaining} remaining. Do you want to continue processing automatically?`
-          );
-          
-          if (shouldContinue) {
-            setIsAutoProcessingEmbeddings(true);
-            // Set up interval to keep processing (every 3 seconds)
-            embeddingIntervalRef.current = setInterval(() => {
-              handleGenerateEmbeddings(true);
-            }, 3000);
+      // Only update progress if we got a valid response
+      if (typeof result.remaining === 'number') {
+        setEmbeddingProgress({
+          remaining: result.remaining,
+          lastProcessedId: result.lastProcessedId
+        });
+        
+        // Only continue processing if there are actually items remaining
+        if (result.remaining > 0) {
+          handleGenerateEmbeddings(true, false, result.lastProcessedId);
+        } else {
+          setIsAutoProcessingEmbeddings(false);
+          if (!isAutoProcess) {
+            alert('All embeddings have been generated!');
           }
         }
       } else {
-        // No more items to process, clear interval
-        if (embeddingIntervalRef.current) {
-          clearInterval(embeddingIntervalRef.current);
-          embeddingIntervalRef.current = null;
-        }
+        // If we don't get a valid remaining count, stop processing
         setIsAutoProcessingEmbeddings(false);
-        
+        throw new Error('Invalid response format from server');
       }
     } catch (error) {
       console.error('Error generating embeddings:', error);
       if (!isAutoProcess) {
         alert('Failed to generate embeddings. Check the console for details.');
       }
-      // Stop auto-processing on error
-      if (embeddingIntervalRef.current) {
-        clearInterval(embeddingIntervalRef.current);
-        embeddingIntervalRef.current = null;
-      }
       setIsAutoProcessingEmbeddings(false);
-      setEmbeddingProgress(prev => ({ ...prev, loading: false }));
+    } finally {
+      setIsRequestInProgress(false);
     }
   };
 
-  const handleGenerateEvals = async (isAutoProcess = false) => {
-    if (!isAutoProcess) {
-      // Clear any existing interval when manually triggered
-      if (evalIntervalRef.current) {
-        clearInterval(evalIntervalRef.current);
-        evalIntervalRef.current = null;
-      }
-      setIsAutoProcessingEvals(false);
-      setEvalLastProcessedId(null); // Reset last processed ID when starting fresh
+  const handleGenerateEvals = async (isAutoProcess = false, regenerateAll = false, lastId = null) => {
+    if (isEvalRequestInProgress) {
+      return; // Skip if a request is already in progress
     }
 
-    setEvalProgress(prev => ({ ...prev, loading: true }));
     try {
+      setIsEvalRequestInProgress(true);
+      if (!isAutoProcess) {
+        setIsAutoProcessingEvals(true);
+        setEvalLastProcessedId(null);
+        if (regenerateAll) {
+          setIsRegeneratingAll(true);
+        }
+      }
+
+      setEvalProgress(prev => ({ ...prev, loading: true }));
       const response = await fetch(getApiUrl('db-generate-evals'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ lastProcessedId: evalLastProcessedId })
+        body: JSON.stringify({ 
+          lastProcessedId: lastId,
+          regenerateAll: regenerateAll 
+        })
       });
 
       if (!response.ok) {
@@ -117,68 +105,63 @@ const EvalPage = () => {
       }
 
       const result = await response.json();
-      setEvalLastProcessedId(result.lastProcessedId);
-      setEvalProgress({
-        remaining: result.remaining,
-        loading: false
-      });
       
-      if (result.remaining > 0) {
-        if (!isAutoProcess) {
-          // If not already auto-processing, ask user if they want to continue
-          const shouldContinue = window.confirm(
-            `${result.remaining} evaluations remaining to process. Do you want to continue processing automatically?`
-          );
-          
-          if (shouldContinue) {
-            setIsAutoProcessingEvals(true);
-            // Set up interval to keep processing (every 3 seconds)
-            evalIntervalRef.current = setInterval(() => {
-              handleGenerateEvals(true);
-            }, 3000);
+      // Only update progress if we got a valid response
+      if (typeof result.remaining === 'number') {
+        setEvalLastProcessedId(result.lastProcessedId);
+        setEvalProgress({
+          remaining: result.remaining,
+          lastProcessedId: result.lastProcessedId
+        });
+        
+        // Only continue processing if there are actually items remaining
+        if (result.remaining > 0) {
+          handleGenerateEvals(true, false, result.lastProcessedId);
+        } else {
+          setIsAutoProcessingEvals(false);
+          setEvalLastProcessedId(null);
+          setIsRegeneratingAll(false);
+          if (!isAutoProcess) {
+            alert('All evaluations have been generated!');
           }
         }
       } else {
-        // No more items to process, clear interval and reset lastProcessedId
-        if (evalIntervalRef.current) {
-          clearInterval(evalIntervalRef.current);
-          evalIntervalRef.current = null;
-        }
+        // If we don't get a valid remaining count, stop processing
         setIsAutoProcessingEvals(false);
         setEvalLastProcessedId(null);
-        if (!isAutoProcess) {
-          alert('All evaluations have been generated!');
-        }
+        setIsRegeneratingAll(false);
+        throw new Error('Invalid response format from server');
       }
     } catch (error) {
       console.error('Error generating evals:', error);
       if (!isAutoProcess) {
         alert('Failed to generate evals. Check the console for details.');
       }
-      // Stop auto-processing on error
-      if (evalIntervalRef.current) {
-        clearInterval(evalIntervalRef.current);
-        evalIntervalRef.current = null;
-      }
       setIsAutoProcessingEvals(false);
-      setEvalProgress(prev => ({ ...prev, loading: false }));
+      setIsRegeneratingAll(false);
+    } finally {
+      setIsEvalRequestInProgress(false);
     }
   };
 
-  const stopAutoProcessingEmbeddings = () => {
-    if (embeddingIntervalRef.current) {
-      clearInterval(embeddingIntervalRef.current);
-      embeddingIntervalRef.current = null;
+  const handleRegenerateAllEvals = () => {
+    const confirmed = window.confirm(
+      'This will delete all existing evaluations and regenerate them from scratch. This operation cannot be undone. Are you sure you want to continue?'
+    );
+    
+    if (confirmed) {
+      handleGenerateEvals(false, true);
     }
-    setIsAutoProcessingEmbeddings(false);
   };
 
-  const stopAutoProcessingEvals = () => {
-    if (evalIntervalRef.current) {
-      clearInterval(evalIntervalRef.current);
-      evalIntervalRef.current = null;
+  const handleRegenerateEmbeddings = () => {
+    const confirmed = window.confirm(
+      'This will delete all existing embeddings and regenerate them from scratch. This operation cannot be undone. Are you sure you want to continue?'
+    );
+    
+    if (confirmed) {
+      handleGenerateEmbeddings(false, true, null);
     }
-    setIsAutoProcessingEvals(false);
   };
 
   const handleProcessInteractions = async () => {
@@ -220,21 +203,19 @@ const EvalPage = () => {
             {embeddingProgress?.loading && !isAutoProcessingEmbeddings ? 'Processing...' : 'Generate Embeddings'}
           </GcdsButton>
           
-          {isAutoProcessingEmbeddings && (
-            <GcdsButton 
-              onClick={stopAutoProcessingEmbeddings}
-              variant="secondary"
-              className="mb-200"
-            >
-              Stop Auto-Processing
-            </GcdsButton>
-          )}
+          <GcdsButton 
+            onClick={handleRegenerateEmbeddings}
+            disabled={embeddingProgress?.loading || isAutoProcessingEmbeddings}
+            variant="danger"
+            className="mb-200 mr-200"
+          >
+            {isRegeneratingEmbeddings ? 'Regenerating...' : 'Regenerate Embeddings'}
+          </GcdsButton>
         </div>
         
         {embeddingProgress && (
           <div className="mb-200">
             <p>
-              Processed: {embeddingProgress.completed} / {embeddingProgress.total}
               {embeddingProgress.remaining !== undefined && (
                 <span> • Remaining: {embeddingProgress.remaining}</span>
               )}
@@ -254,35 +235,36 @@ const EvalPage = () => {
         <div className="button-group">
           <GcdsButton 
             onClick={() => handleGenerateEvals(false)}
-            disabled={evalProgress?.loading || isAutoProcessingEvals}
+            disabled={evalProgress?.loading || isAutoProcessingEvals || isRegeneratingAll}
             className="mb-200 mr-200"
           >
-            {evalProgress?.loading && !isAutoProcessingEvals ? 'Processing...' : 'Generate Evaluations'}
+            {evalProgress?.loading && !isAutoProcessingEvals && !isRegeneratingAll ? 'Processing...' : 'Generate Evaluations'}
           </GcdsButton>
           
-          {isAutoProcessingEvals && (
-            <GcdsButton 
-              onClick={stopAutoProcessingEvals}
-              variant="secondary"
-              className="mb-200"
-            >
-              Stop Auto-Processing
-            </GcdsButton>
-          )}
+          <GcdsButton 
+            onClick={handleRegenerateAllEvals}
+            disabled={evalProgress?.loading || isAutoProcessingEvals || isRegeneratingAll}
+            variant="danger"
+            className="mb-200 mr-200"
+          >
+            {isRegeneratingAll ? 'Regenerating All...' : 'Regenerate All Evaluations'}
+          </GcdsButton>
         </div>
         
         {evalProgress && (
           <div className="mb-200">
             <p>
-              Processed: {evalProgress.completed} / {evalProgress.total}
               {evalProgress.successful !== undefined && (
                 <span> • Successful: {evalProgress.successful}</span>
               )}
               {evalProgress.remaining !== undefined && (
                 <span> • Remaining: {evalProgress.remaining}</span>
               )}
-              {isAutoProcessingEvals && (
+              {isAutoProcessingEvals && !isRegeneratingAll && (
                 <span> • <strong>Auto-processing active</strong></span>
+              )}
+              {isRegeneratingAll && (
+                <span> • <strong>Regenerating all evaluations</strong></span>
               )}
             </p>
           </div>
