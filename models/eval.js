@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const evalSchema = new Schema({
     chatId: { 
         type: String,
-        required: true 
+        required: false 
     },
     interactionId: { 
         type: String,
-        required: true 
+        required: false 
     },
     expertFeedback: { 
         type: Schema.Types.ObjectId, 
