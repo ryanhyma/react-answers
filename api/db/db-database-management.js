@@ -42,29 +42,74 @@ async function databaseManagementHandler(req, res) {
         return res.status(400).json({ message: 'Invalid backup file format' });
       }
 
-      const session = await connection.startSession();
-      
       try {
-        await session.withTransaction(async () => {
-          // Clear existing data
-          await Promise.all(Object.values(collections).map(model => 
-            model.deleteMany({}, { session })
-          ));
+        // Clear existing data
+        await Promise.all(Object.values(collections).map(model => 
+          model.deleteMany({})
+        ));
 
-          // Import new data
-          for (const [name, data] of Object.entries(backup)) {
+        // Multi-pass import to handle dependencies between collections
+        const pendingCollections = { ...backup };
+        const stats = {
+          totalCollections: Object.keys(pendingCollections).length,
+          insertedCollections: 0,
+          maxPasses: 5, // Prevent infinite loops
+          currentPass: 0
+        };
+        
+        let madeProgress = true;
+        
+        // Continue as long as we're making progress and haven't reached the max passes
+        while (madeProgress && stats.currentPass < stats.maxPasses && Object.keys(pendingCollections).length > 0) {
+          stats.currentPass++;
+          madeProgress = false;
+          
+          // Track collections that were successfully processed in this pass
+          const successfulCollections = [];
+          
+          for (const [name, data] of Object.entries(pendingCollections)) {
             const model = collections[name.toLowerCase()];
-            if (Array.isArray(data) && data.length > 0 && model) {
-              await model.insertMany(data, { session });
+            
+            // Skip if no model found or no data to insert
+            if (!model || !Array.isArray(data) || data.length === 0) {
+              successfulCollections.push(name);
+              continue;
+            }
+            
+            try {
+              // Try to insert the data for this collection
+              await model.insertMany(data);
+              successfulCollections.push(name);
+              stats.insertedCollections++;
+              madeProgress = true;
+            } catch (error) {
+              // If insertion fails, this collection might depend on others
+              // We'll retry it in the next pass
+              console.log(`Pass ${stats.currentPass}: Failed to insert ${name}. Will retry in next pass.`);
             }
           }
+          
+          // Remove successfully processed collections from pending
+          for (const name of successfulCollections) {
+            delete pendingCollections[name];
+          }
+        }
+        
+        // Check if any collections couldn't be imported
+        if (Object.keys(pendingCollections).length > 0) {
+          console.warn(`Import incomplete. Could not import: ${Object.keys(pendingCollections).join(', ')}`);
+        }
+        
+        return res.status(200).json({ 
+          message: 'Database restored successfully', 
+          stats: {
+            totalCollections: stats.totalCollections,
+            insertedCollections: stats.insertedCollections,
+            passes: stats.currentPass,
+            failedCollections: Object.keys(pendingCollections)
+          } 
         });
-
-        await session.endSession();
-        return res.status(200).json({ message: 'Database restored successfully' });
       } catch (error) {
-        await session.abortTransaction();
-        await session.endSession();
         throw error;
       }
     }
