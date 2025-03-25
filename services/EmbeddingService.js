@@ -238,12 +238,14 @@ class EmbeddingService {
         try {
           await this.createEmbedding(interaction);
           processedCount++;
-          lastId = interaction._id.toString();
-          // Add the newly processed ID to our existing IDs list
-          existingEmbeddingIds.push(interaction._id.toString());
         } catch (error) {
           ServerLoggingService.error(`Error creating embedding for interaction ${interaction._id}`, 'embedding-service', error);
           // Continue processing other interactions even if one fails
+        } finally {
+          // Always update lastId and add to existingEmbeddingIds regardless of success or failure
+          lastId = interaction._id.toString();
+          // Add the processed ID to our existing IDs list to prevent reprocessing
+          existingEmbeddingIds.push(interaction._id.toString());
         }
       }
 

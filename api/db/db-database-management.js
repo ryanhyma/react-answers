@@ -3,8 +3,8 @@ import { authMiddleware, adminMiddleware, withProtection } from '../../middlewar
 import mongoose from 'mongoose';
 
 async function databaseManagementHandler(req, res) {
-  if (!['GET', 'POST'].includes(req.method)) {
-    res.setHeader('Allow', ['GET', 'POST']);
+  if (!['GET', 'POST', 'DELETE'].includes(req.method)) {
+    res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
@@ -122,6 +122,31 @@ async function databaseManagementHandler(req, res) {
       } catch (error) {
         throw error;
       }
+    } else if (req.method === 'DELETE') {
+      // Drop all indexes
+      const results = {
+        success: [],
+        failed: []
+      };
+
+      await Promise.all(Object.values(collections).map(async model => {
+        try {
+          await model.collection.dropIndexes();
+          results.success.push(model.modelName);
+          console.log(`Dropped indexes for ${model.modelName}`);
+        } catch (error) {
+          results.failed.push({
+            collection: model.modelName,
+            error: error.message
+          });
+          console.warn(`Error dropping indexes for ${model.modelName}:`, error.message);
+        }
+      }));
+
+      return res.status(200).json({ 
+        message: 'Database indexes dropped successfully',
+        results
+      });
     }
   } catch (error) {
     console.error('Database management error:', error);

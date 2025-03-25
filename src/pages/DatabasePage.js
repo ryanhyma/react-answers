@@ -6,6 +6,7 @@ import AuthService from '../services/AuthService.js';
 const DatabasePage = ({ lang }) => {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isDroppingIndexes, setIsDroppingIndexes] = useState(false);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef(null);
 
@@ -86,6 +87,45 @@ const DatabasePage = ({ lang }) => {
     }
   };
 
+  const handleDropIndexes = async () => {
+    const confirmed = window.confirm(
+      lang === 'en'
+        ? 'This will drop all database indexes. Database operations may be slower until indexes are rebuilt automatically. Are you sure you want to continue?'
+        : 'Cette action supprimera tous les index de la base de données. Les opérations de base de données peuvent être plus lentes jusqu\'à ce que les index soient reconstruits automatiquement. Êtes-vous sûr de vouloir continuer?'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      setIsDroppingIndexes(true);
+      setMessage('');
+
+      const response = await fetch(getApiUrl('db-database-management'), {
+        method: 'DELETE',
+        headers: AuthService.getAuthHeader()
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to drop indexes');
+      }
+
+      const result = await response.json();
+      setMessage(lang === 'en' 
+        ? `Indexes dropped successfully for ${result.results.success.length} collections`
+        : `Indexes supprimés avec succès pour ${result.results.success.length} collections`
+      );
+    } catch (error) {
+      setMessage(lang === 'en' 
+        ? `Drop indexes failed: ${error.message}`
+        : `Échec de la suppression des index: ${error.message}`
+      );
+      console.error('Drop indexes error:', error);
+    } finally {
+      setIsDroppingIndexes(false);
+    }
+  };
+
   return (
     <GcdsContainer size="xl" centered>
       <h1>{lang === 'en' ? 'Database Management' : 'Gestion de la base de données'}</h1>
@@ -133,6 +173,25 @@ const DatabasePage = ({ lang }) => {
               : (lang === 'en' ? 'Import Database' : 'Importer la base de données')}
           </GcdsButton>
         </form>
+      </div>
+
+      <div className="mb-400">
+        <h2>{lang === 'en' ? 'Drop All Indexes' : 'Supprimer tous les index'}</h2>
+        <GcdsText>
+          {lang === 'en'
+            ? 'Remove all database indexes. This can be useful to fix database performance issues. Indexes will be automatically rebuilt by MongoDB as needed.'
+            : 'Supprimer tous les index de la base de données. Cela peut être utile pour résoudre les problèmes de performance de la base de données. Les index seront reconstruits automatiquement par MongoDB selon les besoins.'}
+        </GcdsText>
+        <GcdsButton
+          onClick={handleDropIndexes}
+          disabled={isDroppingIndexes}
+          variant="danger"
+          className="mb-200"
+        >
+          {isDroppingIndexes 
+            ? (lang === 'en' ? 'Dropping Indexes...' : 'Suppression des index...')
+            : (lang === 'en' ? 'Drop All Indexes' : 'Supprimer tous les index')}
+        </GcdsButton>
       </div>
 
       {message && (
