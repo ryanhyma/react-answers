@@ -9,9 +9,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { lastProcessedId } = req.body;
-        const duration = 30; // Process for 30 seconds at a time
-        const result = await EvaluationService.processEvaluationsForDuration(duration, true, lastProcessedId);
+        const { lastProcessedId, regenerateAll } = req.body;
+        const duration = 10; // Process for 30 seconds at a time
+        const result = await EvaluationService.processEvaluationsForDuration(duration, !regenerateAll, lastProcessedId);
         res.status(200).json(result);
     } catch (error) {
         console.error('Error in generate-evals:', error);
