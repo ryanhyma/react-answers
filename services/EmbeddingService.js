@@ -6,6 +6,7 @@ import { Embedding } from '../models/embedding.js';
 import { Chat } from '../models/chat.js';
 import { Interaction } from '../models/interaction.js';
 import dbConnect from '../api/db/db-connect.js';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -158,61 +159,57 @@ class EmbeddingService {
     return await client.embedDocuments(texts);
   }
 
-  /**
-   * Generate embeddings for all records without embeddings in the database.
-   * @param {function} progressCallback - Callback to report progress.
-   */
-  async generateMissingEmbeddings(progressCallback) {
-    try {
-      await dbConnect();
-      const interactions = await Interaction.find({
-        $or: [
-          { aiEval: { $exists: false } },
-          { aiEval: null }
-        ]
-      }).populate('question answer');
-
-      const total = interactions.length;
-      let completed = 0;
-
-      for (const interaction of interactions) {
-        await this.createEmbedding(interaction);
-        completed++;
-        if (progressCallback) {
-          progressCallback({ completed, total });
-        }
-      }
-
-      return { completed, total };
-    } catch (error) {
-      ServerLoggingService.error('Error generating missing embeddings', 'embedding-service', error);
-      throw error;
-    }
-  }
+ 
 
   /**
    * Process interactions without embeddings for a specified duration.
    * @param {number} duration - Duration in seconds to process interactions.
    * @param {function} progressCallback - Callback to report progress.
    */
-  async processEmbeddingForDuration(duration) {
+  async processEmbeddingForDuration(duration, skipExisting = true, lastProcessedId = null) {
     const startTime = Date.now();
+    let lastId = lastProcessedId;
     let processedCount = 0;
 
     try {
       await dbConnect();
-      
-      // Find interactions that have embeddings
-      const embeddingsData = await Embedding.find({}, { interactionId: 1 });
-      const embeddedInteractionIds = embeddingsData.map(e => e.interactionId.toString());
-      
-      // Find all interactions without corresponding embeddings
-      const interactions = await Interaction.find({
-        _id: { $nin: embeddedInteractionIds }
-      }).populate('question answer');
+
+      // If skipExisting is false and this is the first batch (no lastProcessedId), delete all existing embeddings
+      if (!skipExisting && !lastProcessedId) {
+        ServerLoggingService.info('Regenerating all embeddings - deleting existing embeddings', 'system');
+
+        // Delete all embeddings
+        const deletedCount = await Embedding.deleteMany({});
+        ServerLoggingService.info(`Deleted ${deletedCount.deletedCount} embeddings`, 'system');
+
+        // Clear embedding references in interactions
+        await Interaction.updateMany(
+          { autoEval: { $exists: true } },
+          { $unset: { autoEval: "" } }
+        );
+        ServerLoggingService.info('Cleared embedding references in interactions', 'system');
+      }
+
+      // Get all interaction IDs that already have embeddings
+      const existingEmbeddingIds = (await Embedding.find({}, { interactionId: 1 }))
+        .map(e => e.interactionId.toString());
+
+      // Find interactions that don't have embeddings
+      const query = {
+        _id: { $nin: existingEmbeddingIds }
+      };
+
+      // Add pagination using lastProcessedId if provided
+      if (lastId) {
+        query._id = { $gt: new mongoose.Types.ObjectId(lastId) };
+      }
+
+      const interactions = await Interaction.find(query)
+        .sort({ _id: 1 })
+        .limit(100) // Process in batches of 100
+        .populate('question answer');
 
       const total = interactions.length;
-      const remaining = total - processedCount;
 
       ServerLoggingService.info(`Found ${total} interactions without embeddings`, 'embedding-service');
 
@@ -224,18 +221,28 @@ class EmbeddingService {
         try {
           await this.createEmbedding(interaction);
           processedCount++;
-          
-         
+          lastId = interaction._id.toString();
+          // Add the newly processed ID to our existing IDs list
+          existingEmbeddingIds.push(interaction._id.toString());
         } catch (error) {
           ServerLoggingService.error(`Error creating embedding for interaction ${interaction._id}`, 'embedding-service', error);
           // Continue processing other interactions even if one fails
         }
       }
 
-      return { 
-        completed: processedCount, 
+      // Calculate remaining count using the updated existingEmbeddingIds
+      const remainingQuery = { 
+        _id: { 
+          $nin: existingEmbeddingIds,
+          $gt: new mongoose.Types.ObjectId(lastId || '000000000000000000000000') 
+        }
+      };
+
+      return {
+        completed: processedCount,
         total,
-        remaining: total - processedCount,
+        remaining: await Interaction.countDocuments(remainingQuery),
+        lastProcessedId: lastId,
         duration: Math.round((Date.now() - startTime) / 1000)
       };
     } catch (error) {

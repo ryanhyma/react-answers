@@ -336,12 +336,39 @@ class EvaluationService {
      */
     async processEvaluationsForDuration(duration, skipExisting = true, lastProcessedId = null) {
         const startTime = Date.now();
-        let processedCount = 0;
-        let successfulCount = 0;
         let lastId = lastProcessedId;
 
         try {
             await dbConnect();
+
+            // If skipExisting is false and this is the first batch (no lastProcessedId),
+            // delete all existing evaluations and expert feedback
+            if (!skipExisting && !lastProcessedId) {
+                ServerLoggingService.info('Regenerating all evaluations - deleting existing evaluations', 'system');
+                
+                // First get all evals to find the expert feedback IDs
+                const allEvals = await Eval.find({});
+                const expertFeedbackIds = allEvals
+                    .map(evaluation => evaluation.expertFeedback)
+                    .filter(id => id); // Filter out null/undefined values
+                
+                // Delete all evaluations
+                await Eval.deleteMany({});
+                ServerLoggingService.info(`Deleted ${allEvals.length} evaluations`, 'system');
+                
+                // Delete associated expert feedback
+                if (expertFeedbackIds.length > 0) {
+                    await ExpertFeedback.deleteMany({ _id: { $in: expertFeedbackIds } });
+                    ServerLoggingService.info(`Deleted ${expertFeedbackIds.length} expert feedback records`, 'system');
+                }
+                
+                // Clear autoEval field from all interactions
+                await Interaction.updateMany(
+                    { autoEval: { $exists: true } },
+                    { $unset: { autoEval: "" } }
+                );
+                ServerLoggingService.info('Reset autoEval field in all interactions', 'system');
+            }
 
             // Find interactions that have both question and answer
             const query = {
