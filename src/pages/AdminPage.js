@@ -32,8 +32,8 @@ const AdminPage = () => {
             </GcdsLink>
           </li>
           <li className="">
-            <GcdsLink href={`/${language}/logs`}>
-              {t('admin.navigation.logs', 'Chat Logs')}
+            <GcdsLink href={`/${language}/chat-viewer`}>
+              {t('admin.navigation.chatViewer')}
             </GcdsLink>
           </li>
           <li className="">

@@ -228,7 +228,7 @@
       "aiAnswers": "AI Answers",
       "batches": "Batches",
       "users": "User Management",
-      "logs": "Chat Logs",
+      "chatViewer": "Chat Viewer",
       "database": "Database Management",
       "eval": "Evaluation Tools"
     },

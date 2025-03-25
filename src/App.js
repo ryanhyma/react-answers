@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider, Outlet, useLocation, Navigate } fr
 import HomePage from './pages/HomePage.js';
 import AdminPage from './pages/AdminPage.js';
 import BatchPage from './pages/BatchPage.js';
-import LogPage from './pages/LogPage.js';
+import ChatViewer from './pages/ChatViewer.js';
 import SignupPage from './pages/SignupPage.js';
 import LoginPage from './pages/LoginPage.js';
 import { GcdsHeader, GcdsBreadcrumbs, GcdsFooter } from '@cdssnc/gcds-components-react';
@@ -133,12 +133,12 @@ const router = createBrowserRouter([
         element: <ProtectedRoute element={<BatchPage lang="fr" />} />,
       },
       {
-        path: "/en/logs",
-        element: <ProtectedRoute element={<LogPage lang="en" />} />,
+        path: "/:language/chat-viewer",
+        element: <ProtectedRoute element={<ChatViewer lang="en" />} />,
       },
       {
-        path: "/fr/logs",
-        element: <ProtectedRoute element={<LogPage lang="fr" />} />,
+        path: "/:language/chat-viewer",
+        element: <ProtectedRoute element={<ChatViewer lang="fr" />} />,
       },
       {
         path: "/en/users",
