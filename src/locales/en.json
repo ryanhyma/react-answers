@@ -217,6 +217,7 @@
     }
   },
   "logging": {
+    "title": "Chat Viewer",
     "start": "Start",
     "pause": "Pause"
   },

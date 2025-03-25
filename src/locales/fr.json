@@ -219,6 +219,7 @@
     }
   },
   "logging": {
+    "title": "Visualiseur de chat",
     "start": "Démarrer",
     "pause": "Pause"
   },
