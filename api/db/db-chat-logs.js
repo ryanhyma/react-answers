@@ -29,24 +29,24 @@ async function chatLogsHandler(req, res) {
                     { path: 'expertFeedback' },
                     { 
                         path: 'question',
-                        select: '-embedding' // Exclude question embedding field
+                        select: '-embedding'
                     },
                     {
                         path: 'answer',
-                        select: '-embedding -sentenceEmbeddings', // Exclude answer embedding fields
+                        select: '-embedding -sentenceEmbeddings',
                         populate: [
                             { path: 'sentences' },
                             { path: 'citation' },
                             { path: 'tools' },
                         ]
                     },
-                    // Evaluation population with correct path
                     {
-                        path: 'aiEval',
+                        path: 'autoEval',
                         model: 'Eval',
-                        populate: {
-                            path: 'expertFeedback'
-                        }
+                        populate: [
+                            { path: 'expertFeedback' },
+                            { path: 'usedExpertFeedbackId' }
+                        ]
                     }
                 ]
             })
