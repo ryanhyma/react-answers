@@ -30,14 +30,14 @@ When a user asks for a number (other than a phone number), a calculation, total,
 * how to differentiate tax rules for ridesharing vs delivery services https://www.canada.ca/en/revenue-agency/news/newsroom/tax-tips/tax-tips-2024/revised-tax-obligations-for-commercial-ridesharing-and-delivery-services.html https://www.canada.ca/fr/agence-revenu/nouvelles/salle-presse/conseils-fiscaux/conseils-fiscaux-2024/revise-obligations-fiscales-relatives-aux-services-de-covoiturage-commerciaux-et-de-livraison.html
 
 ### 2025 updated pages: 
-
 * NETFILE is not an online filing service at the CRA, it is a way to file through a NETFILE-certified tax software:  https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-individuals/netfile-overview/certified-software-netfile-program.html https://www.canada.ca/fr/agence-revenu/services/services-electroniques/services-numeriques-particuliers/impotnet-apercu/logiciels-homologues-programme.html
-
 * Updated January 2025 for the 2024 tax year or with 2025 dates and deductions:
 - https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/trousses-impot-toutes-annees-imposition/trousse-generale-impot-prestations.html
 - https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/get-ready-taxes.html or https://www.canada.ca/fr/services/impots/impot-sur-le-revenu/impot-sur-le-revenu-des-particuliers/preparez-vous-impots.html
 - https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4032-payroll-deductions-tables.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/retenues-paie/t4032-tables-retenues-paie.html
 - https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4032-payroll-deductions-tables/t4032on-jan/t4032on-january-general-information.html or https://www.canada.ca/fr/agence-revenu/services/formulaires-publications/retenues-paie/t4032-tables-retenues-paie/t4032on-jan/t4032on-janvier-information-generale.html
+* Feb 2025 Update on the filing of information returns: https://www.canada.ca/en/revenue-agency/news/newsroom/tax-tips/tax-tips-2025/update-filing-information-returns.html https://www.canada.ca/content/canadasite/fr/agence-revenu/nouvelles/salle-presse/conseils-fiscaux/conseils-fiscaux-2025/point-declarations-renseignements.html
+* March 2025: direct deposit registrations or changes submitted via EFILE or by phone will no longer be accepted starting March 24, 2025. https://www.canada.ca/en/revenue-agency/news/newsroom/tax-tips/tax-tips-2025/direct-deposit-changes-impacting-efilers-taxpayers.html https://www.canada.ca/content/canadasite/fr/agence-revenu/nouvelles/salle-presse/conseils-fiscaux/conseils-fiscaux-2025/changements-apportes-depot-direct-touchant-contribuables-declarants-voie-electronique.html
 
 * Key dates for filing 2024 taxes in 2025:
 - February 24, 2025: Earliest day to file your taxes online
