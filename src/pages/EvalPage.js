@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getApiUrl } from '../utils/apiToUrl.js';
-import { GcdsContainer, GcdsText, GcdsButton } from '@cdssnc/gcds-components-react';
+import { GcdsContainer, GcdsText, GcdsButton, GcdsDetails } from '@cdssnc/gcds-components-react';
 
 const EvalPage = () => {
   const [embeddingProgress, setEmbeddingProgress] = useState(null);
@@ -228,10 +228,50 @@ const EvalPage = () => {
       </div>
       
       <div className="mb-400">
-        <h2>Generate Evaluations</h2>
+        <h2>Similarity-Based Expert Feedback Transfer</h2>
         <GcdsText>
-          Process interactions to generate evaluations.
+          This approach automatically evaluates new interactions by finding similar expert-evaluated interactions and transferring the feedback scores and explanations.
         </GcdsText>
+        
+        <GcdsDetails detailsTitle="Detailed Evaluation Process" className="mt-400">
+          
+          <ol className="mb-200">
+            <li><strong>Initial Validation:</strong> The system first validates that the interaction has question and answer content, then checks if an evaluation already exists</li>
+            <li><strong>Embedding Retrieval:</strong> Finds vector embeddings for the interaction (question+answer combined, answer-only, and sentence-level)</li>
+            <li><strong>Finding Similar Content:</strong> Searches for interactions with:
+              <ul>
+                <li>Existing expert feedback</li>
+                <li>Question(s)+answer similarity above threshold (0.85)</li>
+                <li>Returns up to 20 closest matches</li>
+              </ul>
+            </li>
+            <li><strong>Determining Best Matches:</strong> 
+              <ul>
+                <li>Calculates answer similarity for each potential match</li>
+                <li>Applies a sentence count penalty (0.05 per sentence difference)</li>
+                <li>Applies recency bias to favor newer examples</li>
+                <li>Selects top 5 answer matches</li>
+              </ul>
+            </li>
+            <li><strong>Sentence-Level Matching:</strong> 
+              <ul>
+                <li>For each sentence in the new interaction, finds the most similar sentence in each potential match</li>
+                <li>Keeps matches above the sentence similarity threshold</li>
+              </ul>
+            </li>
+            <li><strong>Final Match Selection:</strong> Combines overall similarity scores to select the best overall match with good sentence alignment</li>
+            <li><strong>Evaluation Creation:</strong> 
+              <ul>
+                <li>Creates a new expert feedback object based on the matched interaction's feedback</li>
+                <li>Maps sentence-specific feedback to corresponding sentences in the new interaction</li>
+                <li>Records similarity scores at question, answer, and sentence levels</li>
+                <li>Updates the interaction with the new evaluation reference</li>
+              </ul>
+            </li>
+            
+          </ol>
+        </GcdsDetails>
+        <br/>
         <div className="button-group">
           <GcdsButton 
             onClick={() => handleGenerateEvals(false)}

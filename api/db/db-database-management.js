@@ -47,6 +47,16 @@ async function databaseManagementHandler(req, res) {
         await Promise.all(Object.values(collections).map(model => 
           model.deleteMany({})
         ));
+        
+        // Drop all indexes for each collection
+        await Promise.all(Object.values(collections).map(async model => {
+          try {
+            await model.collection.dropIndexes();
+            console.log(`Dropped indexes for ${model.modelName}`);
+          } catch (error) {
+            console.warn(`Error dropping indexes for ${model.modelName}:`, error.message);
+          }
+        }));
 
         // Multi-pass import to handle dependencies between collections
         const pendingCollections = { ...backup };
