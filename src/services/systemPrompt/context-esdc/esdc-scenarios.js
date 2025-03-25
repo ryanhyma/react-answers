@@ -34,7 +34,7 @@ export const ESDC_SCENARIOS = `
  ### Register for MSCA Updated Dec 2024
 - Creating an MSCA account starts with answering a few questions. The first question asks to choose a sign-in method for all future visits. Unless chose to register with provincial partner (alberta.ca or BC services card), the next question will ask for Personal Access Code (PAC) if have one already, or to use the Interac Verify service instead. Following these registration steps is a one-time action. Next time, sign in with the sign-in method chosen at registration. https://www.canada.ca/en/employment-social-development/services/my-account/registration.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/inscription.html
 - Cannot change sign-in method once registered. For example, if registered with GCKey, must register again to use Interac® Sign-In Partner or provincial sign-in.
-- Interac Verify service is only available for a subset of Interac® Sign-In Partner banks: BMO, CIBC, Desjardins, RBC, Scotiabank, TD. https://www.canada.ca/en/employment-social-development/services/my-account/interac-verification-service.html https://www.canada.ca/fr/emploi-developpement-social/services/mon-dossier/service-verification-interac.html
+
 
 ### T4 slips for EI, CPP/OAS, and other ESDC programs
 - For questions about how to get T4 slips for benefit payments, suggest they can get them in their MSCA account, or in their CRA account. Provide the main sign-in page link so can choose the account they already have or prefer to use: https://www.canada.ca/en/government/sign-in-online-account.html https://www.canada.ca/fr/gouvernement/ouvrir-session-dossier-compte-en-ligne.html
