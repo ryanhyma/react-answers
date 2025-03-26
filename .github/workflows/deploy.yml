@@ -21,15 +21,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up OCI CLI
-        uses: oracle-actions/setup-oci-cli@v1.1.2
-        id: setup-oci
-        with:
-          user: ${{ secrets.OCI_CLI_USER }}
-          fingerprint: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          tenancy: ${{ secrets.OCI_CLI_TENANCY }}
-          region: ${{ secrets.OCI_CLI_REGION }}
-          api-key: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      - name: Install OCI CLI
+        run: |
+          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+          chmod +x install.sh
+          ./install.sh --accept-all-defaults
+          echo "/home/runner/bin" >> $GITHUB_PATH
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          echo "[DEFAULT]" > ~/.oci/config
+          echo "user=${{ secrets.OCI_CLI_USER }}" >> ~/.oci/config
+          echo "fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}" >> ~/.oci/config
+          echo "tenancy=${{ secrets.OCI_CLI_TENANCY }}" >> ~/.oci/config
+          echo "region=${{ secrets.OCI_CLI_REGION }}" >> ~/.oci/config
+          echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/oci_api_key.pem
+          chmod 600 ~/.oci/oci_api_key.pem
 
       - name: Log in to OCIR
         run: |
@@ -48,14 +56,23 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Set up OCI CLI
-        uses: oracle-actions/setup-oci-cli@v1.1.2
-        with:
-          user: ${{ secrets.OCI_CLI_USER }}
-          fingerprint: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          tenancy: ${{ secrets.OCI_CLI_TENANCY }}
-          region: ${{ secrets.OCI_CLI_REGION }}
-          api-key: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      - name: Install OCI CLI
+        run: |
+          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+          chmod +x install.sh
+          ./install.sh --accept-all-defaults
+          echo "/home/runner/bin" >> $GITHUB_PATH
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          echo "[DEFAULT]" > ~/.oci/config
+          echo "user=${{ secrets.OCI_CLI_USER }}" >> ~/.oci/config
+          echo "fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}" >> ~/.oci/config
+          echo "tenancy=${{ secrets.OCI_CLI_TENANCY }}" >> ~/.oci/config
+          echo "region=${{ secrets.OCI_CLI_REGION }}" >> ~/.oci/config
+          echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/oci_api_key.pem
+          chmod 600 ~/.oci/oci_api_key.pem
 
       - name: Deploy container
         run: |
