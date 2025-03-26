@@ -7,9 +7,9 @@ on:
       - '**'
 
 env:
-  IMAGE_NAME: my-app
-  IMAGE_TAG: ${{ github.sha }}
-  OCIR_REPO: my-ocir-repo
+  IMAGE_NAME: ai-answer
+  IMAGE_TAG: latest
+  OCIR_REPO: ${{ secrets.OCI_REPO }}
   COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
   SUBNET_OCID: ${{ secrets.OCI_SUBNET_OCID }}
   AVAILABILITY_DOMAIN: <your_availability_domain>
