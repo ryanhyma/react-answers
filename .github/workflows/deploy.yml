@@ -9,10 +9,10 @@ on:
 env:
   IMAGE_NAME: my-app
   IMAGE_TAG: ${{ github.sha }}
-  OCIR_REPO: ${{ secrets.OCI_REPO }}
+  OCIR_REPO: my-ocir-repo
   COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
   SUBNET_OCID: ${{ secrets.OCI_SUBNET_OCID }}
-  AVAILABILITY_DOMAIN: ca-toronto-1
+  AVAILABILITY_DOMAIN: <your_availability_domain>
 
 jobs:
   build-and-push:
@@ -21,27 +21,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install OCI CLI
-        run: |
-          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-          chmod +x install.sh
-          ./install.sh --accept-all-defaults
-          echo "/home/runner/bin" >> $GITHUB_PATH
-
-      - name: Configure OCI CLI
-        run: |
-          mkdir -p ~/.oci
-          echo "[DEFAULT]" > ~/.oci/config
-          echo "user=${{ secrets.OCI_CLI_USER }}" >> ~/.oci/config
-          echo "fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}" >> ~/.oci/config
-          echo "tenancy=${{ secrets.OCI_CLI_TENANCY }}" >> ~/.oci/config
-          echo "region=${{ secrets.OCI_CLI_REGION }}" >> ~/.oci/config
-          echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/oci_api_key.pem
-          chmod 600 ~/.oci/oci_api_key.pem
-
       - name: Log in to OCIR
-        run: |
-          echo "${{ secrets.OCI_AUTH_TOKEN }}" | docker login ${{ secrets.OCI_CLI_REGION }}.ocir.io -u ${{ secrets.OCI_CLI_TENANCY }}/${{ secrets.OCI_CLI_USER }} --password-stdin
+        uses: oracle-actions/login-ocir@v1
+        with:
+          auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
 
       - name: Build Docker image
         run: |
@@ -56,29 +45,20 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Install OCI CLI
-        run: |
-          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-          chmod +x install.sh
-          ./install.sh --accept-all-defaults
-          echo "/home/runner/bin" >> $GITHUB_PATH
-
-      - name: Configure OCI CLI
-        run: |
-          mkdir -p ~/.oci
-          echo "[DEFAULT]" > ~/.oci/config
-          echo "user=${{ secrets.OCI_CLI_USER }}" >> ~/.oci/config
-          echo "fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}" >> ~/.oci/config
-          echo "tenancy=${{ secrets.OCI_CLI_TENANCY }}" >> ~/.oci/config
-          echo "region=${{ secrets.OCI_CLI_REGION }}" >> ~/.oci/config
-          echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/oci_api_key.pem
-          chmod 600 ~/.oci/oci_api_key.pem
+      - name: Set up OCI CLI
+        uses: oracle-actions/setup-oci-cli@v1
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
 
       - name: Deploy container
         run: |
           oci compute container-instance create \
             --compartment-id $COMPARTMENT_OCID \
-            --display-name "${{ github.ref_name == 'main' && 'production-instance' || format('preview-{0}', github.ref_name) }}" \
+            --display-name ${{ github.ref_name == 'main' && 'production-instance' || 'preview-' + github.ref_name }} \
             --availability-domain $AVAILABILITY_DOMAIN \
             --shape CI.Standard.E2.1 \
             --subnet-id $SUBNET_OCID \
