@@ -31,22 +31,7 @@ jobs:
         run: |
           docker tag "$IMAGE_NAME:$IMAGE_TAG" "${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"
           docker push ${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG
-      - name: Log in to OCIR
-        id: login-ocir
-        uses: oracle-actions/login-ocir@v1.3.0
-        with:
-          auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
-        env:
-          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
-          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
-          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
-
-      - name: Output OCIR Login Details
-        run: |
-          echo "OCIR Endpoint: ${{ steps.login-ocir.outputs.ocir_endpoint }}"
-          echo "OCIR Username: ${{ steps.login-ocir.outputs.ocir_username }}"
+     
       
 
   deploy:
