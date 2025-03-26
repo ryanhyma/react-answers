@@ -12,7 +12,7 @@ env:
   OCIR_REPO: ${{ secrets.OCI_REPO }}
   COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
   SUBNET_OCID: ${{ secrets.OCI_SUBNET_OCID }}
-  AVAILABILITY_DOMAIN: <your_availability_domain>
+  AVAILABILITY_DOMAIN: ${{ secrets.OCI_AVAIL_DOMAIN }}
 
 jobs:
   build-and-push:
