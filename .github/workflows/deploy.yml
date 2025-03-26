@@ -58,7 +58,7 @@ jobs:
         run: |
           oci compute container-instance create \
             --compartment-id $COMPARTMENT_OCID \
-            --display-name ${{ github.ref_name == 'main' && 'production-instance' || 'preview-' + github.ref_name }} \
+            --display-name "${{ github.ref_name == 'main' && 'production-instance' || format('preview-{0}', github.ref_name) }}" \
             --availability-domain $AVAILABILITY_DOMAIN \
             --shape CI.Standard.E2.1 \
             --subnet-id $SUBNET_OCID \
