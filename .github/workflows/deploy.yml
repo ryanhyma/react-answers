@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to OCIR
-        uses: oracle-actions/login-ocir@v1
+        uses: oracle-actions/login-ocir@v1.3.0
         with:
           auth_token: ${{ secrets.OCI_AUTH_TOKEN }}
         env:
