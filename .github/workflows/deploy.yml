@@ -49,11 +49,11 @@ jobs:
         with:
           command: |
             compute container-instance create \
-              --compartment-id $COMPARTMENT_OCID \
+              --compartment-id $OCI_COMPARTMENT_OCID \
               --display-name $DISPLAY_NAME \
-              --availability-domain $AVAILABILITY_DOMAIN \
+              --availability-domain $OCI_AVAIL_DOMAIN \
               --shape CI.Standard.E2.1 \
-              --subnet-id $SUBNET_OCID \
+              --subnet-id $OCI_SUBNET_OCID \
               --containers '[{"imageUrl":"'"${{ secrets.OCI_CLI_REGION }}.ocir.io/${{ secrets.OCI_CLI_TENANCY }}/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"'"}]'
         env:
           OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
