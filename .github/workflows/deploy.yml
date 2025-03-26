@@ -32,21 +32,10 @@ jobs:
           docker tag "$IMAGE_NAME:$IMAGE_TAG" "${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"
           docker push ${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG
      
-      
-
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Set up OCI CLI
-        uses: oracle-actions/setup-oci-cli@v1
-        env:
-          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
-          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
-          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
-
       - name: Set display name
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
@@ -56,11 +45,19 @@ jobs:
           fi
 
       - name: Deploy container
-        run: |
-          oci compute container-instance create \
-            --compartment-id $COMPARTMENT_OCID \
-            --display-name $DISPLAY_NAME \
-            --availability-domain $AVAILABILITY_DOMAIN \
-            --shape CI.Standard.E2.1 \
-            --subnet-id $SUBNET_OCID \
-            --containers '[{"imageUrl":"'"${{ secrets.OCI_CLI_REGION }}.ocir.io/${{ secrets.OCI_CLI_TENANCY }}/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"'"}]'
+        uses: oracle-actions/run-oci-cli-command@v1.3.2
+        with:
+          command: |
+            compute container-instance create \
+              --compartment-id $COMPARTMENT_OCID \
+              --display-name $DISPLAY_NAME \
+              --availability-domain $AVAILABILITY_DOMAIN \
+              --shape CI.Standard.E2.1 \
+              --subnet-id $SUBNET_OCID \
+              --containers '[{"imageUrl":"'"${{ secrets.OCI_CLI_REGION }}.ocir.io/${{ secrets.OCI_CLI_TENANCY }}/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"'"}]'
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
