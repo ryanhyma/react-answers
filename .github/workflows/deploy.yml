@@ -54,11 +54,19 @@ jobs:
           OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
           OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
 
+      - name: Set display name
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "DISPLAY_NAME=production-instance" >> $GITHUB_ENV
+          else
+            echo "DISPLAY_NAME=preview-${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+
       - name: Deploy container
         run: |
           oci compute container-instance create \
             --compartment-id $COMPARTMENT_OCID \
-            --display-name ${{ github.ref_name == 'main' && 'production-instance' || 'preview-' + github.ref_name }} \
+            --display-name $DISPLAY_NAME \
             --availability-domain $AVAILABILITY_DOMAIN \
             --shape CI.Standard.E2.1 \
             --subnet-id $SUBNET_OCID \
