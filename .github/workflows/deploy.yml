@@ -38,7 +38,7 @@ jobs:
 
       - name: Tag and Push to OCIR
         run: |
-          docker tag $IMAGE_NAME:$IMAGE_TAG ${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG
+          docker tag "$IMAGE_NAME:$IMAGE_TAG" "${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG"
           docker push ${{ secrets.OCI_CLI_REGION }}.ocir.io/$OCIR_REPO/$IMAGE_NAME:$IMAGE_TAG
 
   deploy:
